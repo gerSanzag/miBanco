@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- Tengo 59 años y soy aprendiz de java.
+- Tengo certificaciópn java 17 "Oracle 1z0 829".
+- Siempre que sea posible se debe aplicar un enfoque estrictamente funcional, utilizar interfaces, streams,collectors, etc.
+- Utilizar siempre que se pueda Optionals para el manejo de datos null.
+- Utilizar el modelo vista controlador.
+- Aplicar capas como servicio, dto, utilitys etc.
+- Implementa patrones como factory, singlenton y los que consideren que se ajusten al desarrollo de la aplicación.
+_ Recordar siempre que soy aprendiz, debes darme retroalimentacion clara y permanente sobre lo que haces.
