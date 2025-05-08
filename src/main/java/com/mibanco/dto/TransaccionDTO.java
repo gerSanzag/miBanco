@@ -14,7 +14,7 @@ import java.util.Optional;
  * Utilizamos enfoque inmutable con @Value para promover la programación funcional
  */
 @Value
-@Builder
+@Builder(toBuilder = true) // Habilitamos toBuilder para métodos "with"
 @AllArgsConstructor
 public class TransaccionDTO {
     Long id;
@@ -35,11 +35,6 @@ public class TransaccionDTO {
                                    Optional<LocalDateTime> fecha,
                                    Optional<String> descripcion) {
         
-        // Validación del tipo de transacción y cuenta destino
-        if (tipo == TipoTransaccion.TRANSFERENCIA_ENVIADA && numeroCuentaDestino.isEmpty()) {
-            throw new IllegalArgumentException("Las transferencias requieren una cuenta destino");
-        }
-        
         return TransaccionDTO.builder()
                 .id(id)
                 .numeroCuenta(numeroCuenta)
@@ -48,6 +43,65 @@ public class TransaccionDTO {
                 .monto(monto)
                 .fecha(fecha.orElse(LocalDateTime.now()))
                 .descripcion(descripcion.orElse(""))
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción con un nuevo ID
+     * Útil para crear transacciones derivadas o correlacionadas
+     */
+    public TransaccionDTO withId(Long nuevoId) {
+        return this.toBuilder()
+                .id(nuevoId)
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción con fecha actualizada
+     */
+    public TransaccionDTO withFecha(LocalDateTime nuevaFecha) {
+        return this.toBuilder()
+                .fecha(nuevaFecha)
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción con descripción actualizada
+     */
+    public TransaccionDTO withDescripcion(String nuevaDescripcion) {
+        return this.toBuilder()
+                .descripcion(nuevaDescripcion)
+                .build();
+    }
+    
+    /**
+     * Crea una copia invertida de la transacción (útil para operaciones de anulación)
+     * Por ejemplo: convertir un depósito en un retiro, o viceversa
+     */
+    public TransaccionDTO withInversion() {
+        TipoTransaccion nuevoTipo;
+        switch (this.tipo) {
+            case DEPOSITO:
+                nuevoTipo = TipoTransaccion.RETIRO;
+                break;
+            case RETIRO:
+                nuevoTipo = TipoTransaccion.DEPOSITO;
+                break;
+            case TRANSFERENCIA_ENVIADA:
+                nuevoTipo = TipoTransaccion.TRANSFERENCIA_RECIBIDA;
+                break;
+            case TRANSFERENCIA_RECIBIDA:
+                nuevoTipo = TipoTransaccion.TRANSFERENCIA_ENVIADA;
+                break;
+            default:
+                nuevoTipo = this.tipo;
+        }
+        
+        return this.toBuilder()
+                .id(null) // Nueva transacción, nuevo ID
+                .tipo(nuevoTipo)
+                .fecha(LocalDateTime.now())
+                .descripcion("ANULACIÓN: " + this.descripcion)
                 .build();
     }
 } 

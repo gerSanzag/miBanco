@@ -14,7 +14,7 @@ import java.util.Optional;
  * Utilizamos enfoque inmutable y funcional con @Value
  */
 @Value
-@Builder
+@Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
 @AllArgsConstructor
 public class CuentaDTO {
     String numeroCuenta;
@@ -38,6 +38,50 @@ public class CuentaDTO {
                 .saldo(saldo)
                 .fechaCreacion(fechaCreacion.orElse(LocalDateTime.now()))
                 .activa(activa.orElse(true))
+                .build();
+    }
+    
+    /**
+     * Crea una nueva instancia con saldo actualizado
+     * Método "with" para transformación inmutable
+     */
+    public CuentaDTO withSaldo(BigDecimal nuevoSaldo) {
+        return this.toBuilder()
+                .saldo(nuevoSaldo)
+                .build();
+    }
+    
+    /**
+     * Crea una nueva instancia con estado activo actualizado
+     * Método "with" para transformación inmutable
+     */
+    public CuentaDTO withActiva(boolean nuevaActiva) {
+        return this.toBuilder()
+                .activa(nuevaActiva)
+                .build();
+    }
+    
+    /**
+     * Crea una nueva instancia con titular actualizado
+     * Método "with" para transformación inmutable
+     */
+    public CuentaDTO withTitular(ClienteDTO nuevoTitular) {
+        return this.toBuilder()
+                .titular(nuevoTitular)
+                .build();
+    }
+    
+    /**
+     * Crea una nueva instancia actualizando múltiples campos a la vez
+     * Método para actualizaciones inmutables múltiples
+     */
+    public CuentaDTO withActualizaciones(
+            Optional<BigDecimal> nuevoSaldo,
+            Optional<Boolean> nuevaActiva) {
+        
+        return this.toBuilder()
+                .saldo(nuevoSaldo.orElse(this.saldo))
+                .activa(nuevaActiva.orElse(this.activa))
                 .build();
     }
 } 

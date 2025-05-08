@@ -1,27 +1,69 @@
 package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoTransaccion;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Clase que representa una transacción bancaria
+ * Una transacción es un evento que no debe modificarse una vez creada
+ * por lo que implementamos un enfoque completamente inmutable
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@ToString
+@Builder(toBuilder = true)
 public class Transaccion {
-    private Long id;
-    private String numeroCuenta;
-    private String numeroCuentaDestino;
-    private TipoTransaccion tipo;
-    private BigDecimal monto;
-    private LocalDateTime fecha;
-    private String descripcion;
+    // Todos los campos son inmutables (final)
+    private final Long id;
+    private final String numeroCuenta;
+    private final String numeroCuentaDestino;
+    private final TipoTransaccion tipo;
+    private final BigDecimal monto;
+    private final LocalDateTime fecha;
+    private final String descripcion;
+    
+    /**
+     * Método factory para crear transacciones
+     */
+    public static Transaccion of(Long id, String numeroCuenta, String numeroCuentaDestino,
+                               TipoTransaccion tipo, BigDecimal monto, 
+                               Optional<LocalDateTime> fecha, Optional<String> descripcion) {
+        return Transaccion.builder()
+                .id(id)
+                .numeroCuenta(numeroCuenta)
+                .numeroCuentaDestino(numeroCuentaDestino)
+                .tipo(tipo)
+                .monto(monto)
+                .fecha(fecha.orElse(LocalDateTime.now()))
+                .descripcion(descripcion.orElse(""))
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción pero con un nuevo ID
+     * Útil para crear transacciones similares o correlacionadas
+     * @return Nueva transacción con ID actualizado
+     */
+    public Transaccion withNuevoId(Long nuevoId) {
+        return this.toBuilder()
+                .id(nuevoId)
+                .fecha(LocalDateTime.now()) // Actualizamos la fecha también
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción con descripción actualizada
+     * Este es uno de los pocos casos donde puede ser útil "modificar" una transacción
+     * @return Nueva transacción con descripción actualizada
+     */
+    public Transaccion withDescripcion(String nuevaDescripcion) {
+        return this.toBuilder()
+                .descripcion(nuevaDescripcion)
+                .build();
+    }
 } 

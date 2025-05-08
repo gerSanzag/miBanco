@@ -14,15 +14,11 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
 
     /**
      * Convierte un Cliente a ClienteDTO
-     * Implementación funcional
+     * Implementación estrictamente funcional con Optional
      */
     @Override
-    public ClienteDTO toDto(Cliente cliente) {
-        if (cliente == null) {
-            return null;
-        }
-        
-        return ClienteDTO.builder()
+    public Optional<ClienteDTO> toDto(Optional<Cliente> clienteOpt) {
+        return clienteOpt.map(cliente -> ClienteDTO.builder()
                 .id(cliente.getId())
                 .nombre(cliente.getNombre())
                 .apellido(cliente.getApellido())
@@ -31,20 +27,16 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
                 .telefono(cliente.getTelefono())
                 .fechaNacimiento(cliente.getFechaNacimiento())
                 .direccion(cliente.getDireccion())
-                .build();
+                .build());
     }
 
     /**
      * Convierte un ClienteDTO a Cliente
-     * Implementación funcional
+     * Implementación estrictamente funcional con Optional
      */
     @Override
-    public Cliente toEntity(ClienteDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        
-        return Cliente.builder()
+    public Optional<Cliente> toEntity(Optional<ClienteDTO> dtoOpt) {
+        return dtoOpt.map(dto -> Cliente.builder()
                 .id(dto.getId())
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
@@ -53,7 +45,23 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
                 .telefono(dto.getTelefono())
                 .fechaNacimiento(dto.getFechaNacimiento())
                 .direccion(dto.getDireccion())
-                .build();
+                .build());
+    }
+    
+    /**
+     * Método auxiliar para convertir un Cliente a ClienteDTO sin Optional
+     * Útil para casos donde se sabe que el objeto no es nulo
+     */
+    public ClienteDTO toDtoDirecto(Cliente cliente) {
+        return toDto(Optional.ofNullable(cliente)).orElse(null);
+    }
+    
+    /**
+     * Método auxiliar para convertir un ClienteDTO a Cliente sin Optional
+     * Útil para casos donde se sabe que el objeto no es nulo
+     */
+    public Cliente toEntityDirecto(ClienteDTO dto) {
+        return toEntity(Optional.ofNullable(dto)).orElse(null);
     }
     
     /**
@@ -63,7 +71,8 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
     public List<ClienteDTO> toDtoList(List<Cliente> clientes) {
         return Optional.ofNullable(clientes)
                 .map(list -> list.stream()
-                        .map(this::toDto)
+                        .map(cliente -> toDto(Optional.of(cliente)).orElse(null))
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList()))
                 .orElse(List.of());
     }
@@ -75,7 +84,8 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
     public List<Cliente> toEntityList(List<ClienteDTO> dtos) {
         return Optional.ofNullable(dtos)
                 .map(list -> list.stream()
-                        .map(this::toEntity)
+                        .map(dto -> toEntity(Optional.of(dto)).orElse(null))
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList()))
                 .orElse(List.of());
     }

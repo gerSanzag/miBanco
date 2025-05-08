@@ -1,8 +1,11 @@
 package com.mibanco.dto.mapper;
 
+import java.util.Optional;
+
 /**
  * Interfaz genérica para mapeos entre entidades y DTOs
  * Sigue el principio de responsabilidad única y facilita el enfoque funcional
+ * Utiliza Optional para manejar posibles valores nulos (enfoque funcional)
  * @param <E> Tipo de entidad
  * @param <D> Tipo de DTO
  */
@@ -10,15 +13,15 @@ public interface Mapper<E, D> {
     
     /**
      * Convierte una entidad a su DTO correspondiente
-     * @param entity Entidad a convertir
-     * @return DTO resultante
+     * @param entity Entidad a convertir (Optional)
+     * @return DTO resultante (Optional)
      */
-    D toDto(E entity);
+    Optional<D> toDto(Optional<E> entity);
     
     /**
      * Convierte un DTO a su entidad correspondiente
-     * @param dto DTO a convertir
-     * @return Entidad resultante
+     * @param dto DTO a convertir (Optional)
+     * @return Entidad resultante (Optional)
      */
-    E toEntity(D dto);
+    Optional<E> toEntity(Optional<D> dto);
 } 
