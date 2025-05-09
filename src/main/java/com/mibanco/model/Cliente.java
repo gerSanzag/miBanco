@@ -13,7 +13,6 @@ import java.util.Optional;
  */
 @Value
 @Builder(toBuilder = true)
-@AllArgsConstructor
 public class Cliente {
     Long id;
     String nombre;
@@ -26,49 +25,75 @@ public class Cliente {
     
     /**
      * Método factory que facilita la creación de instancias
+     * Utilizamos Optional para los campos que pueden ser opcionales
      */
     public static Cliente of(Long id, String nombre, String apellido, String dni,
-                            LocalDate fechaNacimiento, String email, String telefono, String direccion) {
+                            Optional<LocalDate> fechaNacimiento, Optional<String> email, 
+                            Optional<String> telefono, Optional<String> direccion) {
         return Cliente.builder()
                 .id(id)
                 .nombre(nombre)
                 .apellido(apellido)
                 .dni(dni)
-                .fechaNacimiento(fechaNacimiento)
-                .email(email)
-                .telefono(telefono)
-                .direccion(direccion)
+                .fechaNacimiento(fechaNacimiento.orElse(null))
+                .email(email.orElse(null))
+                .telefono(telefono.orElse(null))
+                .direccion(direccion.orElse(null))
                 .build();
     }
     
     /**
      * Crea una nueva instancia con email actualizado
+     * @param nuevoEmail El nuevo email (opcional)
      * @return Una nueva instancia con el email actualizado
      */
-    public Cliente withEmail(String nuevoEmail) {
+    public Cliente withEmail(Optional<String> nuevoEmail) {
         return this.toBuilder()
-                .email(nuevoEmail)
+                .email(nuevoEmail.orElse(this.email))
                 .build();
+    }
+    
+    /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Cliente withEmail(String nuevoEmail) {
+        return withEmail(Optional.ofNullable(nuevoEmail));
     }
     
     /**
      * Crea una nueva instancia con teléfono actualizado
+     * @param nuevoTelefono El nuevo teléfono (opcional)
      * @return Una nueva instancia con el teléfono actualizado
      */
-    public Cliente withTelefono(String nuevoTelefono) {
+    public Cliente withTelefono(Optional<String> nuevoTelefono) {
         return this.toBuilder()
-                .telefono(nuevoTelefono)
+                .telefono(nuevoTelefono.orElse(this.telefono))
                 .build();
     }
     
     /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Cliente withTelefono(String nuevoTelefono) {
+        return withTelefono(Optional.ofNullable(nuevoTelefono));
+    }
+    
+    /**
      * Crea una nueva instancia con dirección actualizada
+     * @param nuevaDireccion La nueva dirección (opcional)
      * @return Una nueva instancia con la dirección actualizada
      */
-    public Cliente withDireccion(String nuevaDireccion) {
+    public Cliente withDireccion(Optional<String> nuevaDireccion) {
         return this.toBuilder()
-                .direccion(nuevaDireccion)
+                .direccion(nuevaDireccion.orElse(this.direccion))
                 .build();
+    }
+    
+    /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Cliente withDireccion(String nuevaDireccion) {
+        return withDireccion(Optional.ofNullable(nuevaDireccion));
     }
     
     /**

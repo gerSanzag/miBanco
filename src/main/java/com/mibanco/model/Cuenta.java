@@ -1,7 +1,6 @@
 package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoCuenta;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -15,7 +14,6 @@ import java.util.Optional;
  */
 @Value
 @Builder(toBuilder = true)
-@AllArgsConstructor
 public class Cuenta {
     String numeroCuenta;
     Cliente titular;
@@ -26,37 +24,55 @@ public class Cuenta {
     
     /**
      * Método factory para facilitar la creación de instancias
+     * Utilizamos Optional para los campos que pueden ser opcionales
      */
     public static Cuenta of(String numeroCuenta, Cliente titular, TipoCuenta tipo, 
-                           BigDecimal saldo, LocalDateTime fechaCreacion, boolean activa) {
+                           Optional<BigDecimal> saldo, Optional<LocalDateTime> fechaCreacion, 
+                           Optional<Boolean> activa) {
         return Cuenta.builder()
                 .numeroCuenta(numeroCuenta)
                 .titular(titular)
                 .tipo(tipo)
-                .saldo(saldo != null ? saldo : BigDecimal.ZERO)
-                .fechaCreacion(fechaCreacion != null ? fechaCreacion : LocalDateTime.now())
-                .activa(activa)
+                .saldo(saldo.orElse(BigDecimal.ZERO))
+                .fechaCreacion(fechaCreacion.orElse(LocalDateTime.now()))
+                .activa(activa.orElse(true))
                 .build();
     }
     
     /**
      * Crea una nueva instancia con saldo actualizado
+     * @param nuevoSaldo El nuevo saldo (opcional)
      * @return Una nueva instancia con el saldo actualizado
      */
-    public Cuenta withSaldo(BigDecimal nuevoSaldo) {
+    public Cuenta withSaldo(Optional<BigDecimal> nuevoSaldo) {
         return this.toBuilder()
-                .saldo(nuevoSaldo)
+                .saldo(nuevoSaldo.orElse(this.saldo))
                 .build();
     }
     
     /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Cuenta withSaldo(BigDecimal nuevoSaldo) {
+        return withSaldo(Optional.ofNullable(nuevoSaldo));
+    }
+    
+    /**
      * Crea una nueva instancia con estado activo actualizado
+     * @param nuevaActiva El nuevo estado (opcional)
      * @return Una nueva instancia con el estado actualizado
      */
-    public Cuenta withActiva(boolean nuevaActiva) {
+    public Cuenta withActiva(Optional<Boolean> nuevaActiva) {
         return this.toBuilder()
-                .activa(nuevaActiva)
+                .activa(nuevaActiva.orElse(this.activa))
                 .build();
+    }
+    
+    /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Cuenta withActiva(boolean nuevaActiva) {
+        return withActiva(Optional.of(nuevaActiva));
     }
     
     /**

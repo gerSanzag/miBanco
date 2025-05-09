@@ -1,7 +1,6 @@
 package com.mibanco.dto;
 
 import com.mibanco.model.enums.TipoTransaccion;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -12,10 +11,10 @@ import java.util.Optional;
 /**
  * DTO para transferir información de Transacción entre capas
  * Utilizamos enfoque inmutable con @Value para promover la programación funcional
+ * Una transacción, una vez creada, no debe modificarse (representa un evento histórico)
  */
 @Value
-@Builder(toBuilder = true) // Habilitamos toBuilder para métodos "with"
-@AllArgsConstructor
+@Builder(toBuilder = true)
 public class TransaccionDTO {
     Long id;
     String numeroCuenta;
@@ -47,38 +46,11 @@ public class TransaccionDTO {
     }
     
     /**
-     * Crea una copia de la transacción con un nuevo ID
-     * Útil para crear transacciones derivadas o correlacionadas
+     * Crea una transacción de anulación basada en esta transacción
+     * No modifica la transacción original, sino que crea una nueva que la contrarresta
+     * @return Una nueva transacción con tipo inverso y referencia a la original
      */
-    public TransaccionDTO withId(Long nuevoId) {
-        return this.toBuilder()
-                .id(nuevoId)
-                .build();
-    }
-    
-    /**
-     * Crea una copia de la transacción con fecha actualizada
-     */
-    public TransaccionDTO withFecha(LocalDateTime nuevaFecha) {
-        return this.toBuilder()
-                .fecha(nuevaFecha)
-                .build();
-    }
-    
-    /**
-     * Crea una copia de la transacción con descripción actualizada
-     */
-    public TransaccionDTO withDescripcion(String nuevaDescripcion) {
-        return this.toBuilder()
-                .descripcion(nuevaDescripcion)
-                .build();
-    }
-    
-    /**
-     * Crea una copia invertida de la transacción (útil para operaciones de anulación)
-     * Por ejemplo: convertir un depósito en un retiro, o viceversa
-     */
-    public TransaccionDTO withInversion() {
+    public TransaccionDTO crearAnulacion(Long nuevoId) {
         TipoTransaccion nuevoTipo;
         switch (this.tipo) {
             case DEPOSITO:
@@ -97,11 +69,14 @@ public class TransaccionDTO {
                 nuevoTipo = this.tipo;
         }
         
-        return this.toBuilder()
-                .id(null) // Nueva transacción, nuevo ID
+        return TransaccionDTO.builder()
+                .id(nuevoId)
+                .numeroCuenta(this.numeroCuenta)
+                .numeroCuentaDestino(this.numeroCuentaDestino)
                 .tipo(nuevoTipo)
+                .monto(this.monto)
                 .fecha(LocalDateTime.now())
-                .descripcion("ANULACIÓN: " + this.descripcion)
+                .descripcion("ANULACIÓN de " + this.id + ": " + this.descripcion)
                 .build();
     }
 } 

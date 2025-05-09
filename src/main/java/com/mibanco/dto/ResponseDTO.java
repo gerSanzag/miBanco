@@ -1,6 +1,5 @@
 package com.mibanco.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,7 +15,6 @@ import java.util.Optional;
  */
 @Value
 @Builder
-@AllArgsConstructor
 public class ResponseDTO<T> {
     boolean success;
     String message;

@@ -14,7 +14,6 @@ import java.util.Optional;
  */
 @Value
 @Builder(toBuilder = true)
-@AllArgsConstructor
 public class Tarjeta {
     String numero;
     Cliente titular;
@@ -26,38 +25,56 @@ public class Tarjeta {
     
     /**
      * Método factory para facilitar la creación de instancias
+     * Utilizamos Optional para los campos que pueden ser opcionales
      */
     public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
-                            TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
+                            TipoTarjeta tipo, Optional<LocalDate> fechaExpiracion, 
+                            Optional<String> cvv, Optional<Boolean> activa) {
         return Tarjeta.builder()
                 .numero(numero)
                 .titular(titular)
                 .numeroCuentaAsociada(numeroCuentaAsociada)
                 .tipo(tipo)
-                .fechaExpiracion(fechaExpiracion)
-                .cvv(cvv)
-                .activa(activa)
+                .fechaExpiracion(fechaExpiracion.orElse(LocalDate.now().plusYears(3)))
+                .cvv(cvv.orElse(""))
+                .activa(activa.orElse(true))
                 .build();
     }
     
     /**
      * Crea una nueva instancia con fecha de expiración actualizada
+     * @param nuevaFecha La nueva fecha de expiración (opcional)
      * @return Una nueva instancia con la fecha actualizada
      */
-    public Tarjeta withFechaExpiracion(LocalDate nuevaFecha) {
+    public Tarjeta withFechaExpiracion(Optional<LocalDate> nuevaFecha) {
         return this.toBuilder()
-                .fechaExpiracion(nuevaFecha)
+                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
                 .build();
     }
     
     /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Tarjeta withFechaExpiracion(LocalDate nuevaFecha) {
+        return withFechaExpiracion(Optional.ofNullable(nuevaFecha));
+    }
+    
+    /**
      * Crea una nueva instancia con estado activo actualizado
+     * @param nuevaActiva El nuevo estado (opcional)
      * @return Una nueva instancia con el estado actualizado
      */
-    public Tarjeta withActiva(boolean nuevaActiva) {
+    public Tarjeta withActiva(Optional<Boolean> nuevaActiva) {
         return this.toBuilder()
-                .activa(nuevaActiva)
+                .activa(nuevaActiva.orElse(this.activa))
                 .build();
+    }
+    
+    /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public Tarjeta withActiva(boolean nuevaActiva) {
+        return withActiva(Optional.of(nuevaActiva));
     }
     
     /**

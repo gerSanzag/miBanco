@@ -1,7 +1,6 @@
 package com.mibanco.dto;
 
 import com.mibanco.model.enums.TipoTarjeta;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,11 +13,10 @@ import java.util.Optional;
  * Omitimos el CVV por razones de seguridad en transferencias entre capas
  */
 @Value
-@Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
-@AllArgsConstructor
+@Builder(toBuilder = true)
 public class TarjetaDTO {
     String numero;
-    ClienteDTO titular;
+    ClienteDTO titular; // El titular es inmutable, una vez asignado no puede cambiar
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
     LocalDate fechaExpiracion;
@@ -47,42 +45,52 @@ public class TarjetaDTO {
     
     /**
      * Crea una nueva instancia con fecha de expiración actualizada
+     * @param nuevaFecha La nueva fecha de expiración (opcional)
+     * @return Una nueva instancia con la fecha actualizada
+     */
+    public TarjetaDTO withFechaExpiracion(Optional<LocalDate> nuevaFecha) {
+        return this.toBuilder()
+                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
+                .build();
+    }
+    
+    /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
      */
     public TarjetaDTO withFechaExpiracion(LocalDate nuevaFecha) {
-        return this.toBuilder()
-                .fechaExpiracion(nuevaFecha)
-                .build();
+        return withFechaExpiracion(Optional.ofNullable(nuevaFecha));
     }
     
     /**
      * Crea una nueva instancia con estado activo actualizado
+     * @param nuevaActiva El nuevo estado (opcional)
+     * @return Una nueva instancia con el estado actualizado
      */
-    public TarjetaDTO withActiva(boolean nuevaActiva) {
+    public TarjetaDTO withActiva(Optional<Boolean> nuevaActiva) {
         return this.toBuilder()
-                .activa(nuevaActiva)
+                .activa(nuevaActiva.orElse(this.activa))
                 .build();
     }
     
     /**
-     * Crea una nueva instancia con titular actualizado
+     * Sobrecarga para facilitar el uso cuando el valor no es null
      */
-    public TarjetaDTO withTitular(ClienteDTO nuevoTitular) {
-        return this.toBuilder()
-                .titular(nuevoTitular)
-                .build();
+    public TarjetaDTO withActiva(boolean nuevaActiva) {
+        return withActiva(Optional.of(nuevaActiva));
     }
     
     /**
      * Crea una nueva instancia actualizando múltiples campos a la vez
+     * Los únicos campos que pueden cambiar en una tarjeta son
+     * su fecha de expiración y estado activo.
+     * El titular es inmutable según las prácticas bancarias reales.
      */
     public TarjetaDTO withActualizaciones(
             Optional<LocalDate> nuevaFecha,
             Optional<Boolean> nuevaActiva) {
         
-        LocalDate fechaFinal = nuevaFecha.orElse(this.fechaExpiracion);
-        
         return this.toBuilder()
-                .fechaExpiracion(fechaFinal)
+                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
                 .activa(nuevaActiva.orElse(this.activa))
                 .build();
     }

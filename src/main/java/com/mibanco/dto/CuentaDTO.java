@@ -1,7 +1,6 @@
 package com.mibanco.dto;
 
 import com.mibanco.model.enums.TipoCuenta;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,8 +13,7 @@ import java.util.Optional;
  * Utilizamos enfoque inmutable y funcional con @Value
  */
 @Value
-@Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
-@AllArgsConstructor
+@Builder(toBuilder = true)
 public class CuentaDTO {
     String numeroCuenta;
     ClienteDTO titular;
@@ -43,44 +41,70 @@ public class CuentaDTO {
     
     /**
      * Crea una nueva instancia con saldo actualizado
-     * Método "with" para transformación inmutable
+     * @param nuevoSaldo El nuevo saldo (opcional)
+     * @return Una nueva instancia con el saldo actualizado
      */
-    public CuentaDTO withSaldo(BigDecimal nuevoSaldo) {
+    public CuentaDTO withSaldo(Optional<BigDecimal> nuevoSaldo) {
         return this.toBuilder()
-                .saldo(nuevoSaldo)
+                .saldo(nuevoSaldo.orElse(this.saldo))
                 .build();
     }
     
     /**
-     * Crea una nueva instancia con estado activo actualizado
-     * Método "with" para transformación inmutable
+     * Sobrecarga para facilitar el uso cuando el valor no es null
      */
-    public CuentaDTO withActiva(boolean nuevaActiva) {
-        return this.toBuilder()
-                .activa(nuevaActiva)
-                .build();
+    public CuentaDTO withSaldo(BigDecimal nuevoSaldo) {
+        return withSaldo(Optional.ofNullable(nuevoSaldo));
     }
     
     /**
      * Crea una nueva instancia con titular actualizado
-     * Método "with" para transformación inmutable
+     * @param nuevoTitular El nuevo titular (opcional)
+     * @return Una nueva instancia con el titular actualizado
      */
-    public CuentaDTO withTitular(ClienteDTO nuevoTitular) {
+    public CuentaDTO withTitular(Optional<ClienteDTO> nuevoTitular) {
         return this.toBuilder()
-                .titular(nuevoTitular)
+                .titular(nuevoTitular.orElse(this.titular))
                 .build();
     }
     
     /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public CuentaDTO withTitular(ClienteDTO nuevoTitular) {
+        return withTitular(Optional.ofNullable(nuevoTitular));
+    }
+    
+    /**
+     * Crea una nueva instancia con estado activo actualizado
+     * @param nuevaActiva El nuevo estado (opcional)
+     * @return Una nueva instancia con el estado actualizado
+     */
+    public CuentaDTO withActiva(Optional<Boolean> nuevaActiva) {
+        return this.toBuilder()
+                .activa(nuevaActiva.orElse(this.activa))
+                .build();
+    }
+    
+    /**
+     * Sobrecarga para facilitar el uso cuando el valor no es null
+     */
+    public CuentaDTO withActiva(boolean nuevaActiva) {
+        return withActiva(Optional.of(nuevaActiva));
+    }
+    
+    /**
      * Crea una nueva instancia actualizando múltiples campos a la vez
-     * Método para actualizaciones inmutables múltiples
+     * Los únicos campos que suelen cambiar en una cuenta son el saldo y su estado activo
      */
     public CuentaDTO withActualizaciones(
             Optional<BigDecimal> nuevoSaldo,
+            Optional<ClienteDTO> nuevoTitular,
             Optional<Boolean> nuevaActiva) {
         
         return this.toBuilder()
                 .saldo(nuevoSaldo.orElse(this.saldo))
+                .titular(nuevoTitular.orElse(this.titular))
                 .activa(nuevaActiva.orElse(this.activa))
                 .build();
     }
