@@ -1,103 +1,87 @@
 package com.mibanco.model;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 /**
  * Clase que representa a un cliente del banco
- * Utilizamos enfoque completamente inmutable con @Value para mayor seguridad
+ * Implementa un enfoque mixto con inmutabilidad selectiva:
+ * - Atributos inmutables por naturaleza (id, dni, nombre, apellido, fechaNacimiento)
+ * - Atributos que pueden cambiar (email, telefono, direccion)
  */
-@Value
+@Getter
+@ToString
+@Accessors(chain = true) // Permite encadenamiento de métodos setter
 @Builder(toBuilder = true)
-public class Cliente {
-    Long id;
-    String nombre;
-    String apellido;
-    String dni;
-    LocalDate fechaNacimiento;
-    String email;
-    String telefono;
-    String direccion;
+public class Cliente implements Identificable {
+    // Atributos inmutables (información que nunca cambia)
+    private final Long id;
+    private final String nombre;
+    private final String apellido;
+    private final String dni;
+    private final LocalDate fechaNacimiento;
+    
+    // Atributos que pueden cambiar (con setters específicos)
+    @Setter private String email;
+    @Setter private String telefono;
+    @Setter private String direccion;
     
     /**
      * Método factory que facilita la creación de instancias
-     * Utilizamos Optional para los campos que pueden ser opcionales
      */
     public static Cliente of(Long id, String nombre, String apellido, String dni,
-                            Optional<LocalDate> fechaNacimiento, Optional<String> email, 
-                            Optional<String> telefono, Optional<String> direccion) {
+                            LocalDate fechaNacimiento, String email, String telefono, String direccion) {
         return Cliente.builder()
                 .id(id)
                 .nombre(nombre)
                 .apellido(apellido)
                 .dni(dni)
-                .fechaNacimiento(fechaNacimiento.orElse(null))
-                .email(email.orElse(null))
-                .telefono(telefono.orElse(null))
-                .direccion(direccion.orElse(null))
+                .fechaNacimiento(fechaNacimiento)
+                .email(email)
+                .telefono(telefono)
+                .direccion(direccion)
                 .build();
     }
     
     /**
-     * Crea una nueva instancia con email actualizado
-     * @param nuevoEmail El nuevo email (opcional)
+     * Versión inmutable para actualizar el email
      * @return Una nueva instancia con el email actualizado
      */
-    public Cliente withEmail(Optional<String> nuevoEmail) {
+    public Cliente withEmail(String nuevoEmail) {
         return this.toBuilder()
-                .email(nuevoEmail.orElse(this.email))
+                .email(nuevoEmail)
                 .build();
     }
     
     /**
-     * Sobrecarga para facilitar el uso cuando el valor no es null
-     */
-    public Cliente withEmail(String nuevoEmail) {
-        return withEmail(Optional.ofNullable(nuevoEmail));
-    }
-    
-    /**
-     * Crea una nueva instancia con teléfono actualizado
-     * @param nuevoTelefono El nuevo teléfono (opcional)
+     * Versión inmutable para actualizar el teléfono
      * @return Una nueva instancia con el teléfono actualizado
      */
-    public Cliente withTelefono(Optional<String> nuevoTelefono) {
+    public Cliente withTelefono(String nuevoTelefono) {
         return this.toBuilder()
-                .telefono(nuevoTelefono.orElse(this.telefono))
+                .telefono(nuevoTelefono)
                 .build();
     }
     
     /**
-     * Sobrecarga para facilitar el uso cuando el valor no es null
-     */
-    public Cliente withTelefono(String nuevoTelefono) {
-        return withTelefono(Optional.ofNullable(nuevoTelefono));
-    }
-    
-    /**
-     * Crea una nueva instancia con dirección actualizada
-     * @param nuevaDireccion La nueva dirección (opcional)
+     * Versión inmutable para actualizar la dirección
      * @return Una nueva instancia con la dirección actualizada
      */
-    public Cliente withDireccion(Optional<String> nuevaDireccion) {
+    public Cliente withDireccion(String nuevaDireccion) {
         return this.toBuilder()
-                .direccion(nuevaDireccion.orElse(this.direccion))
+                .direccion(nuevaDireccion)
                 .build();
     }
     
     /**
-     * Sobrecarga para facilitar el uso cuando el valor no es null
-     */
-    public Cliente withDireccion(String nuevaDireccion) {
-        return withDireccion(Optional.ofNullable(nuevaDireccion));
-    }
-    
-    /**
-     * Crea una nueva instancia actualizando múltiples campos a la vez
+     * Versión inmutable para actualizar múltiples campos a la vez
      * @return Una nueva instancia con los campos actualizados
      */
     public Cliente withDatosContacto(Optional<String> nuevoEmail, 

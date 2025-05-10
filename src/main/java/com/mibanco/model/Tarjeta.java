@@ -1,84 +1,87 @@
 package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoTarjeta;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 /**
  * Clase que representa una tarjeta bancaria
- * Utilizamos enfoque completamente inmutable con @Value para mayor seguridad
+ * Implementa un enfoque mixto con inmutabilidad selectiva:
+ * - Atributos inmutables: numero, titular, numeroCuentaAsociada, tipo, cvv
+ * - Atributos mutables: fechaExpiracion, activa
  */
-@Value
+@Getter
+@ToString
+@Accessors(chain = true)
 @Builder(toBuilder = true)
-public class Tarjeta {
-    String numero;
-    Cliente titular;
-    String numeroCuentaAsociada;
-    TipoTarjeta tipo;
-    String cvv;
-    LocalDate fechaExpiracion;
-    boolean activa;
+public class Tarjeta implements Identificable {
+    // Atributos inmutables (información que nunca cambia)
+    private final String numero;
+    private final Cliente titular;
+    private final String numeroCuentaAsociada;
+    private final TipoTarjeta tipo;
+    private final String cvv;
+    
+    // Atributos que pueden cambiar
+    @Setter private LocalDate fechaExpiracion;
+    @Setter private boolean activa;
+    
+    /**
+     * Implementación de getId() para la interfaz Identificable
+     * Utilizamos el número de tarjeta como ID usando un hash del String
+     * @return Un Long que representa el número de tarjeta
+     */
+    @Override
+    public Long getId() {
+        // Convertimos el número de tarjeta a un valor Long utilizando un hash
+        return numero != null ? (long) numero.hashCode() : null;
+    }
     
     /**
      * Método factory para facilitar la creación de instancias
-     * Utilizamos Optional para los campos que pueden ser opcionales
      */
     public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
-                            TipoTarjeta tipo, Optional<LocalDate> fechaExpiracion, 
-                            Optional<String> cvv, Optional<Boolean> activa) {
+                            TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
         return Tarjeta.builder()
                 .numero(numero)
                 .titular(titular)
                 .numeroCuentaAsociada(numeroCuentaAsociada)
                 .tipo(tipo)
-                .fechaExpiracion(fechaExpiracion.orElse(LocalDate.now().plusYears(3)))
-                .cvv(cvv.orElse(""))
-                .activa(activa.orElse(true))
+                .fechaExpiracion(fechaExpiracion)
+                .cvv(cvv)
+                .activa(activa)
                 .build();
     }
     
     /**
-     * Crea una nueva instancia con fecha de expiración actualizada
-     * @param nuevaFecha La nueva fecha de expiración (opcional)
+     * Versión inmutable para actualizar la fecha de expiración
      * @return Una nueva instancia con la fecha actualizada
      */
-    public Tarjeta withFechaExpiracion(Optional<LocalDate> nuevaFecha) {
+    public Tarjeta withFechaExpiracion(LocalDate nuevaFecha) {
         return this.toBuilder()
-                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
+                .fechaExpiracion(nuevaFecha)
                 .build();
     }
     
     /**
-     * Sobrecarga para facilitar el uso cuando el valor no es null
-     */
-    public Tarjeta withFechaExpiracion(LocalDate nuevaFecha) {
-        return withFechaExpiracion(Optional.ofNullable(nuevaFecha));
-    }
-    
-    /**
-     * Crea una nueva instancia con estado activo actualizado
-     * @param nuevaActiva El nuevo estado (opcional)
+     * Versión inmutable para actualizar el estado activo
      * @return Una nueva instancia con el estado actualizado
      */
-    public Tarjeta withActiva(Optional<Boolean> nuevaActiva) {
+    public Tarjeta withActiva(boolean nuevaActiva) {
         return this.toBuilder()
-                .activa(nuevaActiva.orElse(this.activa))
+                .activa(nuevaActiva)
                 .build();
     }
     
     /**
-     * Sobrecarga para facilitar el uso cuando el valor no es null
-     */
-    public Tarjeta withActiva(boolean nuevaActiva) {
-        return withActiva(Optional.of(nuevaActiva));
-    }
-    
-    /**
-     * Crea una nueva instancia actualizando múltiples campos a la vez
+     * Versión inmutable para actualizar múltiples campos a la vez
      * @return Una nueva instancia con los campos actualizados
      */
     public Tarjeta withActualizaciones(Optional<LocalDate> nuevaFecha, Optional<Boolean> nuevaActiva) {

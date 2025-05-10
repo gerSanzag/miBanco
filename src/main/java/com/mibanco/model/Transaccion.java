@@ -2,7 +2,8 @@ package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoTransaccion;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,17 +14,27 @@ import java.util.Optional;
  * Una transacción es un evento que no debe modificarse una vez creada
  * por lo que implementamos un enfoque completamente inmutable
  */
-@Value
+@Getter
+@ToString
 @Builder(toBuilder = true)
-public class Transaccion {
+public class Transaccion implements Identificable {
     // Todos los campos son inmutables (final)
-    Long id;
-    String numeroCuenta;
-    String numeroCuentaDestino;
-    TipoTransaccion tipo;
-    BigDecimal monto;
-    LocalDateTime fecha;
-    String descripcion;
+    private final Long id;
+    private final String numeroCuenta;
+    private final String numeroCuentaDestino;
+    private final TipoTransaccion tipo;
+    private final BigDecimal monto;
+    private final LocalDateTime fecha;
+    private final String descripcion;
+    
+    /**
+     * Implementación de getId() para la interfaz Identificable
+     * @return El ID de la transacción
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
     
     /**
      * Método factory para crear transacciones
@@ -39,6 +50,29 @@ public class Transaccion {
                 .monto(monto)
                 .fecha(fecha.orElse(LocalDateTime.now()))
                 .descripcion(descripcion.orElse(""))
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción pero con un nuevo ID
+     * Útil para crear transacciones similares o correlacionadas
+     * @return Nueva transacción con ID actualizado
+     */
+    public Transaccion withNuevoId(Long nuevoId) {
+        return this.toBuilder()
+                .id(nuevoId)
+                .fecha(LocalDateTime.now()) // Actualizamos la fecha también
+                .build();
+    }
+    
+    /**
+     * Crea una copia de la transacción con descripción actualizada
+     * Este es uno de los pocos casos donde puede ser útil "modificar" una transacción
+     * @return Nueva transacción con descripción actualizada
+     */
+    public Transaccion withDescripcion(String nuevaDescripcion) {
+        return this.toBuilder()
+                .descripcion(nuevaDescripcion)
                 .build();
     }
 } 
