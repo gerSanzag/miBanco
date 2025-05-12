@@ -1,21 +1,20 @@
 package com.mibanco.repository.impl;
 
 import com.mibanco.model.Cliente;
-import com.mibanco.model.RegistroAuditoria;
 import com.mibanco.model.enums.TipoOperacionCliente;
 import com.mibanco.repository.AuditoriaRepository;
 import com.mibanco.repository.ClienteRepository;
+import com.mibanco.util.AuditoriaUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiFunction;
 
 /**
  * Implementación del repositorio de Clientes usando una lista en memoria
  * Utilizamos enfoque estrictamente funcional con streams y Optional
- * Ahora con soporte para auditoría de operaciones
+ * Ahora con soporte para auditoría de operaciones usando AuditoriaUtil simplificado
  */
 public class ClienteRepositoryImpl implements ClienteRepository {
     
@@ -34,18 +33,11 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     // Usuario actual (en un sistema real vendría de un sistema de autenticación)
     private String usuarioActual = "sistema";
     
-    // Función para registrar auditoría en un estilo más funcional
-    private BiFunction<TipoOperacionCliente, Cliente, RegistroAuditoria<Cliente, TipoOperacionCliente>> registrarAuditoria;
-    
     /**
      * Constructor con inyección del repositorio de auditoría
      */
     public ClienteRepositoryImpl(AuditoriaRepository auditoriaRepository) {
         this.auditoriaRepository = auditoriaRepository;
-        // Inicializar la función después de asignar el repositorio
-        this.registrarAuditoria = (operacion, cliente) -> auditoriaRepository.registrar(
-            RegistroAuditoria.of(operacion, cliente, usuarioActual)
-        );
     }
     
     /**
@@ -62,8 +54,13 @@ public class ClienteRepositoryImpl implements ClienteRepository {
             if (c.getId() != null) {
                 Cliente clienteActualizado = update(c);
                 
-                // Registra la auditoría de modificación
-                registrarAuditoria.apply(TipoOperacionCliente.MODIFICAR, clienteActualizado);
+                // Registra la auditoría de modificación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionCliente.MODIFICAR, 
+                    clienteActualizado,
+                    usuarioActual
+                );
                 
                 return clienteActualizado;
             }
@@ -74,8 +71,13 @@ public class ClienteRepositoryImpl implements ClienteRepository {
                     .build();
             clientes.add(nuevoCliente);
             
-            // Registra la auditoría de creación
-            registrarAuditoria.apply(TipoOperacionCliente.CREAR, nuevoCliente);
+            // Registra la auditoría de creación directamente
+            AuditoriaUtil.registrarOperacion(
+                auditoriaRepository,
+                TipoOperacionCliente.CREAR, 
+                nuevoCliente,
+                usuarioActual
+            );
             
             return nuevoCliente;
         });
@@ -130,8 +132,13 @@ public class ClienteRepositoryImpl implements ClienteRepository {
                 // Guardamos el cliente en la caché para posible restauración
                 clientesEliminados.add(cliente);
                 
-                // Registra la auditoría de eliminación
-                registrarAuditoria.apply(TipoOperacionCliente.ELIMINAR, cliente);
+                // Registra la auditoría de eliminación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionCliente.ELIMINAR, 
+                    cliente,
+                    usuarioActual
+                );
             });
             
             return clienteAEliminar.isPresent();
@@ -156,8 +163,13 @@ public class ClienteRepositoryImpl implements ClienteRepository {
                 // Lo quitamos de la caché de eliminados
                 clientesEliminados.removeIf(c -> c.getId().equals(idValue));
                 
-                // Registra la auditoría de restauración
-                registrarAuditoria.apply(TipoOperacionCliente.RESTAURAR, cliente);
+                // Registra la auditoría de restauración directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionCliente.RESTAURAR, 
+                    cliente,
+                    usuarioActual
+                );
             });
             
             return clienteARestaurar;

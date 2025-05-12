@@ -1,10 +1,8 @@
 package com.mibanco.dto;
 
 import com.mibanco.model.enums.TipoCuenta;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -15,7 +13,6 @@ import java.util.Optional;
  */
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
-@AllArgsConstructor
 public class CuentaDTO {
     String numeroCuenta;
     ClienteDTO titular;

@@ -1,12 +1,8 @@
 package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoCuenta;
-import lombok.AccessLevel;
+import lombok.Value;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,24 +10,17 @@ import java.util.Optional;
 
 /**
  * Clase que representa una cuenta bancaria
- * Implementa un enfoque mixto con inmutabilidad selectiva:
- * - Atributos inmutables: numeroCuenta, titular, tipo, fechaCreacion
- * - Atributos mutables: saldo, activa
+ * Implementa un enfoque completamente funcional con inmutabilidad total
  */
-@Getter
-@ToString
-@Accessors(chain = true)
+@Value
 @Builder(toBuilder = true)
 public class Cuenta implements Identificable {
-    // Atributos inmutables (no deben cambiar después de la creación)
-    private final String numeroCuenta;
-    private final Cliente titular;
-    private final TipoCuenta tipo;
-    private final LocalDateTime fechaCreacion;
-    
-    // Atributos que pueden cambiar
-    @Setter private BigDecimal saldo;
-    @Setter private boolean activa;
+    String numeroCuenta;
+    Cliente titular;
+    TipoCuenta tipo;
+    LocalDateTime fechaCreacion;
+    BigDecimal saldo;
+    boolean activa;
     
     /**
      * Implementación de getId() para la interfaz Identificable
@@ -40,7 +29,6 @@ public class Cuenta implements Identificable {
      */
     @Override
     public Long getId() {
-        // Convertimos el número de cuenta a un valor Long utilizando un hash
         return numeroCuenta != null ? (long) numeroCuenta.hashCode() : null;
     }
     

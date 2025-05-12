@@ -1,37 +1,25 @@
 package com.mibanco.model;
 
-import lombok.AccessLevel;
+import lombok.Value;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-
 import java.time.LocalDate;
 import java.util.Optional;
 
 /**
  * Clase que representa a un cliente del banco
- * Implementa un enfoque mixto con inmutabilidad selectiva:
- * - Atributos inmutables por naturaleza (id, dni, nombre, apellido, fechaNacimiento)
- * - Atributos que pueden cambiar (email, telefono, direccion)
+ * Implementa un enfoque completamente funcional con inmutabilidad total
  */
-@Getter
-@ToString
-@Accessors(chain = true) // Permite encadenamiento de métodos setter
+@Value
 @Builder(toBuilder = true)
 public class Cliente implements Identificable {
-    // Atributos inmutables (información que nunca cambia)
-    private final Long id;
-    private final String nombre;
-    private final String apellido;
-    private final String dni;
-    private final LocalDate fechaNacimiento;
-    
-    // Atributos que pueden cambiar (con setters específicos)
-    @Setter private String email;
-    @Setter private String telefono;
-    @Setter private String direccion;
+    Long id;
+    String nombre;
+    String apellido;
+    String dni;
+    LocalDate fechaNacimiento;
+    String email;
+    String telefono;
+    String direccion;
     
     /**
      * Método factory que facilita la creación de instancias

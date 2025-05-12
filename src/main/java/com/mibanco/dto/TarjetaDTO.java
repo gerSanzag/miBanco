@@ -15,7 +15,6 @@ import java.util.Optional;
  */
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
-@AllArgsConstructor
 public class TarjetaDTO {
     String numero;
     ClienteDTO titular;

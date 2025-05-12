@@ -1,23 +1,21 @@
 package com.mibanco.repository.impl;
 
-import com.mibanco.model.RegistroAuditoria;
 import com.mibanco.model.Tarjeta;
 import com.mibanco.model.enums.TipoOperacionTarjeta;
 import com.mibanco.model.enums.TipoTarjeta;
 import com.mibanco.repository.AuditoriaRepository;
 import com.mibanco.repository.TarjetaRepository;
+import com.mibanco.util.AuditoriaUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
  * Implementación del repositorio de Tarjetas usando una lista en memoria
  * Utilizamos enfoque estrictamente funcional con streams y Optional
- * Ahora con soporte para auditoría de operaciones
+ * Ahora con soporte para auditoría de operaciones usando AuditoriaUtil simplificado
  */
 public class TarjetaRepositoryImpl implements TarjetaRepository {
     
@@ -33,18 +31,11 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     // Usuario actual (en un sistema real vendría de un sistema de autenticación)
     private String usuarioActual = "sistema";
     
-    // Función para registrar auditoría en un estilo más funcional
-    private BiFunction<TipoOperacionTarjeta, Tarjeta, RegistroAuditoria<Tarjeta, TipoOperacionTarjeta>> registrarAuditoria;
-    
     /**
      * Constructor con inyección del repositorio de auditoría
      */
     public TarjetaRepositoryImpl(AuditoriaRepository auditoriaRepository) {
         this.auditoriaRepository = auditoriaRepository;
-        // Inicializar la función después de asignar el repositorio
-        this.registrarAuditoria = (operacion, tarjeta) -> auditoriaRepository.registrar(
-            RegistroAuditoria.of(operacion, tarjeta, usuarioActual)
-        );
     }
     
     /**
@@ -56,7 +47,6 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     
     @Override
     public Optional<Tarjeta> save(Optional<Tarjeta> tarjeta) {
-        // Si la tarjeta es null (Optional vacío), devolvemos Optional vacío
         return tarjeta.map(t -> {
             // Verificamos si la tarjeta ya existe
             Optional<String> numeroTarjeta = Optional.ofNullable(t.getNumero());
@@ -66,16 +56,26 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
                     // Si existe, la actualizamos
                     tarjetas.removeIf(e -> e.getNumero().equals(t.getNumero()));
                     
-                    // Registrar auditoría de modificación
-                    registrarAuditoria.apply(TipoOperacionTarjeta.MODIFICAR, t);
+                    // Registrar auditoría de modificación directamente
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        TipoOperacionTarjeta.MODIFICAR,
+                        t,
+                        usuarioActual
+                    );
                     
                     tarjetas.add(t);
                     return t;
                 })
                 .orElseGet(() -> {
                     // Si no existe, la creamos
-                    // Registrar auditoría de creación
-                    registrarAuditoria.apply(TipoOperacionTarjeta.CREAR, t);
+                    // Registrar auditoría de creación directamente
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        TipoOperacionTarjeta.CREAR,
+                        t,
+                        usuarioActual
+                    );
                     
                     tarjetas.add(t);
                     return t;
@@ -84,17 +84,17 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     }
     
     @Override
-    public Optional<Tarjeta> findByNumero(Optional<String> numeroTarjeta) {
-        return numeroTarjeta.flatMap(numero -> 
+    public Optional<Tarjeta> findByNumero(Optional<String> numero) {
+        return numero.flatMap(num -> 
             tarjetas.stream()
-                .filter(tarjeta -> tarjeta.getNumero().equals(numero))
+                .filter(tarjeta -> tarjeta.getNumero().equals(num))
                 .findFirst()
         );
     }
     
     @Override
-    public Optional<List<Tarjeta>> findByTitularId(Optional<Long> idTitular) {
-        return idTitular.map(id -> 
+    public Optional<List<Tarjeta>> findByTitularId(Optional<Long> titularId) {
+        return titularId.map(id -> 
             tarjetas.stream()
                 .filter(tarjeta -> tarjeta.getTitular().getId().equals(id))
                 .collect(Collectors.toList())
@@ -114,14 +114,13 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     public Optional<List<Tarjeta>> findByTipo(Optional<TipoTarjeta> tipo) {
         return tipo.map(t -> 
             tarjetas.stream()
-                .filter(tarjeta -> tarjeta.getTipo().equals(t))
+                .filter(tarjeta -> tarjeta.getTipo() == t)
                 .collect(Collectors.toList())
         );
     }
     
     @Override
     public Optional<List<Tarjeta>> findAll() {
-        // Devolvemos una copia para no exponer la lista interna
         return Optional.of(new ArrayList<>(tarjetas));
     }
     
@@ -135,34 +134,39 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     }
     
     @Override
-    public boolean deleteByNumero(Optional<String> numeroTarjeta) {
-        return numeroTarjeta.map(numero -> {
-            Optional<Tarjeta> tarjetaAEliminar = findByNumero(Optional.of(numero));
+    public boolean deleteByNumero(Optional<String> numero) {
+        return numero.map(num -> {
+            Optional<Tarjeta> tarjetaAEliminar = findByNumero(Optional.of(num));
             
-            return tarjetaAEliminar.map(tarjeta -> {
+            tarjetaAEliminar.ifPresent(tarjeta -> {
                 // Removemos la tarjeta de la lista principal
-                tarjetas.removeIf(t -> t.getNumero().equals(numero));
+                tarjetas.remove(tarjeta);
                 
                 // Guardamos la tarjeta en la caché para posible restauración
                 tarjetasEliminadas.add(tarjeta);
                 
-                // Registrar auditoría de eliminación
-                registrarAuditoria.apply(TipoOperacionTarjeta.ELIMINAR, tarjeta);
-                
-                return true;
-            }).orElse(false);
+                // Registrar auditoría de eliminación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTarjeta.ELIMINAR,
+                    tarjeta,
+                    usuarioActual
+                );
+            });
+            
+            return tarjetaAEliminar.isPresent();
         }).orElse(false);
     }
     
     /**
      * Restaura una tarjeta previamente eliminada
-     * @param numeroTarjeta Número de la tarjeta a restaurar
+     * @param numero Número de la tarjeta a restaurar
      * @return Tarjeta restaurada o empty si no se encuentra
      */
-    public Optional<Tarjeta> restaurarTarjeta(Optional<String> numeroTarjeta) {
-        return numeroTarjeta.flatMap(numero -> {
+    public Optional<Tarjeta> restoreDeletedCard(Optional<String> numero) {
+        return numero.flatMap(num -> {
             Optional<Tarjeta> tarjetaARestaurar = tarjetasEliminadas.stream()
-                    .filter(tarjeta -> tarjeta.getNumero().equals(numero))
+                    .filter(tarjeta -> tarjeta.getNumero().equals(num))
                     .findFirst();
                     
             tarjetaARestaurar.ifPresent(tarjeta -> {
@@ -170,10 +174,15 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
                 tarjetas.add(tarjeta);
                 
                 // La quitamos de la caché de eliminados
-                tarjetasEliminadas.removeIf(t -> t.getNumero().equals(numero));
+                tarjetasEliminadas.removeIf(t -> t.getNumero().equals(num));
                 
-                // Registra la auditoría de restauración
-                registrarAuditoria.apply(TipoOperacionTarjeta.ACTIVAR, tarjeta);
+                // Registrar auditoría de restauración directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTarjeta.ACTIVAR,
+                    tarjeta,
+                    usuarioActual
+                );
             });
             
             return tarjetaARestaurar;
@@ -181,73 +190,36 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     }
     
     /**
-     * Obtiene la lista de tarjetas recientemente eliminadas
-     * @return Lista de tarjetas eliminadas
+     * Cambia el estado activo de una tarjeta
+     * @param numero Número de la tarjeta
+     * @param activa Nuevo estado
+     * @return Tarjeta actualizada o empty si no existe
      */
-    public List<Tarjeta> getTarjetasEliminadas() {
-        return new ArrayList<>(tarjetasEliminadas);
-    }
-    
-    /**
-     * Activa una tarjeta previamente desactivada
-     * @param numeroTarjeta Número de la tarjeta a activar
-     * @return true si se activó la tarjeta, false si no existía
-     */
-    public boolean activarTarjeta(Optional<String> numeroTarjeta) {
-        return numeroTarjeta.map(numero -> 
-            findByNumero(Optional.of(numero)).map(tarjeta -> 
-                // Usando el enfoque funcional para evitar if
-                Optional.of(tarjeta.isActiva())
-                    .filter(activa -> activa) // Si ya está activa
-                    .map(activa -> false) // No hacemos nada y devolvemos false
-                    .orElseGet(() -> {
-                        // Si no está activa, la activamos
-                        tarjetas.removeIf(t -> t.getNumero().equals(numero));
-                        
-                        // Creamos una versión activada
-                        Tarjeta tarjetaActivada = tarjeta.withActiva(true);
-                        
-                        // Añadimos la tarjeta activada
-                        tarjetas.add(tarjetaActivada);
-                        
-                        // Registramos la activación
-                        registrarAuditoria.apply(TipoOperacionTarjeta.ACTIVAR, tarjetaActivada);
-                        
-                        return true;
-                    })
-            ).orElse(false)
-        ).orElse(false);
-    }
-    
-    /**
-     * Desactiva una tarjeta
-     * @param numeroTarjeta Número de la tarjeta a desactivar
-     * @return true si se desactivó la tarjeta, false si no existía
-     */
-    public boolean desactivarTarjeta(Optional<String> numeroTarjeta) {
-        return numeroTarjeta.map(numero -> 
-            findByNumero(Optional.of(numero)).map(tarjeta -> 
-                // Usando el enfoque funcional para evitar if
-                Optional.of(!tarjeta.isActiva())
-                    .filter(inactiva -> inactiva) // Si ya está inactiva
-                    .map(inactiva -> false) // No hacemos nada y devolvemos false
-                    .orElseGet(() -> {
-                        // Si está activa, la desactivamos
-                        tarjetas.removeIf(t -> t.getNumero().equals(numero));
-                        
-                        // Creamos una versión desactivada
-                        Tarjeta tarjetaDesactivada = tarjeta.withActiva(false);
-                        
-                        // Añadimos la tarjeta desactivada
-                        tarjetas.add(tarjetaDesactivada);
-                        
-                        // Registramos la desactivación
-                        registrarAuditoria.apply(TipoOperacionTarjeta.DESACTIVAR, tarjetaDesactivada);
-                        
-                        return true;
-                    })
-            ).orElse(false)
-        ).orElse(false);
+    public Optional<Tarjeta> cambiarEstadoActiva(Optional<String> numero, boolean activa) {
+        return numero.flatMap(num -> 
+            findByNumero(Optional.of(num))
+                .map(tarjeta -> {
+                    // Creamos una nueva tarjeta con el estado actualizado (inmutabilidad)
+                    Tarjeta tarjetaActualizada = tarjeta.withActiva(activa);
+                    
+                    // Actualizamos en el repositorio
+                    tarjetas.removeIf(t -> t.getNumero().equals(num));
+                    tarjetas.add(tarjetaActualizada);
+                    
+                    // Registrar auditoría del cambio de estado directamente
+                    TipoOperacionTarjeta tipoOperacion = activa ? 
+                            TipoOperacionTarjeta.ACTIVAR : TipoOperacionTarjeta.DESACTIVAR;
+                    
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        tipoOperacion,
+                        tarjetaActualizada,
+                        usuarioActual
+                    );
+                    
+                    return tarjetaActualizada;
+                })
+        );
     }
     
     @Override

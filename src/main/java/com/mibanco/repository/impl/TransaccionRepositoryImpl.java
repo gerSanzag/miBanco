@@ -1,25 +1,24 @@
 package com.mibanco.repository.impl;
 
-import com.mibanco.model.RegistroAuditoria;
 import com.mibanco.model.Transaccion;
 import com.mibanco.model.enums.TipoOperacionTransaccion;
 import com.mibanco.model.enums.TipoTransaccion;
 import com.mibanco.repository.AuditoriaRepository;
 import com.mibanco.repository.TransaccionRepository;
+import com.mibanco.util.AuditoriaUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
  * Implementación del repositorio de Transacciones usando una lista en memoria
  * Utilizamos enfoque estrictamente funcional con streams y Optional
- * Ahora con soporte para auditoría de operaciones
+ * Ahora con soporte para auditoría de operaciones usando AuditoriaUtil simplificado
  */
 public class TransaccionRepositoryImpl implements TransaccionRepository {
     
@@ -38,18 +37,11 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
     // Usuario actual (en un sistema real vendría de un sistema de autenticación)
     private String usuarioActual = "sistema";
     
-    // Función para registrar auditoría en un estilo más funcional
-    private BiFunction<TipoOperacionTransaccion, Transaccion, RegistroAuditoria<Transaccion, TipoOperacionTransaccion>> registrarAuditoria;
-    
     /**
      * Constructor con inyección del repositorio de auditoría
      */
     public TransaccionRepositoryImpl(AuditoriaRepository auditoriaRepository) {
         this.auditoriaRepository = auditoriaRepository;
-        // Inicializar la función después de asignar el repositorio
-        this.registrarAuditoria = (operacion, transaccion) -> auditoriaRepository.registrar(
-            RegistroAuditoria.of(operacion, transaccion, usuarioActual)
-        );
     }
     
     /**
@@ -70,8 +62,13 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
                     transacciones.removeIf(existente -> existente.getId().equals(id));
                     transacciones.add(t);
                     
-                    // Registrar auditoría de verificación
-                    registrarAuditoria.apply(TipoOperacionTransaccion.VERIFICAR, t);
+                    // Registrar auditoría de verificación directamente
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        TipoOperacionTransaccion.VERIFICAR,
+                        t,
+                        usuarioActual
+                    );
                     
                     return t;
                 })
@@ -80,8 +77,13 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
                     Transaccion nuevaTransaccion = t.withNuevoId(idCounter.getAndIncrement());
                     transacciones.add(nuevaTransaccion);
                     
-                    // Registrar auditoría de creación
-                    registrarAuditoria.apply(TipoOperacionTransaccion.CREAR, nuevaTransaccion);
+                    // Registrar auditoría de creación directamente
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        TipoOperacionTransaccion.CREAR,
+                        nuevaTransaccion,
+                        usuarioActual
+                    );
                     
                     return nuevaTransaccion;
                 });
@@ -163,18 +165,23 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
         return id.map(idValue -> {
             Optional<Transaccion> transaccionAEliminar = findById(Optional.of(idValue));
             
-            return transaccionAEliminar.map(transaccion -> {
+            transaccionAEliminar.ifPresent(transaccion -> {
                 // Guardamos la transacción en la caché para posible restauración
                 transaccionesAnuladas.add(transaccion);
                 
                 // Eliminamos la transacción
                 transacciones.removeIf(t -> t.getId().equals(idValue));
                 
-                // Registramos la anulación
-                registrarAuditoria.apply(TipoOperacionTransaccion.ANULAR, transaccion);
-                
-                return true;
-            }).orElse(false);
+                // Registramos la anulación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTransaccion.ANULAR,
+                    transaccion,
+                    usuarioActual
+                );
+            });
+            
+            return transaccionAEliminar.isPresent();
         }).orElse(false);
     }
     
@@ -196,8 +203,13 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
                 // La quitamos de la caché de anuladas
                 transaccionesAnuladas.removeIf(t -> t.getId().equals(idValue));
                 
-                // Registra la auditoría de restauración (revertir anulación)
-                registrarAuditoria.apply(TipoOperacionTransaccion.REVERSAR, transaccion);
+                // Registra la auditoría de restauración (revertir anulación) directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTransaccion.REVERSAR,
+                    transaccion,
+                    usuarioActual
+                );
             });
             
             return transaccionARestaurar;
@@ -222,8 +234,13 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
             findById(Optional.of(id)).map(transaccion -> {
                 // Podríamos actualizar la transacción si fuera necesario
                 
-                // Registrar auditoría de autorización
-                registrarAuditoria.apply(TipoOperacionTransaccion.AUTORIZAR, transaccion);
+                // Registrar auditoría de autorización directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTransaccion.AUTORIZAR,
+                    transaccion,
+                    usuarioActual
+                );
                 
                 return transaccion;
             })
@@ -248,8 +265,13 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
                 transacciones.removeIf(t -> t.getId().equals(id));
                 transacciones.add(transaccionRechazada);
                 
-                // Registrar auditoría de rechazo
-                registrarAuditoria.apply(TipoOperacionTransaccion.RECHAZAR, transaccionRechazada);
+                // Registrar auditoría de rechazo directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTransaccion.RECHAZAR,
+                    transaccionRechazada,
+                    usuarioActual
+                );
                 
                 return transaccionRechazada;
             })

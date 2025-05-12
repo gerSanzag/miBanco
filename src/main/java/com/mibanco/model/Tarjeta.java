@@ -1,37 +1,26 @@
 package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoTarjeta;
-import lombok.AccessLevel;
+import lombok.Value;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 /**
  * Clase que representa una tarjeta bancaria
- * Implementa un enfoque mixto con inmutabilidad selectiva:
- * - Atributos inmutables: numero, titular, numeroCuentaAsociada, tipo, cvv
- * - Atributos mutables: fechaExpiracion, activa
+ * Implementa un enfoque completamente funcional con inmutabilidad total
  */
-@Getter
-@ToString
-@Accessors(chain = true)
+@Value
 @Builder(toBuilder = true)
 public class Tarjeta implements Identificable {
-    // Atributos inmutables (información que nunca cambia)
-    private final String numero;
-    private final Cliente titular;
-    private final String numeroCuentaAsociada;
-    private final TipoTarjeta tipo;
-    private final String cvv;
-    
-    // Atributos que pueden cambiar
-    @Setter private LocalDate fechaExpiracion;
-    @Setter private boolean activa;
+    String numero;
+    Cliente titular;
+    String numeroCuentaAsociada;
+    TipoTarjeta tipo;
+    String cvv;
+    LocalDate fechaExpiracion;
+    boolean activa;
     
     /**
      * Implementación de getId() para la interfaz Identificable
@@ -40,7 +29,6 @@ public class Tarjeta implements Identificable {
      */
     @Override
     public Long getId() {
-        // Convertimos el número de tarjeta a un valor Long utilizando un hash
         return numero != null ? (long) numero.hashCode() : null;
     }
     

@@ -14,7 +14,6 @@ import java.util.Optional;
  */
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar la creación de nuevas instancias
-@AllArgsConstructor
 public class ClienteDTO {
     Long id;
     String nombre;

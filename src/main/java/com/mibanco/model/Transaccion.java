@@ -1,9 +1,8 @@
 package com.mibanco.model;
 
 import com.mibanco.model.enums.TipoTransaccion;
+import lombok.Value;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,27 +13,18 @@ import java.util.Optional;
  * Una transacción es un evento que no debe modificarse una vez creada
  * por lo que implementamos un enfoque completamente inmutable
  */
-@Getter
-@ToString
+@Value
 @Builder(toBuilder = true)
 public class Transaccion implements Identificable {
-    // Todos los campos son inmutables (final)
-    private final Long id;
-    private final String numeroCuenta;
-    private final String numeroCuentaDestino;
-    private final TipoTransaccion tipo;
-    private final BigDecimal monto;
-    private final LocalDateTime fecha;
-    private final String descripcion;
+    Long id;
+    String numeroCuenta;
+    String numeroCuentaDestino;
+    TipoTransaccion tipo;
+    BigDecimal monto;
+    LocalDateTime fecha;
+    String descripcion;
     
-    /**
-     * Implementación de getId() para la interfaz Identificable
-     * @return El ID de la transacción
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
+   
     
     /**
      * Método factory para crear transacciones
