@@ -21,6 +21,7 @@ public class AuditoriaRepositoryImpl implements AuditoriaRepository {
     private final List<RegistroAuditoria<?, ?>> registros = new ArrayList<>();
     
     @Override
+    
     public <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> registrar(
             RegistroAuditoria<T, E> registro) {
         // Solo añadimos el registro, nunca lo modificamos (inmutabilidad)

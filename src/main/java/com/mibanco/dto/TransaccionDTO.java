@@ -7,7 +7,10 @@ import lombok.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 
 /**
  * DTO para transferir información de Transacción entre capas
@@ -24,6 +27,14 @@ public class TransaccionDTO {
     BigDecimal monto;
     LocalDateTime fecha;
     String descripcion;
+
+    // Mapa estático de inversiones de tipos de transacción
+    private static final Map<TipoTransaccion, TipoTransaccion> INVERSIONES_TIPO = ofEntries(
+        entry(TipoTransaccion.DEPOSITO, TipoTransaccion.RETIRO),
+        entry(TipoTransaccion.RETIRO, TipoTransaccion.DEPOSITO),
+        entry(TipoTransaccion.TRANSFERENCIA_ENVIADA, TipoTransaccion.TRANSFERENCIA_RECIBIDA),
+        entry(TipoTransaccion.TRANSFERENCIA_RECIBIDA, TipoTransaccion.TRANSFERENCIA_ENVIADA)
+    );
 
     /**
      * Método estático que construye un TransaccionDTO con valores opcionales
@@ -79,23 +90,9 @@ public class TransaccionDTO {
      * Por ejemplo: convertir un depósito en un retiro, o viceversa
      */
     public TransaccionDTO withInversion() {
-        TipoTransaccion nuevoTipo;
-        switch (this.tipo) {
-            case DEPOSITO:
-                nuevoTipo = TipoTransaccion.RETIRO;
-                break;
-            case RETIRO:
-                nuevoTipo = TipoTransaccion.DEPOSITO;
-                break;
-            case TRANSFERENCIA_ENVIADA:
-                nuevoTipo = TipoTransaccion.TRANSFERENCIA_RECIBIDA;
-                break;
-            case TRANSFERENCIA_RECIBIDA:
-                nuevoTipo = TipoTransaccion.TRANSFERENCIA_ENVIADA;
-                break;
-            default:
-                nuevoTipo = this.tipo;
-        }
+        // Obtener el tipo inverso usando el Map, o mantener el mismo si no hay inverso definido
+        TipoTransaccion nuevoTipo = Optional.ofNullable(INVERSIONES_TIPO.get(this.tipo))
+                .orElse(this.tipo);
         
         return this.toBuilder()
                 .id(null) // Nueva transacción, nuevo ID

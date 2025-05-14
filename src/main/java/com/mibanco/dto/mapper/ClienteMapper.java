@@ -49,44 +49,72 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
     }
     
     /**
-     * Método auxiliar para convertir un Cliente a ClienteDTO sin Optional
-     * Útil para casos donde se sabe que el objeto no es nulo
+     * Método auxiliar para convertir un Cliente a ClienteDTO
+     * Para compatibilidad con código existente
      */
-    public ClienteDTO toDtoDirecto(Cliente cliente) {
-        return toDto(Optional.ofNullable(cliente)).orElse(null);
+    public Optional<ClienteDTO> toDtoDirecto(Optional<Cliente> cliente) {
+        return toDto(cliente);
     }
     
     /**
-     * Método auxiliar para convertir un ClienteDTO a Cliente sin Optional
-     * Útil para casos donde se sabe que el objeto no es nulo
+     * Sobrecarga que acepta Cliente directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
-    public Cliente toEntityDirecto(ClienteDTO dto) {
-        return toEntity(Optional.ofNullable(dto)).orElse(null);
+    public Optional<ClienteDTO> toDtoDirecto(Cliente cliente) {
+        return toDto(Optional.ofNullable(cliente));
+    }
+    
+    /**
+     * Método auxiliar para convertir un ClienteDTO a Cliente
+     * Para compatibilidad con código existente
+     */
+    public Optional<Cliente> toEntityDirecto(Optional<ClienteDTO> dto) {
+        return toEntity(dto);
+    }
+    
+    /**
+     * Sobrecarga que acepta ClienteDTO directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional<Cliente> toEntityDirecto(ClienteDTO dto) {
+        return toEntity(Optional.ofNullable(dto));
     }
     
     /**
      * Convierte una lista de Cliente a lista de ClienteDTO
      * Utilizando programación funcional con streams
+     * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
      */
-    public List<ClienteDTO> toDtoList(List<Cliente> clientes) {
-        return Optional.ofNullable(clientes)
-                .map(list -> list.stream()
+    public Optional<List<ClienteDTO>> toDtoList(Optional<List<Cliente>> clientes) {
+        return clientes.map(list -> list.stream()
                         .map(cliente -> toDto(Optional.of(cliente)).orElse(null))
                         .filter(java.util.Objects::nonNull)
-                        .collect(Collectors.toList()))
-                .orElse(List.of());
+                .collect(Collectors.toList()));
+    }
+    
+    /**
+     * Sobrecarga que acepta List<Cliente> directamente
+     */
+    public Optional<List<ClienteDTO>> toDtoList(List<Cliente> clientes) {
+        return toDtoList(Optional.ofNullable(clientes));
     }
     
     /**
      * Convierte una lista de ClienteDTO a lista de Cliente
      * Utilizando programación funcional con streams
+     * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
      */
-    public List<Cliente> toEntityList(List<ClienteDTO> dtos) {
-        return Optional.ofNullable(dtos)
-                .map(list -> list.stream()
+    public Optional<List<Cliente>> toEntityList(Optional<List<ClienteDTO>> dtos) {
+        return dtos.map(list -> list.stream()
                         .map(dto -> toEntity(Optional.of(dto)).orElse(null))
                         .filter(java.util.Objects::nonNull)
-                        .collect(Collectors.toList()))
-                .orElse(List.of());
+                .collect(Collectors.toList()));
+    }
+    
+    /**
+     * Sobrecarga que acepta List<ClienteDTO> directamente
+     */
+    public Optional<List<Cliente>> toEntityList(List<ClienteDTO> dtos) {
+        return toEntityList(Optional.ofNullable(dtos));
     }
 } 

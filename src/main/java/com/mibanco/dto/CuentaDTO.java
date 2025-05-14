@@ -1,11 +1,12 @@
 package com.mibanco.dto;
 
-import com.mibanco.model.enums.TipoCuenta;
-import lombok.Builder;
-import lombok.Value;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import lombok.Builder;
+import lombok.Value;
+import com.mibanco.model.enums.TipoCuenta;
 
 /**
  * DTO para transferir información de Cuenta entre capas

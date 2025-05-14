@@ -1,12 +1,12 @@
 package com.mibanco.model;
 
-import com.mibanco.model.enums.TipoCuenta;
-import lombok.Value;
-import lombok.Builder;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import lombok.Builder;
+import lombok.Value;
+import com.mibanco.model.enums.TipoCuenta;
 
 /**
  * Clase que representa una cuenta bancaria

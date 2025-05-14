@@ -6,7 +6,6 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Clase que representa una transacción bancaria
@@ -31,15 +30,15 @@ public class Transaccion implements Identificable {
      */
     public static Transaccion of(Long id, String numeroCuenta, String numeroCuentaDestino,
                                TipoTransaccion tipo, BigDecimal monto, 
-                               Optional<LocalDateTime> fecha, Optional<String> descripcion) {
+                               LocalDateTime fecha, String descripcion) {
         return Transaccion.builder()
                 .id(id)
                 .numeroCuenta(numeroCuenta)
                 .numeroCuentaDestino(numeroCuentaDestino)
                 .tipo(tipo)
                 .monto(monto)
-                .fecha(fecha.orElse(LocalDateTime.now()))
-                .descripcion(descripcion.orElse(""))
+                .fecha(fecha != null ? fecha : LocalDateTime.now())
+                .descripcion(descripcion != null ? descripcion : "")
                 .build();
     }
     

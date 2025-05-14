@@ -1,12 +1,13 @@
 package com.mibanco.model;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Registro inmutable de auditoría para cualquier entidad

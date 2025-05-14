@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Bautiza este chat con un prefijo numerico autoincrementado basado en el ultimo chat creado, seguido de un guion y la fecha y hora actual del ordenador local.

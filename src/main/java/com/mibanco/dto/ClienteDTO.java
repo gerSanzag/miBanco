@@ -1,11 +1,10 @@
 package com.mibanco.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
-
 import java.time.LocalDate;
 import java.util.Optional;
+
+import lombok.Builder;
+import lombok.Value;
 
 /**
  * DTO para transferir información de Cliente entre capas

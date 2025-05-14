@@ -1,11 +1,12 @@
 package com.mibanco.model;
 
-import com.mibanco.model.enums.TipoTarjeta;
-import lombok.Value;
-import lombok.Builder;
-
 import java.time.LocalDate;
 import java.util.Optional;
+
+import lombok.Builder;
+import lombok.Value;
+import com.mibanco.model.enums.TipoTarjeta;
+
 
 /**
  * Clase que representa una tarjeta bancaria
