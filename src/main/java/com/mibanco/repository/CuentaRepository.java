@@ -57,9 +57,9 @@ public interface CuentaRepository {
     /**
      * Elimina una cuenta por su número
      * @param numeroCuenta Optional con el número de la cuenta a eliminar
-     * @return true si se eliminó la cuenta, false si no existía
+     * @return Optional con la cuenta eliminada o Optional vacío si no existía
      */
-    boolean deleteByNumero(Optional<String> numeroCuenta);
+    Optional<Cuenta> deleteByNumero(Optional<String> numeroCuenta);
     
     /**
      * Obtiene el número de cuentas en el repositorio

@@ -52,41 +52,46 @@ public class CuentaRepositoryImpl implements CuentaRepository {
     
     @Override
     public Optional<Cuenta> save(Optional<Cuenta> cuenta) {
-        // Si la cuenta es null (Optional vacío), devolvemos Optional vacío
         return cuenta.map(c -> {
-            // Verificamos si la cuenta ya existe
-            Optional<String> numeroCuenta = Optional.ofNullable(c.getNumeroCuenta());
+            // Si la cuenta ya existe, la actualizamos
+            if (c.getNumeroCuenta() != null) {
+                Cuenta cuentaActualizada = update(c);
+                
+                // Registra la auditoría de modificación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionCuenta.MODIFICAR, 
+                    cuentaActualizada,
+                    usuarioActual
+                );
+                
+                return cuentaActualizada;
+            }
             
-            return findByNumero(numeroCuenta)
-                .map(existente -> {
-                    // Si existe, la actualizamos
-                    cuentas.removeIf(e -> e.getNumeroCuenta().equals(c.getNumeroCuenta()));
-                    
-                    // Registrar auditoría de modificación directamente
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        TipoOperacionCuenta.MODIFICAR,
-                        c,
-                        usuarioActual
-                    );
-                    
-                    cuentas.add(c);
-                    return c;
-                })
-                .orElseGet(() -> {
-                    // Si no existe, la creamos
-                    // Registrar auditoría de creación directamente
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        TipoOperacionCuenta.CREAR,
-                        c,
-                        usuarioActual
-                    );
-                    
-                    cuentas.add(c);
-                    return c;
-                });
+            // Si es nueva, la guardamos
+            cuentas.add(c);
+            
+            // Registra la auditoría de creación directamente
+            AuditoriaUtil.registrarOperacion(
+                auditoriaRepository,
+                TipoOperacionCuenta.CREAR, 
+                c,
+                usuarioActual
+            );
+            
+            return c;
         });
+    }
+    
+    /**
+     * Método auxiliar para actualizar una cuenta existente
+     */
+    private Cuenta update(Cuenta cuenta) {
+        // Buscamos y eliminamos la cuenta actual
+        cuentas.removeIf(c -> c.getNumeroCuenta().equals(cuenta.getNumeroCuenta()));
+        // Añadimos la cuenta actualizada
+        cuentas.add(cuenta);
+        return cuenta;
     }
     
     @Override
@@ -131,8 +136,8 @@ public class CuentaRepositoryImpl implements CuentaRepository {
     }
     
     @Override
-    public boolean deleteByNumero(Optional<String> numeroCuenta) {
-        return numeroCuenta.map(numero -> {
+    public Optional<Cuenta> deleteByNumero(Optional<String> numeroCuenta) {
+        return numeroCuenta.flatMap(numero -> {
             Optional<Cuenta> cuentaAEliminar = findByNumero(Optional.of(numero));
             
             cuentaAEliminar.ifPresent(cuenta -> {
@@ -151,8 +156,8 @@ public class CuentaRepositoryImpl implements CuentaRepository {
                 );
             });
             
-            return cuentaAEliminar.isPresent();
-        }).orElse(false);
+            return cuentaAEliminar;
+        });
     }
     
     /**

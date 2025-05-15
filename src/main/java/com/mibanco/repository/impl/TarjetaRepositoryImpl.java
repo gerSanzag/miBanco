@@ -48,39 +48,45 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     @Override
     public Optional<Tarjeta> save(Optional<Tarjeta> tarjeta) {
         return tarjeta.map(t -> {
-            // Verificamos si la tarjeta ya existe
-            Optional<String> numeroTarjeta = Optional.ofNullable(t.getNumero());
+            // Si la tarjeta ya existe, la actualizamos
+            if (t.getNumero() != null) {
+                Tarjeta tarjetaActualizada = update(t);
+                
+                // Registra la auditoría de modificación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTarjeta.MODIFICAR, 
+                    tarjetaActualizada,
+                    usuarioActual
+                );
+                
+                return tarjetaActualizada;
+            }
             
-            return findByNumero(numeroTarjeta)
-                .map(existente -> {
-                    // Si existe, la actualizamos
-                    tarjetas.removeIf(e -> e.getNumero().equals(t.getNumero()));
-                    
-                    // Registrar auditoría de modificación directamente
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        TipoOperacionTarjeta.MODIFICAR,
-                        t,
-                        usuarioActual
-                    );
-                    
-                    tarjetas.add(t);
-                    return t;
-                })
-                .orElseGet(() -> {
-                    // Si no existe, la creamos
-                    // Registrar auditoría de creación directamente
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        TipoOperacionTarjeta.CREAR,
-                        t,
-                        usuarioActual
-                    );
-                    
-                    tarjetas.add(t);
-                    return t;
-                });
+            // Si es nueva, la guardamos
+            tarjetas.add(t);
+            
+            // Registra la auditoría de creación directamente
+            AuditoriaUtil.registrarOperacion(
+                auditoriaRepository,
+                TipoOperacionTarjeta.CREAR, 
+                t,
+                usuarioActual
+            );
+            
+            return t;
         });
+    }
+    
+    /**
+     * Método auxiliar para actualizar una tarjeta existente
+     */
+    private Tarjeta update(Tarjeta tarjeta) {
+        // Buscamos y eliminamos la tarjeta actual
+        tarjetas.removeIf(t -> t.getNumero().equals(tarjeta.getNumero()));
+        // Añadimos la tarjeta actualizada
+        tarjetas.add(tarjeta);
+        return tarjeta;
     }
     
     @Override
@@ -134,8 +140,8 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
     }
     
     @Override
-    public boolean deleteByNumero(Optional<String> numero) {
-        return numero.map(num -> {
+    public Optional<Tarjeta> deleteByNumero(Optional<String> numero) {
+        return numero.flatMap(num -> {
             Optional<Tarjeta> tarjetaAEliminar = findByNumero(Optional.of(num));
             
             tarjetaAEliminar.ifPresent(tarjeta -> {
@@ -154,8 +160,8 @@ public class TarjetaRepositoryImpl implements TarjetaRepository {
                 );
             });
             
-            return tarjetaAEliminar.isPresent();
-        }).orElse(false);
+            return tarjetaAEliminar;
+        });
     }
     
     /**

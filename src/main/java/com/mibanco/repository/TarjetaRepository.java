@@ -64,9 +64,9 @@ public interface TarjetaRepository {
     /**
      * Elimina una tarjeta por su número
      * @param numeroTarjeta Optional con el número de la tarjeta a eliminar
-     * @return true si se eliminó la tarjeta, false si no existía
+     * @return Optional con la tarjeta eliminada o Optional vacío si no existía
      */
-    boolean deleteByNumero(Optional<String> numeroTarjeta);
+    Optional<Tarjeta> deleteByNumero(Optional<String> numeroTarjeta);
     
     /**
      * Obtiene el número de tarjetas en el repositorio

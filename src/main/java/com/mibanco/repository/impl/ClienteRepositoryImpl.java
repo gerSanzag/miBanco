@@ -119,8 +119,8 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     }
     
     @Override
-    public boolean deleteById(Optional<Long> id) {
-        return id.map(idValue -> {
+    public Optional<Cliente> deleteById(Optional<Long> id) {
+        return id.flatMap(idValue -> {
             Optional<Cliente> clienteAEliminar = clientes.stream()
                     .filter(cliente -> cliente.getId().equals(idValue))
                     .findFirst();
@@ -141,8 +141,8 @@ public class ClienteRepositoryImpl implements ClienteRepository {
                 );
             });
             
-            return clienteAEliminar.isPresent();
-        }).orElse(false);
+            return clienteAEliminar;
+        });
     }
     
     /**

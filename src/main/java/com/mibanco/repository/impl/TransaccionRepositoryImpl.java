@@ -53,41 +53,47 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
     
     @Override
     public Optional<Transaccion> save(Optional<Transaccion> transaccion) {
-        // Si la transacción es null (Optional vacío), devolvemos Optional vacío
         return transaccion.map(t -> {
-            // Utilizamos Optional para manejar el ID de forma funcional
-            return Optional.ofNullable(t.getId())
-                .map(id -> {
-                    // Si tiene ID, es una actualización
-                    transacciones.removeIf(existente -> existente.getId().equals(id));
-                    transacciones.add(t);
-                    
-                    // Registrar auditoría de verificación directamente
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        TipoOperacionTransaccion.VERIFICAR,
-                        t,
-                        usuarioActual
-                    );
-                    
-                    return t;
-                })
-                .orElseGet(() -> {
-                    // Si no tiene ID, es una creación
-                    Transaccion nuevaTransaccion = t.withNuevoId(idCounter.getAndIncrement());
-                    transacciones.add(nuevaTransaccion);
-                    
-                    // Registrar auditoría de creación directamente
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        TipoOperacionTransaccion.CREAR,
-                        nuevaTransaccion,
-                        usuarioActual
-                    );
-                    
-                    return nuevaTransaccion;
-                });
+            // Si la transacción ya existe, la actualizamos
+            if (t.getId() != null) {
+                Transaccion transaccionActualizada = update(t);
+                
+                // Registra la auditoría de verificación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionTransaccion.VERIFICAR, 
+                    transaccionActualizada,
+                    usuarioActual
+                );
+                
+                return transaccionActualizada;
+            }
+            
+            // Si es nueva, generamos ID y la guardamos
+            Transaccion nuevaTransaccion = t.withNuevoId(idCounter.getAndIncrement());
+            transacciones.add(nuevaTransaccion);
+            
+            // Registra la auditoría de creación directamente
+            AuditoriaUtil.registrarOperacion(
+                auditoriaRepository,
+                TipoOperacionTransaccion.CREAR, 
+                nuevaTransaccion,
+                usuarioActual
+            );
+            
+            return nuevaTransaccion;
         });
+    }
+    
+    /**
+     * Método auxiliar para actualizar una transacción existente
+     */
+    private Transaccion update(Transaccion transaccion) {
+        // Buscamos y eliminamos la transacción actual
+        transacciones.removeIf(t -> t.getId().equals(transaccion.getId()));
+        // Añadimos la transacción actualizada
+        transacciones.add(transaccion);
+        return transaccion;
     }
     
     @Override
@@ -161,8 +167,8 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
     }
     
     @Override
-    public boolean deleteById(Optional<Long> id) {
-        return id.map(idValue -> {
+    public Optional<Transaccion> deleteById(Optional<Long> id) {
+        return id.flatMap(idValue -> {
             Optional<Transaccion> transaccionAEliminar = findById(Optional.of(idValue));
             
             transaccionAEliminar.ifPresent(transaccion -> {
@@ -181,8 +187,8 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
                 );
             });
             
-            return transaccionAEliminar.isPresent();
-        }).orElse(false);
+            return transaccionAEliminar;
+        });
     }
     
     /**

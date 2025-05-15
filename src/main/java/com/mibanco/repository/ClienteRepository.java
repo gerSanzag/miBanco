@@ -43,9 +43,9 @@ public interface ClienteRepository {
     /**
      * Elimina un cliente por su ID
      * @param id Optional con el ID del cliente a eliminar
-     * @return true si se eliminó el cliente, false si no existía
+     * @return Optional con el cliente eliminado o Optional vacío si no existía
      */
-    boolean deleteById(Optional<Long> id);
+    Optional<Cliente> deleteById(Optional<Long> id);
     
     /**
      * Obtiene el número de clientes en el repositorio

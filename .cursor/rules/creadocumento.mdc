@@ -8,8 +8,8 @@ Crea un documento de texto:
 - Que sea una transcripcion fiel del contenido del chat actual.
 - No quiero resumen, tiene que ser una transcripcion fiel del contenido del chat.
 - Si hace falta divide el contenido en varios documentos, los que haga falta.
-_ Si lo divides, asegurate que halla continuidad entre las partes.
+_ Si lo divides, asegurate que estas incluyendo todo el contenido desde el principio hasta el final y que haya continuidad entre las partes.
 - Guardalo en la carpeta resources/docs_chats; si la carpeta no existe creala.
 _ Bautiza el documento asi:
     -Usa el nombre del chat para bautizar el documento y agrega algo descriptivo corto de un par de palabras o asi mas o menos.
-_ Recuerda, debe ser una transcripcion fiel del contenido del chat, no vale resumen.
+_ Recuerda, debe ser una transcripcion fiel del contenido del chat, no vale resumen, si tienes que dividirla dividela en varios documentos.

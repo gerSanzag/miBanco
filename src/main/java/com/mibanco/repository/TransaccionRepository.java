@@ -67,9 +67,9 @@ public interface TransaccionRepository {
     /**
      * Elimina una transacción por su ID
      * @param id Optional con el ID de la transacción a eliminar
-     * @return true si se eliminó la transacción, false si no existía
+     * @return Optional con la transacción eliminada o Optional vacío si no existía
      */
-    boolean deleteById(Optional<Long> id);
+    Optional<Transaccion> deleteById(Optional<Long> id);
     
     /**
      * Obtiene el número de transacciones en el repositorio
