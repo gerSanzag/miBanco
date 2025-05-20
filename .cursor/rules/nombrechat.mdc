@@ -3,4 +3,11 @@ description:
 globs: 
 alwaysApply: false
 ---
-Bautiza este chat con un prefijo numerico autoincrementado basado en el ultimo chat creado, seguido de un guion y la fecha y hora actual del ordenador local.
+Use the date command to get the current system date and time in YYYYMMDD-HHMMSS format. Then, name this chat using the following pattern:
+
+[autoincrement_number]-[date_time]-[short_descriptive_name]
+	•	autoincrement_number: a numeric prefix that increments based on the last created chat.
+	•	date_time: the current system timestamp.
+    •	Use a format for the date, like: dd/mm/YYYY and for the time like: HH:MM:SS.
+	•	short_descriptive_name: a brief, meaningful summary of the chat content.
+ 

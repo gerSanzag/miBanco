@@ -11,6 +11,8 @@ import com.mibanco.repository.impl.CuentaRepositoryImpl;
 import com.mibanco.repository.impl.TarjetaRepositoryImpl;
 import com.mibanco.repository.impl.TransaccionRepositoryImpl;
 
+import java.util.function.Supplier;
+
 /**
  * Configuración centralizada de repositorios
  * Implementa el patrón Singleton para garantizar una única instancia de cada repositorio
@@ -26,13 +28,26 @@ public class RepositoryFactory {
     private static TransaccionRepository transaccionRepository;
     
     /**
+     * Método genérico para obtener o inicializar un repositorio
+     * @param <T> Tipo del repositorio
+     * @param instance Instancia actual del repositorio
+     * @param creator Función que crea una nueva instancia
+     * @return La instancia del repositorio
+     */
+    private static synchronized <T> T getOrCreate(T instance, Supplier<T> creator) {
+        if (instance == null) {
+            return creator.get();
+        }
+        return instance;
+    }
+    
+    /**
      * Obtiene la única instancia del repositorio de auditoría
      * @return Instancia del repositorio
      */
     public static synchronized AuditoriaRepository getAuditoriaRepository() {
-        if (auditoriaRepository == null) {
-            auditoriaRepository = new AuditoriaRepositoryImpl();
-        }
+        auditoriaRepository = getOrCreate(auditoriaRepository, 
+            () -> new AuditoriaRepositoryImpl());
         return auditoriaRepository;
     }
     
@@ -41,10 +56,8 @@ public class RepositoryFactory {
      * @return Instancia del repositorio
      */
     public static synchronized ClienteRepository getClienteRepository() {
-        if (clienteRepository == null) {
-            // Inicializamos el repositorio de clientes con el repositorio de auditoría
-            clienteRepository = new ClienteRepositoryImpl(getAuditoriaRepository());
-        }
+        clienteRepository = getOrCreate(clienteRepository, 
+            () -> new ClienteRepositoryImpl(getAuditoriaRepository()));
         return clienteRepository;
     }
     
@@ -53,10 +66,8 @@ public class RepositoryFactory {
      * @return Instancia del repositorio
      */
     public static synchronized CuentaRepository getCuentaRepository() {
-        if (cuentaRepository == null) {
-            // Inicializamos el repositorio de cuentas con el repositorio de auditoría
-            cuentaRepository = new CuentaRepositoryImpl(getAuditoriaRepository());
-        }
+        cuentaRepository = getOrCreate(cuentaRepository, 
+            () -> new CuentaRepositoryImpl(getAuditoriaRepository()));
         return cuentaRepository;
     }
     
@@ -65,10 +76,8 @@ public class RepositoryFactory {
      * @return Instancia del repositorio
      */
     public static synchronized TarjetaRepository getTarjetaRepository() {
-        if (tarjetaRepository == null) {
-            // Inicializamos el repositorio de tarjetas con el repositorio de auditoría
-            tarjetaRepository = new TarjetaRepositoryImpl(getAuditoriaRepository());
-        }
+        tarjetaRepository = getOrCreate(tarjetaRepository, 
+            () -> new TarjetaRepositoryImpl(getAuditoriaRepository()));
         return tarjetaRepository;
     }
     
@@ -77,10 +86,8 @@ public class RepositoryFactory {
      * @return Instancia del repositorio
      */
     public static synchronized TransaccionRepository getTransaccionRepository() {
-        if (transaccionRepository == null) {
-            // Inicializamos el repositorio de transacciones con el repositorio de auditoría
-            transaccionRepository = new TransaccionRepositoryImpl(getAuditoriaRepository());
-        }
+        transaccionRepository = getOrCreate(transaccionRepository, 
+            () -> new TransaccionRepositoryImpl(getAuditoriaRepository()));
         return transaccionRepository;
     }
     

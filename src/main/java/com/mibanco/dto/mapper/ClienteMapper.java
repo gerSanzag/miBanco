@@ -47,29 +47,13 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
                 .direccion(dto.getDireccion())
                 .build());
     }
-    
-    /**
-     * Método auxiliar para convertir un Cliente a ClienteDTO
-     * Para compatibilidad con código existente
-     */
-    public Optional<ClienteDTO> toDtoDirecto(Optional<Cliente> cliente) {
-        return toDto(cliente);
-    }
-    
+   
     /**
      * Sobrecarga que acepta Cliente directamente
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional<ClienteDTO> toDtoDirecto(Cliente cliente) {
         return toDto(Optional.ofNullable(cliente));
-    }
-    
-    /**
-     * Método auxiliar para convertir un ClienteDTO a Cliente
-     * Para compatibilidad con código existente
-     */
-    public Optional<Cliente> toEntityDirecto(Optional<ClienteDTO> dto) {
-        return toEntity(dto);
     }
     
     /**
