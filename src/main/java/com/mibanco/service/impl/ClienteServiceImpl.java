@@ -30,6 +30,20 @@ public class ClienteServiceImpl implements ClienteService {
     }
     
     /**
+     * Método privado que implementa el flujo común de actualización de clientes
+     * @param id ID del cliente a actualizar
+     * @param actualizarDatos Función que define cómo actualizar los datos del cliente
+     * @return Optional con el DTO del cliente actualizado
+     */
+    private Optional<ClienteDTO> actualizarClienteGenerico(Long id, Function<Cliente, Cliente> actualizarDatos) {
+        return Optional.ofNullable(id)
+                .flatMap(clienteRepository::findById)
+                .map(actualizarDatos)
+                .flatMap(clienteRepository::save)
+                .flatMap(clienteMapper::toDtoDirecto);
+    }
+    
+    /**
      * Crea un nuevo cliente en el sistema
      * Utilizando programación funcional con Optional y composición de funciones
      */
@@ -100,11 +114,7 @@ public class ClienteServiceImpl implements ClienteService {
                 ))
                 .orElse(clienteExistente);
         
-        return Optional.ofNullable(id)
-                .flatMap(clienteRepository::findById)
-                .map(actualizarDatos)
-                .flatMap(clienteRepository::save)
-                .flatMap(clienteMapper::toDtoDirecto);
+        return actualizarClienteGenerico(id, actualizarDatos);
     }
     
     /**
@@ -113,11 +123,10 @@ public class ClienteServiceImpl implements ClienteService {
      */
     @Override
     public Optional<ClienteDTO> actualizarEmailCliente(Long id, Optional<String> nuevoEmail) {
-        return Optional.ofNullable(id)
-                .flatMap(clienteRepository::findById)
-                .map(cliente -> cliente.withEmail(nuevoEmail.orElse(cliente.getEmail())))
-                .flatMap(clienteRepository::save)
-                .flatMap(clienteMapper::toDtoDirecto);
+        return actualizarClienteGenerico(
+            id, 
+            cliente -> cliente.withEmail(nuevoEmail.orElse(cliente.getEmail()))
+        );
     }
     
     /**
@@ -126,11 +135,10 @@ public class ClienteServiceImpl implements ClienteService {
      */
     @Override
     public Optional<ClienteDTO> actualizarTelefonoCliente(Long id, Optional<String> nuevoTelefono) {
-        return Optional.ofNullable(id)
-                .flatMap(clienteRepository::findById)
-                .map(cliente -> cliente.withTelefono(nuevoTelefono.orElse(cliente.getTelefono())))
-                .flatMap(clienteRepository::save)
-                .flatMap(clienteMapper::toDtoDirecto);
+        return actualizarClienteGenerico(
+            id,
+            cliente -> cliente.withTelefono(nuevoTelefono.orElse(cliente.getTelefono()))
+        );
     }
     
     /**
@@ -139,11 +147,10 @@ public class ClienteServiceImpl implements ClienteService {
      */
     @Override
     public Optional<ClienteDTO> actualizarDireccionCliente(Long id, Optional<String> nuevaDireccion) {
-        return Optional.ofNullable(id)
-                .flatMap(clienteRepository::findById)
-                .map(cliente -> cliente.withDireccion(nuevaDireccion.orElse(cliente.getDireccion())))
-                .flatMap(clienteRepository::save)
-                .flatMap(clienteMapper::toDtoDirecto);
+        return actualizarClienteGenerico(
+            id,
+            cliente -> cliente.withDireccion(nuevaDireccion.orElse(cliente.getDireccion()))
+        );
     }
     
     /**
