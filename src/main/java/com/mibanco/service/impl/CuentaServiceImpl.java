@@ -6,6 +6,7 @@ import com.mibanco.model.Cuenta;
 import com.mibanco.model.enums.TipoCuenta;
 import com.mibanco.repository.CuentaRepository;
 import com.mibanco.service.CuentaService;
+import com.mibanco.config.factory.RepositoryFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,11 +24,11 @@ public class CuentaServiceImpl implements CuentaService {
     
     /**
      * Constructor para inyección de dependencias
-     * @param cuentaRepository Repositorio de cuentas
      * @param cuentaMapper Mapper para conversión entre entidad y DTO
      */
-    public CuentaServiceImpl(CuentaRepository cuentaRepository, CuentaMapper cuentaMapper) {
-        this.cuentaRepository = cuentaRepository;
+    public CuentaServiceImpl(CuentaMapper cuentaMapper) {
+        // Utilizamos la factory para obtener la instancia única del repositorio
+        this.cuentaRepository = RepositoryFactory.getCuentaRepository();
         this.cuentaMapper = cuentaMapper;
     }
     
@@ -52,16 +53,9 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public Optional<CuentaDTO> crearCuenta(Optional<CuentaDTO> cuentaDTO) {
         return cuentaDTO
-            .map(dto -> {
-                Optional<Cuenta> entidad = cuentaMapper.toEntity(Optional.of(dto));
-                if (!entidad.isPresent()) {
-                    return Optional.<CuentaDTO>empty();
-                }
-                
-                Optional<Cuenta> guardada = cuentaRepository.save(entidad);
-                return cuentaMapper.toDto(guardada);
-            })
-            .orElse(Optional.empty());
+            .flatMap(dto -> cuentaMapper.toEntity(Optional.of(dto)))
+            .flatMap(entidad -> cuentaRepository.save(Optional.of(entidad)))
+            .flatMap(cuentaMapper::toDtoDirecto);
     }
     
     /**
@@ -71,8 +65,8 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<String> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> {
-            Optional<Cuenta> cuenta = cuentaRepository.findByNumero(Optional.of(numero));
-            return cuenta.flatMap(cuentaMapper::toDtoDirecto);
+            return cuentaRepository.findByNumero(Optional.of(numero))
+                .flatMap(cuentaMapper::toDtoDirecto);
         });
     }
     
@@ -83,8 +77,8 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public Optional<List<CuentaDTO>> obtenerCuentasPorTitular(Optional<Long> idTitular) {
         return idTitular.flatMap(id -> {
-            Optional<List<Cuenta>> cuentas = cuentaRepository.findByTitularId(Optional.of(id));
-            return cuentaMapper.toDtoList(cuentas);
+            return cuentaRepository.findByTitularId(Optional.of(id))
+                .flatMap(cuentaMapper::toDtoList);
         });
     }
     
@@ -95,8 +89,8 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public Optional<List<CuentaDTO>> obtenerCuentasPorTipo(Optional<TipoCuenta> tipo) {
         return tipo.flatMap(tipoCuenta -> {
-            Optional<List<Cuenta>> cuentas = cuentaRepository.findByTipo(Optional.of(tipoCuenta));
-            return cuentaMapper.toDtoList(cuentas);
+           return cuentaRepository.findByTipo(Optional.of(tipoCuenta))
+                .flatMap(cuentaMapper::toDtoList);
         });
     }
     

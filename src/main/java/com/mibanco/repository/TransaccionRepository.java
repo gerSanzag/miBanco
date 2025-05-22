@@ -32,35 +32,35 @@ public interface TransaccionRepository {
     /**
      * Busca transacciones por el número de cuenta
      * @param numeroCuenta Optional con el número de cuenta
-     * @return Lista de transacciones de la cuenta
+     * @return Optional con lista de transacciones de la cuenta
      */
-    List<Transaccion> findByCuenta(Optional<String> numeroCuenta);
+    Optional<List<Transaccion>> findByCuenta(Optional<String> numeroCuenta);
     
     /**
      * Busca transacciones por el tipo
      * @param tipo Optional con el tipo de transacción
-     * @return Lista de transacciones del tipo especificado
+     * @return Optional con lista de transacciones del tipo especificado
      */
-    List<Transaccion> findByTipo(Optional<TipoTransaccion> tipo);
+    Optional<List<Transaccion>> findByTipo(Optional<TipoTransaccion> tipo);
     
     /**
      * Busca transacciones por fecha
      * @param fecha Optional con la fecha de las transacciones
-     * @return Lista de transacciones de la fecha especificada
+     * @return Optional con lista de transacciones de la fecha especificada
      */
-    List<Transaccion> findByFecha(Optional<LocalDate> fecha);
+    Optional<List<Transaccion>> findByFecha(Optional<LocalDate> fecha);
     
     /**
      * Busca transacciones en un rango de fechas
      * @param fechaInicio Optional con la fecha de inicio
      * @param fechaFin Optional con la fecha de fin
-     * @return Lista de transacciones en el rango especificado
+     * @return Optional con lista de transacciones en el rango especificado
      */
-    List<Transaccion> findByRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin);
+    Optional<List<Transaccion>> findByRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin);
     
     /**
      * Obtiene todas las transacciones
-     * @return Lista de transacciones
+     * @return Optional con lista de transacciones
      */
     Optional<List<Transaccion>> findAll();
     

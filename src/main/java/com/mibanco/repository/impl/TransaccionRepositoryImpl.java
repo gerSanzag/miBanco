@@ -106,34 +106,34 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
     }
     
     @Override
-    public List<Transaccion> findByCuenta(Optional<String> numeroCuenta) {
+    public Optional<List<Transaccion>> findByCuenta(Optional<String> numeroCuenta) {
         return numeroCuenta.map(numero -> 
             transacciones.stream()
                 .filter(transaccion -> transaccion.getNumeroCuenta().equals(numero))
                 .collect(Collectors.toList())
-        ).orElse(new ArrayList<>());
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
     }
     
     @Override
-    public List<Transaccion> findByTipo(Optional<TipoTransaccion> tipo) {
+    public Optional<List<Transaccion>> findByTipo(Optional<TipoTransaccion> tipo) {
         return tipo.map(t -> 
             transacciones.stream()
                 .filter(transaccion -> transaccion.getTipo().equals(t))
                 .collect(Collectors.toList())
-        ).orElse(new ArrayList<>());
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
     }
     
     @Override
-    public List<Transaccion> findByFecha(Optional<LocalDate> fecha) {
+    public Optional<List<Transaccion>> findByFecha(Optional<LocalDate> fecha) {
         return fecha.map(f -> 
             transacciones.stream()
                 .filter(transaccion -> transaccion.getFecha().toLocalDate().equals(f))
                 .collect(Collectors.toList())
-        ).orElse(new ArrayList<>());
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
     }
     
     @Override
-    public List<Transaccion> findByRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin) {
+    public Optional<List<Transaccion>> findByRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin) {
         // Usando un enfoque más funcional para manejar las diferentes combinaciones de fechas
         
         // Predicado para filtrar por fecha de inicio (si está presente)
@@ -152,12 +152,14 @@ public class TransaccionRepositoryImpl implements TransaccionRepository {
         boolean ambasVacias = !fechaInicio.isPresent() && !fechaFin.isPresent();
         
         // Usando operador ternario en lugar de if
-        return ambasVacias ? 
+        List<Transaccion> resultado = ambasVacias ? 
             new ArrayList<>() : 
             transacciones.stream()
                 .filter(filtroInicio)
                 .filter(filtroFin)
                 .collect(Collectors.toList());
+                
+        return Optional.of(resultado);
     }
     
     @Override

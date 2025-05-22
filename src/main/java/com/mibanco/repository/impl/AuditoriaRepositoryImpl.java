@@ -21,72 +21,90 @@ public class AuditoriaRepositoryImpl implements AuditoriaRepository {
     private final List<RegistroAuditoria<?, ?>> registros = new ArrayList<>();
     
     @Override
-    
-    public <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> registrar(
-            RegistroAuditoria<T, E> registro) {
-        // Solo añadimos el registro, nunca lo modificamos (inmutabilidad)
-        registros.add(registro);
-        return registro;
+    @SuppressWarnings("unchecked")
+    public <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> registrar(
+            Optional<RegistroAuditoria<T, E>> registroOpt) {
+        return registroOpt.map(registro -> {
+            // Solo añadimos el registro, nunca lo modificamos (inmutabilidad)
+            registros.add(registro);
+            return registro;
+        });
     }
     
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> buscarPorId(UUID id) {
-        return registros.stream()
+    public <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> buscarPorId(Optional<UUID> idOpt) {
+        return idOpt.flatMap(id -> 
+            registros.stream()
                 .filter(r -> r.getId().equals(id))
                 .findFirst()
-                .map(r -> (RegistroAuditoria<T, E>) r);
-    }
-    
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> obtenerHistorial(
-            Class<T> tipoEntidad, 
-            Long idEntidad) {
-        
-        return registros.stream()
-                .filter(r -> tipoEntidad.isInstance(r.getEntidad()))
-                .filter(r -> {
-                    Identificable entidad = (Identificable) r.getEntidad();
-                    return entidad.getId().equals(idEntidad);
-                })
                 .map(r -> (RegistroAuditoria<T, E>) r)
-                .collect(Collectors.toList());
+        );
     }
     
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> buscarPorFechas(
-            LocalDateTime desde, 
-            LocalDateTime hasta) {
+    public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> obtenerHistorial(
+            Optional<Class<T>> tipoEntidadOpt, 
+            Optional<Long> idEntidadOpt) {
         
-        return registros.stream()
-                .filter(r -> !r.getFechaHora().isBefore(desde) && !r.getFechaHora().isAfter(hasta))
-                .map(r -> (RegistroAuditoria<T, E>) r)
-                .collect(Collectors.toList());
+        return tipoEntidadOpt.flatMap(tipoEntidad -> 
+            idEntidadOpt.map(idEntidad -> 
+                registros.stream()
+                    .filter(r -> tipoEntidad.isInstance(r.getEntidad()))
+                    .filter(r -> {
+                        Identificable entidad = (Identificable) r.getEntidad();
+                        return entidad.getId().equals(idEntidad);
+                    })
+                    .map(r -> (RegistroAuditoria<T, E>) r)
+                    .collect(Collectors.toList())
+            )
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
     }
     
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> buscarPorUsuario(
-            String usuario) {
+    public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorFechas(
+            Optional<LocalDateTime> desdeOpt, 
+            Optional<LocalDateTime> hastaOpt) {
         
-        return registros.stream()
+        return desdeOpt.flatMap(desde -> 
+            hastaOpt.map(hasta -> 
+                registros.stream()
+                    .filter(r -> !r.getFechaHora().isBefore(desde) && !r.getFechaHora().isAfter(hasta))
+                    .map(r -> (RegistroAuditoria<T, E>) r)
+                    .collect(Collectors.toList())
+            )
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorUsuario(
+            Optional<String> usuarioOpt) {
+        
+        return usuarioOpt.map(usuario -> 
+            registros.stream()
                 .filter(r -> r.getUsuario().equals(usuario))
                 .map(r -> (RegistroAuditoria<T, E>) r)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
     }
     
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> buscarPorTipoOperacion(
-            E tipoOperacion, 
-            Class<E> tipoEnum) {
+    public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorTipoOperacion(
+            Optional<E> tipoOperacionOpt, 
+            Optional<Class<E>> tipoEnumOpt) {
         
-        return registros.stream()
-                .filter(r -> r.getTipoOperacion().getClass().equals(tipoEnum))
-                .filter(r -> r.getTipoOperacion().equals(tipoOperacion))
-                .map(r -> (RegistroAuditoria<T, E>) r)
-                .collect(Collectors.toList());
+        return tipoOperacionOpt.flatMap(tipoOperacion -> 
+            tipoEnumOpt.map(tipoEnum -> 
+                registros.stream()
+                    .filter(r -> r.getTipoOperacion().getClass().equals(tipoEnum))
+                    .filter(r -> r.getTipoOperacion().equals(tipoOperacion))
+                    .map(r -> (RegistroAuditoria<T, E>) r)
+                    .collect(Collectors.toList())
+            )
+        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
     }
 } 

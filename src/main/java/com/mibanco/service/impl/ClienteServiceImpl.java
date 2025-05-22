@@ -5,6 +5,7 @@ import com.mibanco.dto.mapper.ClienteMapper;
 import com.mibanco.model.Cliente;
 import com.mibanco.repository.ClienteRepository;
 import com.mibanco.service.ClienteService;
+import com.mibanco.config.factory.RepositoryFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +22,11 @@ public class ClienteServiceImpl implements ClienteService {
     
     /**
      * Constructor para inyección de dependencias
-     * @param clienteRepository Repositorio de clientes
      * @param clienteMapper Mapper para conversión entre entidad y DTO
      */
-    public ClienteServiceImpl(ClienteRepository clienteRepository, ClienteMapper clienteMapper) {
-        this.clienteRepository = clienteRepository;
+    public ClienteServiceImpl(ClienteMapper clienteMapper) {
+        // Utilizamos la factory para obtener la instancia única del repositorio
+        this.clienteRepository = RepositoryFactory.getClienteRepository();
         this.clienteMapper = clienteMapper;
     }
     
@@ -37,9 +38,9 @@ public class ClienteServiceImpl implements ClienteService {
      */
     private Optional<ClienteDTO> actualizarClienteGenerico(Long id, Function<Cliente, Cliente> actualizarDatos) {
         return Optional.ofNullable(id)
-                .flatMap(clienteRepository::findById)
+                .flatMap(idValue -> clienteRepository.findById(Optional.of(idValue)))
                 .map(actualizarDatos)
-                .flatMap(clienteRepository::save)
+                .flatMap(cliente -> clienteRepository.save(Optional.of(cliente)))
                 .flatMap(clienteMapper::toDtoDirecto);
     }
     
@@ -50,17 +51,9 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Optional<ClienteDTO> crearCliente(Optional<ClienteDTO> clienteDTO) {
         return clienteDTO
-            .map(dto -> {
-                // Aquí puedes incluir lógica más compleja o validaciones
-                Optional<Cliente> entidad = clienteMapper.toEntity(Optional.of(dto));
-                if (!entidad.isPresent()) {
-                    return Optional.<ClienteDTO>empty(); 
-                }
-                
-                Optional<Cliente> guardado = clienteRepository.save(entidad.get());
-                return clienteMapper.toDto(guardado);
-            })
-            .orElse(Optional.empty());
+            .flatMap(dto -> clienteMapper.toEntity(Optional.of(dto)))
+            .flatMap(entidad -> clienteRepository.save(Optional.of(entidad)))
+            .flatMap(clienteMapper::toDtoDirecto);
     }
     
     /**
@@ -69,11 +62,10 @@ public class ClienteServiceImpl implements ClienteService {
      */
     @Override
     public Optional<ClienteDTO> obtenerClientePorId(Optional<Long> id) {
-        return id.map(idValue->{
-            Optional<Cliente> cliente = clienteRepository.findById(idValue);
-            return cliente.map(clienteMapper::toDtoDirecto).orElse(Optional.empty());
-        })
-        .orElse(Optional.empty());
+        return id.flatMap(idValue -> {
+            return clienteRepository.findById(Optional.of(idValue))
+                .flatMap(clienteMapper::toDtoDirecto);
+        });
     }
     
     /**
@@ -82,11 +74,10 @@ public class ClienteServiceImpl implements ClienteService {
      */
     @Override
     public Optional<ClienteDTO> obtenerClientePorDni(Optional<String> dni) {
-        return dni.map(dniValue -> {
-            Optional<Cliente> cliente = clienteRepository.findByDni(dniValue);
-            return cliente.map(clienteMapper::toDtoDirecto).orElse(Optional.empty());
-        })
-        .orElse(Optional.empty());
+        return dni.flatMap(dniValue -> {
+            return clienteRepository.findByDni(Optional.of(dniValue))
+                .flatMap(clienteMapper::toDtoDirecto);
+        });
     }
     
     /**
@@ -160,7 +151,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public boolean eliminarCliente(Optional<Long> id) {
         return id
-                .flatMap(clienteRepository::deleteById)
+                .flatMap(idValue -> clienteRepository.deleteById(Optional.of(idValue)))
                 .isPresent();
     }
 } 

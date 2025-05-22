@@ -7,30 +7,31 @@ import java.util.Optional;
 
 /**
  * Interfaz para operaciones CRUD de Cliente
- * Siguiendo un enfoque funcional pero con parámetros directos
+ * Siguiendo enfoque estrictamente funcional con Optional
+ * tanto para parámetros como para resultados
  */
 public interface ClienteRepository {
     
     /**
      * Guarda un cliente en el repositorio
-     * @param cliente Cliente a guardar
+     * @param cliente Optional con el cliente a guardar
      * @return Optional con el cliente guardado (con ID generado)
      */
-    Optional<Cliente> save(Cliente cliente);
+    Optional<Cliente> save(Optional<Cliente> cliente);
     
     /**
      * Busca un cliente por su ID
-     * @param id ID del cliente a buscar
+     * @param id Optional con el ID del cliente a buscar
      * @return Optional con el cliente si existe
      */
-    Optional<Cliente> findById(Long id);
+    Optional<Cliente> findById(Optional<Long> id);
     
     /**
      * Busca un cliente por su DNI
-     * @param dni DNI del cliente a buscar
+     * @param dni Optional con el DNI del cliente a buscar
      * @return Optional con el cliente si existe
      */
-    Optional<Cliente> findByDni(String dni);
+    Optional<Cliente> findByDni(Optional<String> dni);
     
     /**
      * Obtiene todos los clientes
@@ -40,10 +41,10 @@ public interface ClienteRepository {
     
     /**
      * Elimina un cliente por su ID
-     * @param id ID del cliente a eliminar
+     * @param id Optional con el ID del cliente a eliminar
      * @return Optional con el cliente eliminado o Optional vacío si no existía
      */
-    Optional<Cliente> deleteById(Long id);
+    Optional<Cliente> deleteById(Optional<Long> id);
     
     /**
      * Obtiene el número de clientes en el repositorio

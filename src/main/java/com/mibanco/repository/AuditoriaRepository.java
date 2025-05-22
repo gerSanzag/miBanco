@@ -16,52 +16,52 @@ public interface AuditoriaRepository {
     
     /**
      * Guarda un registro de auditoría
-     * @param registro Registro a guardar
-     * @return El registro guardado (nunca se modifica, solo se almacena)
+     * @param registro Optional con el registro a guardar
+     * @return Optional con el registro guardado
      */
-    <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> registrar(RegistroAuditoria<T, E> registro);
+    <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> registrar(Optional<RegistroAuditoria<T, E>> registro);
     
     /**
      * Busca un registro por su ID único
-     * @param id ID único del registro
+     * @param id Optional con el ID único del registro
      * @return Optional con el registro si existe
      */
-    <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> buscarPorId(UUID id);
+    <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> buscarPorId(Optional<UUID> id);
     
     /**
      * Obtiene el historial de una entidad por su tipo e ID
-     * @param tipoEntidad Clase de la entidad
-     * @param idEntidad ID de la entidad
-     * @return Lista de registros de auditoría relacionados con esa entidad
+     * @param tipoEntidad Optional con la clase de la entidad
+     * @param idEntidad Optional con el ID de la entidad
+     * @return Optional con lista de registros de auditoría relacionados con esa entidad
      */
-    <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> obtenerHistorial(
-            Class<T> tipoEntidad, 
-            Long idEntidad);
+    <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> obtenerHistorial(
+            Optional<Class<T>> tipoEntidad, 
+            Optional<Long> idEntidad);
     
     /**
      * Obtiene registros en un rango de fechas
-     * @param desde Fecha inicial
-     * @param hasta Fecha final
-     * @return Lista de registros en ese rango de fechas
+     * @param desde Optional con la fecha inicial
+     * @param hasta Optional con la fecha final
+     * @return Optional con lista de registros en ese rango de fechas
      */
-    <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> buscarPorFechas(
-            LocalDateTime desde, 
-            LocalDateTime hasta);
+    <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorFechas(
+            Optional<LocalDateTime> desde, 
+            Optional<LocalDateTime> hasta);
     
     /**
      * Obtiene registros creados por un usuario específico
-     * @param usuario Usuario que realizó las operaciones
-     * @return Lista de registros del usuario
+     * @param usuario Optional con el usuario que realizó las operaciones
+     * @return Optional con lista de registros del usuario
      */
-    <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> buscarPorUsuario(String usuario);
+    <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorUsuario(Optional<String> usuario);
     
     /**
      * Busca registros por tipo de operación
-     * @param tipoOperacion Tipo de operación
-     * @param tipoEnum Clase del enum
-     * @return Lista de registros que corresponden a esa operación
+     * @param tipoOperacion Optional con el tipo de operación
+     * @param tipoEnum Optional con la clase del enum
+     * @return Optional con lista de registros que corresponden a esa operación
      */
-    <T extends Identificable, E extends Enum<E>> List<RegistroAuditoria<T, E>> buscarPorTipoOperacion(
-            E tipoOperacion, 
-            Class<E> tipoEnum);
+    <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorTipoOperacion(
+            Optional<E> tipoOperacion, 
+            Optional<Class<E>> tipoEnum);
 } 

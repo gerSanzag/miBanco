@@ -1,5 +1,6 @@
 package com.mibanco.repository.impl;
 
+import com.mibanco.config.factory.RepositoryFactory;
 import com.mibanco.model.Cliente;
 import com.mibanco.model.enums.TipoOperacionCliente;
 import com.mibanco.repository.AuditoriaRepository;
@@ -34,7 +35,8 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     private String usuarioActual = "sistema";
     
     /**
-     * Constructor con inyección del repositorio de auditoría
+     * Constructor que inicializa el repositorio de auditoría mediante la Factory
+     * llamando a getAuditoriaRepository() de RepositoryFactory directamente.   
      */
     public ClienteRepositoryImpl(AuditoriaRepository auditoriaRepository) {
         this.auditoriaRepository = auditoriaRepository;
@@ -48,42 +50,42 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     }
     
     @Override
-    public Optional<Cliente> save(Cliente cliente) {
-        // Si el cliente es null, retornamos Optional vacío
-        if (cliente == null) {
-            return Optional.empty();
-        }
-        
-        // Si el cliente ya existe, lo actualizamos
-        if (cliente.getId() != null) {
-            Cliente clienteActualizado = update(cliente);
-            
-            // Registra la auditoría de modificación directamente
-            AuditoriaUtil.registrarOperacion(
-                auditoriaRepository,
-                TipoOperacionCliente.MODIFICAR, 
-                clienteActualizado,
-                usuarioActual
-            );
-            
-            return Optional.of(clienteActualizado);
-        }
-        
-        // Si es nuevo, generamos un ID y lo guardamos
-        Cliente nuevoCliente = cliente.toBuilder()
-                .id(idCounter.getAndIncrement())
-                .build();
-        clientes.add(nuevoCliente);
-        
-        // Registra la auditoría de creación directamente
-        AuditoriaUtil.registrarOperacion(
-            auditoriaRepository,
-            TipoOperacionCliente.CREAR, 
-            nuevoCliente,
-            usuarioActual
-        );
-        
-        return Optional.of(nuevoCliente);
+    public Optional<Cliente> save(Optional<Cliente> clienteOpt) {
+        return clienteOpt
+                .map(cliente -> 
+                    Optional.ofNullable(cliente.getId())
+                        .map(id -> {
+                            // Si el cliente ya existe, lo actualizamos
+                            Cliente clienteActualizado = update(cliente);
+                            
+                            // Registra la auditoría de modificación directamente
+                            AuditoriaUtil.registrarOperacion(
+                                auditoriaRepository,
+                                TipoOperacionCliente.MODIFICAR, 
+                                clienteActualizado,
+                                usuarioActual
+                            );
+                            
+                            return clienteActualizado;
+                        })
+                        .orElseGet(() -> {
+                            // Si es nuevo, generamos un ID y lo guardamos
+                            Cliente nuevoCliente = cliente.toBuilder()
+                                    .id(idCounter.getAndIncrement())
+                                    .build();
+                            clientes.add(nuevoCliente);
+                            
+                            // Registra la auditoría de creación directamente
+                            AuditoriaUtil.registrarOperacion(
+                                auditoriaRepository,
+                                TipoOperacionCliente.CREAR, 
+                                nuevoCliente,
+                                usuarioActual
+                            );
+                            
+                            return nuevoCliente;
+                        })
+                );
     }
     
     /**
@@ -98,27 +100,19 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     }
     
     @Override
-    public Optional<Cliente> findById(Long id) {
-        // Si el ID es null, retornamos Optional vacío
-        if (id == null) {
-            return Optional.empty();
-        }
-        
-        return clientes.stream()
+    public Optional<Cliente> findById(Optional<Long> idOpt) {
+        return idOpt.map(id -> clientes.stream()
                 .filter(cliente -> cliente.getId().equals(id))
-                .findFirst();
+                .findFirst())
+                .orElse(Optional.empty());
     }
     
     @Override
-    public Optional<Cliente> findByDni(String dni) {
-        // Si el DNI es null, retornamos Optional vacío
-        if (dni == null) {
-            return Optional.empty();
-        }
-        
-        return clientes.stream()
+    public Optional<Cliente> findByDni(Optional<String> dniOpt) {
+        return dniOpt.map(dni -> clientes.stream()
                 .filter(cliente -> cliente.getDni().equals(dni))
-                .findFirst();
+                .findFirst())
+                .orElse(Optional.empty());
     }
     
     @Override
@@ -128,67 +122,61 @@ public class ClienteRepositoryImpl implements ClienteRepository {
     }
     
     @Override
-    public Optional<Cliente> deleteById(Long id) {
-        // Si el ID es null, retornamos Optional vacío
-        if (id == null) {
-            return Optional.empty();
-        }
-        
-        Optional<Cliente> clienteAEliminar = clientes.stream()
-                .filter(cliente -> cliente.getId().equals(id))
-                .findFirst();
+    public Optional<Cliente> deleteById(Optional<Long> idOpt) {
+        return idOpt.map(id -> {
+            Optional<Cliente> clienteAEliminar = clientes.stream()
+                    .filter(cliente -> cliente.getId().equals(id))
+                    .findFirst();
+                    
+            clienteAEliminar.ifPresent(cliente -> {
+                // Removemos el cliente de la lista principal
+                clientes.remove(cliente);
                 
-        clienteAEliminar.ifPresent(cliente -> {
-            // Removemos el cliente de la lista principal
-            clientes.remove(cliente);
+                // Guardamos el cliente en la caché para posible restauración
+                clientesEliminados.add(cliente);
+                
+                // Registra la auditoría de eliminación directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionCliente.ELIMINAR, 
+                    cliente,
+                    usuarioActual
+                );
+            });
             
-            // Guardamos el cliente en la caché para posible restauración
-            clientesEliminados.add(cliente);
-            
-            // Registra la auditoría de eliminación directamente
-            AuditoriaUtil.registrarOperacion(
-                auditoriaRepository,
-                TipoOperacionCliente.ELIMINAR, 
-                cliente,
-                usuarioActual
-            );
-        });
-        
-        return clienteAEliminar;
+            return clienteAEliminar;
+        }).orElse(Optional.empty());
     }
     
     /**
      * Restaura un cliente previamente eliminado
-     * @param id ID del cliente a restaurar
-     * @return Cliente restaurado o empty si no se encuentra
+     * @param idOpt Optional con el ID del cliente a restaurar
+     * @return Optional con el cliente restaurado o vacío si no se encuentra
      */
-    public Optional<Cliente> restoreDeletedClient(Long id) {
-        // Si el ID es null, retornamos Optional vacío
-        if (id == null) {
-            return Optional.empty();
-        }
-        
-        Optional<Cliente> clienteARestaurar = clientesEliminados.stream()
-                .filter(cliente -> cliente.getId().equals(id))
-                .findFirst();
+    public Optional<Cliente> restoreDeletedClient(Optional<Long> idOpt) {
+        return idOpt.map(id -> {
+            Optional<Cliente> clienteARestaurar = clientesEliminados.stream()
+                    .filter(cliente -> cliente.getId().equals(id))
+                    .findFirst();
+                    
+            clienteARestaurar.ifPresent(cliente -> {
+                // Añadimos de nuevo el cliente a la lista principal
+                clientes.add(cliente);
                 
-        clienteARestaurar.ifPresent(cliente -> {
-            // Añadimos de nuevo el cliente a la lista principal
-            clientes.add(cliente);
+                // Lo quitamos de la caché de eliminados
+                clientesEliminados.removeIf(c -> c.getId().equals(id));
+                
+                // Registra la auditoría de restauración directamente
+                AuditoriaUtil.registrarOperacion(
+                    auditoriaRepository,
+                    TipoOperacionCliente.RESTAURAR, 
+                    cliente,
+                    usuarioActual
+                );
+            });
             
-            // Lo quitamos de la caché de eliminados
-            clientesEliminados.removeIf(c -> c.getId().equals(id));
-            
-            // Registra la auditoría de restauración directamente
-            AuditoriaUtil.registrarOperacion(
-                auditoriaRepository,
-                TipoOperacionCliente.RESTAURAR, 
-                cliente,
-                usuarioActual
-            );
-        });
-        
-        return clienteARestaurar;
+            return clienteARestaurar;
+        }).orElse(Optional.empty());
     }
     
     /**

@@ -10,8 +10,6 @@ import com.mibanco.util.AuditoriaUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -27,9 +25,6 @@ public class CuentaRepositoryImpl implements CuentaRepository {
     // Cache para restauración de cuentas eliminadas
     private final List<Cuenta> cuentasEliminadas = new ArrayList<>();
     
-    // Contador para generar IDs automáticamente (si se requiere en el futuro)
-    private final AtomicLong idCounter = new AtomicLong(1);
-    
     // Repositorio de auditoría
     private final AuditoriaRepository auditoriaRepository;
     
@@ -37,7 +32,8 @@ public class CuentaRepositoryImpl implements CuentaRepository {
     private String usuarioActual = "sistema";
     
     /**
-     * Constructor con inyección del repositorio de auditoría
+     * Constructor que inicializa el repositorio de auditoría mediante la Factory
+     * llamando a getAuditoriaRepository() de RepositoryFactory directamente.   
      */
     public CuentaRepositoryImpl(AuditoriaRepository auditoriaRepository) {
         this.auditoriaRepository = auditoriaRepository;
@@ -52,35 +48,37 @@ public class CuentaRepositoryImpl implements CuentaRepository {
     
     @Override
     public Optional<Cuenta> save(Optional<Cuenta> cuenta) {
-        return cuenta.map(c -> {
-            // Si la cuenta ya existe, la actualizamos
-            if (c.getNumeroCuenta() != null) {
-                Cuenta cuentaActualizada = update(c);
-                
-                // Registra la auditoría de modificación directamente
-                AuditoriaUtil.registrarOperacion(
-                    auditoriaRepository,
-                    TipoOperacionCuenta.MODIFICAR, 
-                    cuentaActualizada,
-                    usuarioActual
-                );
-                
-                return cuentaActualizada;
-            }
-            
-            // Si es nueva, la guardamos
-            cuentas.add(c);
-            
-            // Registra la auditoría de creación directamente
-            AuditoriaUtil.registrarOperacion(
-                auditoriaRepository,
-                TipoOperacionCuenta.CREAR, 
-                c,
-                usuarioActual
-            );
-            
-            return c;
-        });
+        return cuenta.map(c -> 
+            Optional.ofNullable(c.getNumeroCuenta())
+                .map(numero -> {
+                    // Si la cuenta ya existe, la actualizamos
+                    Cuenta cuentaActualizada = update(c);
+                    
+                    // Registra la auditoría de modificación directamente
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        TipoOperacionCuenta.MODIFICAR, 
+                        cuentaActualizada,
+                        usuarioActual
+                    );
+                    
+                    return cuentaActualizada;
+                })
+                .orElseGet(() -> {
+                    // Si es nueva, la guardamos
+                    cuentas.add(c);
+                    
+                    // Registra la auditoría de creación directamente
+                    AuditoriaUtil.registrarOperacion(
+                        auditoriaRepository,
+                        TipoOperacionCuenta.CREAR, 
+                        c,
+                        usuarioActual
+                    );
+                    
+                    return c;
+                })
+        );
     }
     
     /**
@@ -137,7 +135,7 @@ public class CuentaRepositoryImpl implements CuentaRepository {
     
     @Override
     public Optional<Cuenta> deleteByNumero(Optional<String> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> {
+        return numeroCuenta.map(numero -> {
             Optional<Cuenta> cuentaAEliminar = findByNumero(Optional.of(numero));
             
             cuentaAEliminar.ifPresent(cuenta -> {
@@ -157,7 +155,7 @@ public class CuentaRepositoryImpl implements CuentaRepository {
             });
             
             return cuentaAEliminar;
-        });
+        }).orElse(Optional.empty());
     }
     
     /**
