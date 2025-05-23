@@ -1,13 +1,14 @@
 package com.mibanco.repository;
 
 import com.mibanco.model.Cliente;
+import com.mibanco.model.enums.TipoOperacionCliente;
 import java.util.Optional;
 
 /**
  * Interfaz para operaciones específicas de Cliente
  * Extiende la interfaz base para heredar operaciones CRUD genéricas
  */
-public interface ClienteRepository extends BaseRepository<Cliente, Long> {
+public interface ClienteRepository extends BaseRepository<Cliente, Long, TipoOperacionCliente> {
     
     /**
      * Busca un cliente por su DNI

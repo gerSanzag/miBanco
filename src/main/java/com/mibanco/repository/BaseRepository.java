@@ -6,18 +6,27 @@ import java.util.Optional;
 
 /**
  * Interfaz base para operaciones CRUD genéricas
- * Siguiendo enfoque estrictamente funcional con Optional
  * @param <T> Tipo de entidad
  * @param <ID> Tipo del identificador
+ * @param <E> Tipo del enum para operaciones
  */
-public interface BaseRepository<T extends Identificable, ID> {
+public interface BaseRepository<T extends Identificable, ID, E extends Enum<E>> {
     
     /**
-     * Guarda una entidad en el repositorio
-     * @param entity Optional con la entidad a guardar
-     * @return Optional con la entidad guardada
+     * Crea una nueva entidad
+     * @param entity Optional con la entidad a crear
+     * @param tipoOperacion Tipo de operación para auditoría
+     * @return Optional con la entidad creada
      */
-    Optional<T> save(Optional<T> entity);
+    Optional<T> crear(Optional<T> entity, E tipoOperacion);
+    
+    /**
+     * Actualiza una entidad existente
+     * @param entity Optional con la entidad a actualizar
+     * @param tipoOperacion Tipo de operación para auditoría
+     * @return Optional con la entidad actualizada
+     */
+    Optional<T> actualizar(Optional<T> entity, E tipoOperacion);
     
     /**
      * Busca una entidad por su ID
@@ -35,9 +44,18 @@ public interface BaseRepository<T extends Identificable, ID> {
     /**
      * Elimina una entidad por su ID
      * @param id Optional con el ID de la entidad a eliminar
-     * @return Optional con la entidad eliminada o Optional vacío si no existía
+     * @param tipoOperacion Tipo de operación para auditoría
+     * @return Optional con la entidad eliminada
      */
-    Optional<T> deleteById(Optional<ID> id);
+    Optional<T> deleteById(Optional<ID> id, E tipoOperacion);
+    
+    /**
+     * Restaura una entidad eliminada
+     * @param id Optional con el ID de la entidad a restaurar
+     * @param tipoOperacion Tipo de operación para auditoría
+     * @return Optional con la entidad restaurada
+     */
+    Optional<T> restaurar(Optional<ID> id, E tipoOperacion);
     
     /**
      * Obtiene el número de entidades en el repositorio

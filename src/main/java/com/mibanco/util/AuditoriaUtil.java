@@ -3,6 +3,7 @@ package com.mibanco.util;
 import com.mibanco.model.Identificable;
 import com.mibanco.model.RegistroAuditoria;
 import com.mibanco.repository.AuditoriaRepository;
+import java.util.Optional;
 
 /**
  * Clase utilitaria para manejar la auditoría de manera centralizada
@@ -29,6 +30,7 @@ public class AuditoriaUtil {
         RegistroAuditoria<T, E> registro = RegistroAuditoria.of(tipoOperacion, entidad, usuario);
         
         // Guardar y devolver
-        return auditoriaRepository.registrar(registro);
+        Optional<RegistroAuditoria<T, E>> registroGuardado = auditoriaRepository.registrar(Optional.of(registro));
+        return registroGuardado.orElse(registro);
     }
 } 

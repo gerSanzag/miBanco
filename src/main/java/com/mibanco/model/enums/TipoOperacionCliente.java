@@ -3,7 +3,7 @@ package com.mibanco.model.enums;
 /**
  * Tipos de operaciones que se pueden realizar con clientes
  */
-public enum TipoOperacionCliente {
+public enum TipoOperacionCliente  {
     CREAR,
     MODIFICAR,
     ELIMINAR,
@@ -11,5 +11,7 @@ public enum TipoOperacionCliente {
     RESTAURAR,
     BLOQUEAR,
     DESBLOQUEAR,
-    CAMBIAR_DATOS_CONTACTO
+    CAMBIAR_DATOS_CONTACTO;
+
+    
 } 

@@ -1,81 +1,49 @@
 package com.mibanco.service;
 
 import com.mibanco.dto.ClienteDTO;
+import com.mibanco.model.Cliente;
+import com.mibanco.model.enums.TipoOperacionCliente;
+import com.mibanco.repository.ClienteRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Interfaz de servicio para operaciones relacionadas con Clientes
+ * Servicio para operaciones relacionadas con Clientes
  * Sigue un enfoque estrictamente funcional con uso de Optional
  */
-public interface ClienteService {
+public class ClienteService {
+    
+    private final ClienteRepository clienteRepository;
+    
+    public ClienteService(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
     
     /**
-     * Crea un nuevo cliente en el sistema
-     * @param clienteDTO Optional con el DTO del cliente a crear
-     * @return Optional con el DTO del cliente creado (con ID generado)
-     * o Optional vacío si no se pudo crear
+     * Guarda un cliente, decidiendo si crear uno nuevo o actualizar uno existente
      */
-    Optional<ClienteDTO> crearCliente(Optional<ClienteDTO> clienteDTO);
-    
-    /**
-     * Obtiene un cliente por su ID
-     * @param id Optional con el ID del cliente a buscar
-     * @return Optional con el DTO del cliente si existe
-     */
-    Optional<ClienteDTO> obtenerClientePorId(Optional<Long> id);
-    
-    /**
-     * Obtiene un cliente por su DNI
-     * @param dni Optional con el DNI del cliente a buscar
-     * @return Optional con el DTO del cliente si existe
-     */
-    Optional<ClienteDTO> obtenerClientePorDni(Optional<String> dni);
-    
-    /**
-     * Obtiene todos los clientes
-     * @return Optional con la lista de DTOs de clientes
-     */
-    Optional<List<ClienteDTO>> obtenerTodosLosClientes();
-    
-    /**
-     * Actualiza la información de un cliente existente
-     * @param id ID del cliente a actualizar
-     * @param clienteDTO Optional con el DTO del cliente con los datos actualizados
-     * @return Optional con el DTO del cliente actualizado
-     * o Optional vacío si no se encontró el cliente
-     */
-    Optional<ClienteDTO> actualizarCliente(Long id, Optional<ClienteDTO> clienteDTO);
-    
-    /**
-     * Actualiza el email de un cliente
-     * @param id ID del cliente
-     * @param nuevoEmail Optional con el nuevo email
-     * @return Optional con el cliente actualizado o vacío si no se encontró
-     */
-    Optional<ClienteDTO> actualizarEmailCliente(Long id, Optional<String> nuevoEmail);
-    
-    /**
-     * Actualiza el teléfono de un cliente
-     * @param id ID del cliente
-     * @param nuevoTelefono Optional con el nuevo teléfono
-     * @return Optional con el cliente actualizado o vacío si no se encontró
-     */
-    Optional<ClienteDTO> actualizarTelefonoCliente(Long id, Optional<String> nuevoTelefono);
-    
-    /**
-     * Actualiza la dirección de un cliente
-     * @param id ID del cliente
-     * @param nuevaDireccion Optional con la nueva dirección
-     * @return Optional con el cliente actualizado o vacío si no se encontró
-     */
-    Optional<ClienteDTO> actualizarDireccionCliente(Long id, Optional<String> nuevaDireccion);
+    public Optional<Cliente> guardar(Optional<Cliente> clienteOpt) {
+        return clienteOpt.flatMap(cliente -> 
+            Optional.ofNullable(cliente.getId()).isPresent()
+                ? clienteRepository.actualizar(Optional.of(cliente), TipoOperacionCliente.MODIFICAR)
+                : clienteRepository.crear(Optional.of(cliente), TipoOperacionCliente.CREAR)
+        );
+    }
     
     /**
      * Elimina un cliente por su ID
-     * @param id Optional con el ID del cliente a eliminar
-     * @return true si se eliminó correctamente, false si no existía
      */
-    boolean eliminarCliente(Optional<Long> id);
+    public Optional<Cliente> eliminar(Optional<Long> idOpt) {
+        return clienteRepository.deleteById(idOpt, TipoOperacionCliente.ELIMINAR);
+    }
+    
+    /**
+     * Restaura un cliente eliminado
+     */
+    public Optional<Cliente> restaurar(Optional<Long> idOpt) {
+        return clienteRepository.restaurar(idOpt, TipoOperacionCliente.RESTAURAR);
+    }
+    
+    // Aquí irían los otros métodos del servicio que trabajan con DTOs...
 } 

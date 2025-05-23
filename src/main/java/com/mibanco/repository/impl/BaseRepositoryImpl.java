@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  * @param <ID> Tipo del identificador
  * @param <E> Tipo del enum para operaciones
  */
-public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends Enum<E>> implements BaseRepository<T, ID> {
+public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends Enum<E>> implements BaseRepository<T, ID, E> {
     
     // Lista para almacenar entidades en memoria
     protected final List<T> entities = new ArrayList<>();
@@ -47,40 +47,30 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
         this.usuarioActual = usuario;
     }
     
-    @Override
-    public Optional<T> save(Optional<T> entityOpt) {
-        return entityOpt
-                .map(entity -> 
-                    Optional.ofNullable(entity.getId())
-                        .map(id -> {
-                            T updatedEntity = update(entity);
-                            registrarAuditoria(updatedEntity, getOperationType(OperationType.UPDATE));
-                            return updatedEntity;
-                        })
-                        .orElseGet(() -> {
-                            T newEntity = create(entity);
-                            registrarAuditoria(newEntity, getOperationType(OperationType.CREATE));
-                            return newEntity;
-                        })
-                );
+    /**
+     * Crea una nueva entidad
+     */
+    public Optional<T> crear(Optional<T> entityOpt, E tipoOperacion) {
+        return entityOpt.map(entity -> {
+            T newEntity = createWithNewId(entity);
+            entities.add(newEntity);
+            registrarAuditoria(newEntity, tipoOperacion);
+            return Optional.of(newEntity);
+        }).orElse(Optional.empty());
     }
     
     /**
-     * Método interno para actualizar una entidad
+     * Actualiza una entidad existente
      */
-    private T update(T entity) {
-        entities.removeIf(e -> e.getId().equals(entity.getId()));
+    public Optional<T> actualizar(Optional<T> entityOpt, E tipoOperacion) {
+        return entityOpt.flatMap(entity -> 
+            Optional.ofNullable(entity.getId()).map(id -> {
+                entities.removeIf(e -> e.getId().equals(id));
         entities.add(entity);
-        return entity;
-    }
-    
-    /**
-     * Método interno para crear una nueva entidad
-     */
-    private T create(T entity) {
-        T newEntity = createWithNewId(entity);
-        entities.add(newEntity);
-        return newEntity;
+                registrarAuditoria(entity, tipoOperacion);
+                return entity;
+            })
+        );
     }
     
     @Override
@@ -118,14 +108,14 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     }
     
     @Override
-    public Optional<T> deleteById(Optional<ID> idOpt) {
+    public Optional<T> deleteById(Optional<ID> idOpt, E tipoOperacion) {
         return idOpt.flatMap(id -> {
             Optional<T> entityToDelete = findById(Optional.of(id));
             
             entityToDelete.ifPresent(entity -> {
                 entities.remove(entity);
                 deletedEntities.add(entity);
-                registrarAuditoria(entity, getOperationType(OperationType.DELETE));
+                registrarAuditoria(entity, tipoOperacion);
             });
             
             return entityToDelete;
@@ -140,7 +130,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     /**
      * Restaura una entidad previamente eliminada
      */
-    public Optional<T> restoreDeletedEntity(Optional<ID> idOpt) {
+    public Optional<T> restaurar(Optional<ID> idOpt, E tipoOperacion) {
         return idOpt.flatMap(id -> {
             Optional<T> entityToRestore = deletedEntities.stream()
                     .filter(entity -> entity.getId().equals(id))
@@ -149,7 +139,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
             entityToRestore.ifPresent(entity -> {
                 entities.add(entity);
                 deletedEntities.removeIf(e -> e.getId().equals(id));
-                registrarAuditoria(entity, getOperationType(OperationType.RESTORE));
+                registrarAuditoria(entity, tipoOperacion);
             });
             
             return entityToRestore;
@@ -165,16 +155,4 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
      * Método para registrar auditoría
      */
     protected abstract void registrarAuditoria(T entity, E tipoOperacion);
-    
-    /**
-     * Método para obtener el tipo de operación correspondiente
-     */
-    protected abstract E getOperationType(OperationType type);
-    
-    /**
-     * Enum interno para tipos de operación base
-     */
-    protected enum OperationType {
-        CREATE, UPDATE, DELETE, RESTORE
-    }
 } 
