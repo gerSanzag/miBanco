@@ -1,8 +1,9 @@
-package com.mibanco.repository.impl;
+package com.mibanco.repository.util;
 
 import com.mibanco.model.Identificable;
 import com.mibanco.repository.AuditoriaRepository;
-import com.mibanco.repository.BaseRepository;
+import com.mibanco.config.factory.RepositoryFactory;
+import com.mibanco.util.AuditoriaUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,17 +28,17 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     // Contador para generar IDs automáticamente
     protected final AtomicLong idCounter = new AtomicLong(1);
     
-    // Repositorio de auditoría
+    // Repositorio de auditoría obtenido de la factory
     protected final AuditoriaRepository auditoriaRepository;
     
     // Usuario actual (en un sistema real vendría de un sistema de autenticación)
     protected String usuarioActual = "sistema";
     
     /**
-     * Constructor que inicializa el repositorio de auditoría
+     * Constructor que obtiene el repositorio de auditoría de la factory
      */
-    protected BaseRepositoryImpl(AuditoriaRepository auditoriaRepository) {
-        this.auditoriaRepository = auditoriaRepository;
+    protected BaseRepositoryImpl() {
+        this.auditoriaRepository = RepositoryFactory.getInstance().getAuditoriaRepository();
     }
     
     /**
@@ -64,12 +65,13 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
      */
     public Optional<T> actualizar(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.flatMap(entity -> 
-            Optional.ofNullable(entity.getId()).map(id -> {
-                entities.removeIf(e -> e.getId().equals(id));
-        entities.add(entity);
-                registrarAuditoria(entity, tipoOperacion);
-                return entity;
-            })
+            Optional.ofNullable(entity.getId())
+                .map(id -> {
+                    entities.removeIf(e -> e.getId().equals(id));
+                    entities.add(entity);
+                    registrarAuditoria(entity, tipoOperacion);
+                    return entity;
+                })
         );
     }
     
@@ -153,6 +155,14 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     
     /**
      * Método para registrar auditoría
+     * Implementado directamente en la base ya que la lógica es la misma para todos los repositorios
      */
-    protected abstract void registrarAuditoria(T entity, E tipoOperacion);
+    private void registrarAuditoria(T entity, E tipoOperacion) {
+        AuditoriaUtil.registrarOperacion(
+            auditoriaRepository,
+            tipoOperacion,
+            entity,
+            usuarioActual
+        );
+    }
 } 

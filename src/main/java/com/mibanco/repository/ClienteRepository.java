@@ -2,10 +2,13 @@ package com.mibanco.repository;
 
 import com.mibanco.model.Cliente;
 import com.mibanco.model.enums.TipoOperacionCliente;
+import com.mibanco.repository.util.BaseRepository;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
- * Interfaz para operaciones específicas de Cliente
+ * Interfaz para el repositorio de Clientes
  * Extiende la interfaz base para heredar operaciones CRUD genéricas
  */
 public interface ClienteRepository extends BaseRepository<Cliente, Long, TipoOperacionCliente> {
@@ -23,4 +26,6 @@ public interface ClienteRepository extends BaseRepository<Cliente, Long, TipoOpe
      * @return Optional con el cliente restaurado o Optional vacío si no se encuentra
      */
     Optional<Cliente> restoreDeletedClient(Optional<Long> id);
+    
+    ArrayList<Cliente> getRecentlyDeletedClients();
 } 

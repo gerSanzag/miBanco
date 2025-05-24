@@ -3,14 +3,11 @@ package com.mibanco.repository.impl;
 import com.mibanco.model.Cuenta;
 import com.mibanco.model.enums.TipoCuenta;
 import com.mibanco.model.enums.TipoOperacionCuenta;
-import com.mibanco.repository.AuditoriaRepository;
 import com.mibanco.repository.CuentaRepository;
-import com.mibanco.util.AuditoriaUtil;
+import com.mibanco.repository.util.BaseRepositoryImpl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Implementación del repositorio de Cuentas
@@ -19,10 +16,10 @@ import java.util.stream.Collectors;
 public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepository {
     
     /**
-     * Constructor que inicializa el repositorio de auditoría
+     * Constructor por defecto
      */
-    public CuentaRepositoryImpl(AuditoriaRepository auditoriaRepository) {
-        super(auditoriaRepository);
+    public CuentaRepositoryImpl() {
+        super();
     }
     
     @Override
@@ -55,7 +52,7 @@ public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, Tip
     public Optional<Cuenta> deleteByNumero(Optional<String> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
             findByNumero(Optional.of(numero))
-                .flatMap(cuenta -> deleteById(Optional.of(cuenta.getNumeroCuenta())))
+                .flatMap(cuenta -> deleteById(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))
         );
     }
     
@@ -67,22 +64,11 @@ public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, Tip
     }
     
     @Override
-    protected void registrarAuditoria(Cuenta cuenta, TipoOperacionCuenta tipoOperacion) {
-                    AuditoriaUtil.registrarOperacion(
-                        auditoriaRepository,
-                        tipoOperacion,
-            cuenta,
-                        usuarioActual
+    public Optional<Cuenta> save(Optional<Cuenta> cuentaOpt) {
+        return cuentaOpt.flatMap(cuenta -> 
+            cuenta.getNumeroCuenta() != null
+                ? actualizar(Optional.of(cuenta), TipoOperacionCuenta.MODIFICAR)
+                : crear(Optional.of(cuenta), TipoOperacionCuenta.CREAR)
         );
-    }
-    
-    @Override
-    protected TipoOperacionCuenta getOperationType(OperationType type) {
-        return switch (type) {
-            case CREATE -> TipoOperacionCuenta.CREAR;
-            case UPDATE -> TipoOperacionCuenta.MODIFICAR;
-            case DELETE -> TipoOperacionCuenta.ELIMINAR;
-            case RESTORE -> TipoOperacionCuenta.ACTIVAR;
-        };
     }
 } 

@@ -1,16 +1,12 @@
 package com.mibanco.repository.impl;
 
 import com.mibanco.model.Cliente;
-import com.mibanco.model.RegistroAuditoria;
 import com.mibanco.model.enums.TipoOperacionCliente;
-import com.mibanco.repository.AuditoriaRepository;
 import com.mibanco.repository.ClienteRepository;
-import com.mibanco.util.AuditoriaUtil;
+import com.mibanco.repository.util.BaseRepositoryImpl;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementación del repositorio de Clientes
@@ -19,10 +15,10 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, TipoOperacionCliente> implements ClienteRepository {
     
     /**
-     * Constructor que inicializa el repositorio de auditoría
+     * Constructor por defecto
      */
-    public ClienteRepositoryImpl(AuditoriaRepository auditoriaRepository) {
-        super(auditoriaRepository);
+    public ClienteRepositoryImpl() {
+        super();
     }
     
     @Override
@@ -44,16 +40,7 @@ public class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, Tip
                 .build();
     }
     
-    @Override
-    protected void registrarAuditoria(Cliente cliente, TipoOperacionCliente tipoOperacion) {
-        RegistroAuditoria<Cliente, TipoOperacionCliente> registro = AuditoriaUtil.registrarOperacion(
-            auditoriaRepository,
-            tipoOperacion,
-            cliente,
-            usuarioActual
-        );
-    }
-    
+
     /**
      * Obtiene la lista de clientes recientemente eliminados
      * @return Lista de clientes eliminados
