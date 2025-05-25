@@ -38,7 +38,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
      * Constructor que obtiene el repositorio de auditoría de la factory
      */
     protected BaseRepositoryImpl() {
-        this.auditoriaRepository = RepositoryFactory.getInstance().getAuditoriaRepository();
+        this.auditoriaRepository = RepositoryFactory.obtenerInstancia().obtenerRepositorioAuditoria();
     }
     
     /**
@@ -53,7 +53,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
      */
     public Optional<T> crear(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.map(entity -> {
-            T newEntity = createWithNewId(entity);
+            T newEntity = crearConNuevoId(entity);
             entities.add(newEntity);
             registrarAuditoria(newEntity, tipoOperacion);
             return Optional.of(newEntity);
@@ -76,7 +76,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     }
     
     @Override
-    public Optional<T> findById(Optional<ID> idOpt) {
+    public Optional<T> buscarPorId(Optional<ID> idOpt) {
         return idOpt.flatMap(id -> 
             entities.stream()
                 .filter(entity -> entity.getId().equals(id))
@@ -87,32 +87,32 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     /**
      * Método genérico para buscar por cualquier predicado
      */
-    protected Optional<T> findByPredicate(Predicate<T> predicate) {
+    protected Optional<T> buscarPorPredicado(Predicate<T> predicado) {
         return entities.stream()
-                .filter(predicate)
+                .filter(predicado)
                 .findFirst();
     }
     
     /**
      * Método genérico para buscar lista por cualquier predicado
      */
-    protected Optional<List<T>> findAllByPredicate(Predicate<T> predicate) {
+    protected Optional<List<T>> buscarTodosPorPredicado(Predicate<T> predicado) {
         return Optional.of(
             entities.stream()
-                .filter(predicate)
+                .filter(predicado)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
         );
     }
     
     @Override
-    public Optional<List<T>> findAll() {
+    public Optional<List<T>> buscarTodos() {
         return Optional.of(new ArrayList<>(entities));
     }
     
     @Override
-    public Optional<T> deleteById(Optional<ID> idOpt, E tipoOperacion) {
+    public Optional<T> eliminarPorId(Optional<ID> idOpt, E tipoOperacion) {
         return idOpt.flatMap(id -> {
-            Optional<T> entityToDelete = findById(Optional.of(id));
+            Optional<T> entityToDelete = buscarPorId(Optional.of(id));
             
             entityToDelete.ifPresent(entity -> {
                 entities.remove(entity);
@@ -125,7 +125,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     }
     
     @Override
-    public long count() {
+    public long contarRegistros() {
         return entities.size();
     }
     
@@ -151,7 +151,7 @@ public abstract class BaseRepositoryImpl<T extends Identificable, ID, E extends 
     /**
      * Método para crear una nueva entidad con ID
      */
-    protected abstract T createWithNewId(T entity);
+    protected abstract T crearConNuevoId(T entity);
     
     /**
      * Método para registrar auditoría

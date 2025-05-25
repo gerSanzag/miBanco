@@ -51,7 +51,7 @@ public class Cuenta implements Identificable {
      * Versión inmutable para actualizar el saldo
      * @return Una nueva instancia con el saldo actualizado
      */
-    public Cuenta withSaldo(BigDecimal nuevoSaldo) {
+    public Cuenta conSaldo(BigDecimal nuevoSaldo) {
         return this.toBuilder()
                 .saldo(nuevoSaldo)
                 .build();
@@ -61,7 +61,7 @@ public class Cuenta implements Identificable {
      * Versión inmutable para actualizar el estado activo
      * @return Una nueva instancia con el estado actualizado
      */
-    public Cuenta withActiva(boolean nuevaActiva) {
+    public Cuenta conActiva(boolean nuevaActiva) {
         return this.toBuilder()
                 .activa(nuevaActiva)
                 .build();
@@ -71,7 +71,7 @@ public class Cuenta implements Identificable {
      * Versión inmutable para actualizar múltiples campos a la vez
      * @return Una nueva instancia con los campos actualizados
      */
-    public Cuenta withActualizaciones(Optional<BigDecimal> nuevoSaldo, Optional<Boolean> nuevaActiva) {
+    public Cuenta conActualizaciones(Optional<BigDecimal> nuevoSaldo, Optional<Boolean> nuevaActiva) {
         return this.toBuilder()
                 .saldo(nuevoSaldo.orElse(this.saldo))
                 .activa(nuevaActiva.orElse(this.activa))

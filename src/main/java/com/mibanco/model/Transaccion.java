@@ -47,7 +47,7 @@ public class Transaccion implements Identificable {
      * Útil para crear transacciones similares o correlacionadas
      * @return Nueva transacción con ID actualizado
      */
-    public Transaccion withNuevoId(Long nuevoId) {
+    public Transaccion conNuevoId(Long nuevoId) {
         return this.toBuilder()
                 .id(nuevoId)
                 .fecha(LocalDateTime.now()) // Actualizamos la fecha también
@@ -59,7 +59,7 @@ public class Transaccion implements Identificable {
      * Este es uno de los pocos casos donde puede ser útil "modificar" una transacción
      * @return Nueva transacción con descripción actualizada
      */
-    public Transaccion withDescripcion(String nuevaDescripcion) {
+    public Transaccion conDescripcion(String nuevaDescripcion) {
         return this.toBuilder()
                 .descripcion(nuevaDescripcion)
                 .build();

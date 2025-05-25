@@ -18,14 +18,18 @@ public interface ClienteRepository extends BaseRepository<Cliente, Long, TipoOpe
      * @param dni Optional con el DNI del cliente a buscar
      * @return Optional con el cliente si existe
      */
-    Optional<Cliente> findByDni(Optional<String> dni);
+    Optional<Cliente> buscarPorDni(Optional<String> dni);
     
     /**
      * Restaura un cliente previamente eliminado
      * @param id Optional con el ID del cliente a restaurar
      * @return Optional con el cliente restaurado o Optional vacío si no se encuentra
      */
-    Optional<Cliente> restoreDeletedClient(Optional<Long> id);
+    Optional<Cliente> restaurarClienteEliminado(Optional<Long> id);
     
-    ArrayList<Cliente> getRecentlyDeletedClients();
+    /**
+     * Obtiene la lista de clientes recientemente eliminados
+     * @return Lista de clientes eliminados
+     */
+    ArrayList<Cliente> obtenerClientesEliminados();
 } 

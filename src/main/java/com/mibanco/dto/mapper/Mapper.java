@@ -13,15 +13,15 @@ public interface Mapper<E, D> {
     
     /**
      * Convierte una entidad a su DTO correspondiente
-     * @param entity Entidad a convertir (Optional)
+     * @param entidad Entidad a convertir (Optional)
      * @return DTO resultante (Optional)
      */
-    Optional<D> toDto(Optional<E> entity);
+    Optional<D> aDto(Optional<E> entidad);
     
     /**
      * Convierte un DTO a su entidad correspondiente
      * @param dto DTO a convertir (Optional)
      * @return Entidad resultante (Optional)
      */
-    Optional<E> toEntity(Optional<D> dto);
+    Optional<E> aEntidad(Optional<D> dto);
 } 

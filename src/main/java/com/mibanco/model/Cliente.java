@@ -42,7 +42,7 @@ public class Cliente implements Identificable {
      * Versión inmutable para actualizar el email
      * @return Una nueva instancia con el email actualizado
      */
-    public Cliente withEmail(String nuevoEmail) {
+    public Cliente conEmail(String nuevoEmail) {
         return this.toBuilder()
                 .email(nuevoEmail)
                 .build();
@@ -52,7 +52,7 @@ public class Cliente implements Identificable {
      * Versión inmutable para actualizar el teléfono
      * @return Una nueva instancia con el teléfono actualizado
      */
-    public Cliente withTelefono(String nuevoTelefono) {
+    public Cliente conTelefono(String nuevoTelefono) {
         return this.toBuilder()
                 .telefono(nuevoTelefono)
                 .build();
@@ -62,7 +62,7 @@ public class Cliente implements Identificable {
      * Versión inmutable para actualizar la dirección
      * @return Una nueva instancia con la dirección actualizada
      */
-    public Cliente withDireccion(String nuevaDireccion) {
+    public Cliente conDireccion(String nuevaDireccion) {
         return this.toBuilder()
                 .direccion(nuevaDireccion)
                 .build();
@@ -72,7 +72,7 @@ public class Cliente implements Identificable {
      * Versión inmutable para actualizar múltiples campos a la vez
      * @return Una nueva instancia con los campos actualizados
      */
-    public Cliente withDatosContacto(Optional<String> nuevoEmail, 
+    public Cliente conDatosContacto(Optional<String> nuevoEmail, 
                                     Optional<String> nuevoTelefono, 
                                     Optional<String> nuevaDireccion) {
         return this.toBuilder()

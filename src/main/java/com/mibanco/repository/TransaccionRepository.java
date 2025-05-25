@@ -20,35 +20,35 @@ public interface TransaccionRepository {
      * @return Optional con la transacción guardada con ID generado
      * o Optional vacío si la transacción era null
      */
-    Optional<Transaccion> save(Optional<Transaccion> transaccion);
+    Optional<Transaccion> guardar(Optional<Transaccion> transaccion);
     
     /**
      * Busca una transacción por su ID
      * @param id Optional con el ID de la transacción a buscar
      * @return Optional con la transacción si existe
      */
-    Optional<Transaccion> findById(Optional<Long> id);
+    Optional<Transaccion> buscarPorId(Optional<Long> id);
     
     /**
      * Busca transacciones por el número de cuenta
      * @param numeroCuenta Optional con el número de cuenta
      * @return Optional con lista de transacciones de la cuenta
      */
-    Optional<List<Transaccion>> findByCuenta(Optional<String> numeroCuenta);
+    Optional<List<Transaccion>> buscarPorCuenta(Optional<String> numeroCuenta);
     
     /**
      * Busca transacciones por el tipo
      * @param tipo Optional con el tipo de transacción
      * @return Optional con lista de transacciones del tipo especificado
      */
-    Optional<List<Transaccion>> findByTipo(Optional<TipoTransaccion> tipo);
+    Optional<List<Transaccion>> buscarPorTipo(Optional<TipoTransaccion> tipo);
     
     /**
      * Busca transacciones por fecha
      * @param fecha Optional con la fecha de las transacciones
      * @return Optional con lista de transacciones de la fecha especificada
      */
-    Optional<List<Transaccion>> findByFecha(Optional<LocalDate> fecha);
+    Optional<List<Transaccion>> buscarPorFecha(Optional<LocalDate> fecha);
     
     /**
      * Busca transacciones en un rango de fechas
@@ -56,24 +56,24 @@ public interface TransaccionRepository {
      * @param fechaFin Optional con la fecha de fin
      * @return Optional con lista de transacciones en el rango especificado
      */
-    Optional<List<Transaccion>> findByRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin);
+    Optional<List<Transaccion>> buscarPorRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin);
     
     /**
      * Obtiene todas las transacciones
      * @return Optional con lista de transacciones
      */
-    Optional<List<Transaccion>> findAll();
+    Optional<List<Transaccion>> buscarTodas();
     
     /**
      * Elimina una transacción por su ID
      * @param id Optional con el ID de la transacción a eliminar
      * @return Optional con la transacción eliminada o Optional vacío si no existía
      */
-    Optional<Transaccion> deleteById(Optional<Long> id);
+    Optional<Transaccion> eliminarPorId(Optional<Long> id);
     
     /**
      * Obtiene el número de transacciones en el repositorio
      * @return Número de transacciones
      */
-    long count();
+    long contarRegistros();
 } 

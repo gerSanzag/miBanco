@@ -22,19 +22,19 @@ public class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, Tip
     }
     
     @Override
-    public Optional<Cliente> findByDni(Optional<String> dniOpt) {
+    public Optional<Cliente> buscarPorDni(Optional<String> dniOpt) {
         return dniOpt.flatMap(dni -> 
-            findByPredicate(cliente -> cliente.getDni().equals(dni))
+            buscarPorPredicado(cliente -> cliente.getDni().equals(dni))
         );
     }
     
     @Override
-    public Optional<Cliente> restoreDeletedClient(Optional<Long> id) {
+    public Optional<Cliente> restaurarClienteEliminado(Optional<Long> id) {
         return restaurar(id, TipoOperacionCliente.RESTAURAR);
     }
     
     @Override
-    protected Cliente createWithNewId(Cliente cliente) {
+    protected Cliente crearConNuevoId(Cliente cliente) {
         return cliente.toBuilder()
                 .id(idCounter.getAndIncrement())
                 .build();
@@ -45,7 +45,7 @@ public class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, Tip
      * Obtiene la lista de clientes recientemente eliminados
      * @return Lista de clientes eliminados
      */
-    public ArrayList<Cliente> getRecentlyDeletedClients() {
+    public ArrayList<Cliente> obtenerClientesEliminados() {
         return new ArrayList<>(deletedEntities);
     }
 } 

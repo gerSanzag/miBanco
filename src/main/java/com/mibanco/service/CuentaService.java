@@ -8,79 +8,78 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Interfaz para servicios relacionados con cuentas bancarias
- * Utilizando enfoque funcional con Optional
+ * Interfaz de servicio para operaciones con Cuentas
  */
 public interface CuentaService {
-
+    
     /**
-     * Crea una nueva cuenta en el sistema
+     * Crea una nueva cuenta
      * @param cuentaDTO Optional con los datos de la cuenta a crear
-     * @return Optional con la cuenta creada
+     * @return Optional con el DTO de la cuenta creada
      */
     Optional<CuentaDTO> crearCuenta(Optional<CuentaDTO> cuentaDTO);
     
     /**
      * Obtiene una cuenta por su número
-     * @param numeroCuenta Optional con el número de cuenta a buscar
-     * @return Optional con la cuenta encontrada
+     * @param numeroCuenta Optional con el número de cuenta
+     * @return Optional con el DTO de la cuenta
      */
     Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<String> numeroCuenta);
     
     /**
-     * Obtiene todas las cuentas de un titular
+     * Obtiene las cuentas de un titular
      * @param idTitular Optional con el ID del titular
-     * @return Optional con la lista de cuentas del titular
+     * @return Optional con la lista de DTOs de cuentas
      */
     Optional<List<CuentaDTO>> obtenerCuentasPorTitular(Optional<Long> idTitular);
     
     /**
-     * Obtiene todas las cuentas de un tipo específico
+     * Obtiene las cuentas de un tipo específico
      * @param tipo Optional con el tipo de cuenta
-     * @return Optional con la lista de cuentas del tipo especificado
+     * @return Optional con la lista de DTOs de cuentas
      */
     Optional<List<CuentaDTO>> obtenerCuentasPorTipo(Optional<TipoCuenta> tipo);
     
     /**
-     * Obtiene todas las cuentas del sistema
-     * @return Optional con la lista de todas las cuentas
+     * Obtiene todas las cuentas
+     * @return Optional con la lista de DTOs de cuentas
      */
     Optional<List<CuentaDTO>> obtenerTodasLasCuentas();
     
     /**
      * Obtiene todas las cuentas activas
-     * @return Optional con la lista de cuentas activas
+     * @return Optional con la lista de DTOs de cuentas activas
      */
     Optional<List<CuentaDTO>> obtenerCuentasActivas();
     
     /**
      * Actualiza el saldo de una cuenta
-     * @param numeroCuenta Número de la cuenta a actualizar
+     * @param numeroCuenta Número de la cuenta
      * @param nuevoSaldo Optional con el nuevo saldo
-     * @return Optional con la cuenta actualizada
+     * @return Optional con el DTO de la cuenta actualizada
      */
     Optional<CuentaDTO> actualizarSaldoCuenta(String numeroCuenta, Optional<BigDecimal> nuevoSaldo);
     
     /**
-     * Activa o desactiva una cuenta
-     * @param numeroCuenta Número de la cuenta a actualizar
+     * Actualiza el estado de una cuenta
+     * @param numeroCuenta Número de la cuenta
      * @param activa Optional con el nuevo estado
-     * @return Optional con la cuenta actualizada
+     * @return Optional con el DTO de la cuenta actualizada
      */
     Optional<CuentaDTO> actualizarEstadoCuenta(String numeroCuenta, Optional<Boolean> activa);
     
     /**
      * Actualiza múltiples campos de una cuenta
-     * @param numeroCuenta Número de la cuenta a actualizar
-     * @param cuentaDTO Optional con los datos a actualizar
-     * @return Optional con la cuenta actualizada
+     * @param numeroCuenta Número de la cuenta
+     * @param cuentaDTO Optional con los nuevos datos
+     * @return Optional con el DTO de la cuenta actualizada
      */
     Optional<CuentaDTO> actualizarCuenta(String numeroCuenta, Optional<CuentaDTO> cuentaDTO);
     
     /**
-     * Elimina una cuenta
-     * @param numeroCuenta Optional con el número de la cuenta a eliminar
-     * @return true si se eliminó correctamente, false en caso contrario
+     * Elimina una cuenta por su número
+     * @param numeroCuenta Optional con el número de cuenta a eliminar
+     * @return true si se eliminó correctamente, false si no
      */
     boolean eliminarCuenta(Optional<String> numeroCuenta);
 } 

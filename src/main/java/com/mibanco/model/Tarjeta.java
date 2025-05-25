@@ -53,7 +53,7 @@ public class Tarjeta implements Identificable {
      * Versión inmutable para actualizar la fecha de expiración
      * @return Una nueva instancia con la fecha actualizada
      */
-    public Tarjeta withFechaExpiracion(LocalDate nuevaFecha) {
+    public Tarjeta conFechaExpiracion(LocalDate nuevaFecha) {
         return this.toBuilder()
                 .fechaExpiracion(nuevaFecha)
                 .build();
@@ -63,7 +63,7 @@ public class Tarjeta implements Identificable {
      * Versión inmutable para actualizar el estado activo
      * @return Una nueva instancia con el estado actualizado
      */
-    public Tarjeta withActiva(boolean nuevaActiva) {
+    public Tarjeta conActiva(boolean nuevaActiva) {
         return this.toBuilder()
                 .activa(nuevaActiva)
                 .build();
@@ -73,7 +73,7 @@ public class Tarjeta implements Identificable {
      * Versión inmutable para actualizar múltiples campos a la vez
      * @return Una nueva instancia con los campos actualizados
      */
-    public Tarjeta withActualizaciones(Optional<LocalDate> nuevaFecha, Optional<Boolean> nuevaActiva) {
+    public Tarjeta conActualizaciones(Optional<LocalDate> nuevaFecha, Optional<Boolean> nuevaActiva) {
         return this.toBuilder()
                 .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
                 .activa(nuevaActiva.orElse(this.activa))

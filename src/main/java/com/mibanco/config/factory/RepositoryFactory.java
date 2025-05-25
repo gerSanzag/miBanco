@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public class RepositoryFactory {
     
-    private static volatile RepositoryFactory instance;
+    private static volatile RepositoryFactory instancia;
     private final AuditoriaRepository auditoriaRepository;
     private final ClienteRepository clienteRepository;
     private final CuentaRepository cuentaRepository;
@@ -30,26 +30,26 @@ public class RepositoryFactory {
      * Obtiene la única instancia de RepositoryFactory
      * @return Instancia única de RepositoryFactory
      */
-    public static RepositoryFactory getInstance() {
-        if (instance == null) {
+    public static RepositoryFactory obtenerInstancia() {
+        if (instancia == null) {
             synchronized (RepositoryFactory.class) {
-                if (instance == null) {
-                    instance = new RepositoryFactory();
+                if (instancia == null) {
+                    instancia = new RepositoryFactory();
                 }
             }
         }
-        return instance;
+        return instancia;
     }
     
-    public AuditoriaRepository getAuditoriaRepository() {
+    public AuditoriaRepository obtenerRepositorioAuditoria() {
         return auditoriaRepository;
     }
     
-    public ClienteRepository getClienteRepository() {
+    public ClienteRepository obtenerRepositorioCliente() {
         return clienteRepository;
     }
     
-    public CuentaRepository getCuentaRepository() {
+    public CuentaRepository obtenerRepositorioCuenta() {
         return cuentaRepository;
     }
 } 

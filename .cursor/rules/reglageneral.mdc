@@ -28,6 +28,9 @@ alwaysApply: false
     * [And suggest other suitable patterns]
 * Prioritize clean, readable, and maintainable code.
 * Don't exceds the complexity of the functionality, remenber that I am a learner.
+* Always, the name of the methods must be in spanish.
+* See the structure of the project before act.
+
 
 **Crucially:**
 

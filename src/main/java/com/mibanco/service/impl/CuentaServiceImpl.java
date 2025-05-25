@@ -28,7 +28,7 @@ public class CuentaServiceImpl implements CuentaService {
      */
     public CuentaServiceImpl(CuentaMapper cuentaMapper) {
         // Utilizamos la factory para obtener la instancia única del repositorio
-        this.cuentaRepository = RepositoryFactory.getCuentaRepository();
+        this.cuentaRepository = RepositoryFactory.obtenerInstancia().obtenerRepositorioCuenta();
         this.cuentaMapper = cuentaMapper;
     }
     
@@ -40,10 +40,10 @@ public class CuentaServiceImpl implements CuentaService {
      */
     private Optional<CuentaDTO> actualizarCuentaGenerica(String numeroCuenta, Function<Cuenta, Cuenta> actualizarDatos) {
         return Optional.ofNullable(numeroCuenta)
-                .flatMap(numero -> cuentaRepository.findByNumero(Optional.of(numero)))
+                .flatMap(numero -> cuentaRepository.buscarPorNumero(Optional.of(numero)))
                 .map(actualizarDatos)
-                .flatMap(cuenta -> cuentaRepository.save(Optional.of(cuenta)))
-                .flatMap(cuentaMapper::toDtoDirecto);
+                .flatMap(cuenta -> cuentaRepository.guardar(Optional.of(cuenta)))
+                .flatMap(cuentaMapper::aDtoDirecto);
     }
     
     /**
@@ -53,9 +53,9 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public Optional<CuentaDTO> crearCuenta(Optional<CuentaDTO> cuentaDTO) {
         return cuentaDTO
-            .flatMap(dto -> cuentaMapper.toEntity(Optional.of(dto)))
-            .flatMap(entidad -> cuentaRepository.save(Optional.of(entidad)))
-            .flatMap(cuentaMapper::toDtoDirecto);
+            .flatMap(dto -> cuentaMapper.aEntidad(Optional.of(dto)))
+            .flatMap(cuenta -> cuentaRepository.guardar(Optional.of(cuenta)))
+            .flatMap(cuentaMapper::aDtoDirecto);
     }
     
     /**
@@ -64,10 +64,10 @@ public class CuentaServiceImpl implements CuentaService {
      */
     @Override
     public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<String> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> {
-            return cuentaRepository.findByNumero(Optional.of(numero))
-                .flatMap(cuentaMapper::toDtoDirecto);
-        });
+        return numeroCuenta.flatMap(numero -> 
+            cuentaRepository.buscarPorNumero(Optional.of(numero))
+                .flatMap(cuentaMapper::aDtoDirecto)
+        );
     }
     
     /**
@@ -76,10 +76,10 @@ public class CuentaServiceImpl implements CuentaService {
      */
     @Override
     public Optional<List<CuentaDTO>> obtenerCuentasPorTitular(Optional<Long> idTitular) {
-        return idTitular.flatMap(id -> {
-            return cuentaRepository.findByTitularId(Optional.of(id))
-                .flatMap(cuentaMapper::toDtoList);
-        });
+        return idTitular.flatMap(id -> 
+            cuentaRepository.buscarPorTitularId(Optional.of(id))
+                .flatMap(cuentaMapper::aListaDto)
+        );
     }
     
     /**
@@ -88,10 +88,10 @@ public class CuentaServiceImpl implements CuentaService {
      */
     @Override
     public Optional<List<CuentaDTO>> obtenerCuentasPorTipo(Optional<TipoCuenta> tipo) {
-        return tipo.flatMap(tipoCuenta -> {
-           return cuentaRepository.findByTipo(Optional.of(tipoCuenta))
-                .flatMap(cuentaMapper::toDtoList);
-        });
+        return tipo.flatMap(t -> 
+            cuentaRepository.buscarPorTipo(Optional.of(t))
+                .flatMap(cuentaMapper::aListaDto)
+        );
     }
     
     /**
@@ -100,8 +100,8 @@ public class CuentaServiceImpl implements CuentaService {
      */
     @Override
     public Optional<List<CuentaDTO>> obtenerTodasLasCuentas() {
-        return cuentaRepository.findAll()
-                .flatMap(cuentaMapper::toDtoList);
+        return cuentaRepository.buscarTodos()
+                .flatMap(cuentaMapper::aListaDto);
     }
     
     /**
@@ -110,8 +110,8 @@ public class CuentaServiceImpl implements CuentaService {
      */
     @Override
     public Optional<List<CuentaDTO>> obtenerCuentasActivas() {
-        return cuentaRepository.findAllActivas()
-                .flatMap(cuentaMapper::toDtoList);
+        return cuentaRepository.buscarActivas()
+                .flatMap(cuentaMapper::aListaDto);
     }
     
     /**
@@ -145,7 +145,7 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public Optional<CuentaDTO> actualizarCuenta(String numeroCuenta, Optional<CuentaDTO> cuentaDTO) {
         Function<Cuenta, Cuenta> actualizarDatos = cuentaExistente -> 
-            cuentaDTO.flatMap(cuentaMapper::toEntityDirecto)
+            cuentaDTO.flatMap(cuentaMapper::aEntidadDirecta)
                 .map(cuentaNueva -> cuentaExistente.withActualizaciones(
                     Optional.ofNullable(cuentaNueva.getSaldo()),
                     Optional.ofNullable(cuentaNueva.isActiva())
@@ -162,7 +162,7 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public boolean eliminarCuenta(Optional<String> numeroCuenta) {
         return numeroCuenta
-                .map(numero -> cuentaRepository.deleteByNumero(Optional.of(numero)))
+                .flatMap(numero -> cuentaRepository.eliminarPorNumero(Optional.of(numero)))
                 .isPresent();
     }
 } 

@@ -8,12 +8,15 @@ import com.mibanco.repository.util.BaseRepositoryImpl;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementación del repositorio de Cuentas
  * Extiende la implementación base para heredar funcionalidad CRUD genérica
  */
 public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepository {
+    
+    private static final AtomicLong idCounter = new AtomicLong(1);
     
     /**
      * Constructor por defecto
@@ -23,52 +26,58 @@ public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, Tip
     }
     
     @Override
-    public Optional<Cuenta> findByNumero(Optional<String> numeroCuenta) {
+    public Optional<Cuenta> buscarPorNumero(Optional<String> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
-            findByPredicate(cuenta -> cuenta.getNumeroCuenta().equals(numero))
+            buscarPorPredicado(cuenta -> cuenta.getNumeroCuenta().equals(numero))
         );
     }
     
     @Override
-    public Optional<List<Cuenta>> findByTitularId(Optional<Long> idTitular) {
+    public Optional<List<Cuenta>> buscarPorTitularId(Optional<Long> idTitular) {
         return idTitular.flatMap(id -> 
-            findAllByPredicate(cuenta -> cuenta.getTitular().getId().equals(id))
+            buscarTodosPorPredicado(cuenta -> cuenta.getTitular().getId().equals(id))
         );
     }
     
     @Override
-    public Optional<List<Cuenta>> findByTipo(Optional<TipoCuenta> tipo) {
+    public Optional<List<Cuenta>> buscarPorTipo(Optional<TipoCuenta> tipo) {
         return tipo.flatMap(t -> 
-            findAllByPredicate(cuenta -> cuenta.getTipo() == t)
+            buscarTodosPorPredicado(cuenta -> cuenta.getTipo() == t)
         );
     }
     
     @Override
-    public Optional<List<Cuenta>> findAllActivas() {
-        return findAllByPredicate(Cuenta::isActiva);
+    public Optional<List<Cuenta>> buscarActivas() {
+        return buscarTodosPorPredicado(Cuenta::isActiva);
     }
     
     @Override
-    public Optional<Cuenta> deleteByNumero(Optional<String> numeroCuenta) {
+    public Optional<Cuenta> eliminarPorNumero(Optional<String> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
-            findByNumero(Optional.of(numero))
-                .flatMap(cuenta -> deleteById(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))
+            buscarPorNumero(Optional.of(numero))
+                .flatMap(cuenta -> eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))
         );
     }
     
     @Override
-    protected Cuenta createWithNewId(Cuenta cuenta) {
+    public Optional<Cuenta> guardar(Optional<Cuenta> cuenta) {
+        return cuenta.map(c -> {
+            if (c.getNumeroCuenta() == null) {
+                return crear(Optional.of(c), TipoOperacionCuenta.CREAR).orElse(null);
+            } else {
+                return actualizar(Optional.of(c), TipoOperacionCuenta.MODIFICAR).orElse(null);
+            }
+        });
+    }
+    
+    @Override
+    protected Cuenta crearConNuevoId(Cuenta cuenta) {
         return cuenta.toBuilder()
-                .numeroCuenta(cuenta.getNumeroCuenta()) // El número de cuenta ya viene asignado
+                .numeroCuenta(generarNumeroCuenta())
                 .build();
     }
     
-    @Override
-    public Optional<Cuenta> save(Optional<Cuenta> cuentaOpt) {
-        return cuentaOpt.flatMap(cuenta -> 
-            cuenta.getNumeroCuenta() != null
-                ? actualizar(Optional.of(cuenta), TipoOperacionCuenta.MODIFICAR)
-                : crear(Optional.of(cuenta), TipoOperacionCuenta.CREAR)
-        );
+    private String generarNumeroCuenta() {
+        return String.format("%020d", idCounter.getAndIncrement());
     }
 } 

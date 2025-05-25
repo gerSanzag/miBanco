@@ -17,7 +17,7 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
      * Implementación estrictamente funcional con Optional
      */
     @Override
-    public Optional<ClienteDTO> toDto(Optional<Cliente> clienteOpt) {
+    public Optional<ClienteDTO> aDto(Optional<Cliente> clienteOpt) {
         return clienteOpt.map(cliente -> ClienteDTO.builder()
                 .id(cliente.getId())
                 .nombre(cliente.getNombre())
@@ -35,7 +35,7 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
      * Implementación estrictamente funcional con Optional
      */
     @Override
-    public Optional<Cliente> toEntity(Optional<ClienteDTO> dtoOpt) {
+    public Optional<Cliente> aEntidad(Optional<ClienteDTO> dtoOpt) {
         return dtoOpt.map(dto -> Cliente.builder()
                 .id(dto.getId())
                 .nombre(dto.getNombre())
@@ -52,16 +52,16 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
      * Sobrecarga que acepta Cliente directamente
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
-    public Optional<ClienteDTO> toDtoDirecto(Cliente cliente) {
-        return toDto(Optional.ofNullable(cliente));
+    public Optional<ClienteDTO> aDtoDirecto(Cliente cliente) {
+        return aDto(Optional.ofNullable(cliente));
     }
     
     /**
      * Sobrecarga que acepta ClienteDTO directamente
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
-    public Optional<Cliente> toEntityDirecto(ClienteDTO dto) {
-        return toEntity(Optional.ofNullable(dto));
+    public Optional<Cliente> aEntidadDirecta(ClienteDTO dto) {
+        return aEntidad(Optional.ofNullable(dto));
     }
     
     /**
@@ -69,9 +69,9 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
      * Utilizando programación funcional con streams
      * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
      */
-    public Optional<List<ClienteDTO>> toDtoList(Optional<List<Cliente>> clientes) {
+    public Optional<List<ClienteDTO>> aListaDto(Optional<List<Cliente>> clientes) {
         return clientes.map(list -> list.stream()
-                        .map(cliente -> toDto(Optional.of(cliente)).orElse(null))
+                        .map(cliente -> aDto(Optional.of(cliente)).orElse(null))
                         .filter(java.util.Objects::nonNull)
                 .collect(Collectors.toList()));
     }
@@ -79,8 +79,8 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
     /**
      * Sobrecarga que acepta List<Cliente> directamente
      */
-    public Optional<List<ClienteDTO>> toDtoList(List<Cliente> clientes) {
-        return toDtoList(Optional.ofNullable(clientes));
+    public Optional<List<ClienteDTO>> aListaDto(List<Cliente> clientes) {
+        return aListaDto(Optional.ofNullable(clientes));
     }
     
     /**
@@ -88,9 +88,9 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
      * Utilizando programación funcional con streams
      * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
      */
-    public Optional<List<Cliente>> toEntityList(Optional<List<ClienteDTO>> dtos) {
+    public Optional<List<Cliente>> aListaEntidad(Optional<List<ClienteDTO>> dtos) {
         return dtos.map(list -> list.stream()
-                        .map(dto -> toEntity(Optional.of(dto)).orElse(null))
+                        .map(dto -> aEntidad(Optional.of(dto)).orElse(null))
                         .filter(java.util.Objects::nonNull)
                 .collect(Collectors.toList()));
     }
@@ -98,7 +98,7 @@ public class ClienteMapper implements Mapper<Cliente, ClienteDTO> {
     /**
      * Sobrecarga que acepta List<ClienteDTO> directamente
      */
-    public Optional<List<Cliente>> toEntityList(List<ClienteDTO> dtos) {
-        return toEntityList(Optional.ofNullable(dtos));
+    public Optional<List<Cliente>> aListaEntidad(List<ClienteDTO> dtos) {
+        return aListaEntidad(Optional.ofNullable(dtos));
     }
 } 

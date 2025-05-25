@@ -17,15 +17,15 @@ public interface BaseRepository<T extends Identificable, ID, E extends Enum<E>> 
     
     Optional<T> actualizar(Optional<T> entity, E tipoOperacion);
     
-    Optional<T> findById(Optional<ID> id);
+    Optional<T> buscarPorId(Optional<ID> id);
     
-    Optional<List<T>> findAll();
+    Optional<List<T>> buscarTodos();
     
-    Optional<T> deleteById(Optional<ID> id, E tipoOperacion);
+    Optional<T> eliminarPorId(Optional<ID> id, E tipoOperacion);
     
     Optional<T> restaurar(Optional<ID> id, E tipoOperacion);
     
-    long count();
+    long contarRegistros();
     
     void setUsuarioActual(String usuario);
 } 

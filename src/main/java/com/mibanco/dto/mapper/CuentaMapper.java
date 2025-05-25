@@ -25,15 +25,15 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
 
     /**
      * Convierte una entidad Cuenta a DTO
-     * @param entity Optional con la entidad a convertir
+     * @param entidad Optional con la entidad a convertir
      * @return Optional con el DTO convertido
      */
     @Override
-    public Optional<CuentaDTO> toDto(Optional<Cuenta> entity) {
-        return entity.map(cuenta -> 
+    public Optional<CuentaDTO> aDto(Optional<Cuenta> entidad) {
+        return entidad.map(cuenta -> 
             CuentaDTO.builder()
                 .numeroCuenta(cuenta.getNumeroCuenta())
-                .titular(clienteMapper.toDtoDirecto(cuenta.getTitular()).orElse(null))
+                .titular(clienteMapper.aDtoDirecto(cuenta.getTitular()).orElse(null))
                 .tipo(cuenta.getTipo())
                 .saldo(cuenta.getSaldo())
                 .fechaCreacion(cuenta.getFechaCreacion())
@@ -47,8 +47,8 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
      * @param cuenta Entidad a convertir
      * @return Optional con el DTO convertido
      */
-    public Optional<CuentaDTO> toDtoDirecto(Cuenta cuenta) {
-        return toDto(Optional.ofNullable(cuenta));
+    public Optional<CuentaDTO> aDtoDirecto(Cuenta cuenta) {
+        return aDto(Optional.ofNullable(cuenta));
     }
 
     /**
@@ -57,11 +57,11 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
      * @return Optional con la entidad convertida
      */
     @Override
-    public Optional<Cuenta> toEntity(Optional<CuentaDTO> dto) {
+    public Optional<Cuenta> aEntidad(Optional<CuentaDTO> dto) {
         return dto.map(cuentaDTO -> 
             Cuenta.builder()
                 .numeroCuenta(cuentaDTO.getNumeroCuenta())
-                .titular(clienteMapper.toEntityDirecto(cuentaDTO.getTitular()).orElse(null))
+                .titular(clienteMapper.aEntidadDirecta(cuentaDTO.getTitular()).orElse(null))
                 .tipo(cuentaDTO.getTipo())
                 .saldo(cuentaDTO.getSaldo())
                 .fechaCreacion(cuentaDTO.getFechaCreacion())
@@ -75,19 +75,19 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
      * @param cuentaDTO DTO a convertir
      * @return Optional con la entidad convertida
      */
-    public Optional<Cuenta> toEntityDirecto(CuentaDTO cuentaDTO) {
-        return toEntity(Optional.ofNullable(cuentaDTO));
+    public Optional<Cuenta> aEntidadDirecta(CuentaDTO cuentaDTO) {
+        return aEntidad(Optional.ofNullable(cuentaDTO));
     }
 
     /**
      * Convierte una lista de entidades a lista de DTOs
-     * @param entities Optional con la lista de entidades
+     * @param entidades Optional con la lista de entidades
      * @return Optional con la lista de DTOs
      */
-    public Optional<List<CuentaDTO>> toDtoList(Optional<List<Cuenta>> entities) {
-        return entities.map(lista -> 
+    public Optional<List<CuentaDTO>> aListaDto(Optional<List<Cuenta>> entidades) {
+        return entidades.map(lista -> 
             lista.stream()
-                .map(cuenta -> toDtoDirecto(cuenta).orElse(null))
+                .map(cuenta -> aDtoDirecto(cuenta).orElse(null))
                 .filter(dto -> dto != null)
                 .collect(Collectors.toList())
         );
@@ -96,8 +96,8 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
     /**
      * Sobrecarga que acepta List<Cuenta> directamente
      */
-    public Optional<List<CuentaDTO>> toDtoList(List<Cuenta> cuentas) {
-        return toDtoList(Optional.ofNullable(cuentas));
+    public Optional<List<CuentaDTO>> aListaDto(List<Cuenta> cuentas) {
+        return aListaDto(Optional.ofNullable(cuentas));
     }
     
     /**
@@ -105,11 +105,11 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
      * @param dtos Optional con la lista de DTOs
      * @return Optional con la lista de entidades
      */
-    public Optional<List<Cuenta>> toEntityList(Optional<List<CuentaDTO>> dtos) {
+    public Optional<List<Cuenta>> aListaEntidad(Optional<List<CuentaDTO>> dtos) {
         return dtos.map(lista -> 
             lista.stream()
-                .map(dto -> toEntityDirecto(dto).orElse(null))
-                .filter(entity -> entity != null)
+                .map(dto -> aEntidadDirecta(dto).orElse(null))
+                .filter(entidad -> entidad != null)
                 .collect(Collectors.toList())
         );
     }
@@ -117,7 +117,7 @@ public class CuentaMapper implements Mapper<Cuenta, CuentaDTO> {
     /**
      * Sobrecarga que acepta List<CuentaDTO> directamente
      */
-    public Optional<List<Cuenta>> toEntityList(List<CuentaDTO> dtos) {
-        return toEntityList(Optional.ofNullable(dtos));
+    public Optional<List<Cuenta>> aListaEntidad(List<CuentaDTO> dtos) {
+        return aListaEntidad(Optional.ofNullable(dtos));
     }
 } 
