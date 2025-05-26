@@ -14,12 +14,6 @@ import java.util.Optional;
  */
 public interface CuentaRepository extends BaseRepository<Cuenta, String, TipoOperacionCuenta> {
     
-    /**
-     * Guarda una cuenta en el repositorio
-     * @param cuenta Optional con la cuenta a guardar
-     * @return Optional con la cuenta guardada o Optional vacío si la cuenta era null
-     */
-    Optional<Cuenta> guardar(Optional<Cuenta> cuenta);
     
     /**
      * Busca una cuenta por su número

@@ -1,23 +1,22 @@
-package com.mibanco.repository.impl;
+package com.mibanco.repository.internal;
 
 import com.mibanco.model.Cliente;
 import com.mibanco.model.enums.TipoOperacionCliente;
 import com.mibanco.repository.ClienteRepository;
-import com.mibanco.repository.util.BaseRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 /**
- * Implementación del repositorio de Clientes
- * Extiende la implementación base para heredar funcionalidad CRUD genérica
+ * Implementación del repositorio de Clientes con acceso restringido
+ * Solo accesible a través de la Factory y las interfaces públicas
  */
-public class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, TipoOperacionCliente> implements ClienteRepository {
+class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, TipoOperacionCliente> implements ClienteRepository {
     
     /**
-     * Constructor por defecto
+     * Constructor package-private
      */
-    public ClienteRepositoryImpl() {
+    ClienteRepositoryImpl() {
         super();
     }
     
@@ -36,16 +35,12 @@ public class ClienteRepositoryImpl extends BaseRepositoryImpl<Cliente, Long, Tip
     @Override
     protected Cliente crearConNuevoId(Cliente cliente) {
         return cliente.toBuilder()
-                .id(idCounter.getAndIncrement())
+                .id(idContador.getAndIncrement())
                 .build();
     }
     
-
-    /**
-     * Obtiene la lista de clientes recientemente eliminados
-     * @return Lista de clientes eliminados
-     */
+    @Override
     public ArrayList<Cliente> obtenerClientesEliminados() {
-        return new ArrayList<>(deletedEntities);
+        return new ArrayList<>(entidadesEliminadas);
     }
 } 

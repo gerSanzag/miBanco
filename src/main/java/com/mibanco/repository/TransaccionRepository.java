@@ -14,13 +14,6 @@ import java.util.Optional;
  */
 public interface TransaccionRepository {
     
-    /**
-     * Guarda una transacción en el repositorio
-     * @param transaccion Optional con la transacción a guardar
-     * @return Optional con la transacción guardada con ID generado
-     * o Optional vacío si la transacción era null
-     */
-    Optional<Transaccion> guardar(Optional<Transaccion> transaccion);
     
     /**
      * Busca una transacción por su ID

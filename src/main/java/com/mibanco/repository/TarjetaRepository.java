@@ -2,75 +2,49 @@ package com.mibanco.repository;
 
 import com.mibanco.model.Tarjeta;
 import com.mibanco.model.enums.TipoTarjeta;
+import com.mibanco.model.enums.TipoOperacionTarjeta;
+import com.mibanco.repository.util.BaseRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Interfaz para operaciones CRUD de Tarjeta
- * Siguiendo enfoque estrictamente funcional con Optional
- * tanto para parámetros como para resultados
+ * Interfaz para el repositorio de Tarjetas
+ * Extiende la interfaz base para heredar operaciones CRUD genéricas
  */
-public interface TarjetaRepository {
-    
-    /**
-     * Guarda una tarjeta en el repositorio
-     * @param tarjeta Optional con la tarjeta a guardar
-     * @return Optional con la tarjeta guardada o Optional vacío si la tarjeta era null
-     */
-    Optional<Tarjeta> save(Optional<Tarjeta> tarjeta);
+public interface TarjetaRepository extends BaseRepository<Tarjeta, String, TipoOperacionTarjeta> {
     
     /**
      * Busca una tarjeta por su número
      * @param numeroTarjeta Optional con el número de la tarjeta a buscar
      * @return Optional con la tarjeta si existe
      */
-    Optional<Tarjeta> findByNumero(Optional<String> numeroTarjeta);
+    Optional<Tarjeta> buscarPorNumero(Optional<String> numeroTarjeta);
     
     /**
      * Busca tarjetas por el ID del titular
      * @param idTitular Optional con el ID del titular
      * @return Lista de tarjetas del titular
      */
-    
-    Optional<List<Tarjeta>> findByTitularId(Optional<Long> idTitular);
+    Optional<List<Tarjeta>> buscarPorTitularId(Optional<Long> idTitular);
     
     /**
      * Busca tarjetas por el número de cuenta asociada
      * @param numeroCuenta Optional con el número de cuenta asociada
      * @return Lista de tarjetas asociadas a la cuenta
      */
-    Optional<List<Tarjeta>> findByCuentaAsociada(Optional<String> numeroCuenta);
+    Optional<List<Tarjeta>> buscarPorCuentaAsociada(Optional<String> numeroCuenta);
     
     /**
      * Busca tarjetas por tipo
      * @param tipo Optional con el tipo de tarjeta
      * @return Lista de tarjetas del tipo especificado
      */
-    Optional<List<Tarjeta>> findByTipo(Optional<TipoTarjeta> tipo);
-    
-    /**
-     * Obtiene todas las tarjetas
-     * @return Lista de tarjetas
-     */
-    Optional<List<Tarjeta>> findAll();
+    Optional<List<Tarjeta>> buscarPorTipo(Optional<TipoTarjeta> tipo);
     
     /**
      * Obtiene todas las tarjetas activas
      * @return Lista de tarjetas activas
      */
-    Optional<List<Tarjeta>> findAllActivas();
-    
-    /**
-     * Elimina una tarjeta por su número
-     * @param numeroTarjeta Optional con el número de la tarjeta a eliminar
-     * @return Optional con la tarjeta eliminada o Optional vacío si no existía
-     */
-    Optional<Tarjeta> deleteByNumero(Optional<String> numeroTarjeta);
-    
-    /**
-     * Obtiene el número de tarjetas en el repositorio
-     * @return Número de tarjetas
-     */
-    long count();
+    Optional<List<Tarjeta>> buscarActivas();
 } 

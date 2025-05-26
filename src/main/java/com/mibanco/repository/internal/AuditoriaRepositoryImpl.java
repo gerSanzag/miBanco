@@ -1,4 +1,4 @@
-package com.mibanco.repository.impl;
+package com.mibanco.repository.internal;
 
 import com.mibanco.model.Identificable;
 import com.mibanco.model.RegistroAuditoria;
@@ -13,19 +13,24 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación en memoria del repositorio de auditoría
- * Utiliza enfoque funcional con streams y Optional
+ * Visibilidad restringida al paquete internal
  */
-public class AuditoriaRepositoryImpl implements AuditoriaRepository {
+class AuditoriaRepositoryImpl implements AuditoriaRepository {
     
-    // Lista inmutable para almacenar los registros
+    // Lista para almacenar los registros
     private final List<RegistroAuditoria<?, ?>> registros = new ArrayList<>();
     
+    /**
+     * Constructor con visibilidad de paquete
+     */
+    AuditoriaRepositoryImpl() {
+        // Constructor vacío con visibilidad de paquete
+    }
+    
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Identificable, E extends Enum<E>> Optional<RegistroAuditoria<T, E>> registrar(
             Optional<RegistroAuditoria<T, E>> registroOpt) {
         return registroOpt.map(registro -> {
-            // Solo añadimos el registro, nunca lo modificamos (inmutabilidad)
             registros.add(registro);
             return registro;
         });
@@ -45,21 +50,17 @@ public class AuditoriaRepositoryImpl implements AuditoriaRepository {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> obtenerHistorial(
-            Optional<Class<T>> tipoEntidadOpt, 
-            Optional<Long> idEntidadOpt) {
-        
-        return tipoEntidadOpt.flatMap(tipoEntidad -> 
-            idEntidadOpt.map(idEntidad -> 
+            Optional<Class<T>> tipoEntidad, 
+            Optional<Long> idEntidad) {
+        return tipoEntidad.flatMap(tipo -> 
+            idEntidad.map(id -> 
                 registros.stream()
-                    .filter(r -> tipoEntidad.isInstance(r.getEntidad()))
-                    .filter(r -> {
-                        Identificable entidad = (Identificable) r.getEntidad();
-                        return entidad.getId().equals(idEntidad);
-                    })
+                    .filter(r -> tipo.isInstance(r.getEntidad()) && 
+                               r.getEntidad().getId().equals(id))
                     .map(r -> (RegistroAuditoria<T, E>) r)
                     .collect(Collectors.toList())
-            )
-        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
+            ).map(Optional::of)
+        ).orElse(Optional.of(new ArrayList<>()));
     }
     
     @Override
@@ -81,30 +82,27 @@ public class AuditoriaRepositoryImpl implements AuditoriaRepository {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorUsuario(
-            Optional<String> usuarioOpt) {
-        
-        return usuarioOpt.map(usuario -> 
+            Optional<String> usuario) {
+        return usuario.map(u -> 
             registros.stream()
-                .filter(r -> r.getUsuario().equals(usuario))
+                .filter(r -> r.getUsuario().equals(u))
                 .map(r -> (RegistroAuditoria<T, E>) r)
                 .collect(Collectors.toList())
-        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
+        );
     }
     
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Identificable, E extends Enum<E>> Optional<List<RegistroAuditoria<T, E>>> buscarPorTipoOperacion(
-            Optional<E> tipoOperacionOpt, 
-            Optional<Class<E>> tipoEnumOpt) {
-        
-        return tipoOperacionOpt.flatMap(tipoOperacion -> 
-            tipoEnumOpt.map(tipoEnum -> 
+            Optional<E> tipoOperacion,
+            Optional<Class<E>> tipoEnum) {
+        return tipoOperacion.flatMap(tipo ->
+            tipoEnum.map(enumClass ->
                 registros.stream()
-                    .filter(r -> r.getTipoOperacion().getClass().equals(tipoEnum))
-                    .filter(r -> r.getTipoOperacion().equals(tipoOperacion))
+                    .filter(r -> r.getTipoOperacion().equals(tipo))
                     .map(r -> (RegistroAuditoria<T, E>) r)
                     .collect(Collectors.toList())
             )
-        ).map(Optional::of).orElse(Optional.of(new ArrayList<>()));
+        );
     }
 } 

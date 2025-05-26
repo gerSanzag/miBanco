@@ -11,10 +11,18 @@ public interface ClienteService {
     
     /**
      * Crea un nuevo cliente
-     * @param clienteDTO Optional con los datos del cliente a crear
+     * @param clienteDTO Optional con los datos del nuevo cliente
      * @return Optional con el DTO del cliente creado
      */
     Optional<ClienteDTO> crearCliente(Optional<ClienteDTO> clienteDTO);
+    
+    /**
+     * Actualiza la información completa de un cliente
+     * @param id ID del cliente a actualizar
+     * @param clienteDTO Optional con los nuevos datos del cliente
+     * @return Optional con el DTO del cliente actualizado
+     */
+    Optional<ClienteDTO> actualizarCliente(Long id, Optional<ClienteDTO> clienteDTO);
     
     /**
      * Obtiene un cliente por su ID
@@ -35,14 +43,6 @@ public interface ClienteService {
      * @return Optional con la lista de DTOs de clientes
      */
     Optional<List<ClienteDTO>> obtenerTodosLosClientes();
-    
-    /**
-     * Actualiza los datos de un cliente
-     * @param id ID del cliente a actualizar
-     * @param clienteDTO Optional con los nuevos datos del cliente
-     * @return Optional con el DTO del cliente actualizado
-     */
-    Optional<ClienteDTO> actualizarCliente(Long id, Optional<ClienteDTO> clienteDTO);
     
     /**
      * Actualiza el email de un cliente
@@ -74,4 +74,29 @@ public interface ClienteService {
      * @return true si se eliminó correctamente, false si no
      */
     boolean eliminarCliente(Optional<Long> id);
+
+    /**
+     * Restaura un cliente previamente eliminado
+     * @param id Optional con el ID del cliente a restaurar
+     * @return Optional con el DTO del cliente restaurado
+     */
+    Optional<ClienteDTO> restaurarCliente(Optional<Long> id);
+
+    /**
+     * Obtiene la lista de clientes eliminados
+     * @return Lista de DTOs de clientes eliminados
+     */
+    List<ClienteDTO> obtenerClientesEliminados();
+
+    /**
+     * Obtiene el número total de clientes
+     * @return Número de clientes
+     */
+    long contarClientes();
+
+    /**
+     * Establece el usuario actual para operaciones de auditoría
+     * @param usuario Usuario actual
+     */
+    void establecerUsuarioActual(String usuario);
 } 

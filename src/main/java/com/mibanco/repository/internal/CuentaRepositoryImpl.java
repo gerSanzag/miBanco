@@ -1,27 +1,23 @@
-package com.mibanco.repository.impl;
+package com.mibanco.repository.internal;
 
 import com.mibanco.model.Cuenta;
 import com.mibanco.model.enums.TipoCuenta;
 import com.mibanco.model.enums.TipoOperacionCuenta;
 import com.mibanco.repository.CuentaRepository;
-import com.mibanco.repository.util.BaseRepositoryImpl;
 
 import java.util.Optional;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementación del repositorio de Cuentas
- * Extiende la implementación base para heredar funcionalidad CRUD genérica
+ * Visibilidad restringida al paquete internal
  */
-public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepository {
-    
-    private static final AtomicLong idCounter = new AtomicLong(1);
+class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepository {
     
     /**
-     * Constructor por defecto
+     * Constructor con visibilidad de paquete
      */
-    public CuentaRepositoryImpl() {
+    CuentaRepositoryImpl() {
         super();
     }
     
@@ -60,24 +56,9 @@ public class CuentaRepositoryImpl extends BaseRepositoryImpl<Cuenta, String, Tip
     }
     
     @Override
-    public Optional<Cuenta> guardar(Optional<Cuenta> cuenta) {
-        return cuenta.map(c -> {
-            if (c.getNumeroCuenta() == null) {
-                return crear(Optional.of(c), TipoOperacionCuenta.CREAR).orElse(null);
-            } else {
-                return actualizar(Optional.of(c), TipoOperacionCuenta.MODIFICAR).orElse(null);
-            }
-        });
-    }
-    
-    @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
         return cuenta.toBuilder()
-                .numeroCuenta(generarNumeroCuenta())
+                .numeroCuenta(String.format("%020d", idContador.getAndIncrement()))
                 .build();
-    }
-    
-    private String generarNumeroCuenta() {
-        return String.format("%020d", idCounter.getAndIncrement());
     }
 } 

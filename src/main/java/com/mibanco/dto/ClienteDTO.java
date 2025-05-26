@@ -46,7 +46,7 @@ public class ClienteDTO {
      * Versión inmutable para actualizar el email
      * @return Una nueva instancia con el email actualizado
      */
-    public ClienteDTO withEmail(String nuevoEmail) {
+    public ClienteDTO conEmail(String nuevoEmail) {
         return this.toBuilder()
                 .email(nuevoEmail)
                 .build();
@@ -56,7 +56,7 @@ public class ClienteDTO {
      * Versión inmutable para actualizar el teléfono
      * @return Una nueva instancia con el teléfono actualizado
      */
-    public ClienteDTO withTelefono(String nuevoTelefono) {
+    public ClienteDTO conTelefono(String nuevoTelefono) {
         return this.toBuilder()
                 .telefono(nuevoTelefono)
                 .build();
@@ -66,7 +66,7 @@ public class ClienteDTO {
      * Versión inmutable para actualizar la dirección
      * @return Una nueva instancia con la dirección actualizada
      */
-    public ClienteDTO withDireccion(String nuevaDireccion) {
+    public ClienteDTO conDireccion(String nuevaDireccion) {
         return this.toBuilder()
                 .direccion(nuevaDireccion)
                 .build();
@@ -76,7 +76,7 @@ public class ClienteDTO {
      * Versión inmutable para actualizar múltiples campos a la vez
      * @return Una nueva instancia con los campos actualizados
      */
-    public ClienteDTO withDatosContacto(Optional<String> nuevoEmail, 
+    public ClienteDTO conDatosContacto(Optional<String> nuevoEmail, 
                                       Optional<String> nuevoTelefono, 
                                       Optional<String> nuevaDireccion) {
         return this.toBuilder()
