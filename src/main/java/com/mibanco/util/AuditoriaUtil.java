@@ -1,8 +1,9 @@
 package com.mibanco.util;
 
-import com.mibanco.model.Identificable;
-import com.mibanco.model.RegistroAuditoria;
-import com.mibanco.repository.AuditoriaRepository;
+import com.mibanco.modelo.Identificable;
+import com.mibanco.modelo.RegistroAuditoria;
+import com.mibanco.repositorio.AuditoriaRepositorio;
+
 import java.util.Optional;
 
 /**
@@ -21,7 +22,7 @@ public class AuditoriaUtil {
      */
     public static <T extends Identificable, E extends Enum<E>> 
            RegistroAuditoria<T, E> registrarOperacion(
-               AuditoriaRepository auditoriaRepository,
+               AuditoriaRepositorio auditoriaRepository,
                E tipoOperacion, 
                T entidad, 
                String usuario) {

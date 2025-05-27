@@ -3,9 +3,10 @@ package com.mibanco.dto;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.mibanco.modelo.enums.TipoTarjeta;
+
 import lombok.Builder;
 import lombok.Value;
-import com.mibanco.model.enums.TipoTarjeta;
 
 /**
  * DTO para transferir información de Tarjeta entre capas

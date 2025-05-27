@@ -1,6 +1,5 @@
 package com.mibanco.dto;
 
-import com.mibanco.model.enums.TipoTransaccion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -9,6 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+
+import com.mibanco.modelo.enums.TipoTransaccion;
+
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
