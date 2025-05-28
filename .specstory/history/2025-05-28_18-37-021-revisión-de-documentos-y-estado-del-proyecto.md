@@ -1766,3 +1766,99 @@ En resumen, las clases son abstractas porque:
 
 ---
 
+_**User**_
+
+Dame un mensaje para el git que refleje los cambios desde el ultimo commit guardado.
+
+---
+
+_**Assistant**_
+
+Voy a revisar los cambios realizados para crear un mensaje de commit apropiado.
+
+
+---
+
+```bash
+git status
+```
+
+```
+On branch modificarRepositorios
+Your branch is up to date with 'origin/modificarRepositorios'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   ".specstory/history/2025-05-27_17-16-019-revisi\303\263n-de-
+m\303\251todos-de-actualizaci\303\263n-en-java.md
+"
+                                                         modified:   src/main/ja
+va/com/mibanco/modelo/enums/TipoOperacionCliente.java
+        modified:   src/main/java/com/mibanco/repositorio/interna/BaseRepositori
+oImpl.java
+        deleted:    src/main/java/com/mibanco/repositorio/interna/RepositoryFact
+ory.java
+        modified:   src/main/java/com/mibanco/repositorio/util/BaseRepositorio.j
+ava
+        modified:   src/main/java/com/mibanco/servicio/ClienteServicio.java
+        modified:   src/main/java/com/mibanco/servicio/impl/ClienteServicioImpl.
+java
+        modified:   src/main/java/com/mibanco/servicio/util/BaseServicioImpl.jav
+a
+        modified:   target/classes/com/mibanco/modelo/enums/TipoOperacionCliente
+.class
+        modified:   target/classes/com/mibanco/repositorio/interna/BaseRepositor
+ioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/RepositoryFac
+tory.class
+        modified:   target/classes/com/mibanco/repositorio/util/BaseRepositorio.
+class
+        modified:   target/classes/com/mibanco/servicio/ClienteServicio.class
+        modified:   target/classes/com/mibanco/servicio/impl/ClienteServicioImpl
+.class
+        modified:   target/classes/com/mibanco/servicio/util/BaseServicioImpl.cl
+ass
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        .specstory/history/2025-05-28_16-52-020-document-review-for-java-update-
+methods.md
+        ".specstory/history/2025-05-28_18-37-021-revisi\303\263n-de-documentos-y
+-estado-del-proyecto.md"
+        src/main/java/com/mibanco/repositorio/interna/RepositorioFactoria.java
+        src/main/java/com/mibanco/servicio/util/BaseServicio.java
+        target/classes/com/mibanco/repositorio/interna/RepositorioFactoria.class
+        target/classes/com/mibanco/servicio/util/BaseServicio.class
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+
+---
+
+Basado en los cambios que veo, aquí está un mensaje de commit apropiado:
+
+```
+refactor: implementación de BaseServicio y corrección de visibilidad
+
+- Se implementa la interfaz BaseServicio en BaseServicioImpl
+- Se corrige la visibilidad de métodos de protected a public
+- Se agregan anotaciones @Override en los métodos implementados
+- Se renombra RepositoryFactory a RepositorioFactoria para mantener consistencia en español
+- Se actualiza la documentación de los métodos
+
+Este cambio mejora la consistencia del código y asegura que la implementación base
+cumpla con el contrato definido en la interfaz.
+```
+
+Este mensaje de commit:
+1. Usa el prefijo "refactor" porque estamos mejorando la estructura del código sin cambiar su funcionalidad
+2. Resume los cambios principales en el primer párrafo
+3. Proporciona más detalles en los puntos
+4. Explica el beneficio del cambio en el último párrafo
+
+¿Te gustaría que modifique algo del mensaje o que agregue más detalles sobre algún cambio específico?
+
+---
+
