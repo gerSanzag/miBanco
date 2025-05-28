@@ -6,6 +6,8 @@ import com.mibanco.repositorio.ClienteRepositorio;
 import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.enums.TipoOperacionCliente;
 import com.mibanco.servicio.util.BaseServicioImpl;
+import com.mibanco.repositorio.interna.RepositorioFactoria;
+import com.mibanco.repositorio.util.BaseRepositorio;
 import com.mibanco.servicio.ClienteServicio;
 
 import java.util.ArrayList;
@@ -14,138 +16,117 @@ import java.util.Optional;
 
 public class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, TipoOperacionCliente> implements ClienteServicio {
     
-    private final ClienteRepositorio clienteRepositorio;
-    private final ClienteMapeador clienteMapeador;
+    private static final BaseRepositorio<Cliente, Long, TipoOperacionCliente> repositorioCliente;
+    private static final ClienteMapeador mapeador;
+    private final TipoOperacionCliente tipoActualizar = TipoOperacionCliente.ACTUALIZAR;
     
-    public ClienteServicioImpl(ClienteRepositorio repositorio, ClienteMapeador mapeador) {
-        super(repositorio, mapeador);
-        this.clienteRepositorio = repositorio;
-        this.clienteMapeador = mapeador;
+    static {
+        repositorioCliente = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCliente();
+        mapeador = new ClienteMapeador();
+    }
+    
+    public ClienteServicioImpl() {
+        super(repositorioCliente, mapeador);
     }
 
     @Override
     public Optional<ClienteDTO> crearCliente(Optional<ClienteDTO> clienteDTO) {
-        return guardar(clienteDTO);
+        return guardar(TipoOperacionCliente.CREAR,clienteDTO);
     }
 
     @Override
-    public Optional<ClienteDTO> actualizarCliente(Long id, Optional<ClienteDTO> clienteDTO) {
-        return Optional.ofNullable(id)
-            .flatMap(idValue -> clienteRepositorio.buscarPorId(Optional.of(idValue)))
-            .map(clienteExistente -> 
-                clienteDTO.flatMap(dto -> clienteMapeador.aEntidad(Optional.of(dto)))
-                    .map(clienteNuevo -> clienteExistente.conDatosContacto(
-                        Optional.ofNullable(clienteNuevo.getEmail()),
-                        Optional.ofNullable(clienteNuevo.getTelefono()),
-                        Optional.ofNullable(clienteNuevo.getDireccion())
-                    ))
-                    .orElse(clienteExistente)
+    public Optional<ClienteDTO> actualizarVariosCampos(Long id, Optional<ClienteDTO> clienteDTO) {
+        return actualizar(
+            id,
+            clienteDTO,
+            tipoActualizar,
+            (clienteExistente, clienteNuevo) -> clienteExistente.conDatosContacto(
+                Optional.ofNullable(clienteNuevo.getEmail()),
+                Optional.ofNullable(clienteNuevo.getTelefono()),
+                Optional.ofNullable(clienteNuevo.getDireccion())
             )
-            .flatMap(entidad -> clienteMapeador.aDto(Optional.of(entidad)))
-            .flatMap(dto -> guardar(Optional.of(dto)));
+        );
     }
 
     @Override
     public Optional<ClienteDTO> actualizarEmailCliente(Long id, Optional<String> nuevoEmail) {
-        return actualizarCampo(
+        Optional<ClienteDTO> actualizadoEmail = actualizarCampo(
             id,
             nuevoEmail,
             Cliente::getEmail,
             Cliente::conEmail
         );
+        guardar(tipoActualizar, actualizadoEmail);
+        return actualizadoEmail;
     }
 
     @Override
     public Optional<ClienteDTO> actualizarTelefonoCliente(Long id, Optional<String> nuevoTelefono) {
-        return actualizarCampo(
+        Optional<ClienteDTO> actualizaTelefono = actualizarCampo(
             id,
             nuevoTelefono,
             Cliente::getTelefono,
             Cliente::conTelefono
         );
+        guardar(tipoActualizar, actualizaTelefono);
+        return actualizaTelefono;
     }
 
     @Override
     public Optional<ClienteDTO> actualizarDireccionCliente(Long id, Optional<String> nuevaDireccion) {
-        return actualizarCampo(
+        Optional<ClienteDTO> actualizadoDireccion = actualizarCampo(
             id,
             nuevaDireccion,
             Cliente::getDireccion,
             Cliente::conDireccion
         );
+        guardar(tipoActualizar, actualizadoDireccion);
+        return actualizadoDireccion;
     }
 
     @Override
     public Optional<ClienteDTO> obtenerClientePorId(Optional<Long> id) {
-        return id.flatMap(idValue -> 
-            clienteRepositorio.buscarPorId(Optional.of(idValue))
-                .flatMap(entidad -> clienteMapeador.aDto(Optional.of(entidad)))
-        );
+        return obtenerPorId(id);
     }
 
     @Override
     public Optional<ClienteDTO> obtenerClientePorDni(Optional<String> dni) {
         return dni.flatMap(dniValue ->
-            clienteRepositorio.buscarPorDni(Optional.of(dniValue))
-                .flatMap(entidad -> clienteMapeador.aDto(Optional.of(entidad)))
+            ((ClienteRepositorio)repositorio).buscarPorDni(Optional.of(dniValue))
+                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
         );
     }
 
     @Override
     public Optional<List<ClienteDTO>> obtenerTodosLosClientes() {
-        return clienteRepositorio.buscarTodos()
-            .map(clientes -> clientes.stream()
-                .map(entidad -> clienteMapeador.aDto(Optional.of(entidad)).orElse(null))
-                .filter(java.util.Objects::nonNull)
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
-            );
+        return obtenerTodos();
     }
 
     @Override
     public boolean eliminarCliente(Optional<Long> id) {
-        return id.flatMap(idValue -> 
-            clienteRepositorio.eliminarPorId(Optional.of(idValue), obtenerTipoOperacionEliminar())
-        ).isPresent();
+        return eliminarPorId(id, TipoOperacionCliente.ELIMINAR);
     }
 
     @Override
     public Optional<ClienteDTO> restaurarCliente(Optional<Long> id) {
         return id.flatMap(idValue -> 
-            clienteRepositorio.restaurar(Optional.of(idValue), TipoOperacionCliente.RESTAURAR)
-                .flatMap(entidad -> clienteMapeador.aDto(Optional.of(entidad)))
+            ((ClienteRepositorio)repositorio).restaurarClienteEliminado(Optional.of(idValue))
+                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
         );
     }
 
     @Override
     public void establecerUsuarioActual(String usuario) {
-        clienteRepositorio.setUsuarioActual(usuario);
+        establecerUsuarioActual(usuario);
     }
 
     @Override
     public List<ClienteDTO> obtenerClientesEliminados() {
-        return clienteRepositorio.obtenerClientesEliminados().stream()
-            .map(entidad -> clienteMapeador.aDto(Optional.of(entidad)).orElse(null))
-            .filter(java.util.Objects::nonNull)
-            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return obtenerEliminados();
     }
 
     @Override
     public long contarClientes() {
-        return clienteRepositorio.contarRegistros();
-    }
-
-    @Override
-    protected TipoOperacionCliente obtenerTipoOperacionCrear() {
-        return TipoOperacionCliente.CREAR;
-    }
-
-    @Override
-    protected TipoOperacionCliente obtenerTipoOperacionActualizar() {
-        return TipoOperacionCliente.MODIFICAR;
-    }
-
-    @Override
-    protected TipoOperacionCliente obtenerTipoOperacionEliminar() {
-        return TipoOperacionCliente.ELIMINAR;
+        return contarRegistros();
     }
 } 

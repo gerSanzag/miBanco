@@ -5,6 +5,7 @@ package com.mibanco.modelo.enums;
  */
 public enum TipoOperacionCliente  {
     CREAR,
+    ACTUALIZAR,
     MODIFICAR,
     ELIMINAR,
     CONSULTAR,

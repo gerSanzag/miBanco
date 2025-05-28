@@ -3,7 +3,9 @@ package com.mibanco.servicio.util;
 import com.mibanco.modelo.Identificable;
 import com.mibanco.repositorio.util.BaseRepositorio;
 import com.mibanco.dto.mapeador.Mapeador;
+import com.mibanco.repositorio.interna.RepositorioFactoria;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -16,7 +18,7 @@ import java.util.function.Function;
  * @param <ID> Tipo del identificador
  * @param <O> Tipo del enum para operaciones
  */
-public abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O>> {
+public abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O>> implements BaseServicio<T, E, ID, O> {
     
     protected final BaseRepositorio<E, ID, O> repositorio;
     protected final Mapeador<E, T> mapeador;
@@ -26,26 +28,22 @@ public abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends
         this.mapeador = mapeador;
     }
 
-    /**
-     * Método común para guardar una entidad (crear o actualizar)
-     */
-    protected Optional<T> guardar(Optional<T> dto) {
-        return dto
+    @Override
+    public Optional<T> guardar(O tipoOperacion, Optional<T> dto) {
+     return dto
             .flatMap(d -> mapeador.aEntidad(Optional.of(d)))
             .flatMap(entidad -> {
                 if (entidad.getId() == null) {
-                    return repositorio.crear(Optional.of(entidad), obtenerTipoOperacionCrear());
+                    return repositorio.crear(Optional.of(entidad), tipoOperacion);
                 } else {
-                    return repositorio.actualizar(Optional.of(entidad), obtenerTipoOperacionActualizar());
+                    return repositorio.actualizar(Optional.of(entidad), tipoOperacion);
                 }
             })
             .flatMap(e -> mapeador.aDto(Optional.of(e)));
     }
 
-    /**
-     * Método genérico para actualizar un campo específico de una entidad
-     */
-    protected <V> Optional<T> actualizarCampo(
+    @Override
+    public <V> Optional<T> actualizarCampo(
             ID id,
             Optional<V> nuevoValor,
             Function<E, V> valorActual,
@@ -55,22 +53,88 @@ public abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends
             .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
             .map(entidad -> actualizador.apply(entidad, 
                 nuevoValor.orElse(valorActual.apply(entidad))))
+            .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)));
+    }
+
+    @Override
+    public Optional<T> actualizar(
+            ID id,
+            Optional<T> dto,
+            O tipoOperacion,
+            BiFunction<E, E, E> actualizador) {
+            
+        return Optional.ofNullable(id)
+            .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
+            .map(entidadExistente -> 
+                dto.flatMap(d -> mapeador.aEntidad(Optional.of(d)))
+                    .map(entidadNueva -> actualizador.apply(entidadExistente, entidadNueva))
+                    .orElse(entidadExistente)
+            )
             .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
-            .flatMap(dto -> guardar(Optional.of(dto)));
+            .flatMap(dtoActualizado -> guardar(tipoOperacion, Optional.of(dtoActualizado)));
     }
 
     /**
-     * Método abstracto para obtener el tipo de operación de creación
+     * Método genérico para obtener una entidad por su ID
+     * @param id Optional con el ID de la entidad a buscar
+     * @return Optional con el DTO de la entidad encontrada
      */
-    protected abstract O obtenerTipoOperacionCrear();
+    public Optional<T> obtenerPorId(Optional<ID> id) {
+        return id.flatMap(idValue -> 
+            repositorio.buscarPorId(Optional.of(idValue))
+                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
+        );
+    }
 
     /**
-     * Método abstracto para obtener el tipo de operación de actualización
+     * Método genérico para obtener todas las entidades
+     * @return Optional con la lista de DTOs encontrados
      */
-    protected abstract O obtenerTipoOperacionActualizar();
+    public Optional<List<T>> obtenerTodos() {
+        return repositorio.buscarTodos()
+            .map(entidades -> entidades.stream()
+                .map(entidad -> mapeador.aDto(Optional.of(entidad)).orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
+            );
+    }
 
     /**
-     * Método abstracto para obtener el tipo de operación de eliminación
+     * Método genérico para eliminar una entidad por su ID
+     * @param id Optional con el ID de la entidad a eliminar
+     * @param tipoOperacion Tipo de operación para auditoría
+     * @return true si la entidad fue eliminada, false en caso contrario
      */
-    protected abstract O obtenerTipoOperacionEliminar();
+    public boolean eliminarPorId(Optional<ID> id, O tipoOperacion) {
+        return id.flatMap(idValue -> 
+            repositorio.eliminarPorId(Optional.of(idValue), tipoOperacion)
+        ).isPresent();
+    }
+
+    /**
+     * Método genérico para contar el número total de registros
+     * @return número total de registros
+     */
+    public long contarRegistros() {
+        return repositorio.contarRegistros();
+    }
+
+    /**
+     * Método genérico para establecer el usuario actual en el repositorio
+     * @param usuario nombre del usuario actual
+     */
+    public void establecerUsuarioActual(String usuario) {
+        repositorio.setUsuarioActual(usuario);
+    }
+
+    /**
+     * Método genérico para obtener las entidades eliminadas
+     * @return Lista de DTOs de las entidades eliminadas
+     */
+    public List<T> obtenerEliminados() {
+        return repositorio.obtenerEliminados().stream()
+            .map(entidad -> mapeador.aDto(Optional.of(entidad)).orElse(null))
+            .filter(java.util.Objects::nonNull)
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
 } 

@@ -3,8 +3,6 @@ package com.mibanco.repositorio.util;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-
 import com.mibanco.modelo.Identificable;
 
 /**
@@ -75,4 +73,10 @@ public interface BaseRepositorio<T extends Identificable, ID, E extends Enum<E>>
      * @param usuario Usuario actual
      */
     void setUsuarioActual(String usuario);
+
+    /**
+     * Obtiene las entidades eliminadas
+     * @return Lista de entidades eliminadas
+     */
+    List<T> obtenerEliminados();
 } 

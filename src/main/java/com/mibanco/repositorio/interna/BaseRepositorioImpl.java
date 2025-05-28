@@ -38,7 +38,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
      * Constructor protegido que obtiene el repositorio de auditoría
      */
     protected BaseRepositorioImpl() {
-        this.auditoriaRepository = RepositoryFactory.obtenerInstancia().obtenerRepositorioAuditoria();
+        this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
     }
     
     @Override
@@ -156,5 +156,9 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
             usuarioActual
         );
     }
-   
+
+    @Override
+    public List<T> obtenerEliminados() {
+        return entidadesEliminadas;
+    }
 } 

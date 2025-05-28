@@ -11,9 +11,9 @@ import com.mibanco.repositorio.TransaccionRepositorio;
  * Esta es la única clase que tiene acceso a las implementaciones
  * Al estar en el mismo paquete que las implementaciones, puede instanciarlas
  */
-public final class RepositoryFactory {
+public final class RepositorioFactoria {
     
-    private static volatile RepositoryFactory instancia;
+    private static volatile RepositorioFactoria instancia;
     private final AuditoriaRepositorio auditoriaRepository;
     private final ClienteRepositorio clienteRepository;
     private final CuentaRepositorio cuentaRepository;
@@ -24,7 +24,7 @@ public final class RepositoryFactory {
      * Constructor privado que inicializa todas las implementaciones
      * Al estar en el mismo paquete, tiene acceso a las clases package-private
      */
-    private RepositoryFactory() {
+    private RepositorioFactoria() {
         this.auditoriaRepository = new AuditoriaRepositoryImpl();
         this.clienteRepository = new ClienteRepositoryImpl();
         this.cuentaRepository = new CuentaRepositoryImpl();
@@ -36,11 +36,11 @@ public final class RepositoryFactory {
      * Obtiene la única instancia de RepositoryFactory
      * Este es el único punto de acceso a las implementaciones de repositorios
      */
-    public static RepositoryFactory obtenerInstancia() {
+    public static RepositorioFactoria obtenerInstancia() {
         if (instancia == null) {
-            synchronized (RepositoryFactory.class) {
+            synchronized (RepositorioFactoria.class) {
                 if (instancia == null) {
-                    instancia = new RepositoryFactory();
+                    instancia = new RepositorioFactoria();
                 }
             }
         }

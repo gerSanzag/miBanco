@@ -22,7 +22,7 @@ public interface ClienteServicio {
      * @param clienteDTO Optional con los nuevos datos del cliente
      * @return Optional con el DTO del cliente actualizado
      */
-    Optional<ClienteDTO> actualizarCliente(Long id, Optional<ClienteDTO> clienteDTO);
+    Optional<ClienteDTO> actualizarVariosCampos(Long id, Optional<ClienteDTO> clienteDTO);
     
     /**
      * Obtiene un cliente por su ID
