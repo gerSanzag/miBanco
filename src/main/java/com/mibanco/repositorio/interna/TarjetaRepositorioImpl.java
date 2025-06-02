@@ -12,12 +12,12 @@ import java.util.List;
  * Implementación del repositorio de Tarjetas
  * Visibilidad restringida al paquete internal
  */
-class TarjetaRepositoryImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOperacionTarjeta> implements TarjetaRepositorio {
+class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOperacionTarjeta> implements TarjetaRepositorio {
     
     /**
      * Constructor con visibilidad de paquete
      */
-    TarjetaRepositoryImpl() {
+    TarjetaRepositorioImpl() {
         super();
     }
     

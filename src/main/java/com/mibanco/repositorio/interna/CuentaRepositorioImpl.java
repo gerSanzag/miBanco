@@ -12,12 +12,12 @@ import java.util.List;
  * Implementación del repositorio de Cuentas
  * Visibilidad restringida al paquete internal
  */
-class CuentaRepositoryImpl extends BaseRepositorioImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepositorio {
+class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepositorio {
     
     /**
      * Constructor con visibilidad de paquete
      */
-    CuentaRepositoryImpl() {
+    CuentaRepositorioImpl() {
         super();
     }
     

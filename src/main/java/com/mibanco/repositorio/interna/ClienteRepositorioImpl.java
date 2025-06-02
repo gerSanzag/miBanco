@@ -11,12 +11,12 @@ import java.util.Optional;
  * Implementación del repositorio de Clientes con acceso restringido
  * Solo accesible a través de la Factory y las interfaces públicas
  */
-class ClienteRepositoryImpl extends BaseRepositorioImpl<Cliente, Long, TipoOperacionCliente> implements ClienteRepositorio {
+class ClienteRepositorioImpl extends BaseRepositorioImpl<Cliente, Long, TipoOperacionCliente> implements ClienteRepositorio {
     
     /**
      * Constructor package-private
      */
-    ClienteRepositoryImpl() {
+    ClienteRepositorioImpl() {
         super();
     }
     

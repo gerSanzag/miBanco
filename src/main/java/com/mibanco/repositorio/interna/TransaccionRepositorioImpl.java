@@ -14,12 +14,12 @@ import java.util.List;
  * Implementación del repositorio de Transacciones
  * Visibilidad restringida al paquete internal
  */
-class TransaccionRepositoryImpl extends BaseRepositorioImpl<Transaccion, Long, TipoOperacionTransaccion> implements TransaccionRepositorio {
+class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, TipoOperacionTransaccion> implements TransaccionRepositorio {
     
     /**
      * Constructor con visibilidad de paquete
      */
-    TransaccionRepositoryImpl() {
+    TransaccionRepositorioImpl() {
         super();
     }
    

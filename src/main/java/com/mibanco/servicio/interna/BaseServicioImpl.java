@@ -1,10 +1,9 @@
-package com.mibanco.servicio.util;
+package com.mibanco.servicio.interna;
 
 import com.mibanco.modelo.Identificable;
 import com.mibanco.repositorio.util.BaseRepositorio;
+import com.mibanco.servicio.util.BaseServicio;
 import com.mibanco.dto.mapeador.Mapeador;
-import com.mibanco.repositorio.interna.RepositorioFactoria;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,7 @@ import java.util.function.Function;
  * @param <ID> Tipo del identificador
  * @param <O> Tipo del enum para operaciones
  */
-public abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O>> implements BaseServicio<T, E, ID, O> {
+abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O>> implements BaseServicio<T, E, ID, O> {
     
     protected final BaseRepositorio<E, ID, O> repositorio;
     protected final Mapeador<E, T> mapeador;
@@ -136,5 +135,13 @@ public abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends
             .map(entidad -> mapeador.aDto(Optional.of(entidad)).orElse(null))
             .filter(java.util.Objects::nonNull)
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    @Override
+    public Optional<T> restaurar(Optional<ID> id, O tipoOperacion) {
+        return id.flatMap(idValue -> 
+            repositorio.restaurar(Optional.of(idValue), tipoOperacion)
+                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
+        );
     }
 } 

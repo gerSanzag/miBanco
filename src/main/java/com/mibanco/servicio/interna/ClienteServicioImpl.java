@@ -1,20 +1,18 @@
-package com.mibanco.servicio.impl;
+package com.mibanco.servicio.interna;
 
 import com.mibanco.modelo.Cliente;
 import com.mibanco.dto.ClienteDTO;
 import com.mibanco.repositorio.ClienteRepositorio;
 import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.enums.TipoOperacionCliente;
-import com.mibanco.servicio.util.BaseServicioImpl;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
 import com.mibanco.repositorio.util.BaseRepositorio;
 import com.mibanco.servicio.ClienteServicio;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, TipoOperacionCliente> implements ClienteServicio {
+class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, TipoOperacionCliente> implements ClienteServicio {
     
     private static final BaseRepositorio<Cliente, Long, TipoOperacionCliente> repositorioCliente;
     private static final ClienteMapeador mapeador;
@@ -36,7 +34,7 @@ public class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, L
 
     @Override
     public Optional<ClienteDTO> actualizarVariosCampos(Long id, Optional<ClienteDTO> clienteDTO) {
-        return actualizar(
+        Optional<ClienteDTO> actualizaVariosCampos = actualizar(
             id,
             clienteDTO,
             tipoActualizar,
@@ -46,6 +44,8 @@ public class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, L
                 Optional.ofNullable(clienteNuevo.getDireccion())
             )
         );
+        guardar(tipoActualizar, actualizaVariosCampos);
+        return actualizaVariosCampos;
     }
 
     @Override
@@ -74,14 +74,14 @@ public class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, L
 
     @Override
     public Optional<ClienteDTO> actualizarDireccionCliente(Long id, Optional<String> nuevaDireccion) {
-        Optional<ClienteDTO> actualizadoDireccion = actualizarCampo(
+        Optional<ClienteDTO> actualizaDireccion = actualizarCampo(
             id,
             nuevaDireccion,
             Cliente::getDireccion,
             Cliente::conDireccion
         );
-        guardar(tipoActualizar, actualizadoDireccion);
-        return actualizadoDireccion;
+        guardar(tipoActualizar, actualizaDireccion);
+        return actualizaDireccion;
     }
 
     @Override
@@ -109,10 +109,7 @@ public class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, L
 
     @Override
     public Optional<ClienteDTO> restaurarCliente(Optional<Long> id) {
-        return id.flatMap(idValue -> 
-            ((ClienteRepositorio)repositorio).restaurarClienteEliminado(Optional.of(idValue))
-                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
-        );
+        return restaurar(id, TipoOperacionCliente.RESTAURAR);
     }
 
     @Override

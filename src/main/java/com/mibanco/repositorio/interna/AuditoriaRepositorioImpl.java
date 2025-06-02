@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Implementación en memoria del repositorio de auditoría
  * Visibilidad restringida al paquete internal
  */
-class AuditoriaRepositoryImpl implements AuditoriaRepositorio {
+class AuditoriaRepositorioImpl implements AuditoriaRepositorio {
     
     // Lista para almacenar los registros
     private final List<RegistroAuditoria<?, ?>> registros = new ArrayList<>();
@@ -23,7 +23,7 @@ class AuditoriaRepositoryImpl implements AuditoriaRepositorio {
     /**
      * Constructor con visibilidad de paquete
      */
-    AuditoriaRepositoryImpl() {
+    AuditoriaRepositorioImpl() {
         // Constructor vacío con visibilidad de paquete
     }
     

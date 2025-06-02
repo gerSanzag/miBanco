@@ -25,11 +25,11 @@ public final class RepositorioFactoria {
      * Al estar en el mismo paquete, tiene acceso a las clases package-private
      */
     private RepositorioFactoria() {
-        this.auditoriaRepository = new AuditoriaRepositoryImpl();
-        this.clienteRepository = new ClienteRepositoryImpl();
-        this.cuentaRepository = new CuentaRepositoryImpl();
-        this.tarjetaRepository = new TarjetaRepositoryImpl();
-        this.transaccionRepository = new TransaccionRepositoryImpl();
+        this.auditoriaRepository = new AuditoriaRepositorioImpl();
+        this.clienteRepository = new ClienteRepositorioImpl();
+        this.cuentaRepository = new CuentaRepositorioImpl();
+        this.tarjetaRepository = new TarjetaRepositorioImpl();
+        this.transaccionRepository = new TransaccionRepositorioImpl();
     }
     
     /**
