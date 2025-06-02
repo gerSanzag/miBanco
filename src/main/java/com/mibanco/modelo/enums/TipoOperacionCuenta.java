@@ -10,5 +10,7 @@ public enum TipoOperacionCuenta {
     ACTIVAR,
     DESACTIVAR,
     BLOQUEAR,
-    DESBLOQUEAR
+    DESBLOQUEAR, 
+    ACTUALIZAR, 
+    RESTAURAR
 } 
