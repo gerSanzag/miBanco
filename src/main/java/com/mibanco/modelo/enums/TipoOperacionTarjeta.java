@@ -12,5 +12,5 @@ public enum TipoOperacionTarjeta {
     BLOQUEAR,
     DESBLOQUEAR,
     AUMENTAR_LIMITE,
-    REDUCIR_LIMITE
+    REDUCIR_LIMITE, ACTUALIZAR
 } 

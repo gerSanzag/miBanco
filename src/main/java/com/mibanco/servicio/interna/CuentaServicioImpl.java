@@ -4,27 +4,36 @@ import com.mibanco.dto.CuentaDTO;
 import com.mibanco.dto.mapeador.CuentaMapeador;
 import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.Cuenta;
+import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.repositorio.CuentaRepositorio;
 import com.mibanco.servicio.CuentaServicio;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
+import com.mibanco.repositorio.interna.RepositorioFactoria;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Implementación del servicio de cuentas
  */
-class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, TipoOperacionCuenta> 
+class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, TipoOperacionCuenta, CuentaRepositorio> 
         implements CuentaServicio {
     
-   // private final CuentaMapeador mapeador;
-    private final ClienteMapeador clienteMapeador;
-    
-    public CuentaServicioImpl(CuentaRepositorio repositorio, CuentaMapeador mapeador, ClienteMapeador clienteMapeador) {
-        super(repositorio, mapeador);
-        //this.mapeador = mapeador;
-        this.clienteMapeador = clienteMapeador;
+    private static final CuentaRepositorio repositorioCuenta;
+    private static final CuentaMapeador mapeador;
+    private static final ClienteMapeador clienteMapeador;
+    private final TipoOperacionCuenta tipoActualizar = TipoOperacionCuenta.ACTUALIZAR;
+
+    static {
+        repositorioCuenta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCuenta();
+        clienteMapeador = new ClienteMapeador();
+        mapeador = new CuentaMapeador(clienteMapeador);
+    }
+
+    public CuentaServicioImpl() {
+        super(repositorioCuenta, mapeador);
     }
 
     @Override
@@ -34,19 +43,17 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
 
     @Override
     public Optional<CuentaDTO> actualizarVariosCampos(String numeroCuenta, Optional<CuentaDTO> cuentaDTO) {
-        return actualizar(
+        Optional<CuentaDTO> actualizaVariosCampos = actualizar(
             numeroCuenta,
             cuentaDTO,
             TipoOperacionCuenta.ACTUALIZAR,
-            (cuentaExistente, cuentaNueva) -> cuentaExistente.toBuilder()
-                .numeroCuenta(cuentaExistente.getNumeroCuenta())
-                .titular(cuentaNueva.getTitular())
-                .tipo(cuentaNueva.getTipo())
-                .saldo(cuentaNueva.getSaldo())
-                .fechaCreacion(cuentaExistente.getFechaCreacion())
-                .activa(cuentaNueva.isActiva())
-                .build()
-        );
+            (cuentaExistente, cuentaNueva) -> cuentaExistente.conActualizaciones(
+                Optional.ofNullable(cuentaNueva.getSaldo()),
+                Optional.ofNullable(cuentaNueva.isActiva())
+            )   
+        );  
+        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaVariosCampos);
+        return actualizaVariosCampos;
     }
 
     @Override
@@ -61,27 +68,31 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
 
     @Override
     public Optional<CuentaDTO> actualizarSaldoCuenta(String numeroCuenta, Optional<BigDecimal> nuevoSaldo) {
-        return actualizarCampo(
+        Optional<CuentaDTO> actualizaSaldo = actualizarCampo(
             numeroCuenta,
             nuevoSaldo,
             Cuenta::getSaldo,
-            (cuenta, saldo) -> cuenta.conSaldo(saldo)
+            Cuenta::conSaldo
         );
-    }
+        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaSaldo);
+        return actualizaSaldo;
+    }   
 
     @Override
     public Optional<CuentaDTO> actualizarEstadoCuenta(String numeroCuenta, Optional<Boolean> nuevaActiva) {
-        return actualizarCampo(
+        Optional<CuentaDTO> actualizaEstado = actualizarCampo(
             numeroCuenta,
             nuevaActiva,
             Cuenta::isActiva,
-            (cuenta, activa) -> cuenta.conActiva(activa)
+            Cuenta::conActiva
         );
+        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaEstado);
+        return actualizaEstado;
     }
 
-    @Override
+    
     public Optional<CuentaDTO> actualizarTitularCuenta(String numeroCuenta, Optional<CuentaDTO> nuevoTitular) {
-        return nuevoTitular.flatMap(titularDTO -> 
+        Optional<CuentaDTO> actualizaTitular = nuevoTitular.flatMap(titularDTO -> 
             clienteMapeador.aEntidad(Optional.of(titularDTO.getTitular()))
                 .flatMap(titular -> actualizarCampo(
                     numeroCuenta,
@@ -90,11 +101,19 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
                     (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titular).build()
                 ))
         );
+        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaTitular);
+        return actualizaTitular;
     }
 
     @Override
     public boolean eliminarCuenta(Optional<String> numeroCuenta) {
         return eliminarPorId(numeroCuenta, TipoOperacionCuenta.ELIMINAR);
+    }
+
+    @Override
+    public Optional<CuentaDTO> eliminarPorNumero(Optional<String> numeroCuenta) {
+        return repositorio.eliminarPorNumero(numeroCuenta)
+            .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)));
     }
 
     @Override
@@ -115,5 +134,35 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     @Override
     public void establecerUsuarioActual(String usuario) {
         super.establecerUsuarioActual(usuario);
+    }
+
+    @Override
+    public Optional<List<CuentaDTO>> buscarPorTitularId(Optional<Long> idTitular) {
+        return repositorio.buscarPorTitularId(idTitular)
+            .map(cuentas -> cuentas.stream()
+                .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
+            );
+    }
+
+    @Override
+    public Optional<List<CuentaDTO>> buscarPorTipo(Optional<TipoCuenta> tipo) {
+        return repositorio.buscarPorTipo(tipo)
+            .map(cuentas -> cuentas.stream()
+                .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
+            );
+    }
+
+    @Override
+    public Optional<List<CuentaDTO>> buscarActivas() {
+        return repositorio.buscarActivas()
+            .map(cuentas -> cuentas.stream()
+                .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
+            );
     }
 } 

@@ -5,16 +5,15 @@ import com.mibanco.dto.ClienteDTO;
 import com.mibanco.repositorio.ClienteRepositorio;
 import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.enums.TipoOperacionCliente;
-import com.mibanco.repositorio.interna.RepositorioFactoria;
-import com.mibanco.repositorio.util.BaseRepositorio;
+import com.mibanco.repositorio.interna.RepositorioFactoria;         
 import com.mibanco.servicio.ClienteServicio;
 
 import java.util.List;
 import java.util.Optional;
 
-class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, TipoOperacionCliente> implements ClienteServicio {
+class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, TipoOperacionCliente, ClienteRepositorio> implements ClienteServicio {
     
-    private static final BaseRepositorio<Cliente, Long, TipoOperacionCliente> repositorioCliente;
+    private static final ClienteRepositorio repositorioCliente;
     private static final ClienteMapeador mapeador;
     private final TipoOperacionCliente tipoActualizar = TipoOperacionCliente.ACTUALIZAR;
     

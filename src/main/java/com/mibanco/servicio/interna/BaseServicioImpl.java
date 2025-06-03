@@ -16,13 +16,14 @@ import java.util.function.Function;
  * @param <E> Tipo de entidad que debe implementar Identificable
  * @param <ID> Tipo del identificador
  * @param <O> Tipo del enum para operaciones
+ * @param <R> Tipo específico del repositorio que extiende BaseRepositorio
  */
-abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O>> implements BaseServicio<T, E, ID, O> {
+abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O>, R extends BaseRepositorio<E, ID, O>> implements BaseServicio<T, E, ID, O> {
     
-    protected final BaseRepositorio<E, ID, O> repositorio;
+    protected final R repositorio;
     protected final Mapeador<E, T> mapeador;
     
-    protected BaseServicioImpl(BaseRepositorio<E, ID, O> repositorio, Mapeador<E, T> mapeador) {
+    protected BaseServicioImpl(R repositorio, Mapeador<E, T> mapeador) {
         this.repositorio = repositorio;
         this.mapeador = mapeador;
     }

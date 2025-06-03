@@ -44,7 +44,7 @@ public class CuentaDTO {
      * Crea una nueva instancia con saldo actualizado
      * Método "with" para transformación inmutable
      */
-    public CuentaDTO withSaldo(BigDecimal nuevoSaldo) {
+    public CuentaDTO conSaldo(BigDecimal nuevoSaldo) {
         return this.toBuilder()
                 .saldo(nuevoSaldo)
                 .build();
@@ -54,7 +54,7 @@ public class CuentaDTO {
      * Crea una nueva instancia con estado activo actualizado
      * Método "with" para transformación inmutable
      */
-    public CuentaDTO withActiva(boolean nuevaActiva) {
+    public CuentaDTO conActiva(boolean nuevaActiva) {
         return this.toBuilder()
                 .activa(nuevaActiva)
                 .build();
@@ -64,7 +64,7 @@ public class CuentaDTO {
      * Crea una nueva instancia con titular actualizado
      * Método "with" para transformación inmutable
      */
-    public CuentaDTO withTitular(ClienteDTO nuevoTitular) {
+    public CuentaDTO conTitular(ClienteDTO nuevoTitular) {
         return this.toBuilder()
                 .titular(nuevoTitular)
                 .build();
@@ -74,7 +74,7 @@ public class CuentaDTO {
      * Crea una nueva instancia actualizando múltiples campos a la vez
      * Método para actualizaciones inmutables múltiples
      */
-    public CuentaDTO withActualizaciones(
+        public CuentaDTO conActualizaciones(
             Optional<BigDecimal> nuevoSaldo,
             Optional<Boolean> nuevaActiva) {
         

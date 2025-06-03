@@ -1,6 +1,7 @@
 package com.mibanco.servicio;
 
 import com.mibanco.dto.CuentaDTO;
+import com.mibanco.modelo.enums.TipoCuenta;
 import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
@@ -55,19 +56,18 @@ public interface CuentaServicio {
     Optional<CuentaDTO> actualizarEstadoCuenta(String numeroCuenta, Optional<Boolean> nuevaActiva);
     
     /**
-     * Actualiza el titular de una cuenta
-     * @param numeroCuenta Número de cuenta
-     * @param nuevoTitular Optional con el nuevo titular
-     * @return Optional con el DTO de la cuenta actualizada
-     */
-    Optional<CuentaDTO> actualizarTitularCuenta(String numeroCuenta, Optional<CuentaDTO> nuevoTitular);
-    
-    /**
      * Elimina una cuenta por su número
      * @param numeroCuenta Optional con el número de cuenta a eliminar
      * @return true si se eliminó correctamente, false si no
      */
     boolean eliminarCuenta(Optional<String> numeroCuenta);
+
+    /**
+     * Elimina una cuenta por su número y devuelve la cuenta eliminada
+     * @param numeroCuenta Optional con el número de cuenta a eliminar
+     * @return Optional con el DTO de la cuenta eliminada
+     */
+    Optional<CuentaDTO> eliminarPorNumero(Optional<String> numeroCuenta);
 
     /**
      * Restaura una cuenta previamente eliminada
@@ -93,4 +93,24 @@ public interface CuentaServicio {
      * @param usuario Usuario actual
      */
     void establecerUsuarioActual(String usuario);
+
+    /**
+     * Busca cuentas por el ID del titular
+     * @param idTitular Optional con el ID del titular
+     * @return Optional con la lista de DTOs de cuentas del titular
+     */
+    Optional<List<CuentaDTO>> buscarPorTitularId(Optional<Long> idTitular);
+
+    /**
+     * Busca cuentas por el tipo
+     * @param tipo Optional con el tipo de cuenta
+     * @return Optional con la lista de DTOs de cuentas del tipo especificado
+     */
+    Optional<List<CuentaDTO>> buscarPorTipo(Optional<TipoCuenta> tipo);
+
+    /**
+     * Obtiene todas las cuentas activas
+     * @return Optional con la lista de DTOs de cuentas activas
+     */
+    Optional<List<CuentaDTO>> buscarActivas();
 } 
