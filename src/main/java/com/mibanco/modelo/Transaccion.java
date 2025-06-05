@@ -24,8 +24,6 @@ public class Transaccion implements Identificable {
     LocalDateTime fecha;
     String descripcion;
     
-   
-    
     /**
      * Método factory para crear transacciones
      */
@@ -40,29 +38,6 @@ public class Transaccion implements Identificable {
                 .monto(monto)
                 .fecha(fecha != null ? fecha : LocalDateTime.now())
                 .descripcion(descripcion != null ? descripcion : "")
-                .build();
-    }
-    
-    /**
-     * Crea una copia de la transacción pero con un nuevo ID
-     * Útil para crear transacciones similares o correlacionadas
-     * @return Nueva transacción con ID actualizado
-     */
-    public Transaccion conNuevoId(Long nuevoId) {
-        return this.toBuilder()
-                .id(nuevoId)
-                .fecha(LocalDateTime.now()) // Actualizamos la fecha también
-                .build();
-    }
-    
-    /**
-     * Crea una copia de la transacción con descripción actualizada
-     * Este es uno de los pocos casos donde puede ser útil "modificar" una transacción
-     * @return Nueva transacción con descripción actualizada
-     */
-    public Transaccion conDescripcion(String nuevaDescripcion) {
-        return this.toBuilder()
-                .descripcion(nuevaDescripcion)
                 .build();
     }
 } 

@@ -9,5 +9,6 @@ public enum TipoOperacionTransaccion {
     REVERSAR,
     VERIFICAR,
     AUTORIZAR,
-    RECHAZAR
+    RECHAZAR, 
+    ACTUALIZAR
 } 

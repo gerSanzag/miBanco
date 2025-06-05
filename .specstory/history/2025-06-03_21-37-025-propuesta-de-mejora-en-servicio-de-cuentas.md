@@ -1650,3 +1650,15 @@ Ahora el servicio de tarjetas sigue el mismo patrón que los servicios de client
 
 ---
 
+_**User**_
+
+Ignora la conversacion a partir de este punto.
+
+---
+
+_**Assistant**_
+
+Entiendo que deseas ignorar la conversación anterior y comenzar de nuevo. ¿En qué puedo ayudarte, German? Estoy aquí para asistirte con cualquier tarea de programación o consulta que tengas.
+
+---
+

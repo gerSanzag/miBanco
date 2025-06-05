@@ -22,11 +22,11 @@ public interface TarjetaRepositorio extends BaseRepositorio<Tarjeta, String, Tip
     Optional<Tarjeta> buscarPorNumero(Optional<String> numeroTarjeta);
     
     /**
-     * Busca tarjetas por el ID del titular
-     * @param idTitular Optional con el ID del titular
-     * @return Lista de tarjetas del titular
+     * Busca tarjetas por el ID del cliente titular
+     * @param idCliente Optional con el ID del cliente
+     * @return Optional con la lista de tarjetas del cliente
      */
-    Optional<List<Tarjeta>> buscarPorTitularId(Optional<Long> idTitular);
+    Optional<List<Tarjeta>> buscarPorTitularId(Optional<Long> idCliente);
     
     /**
      * Busca tarjetas por el número de cuenta asociada

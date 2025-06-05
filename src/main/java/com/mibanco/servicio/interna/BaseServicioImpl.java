@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 /**
  * Implementación base para servicios
+ * Visibilidad restringida al paquete internal
  * @param <T> Tipo de DTO
  * @param <E> Tipo de entidad que debe implementar Identificable
  * @param <ID> Tipo del identificador
@@ -74,11 +75,7 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
             .flatMap(dtoActualizado -> guardar(tipoOperacion, Optional.of(dtoActualizado)));
     }
 
-    /**
-     * Método genérico para obtener una entidad por su ID
-     * @param id Optional con el ID de la entidad a buscar
-     * @return Optional con el DTO de la entidad encontrada
-     */
+    @Override
     public Optional<T> obtenerPorId(Optional<ID> id) {
         return id.flatMap(idValue -> 
             repositorio.buscarPorId(Optional.of(idValue))
@@ -86,10 +83,7 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
         );
     }
 
-    /**
-     * Método genérico para obtener todas las entidades
-     * @return Optional con la lista de DTOs encontrados
-     */
+    @Override
     public Optional<List<T>> obtenerTodos() {
         return repositorio.buscarTodos()
             .map(entidades -> entidades.stream()
@@ -99,38 +93,24 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
             );
     }
 
-    /**
-     * Método genérico para eliminar una entidad por su ID
-     * @param id Optional con el ID de la entidad a eliminar
-     * @param tipoOperacion Tipo de operación para auditoría
-     * @return true si la entidad fue eliminada, false en caso contrario
-     */
+    @Override
     public boolean eliminarPorId(Optional<ID> id, O tipoOperacion) {
         return id.flatMap(idValue -> 
             repositorio.eliminarPorId(Optional.of(idValue), tipoOperacion)
         ).isPresent();
     }
 
-    /**
-     * Método genérico para contar el número total de registros
-     * @return número total de registros
-     */
+    @Override
     public long contarRegistros() {
         return repositorio.contarRegistros();
     }
 
-    /**
-     * Método genérico para establecer el usuario actual en el repositorio
-     * @param usuario nombre del usuario actual
-     */
+    @Override
     public void establecerUsuarioActual(String usuario) {
         repositorio.setUsuarioActual(usuario);
     }
 
-    /**
-     * Método genérico para obtener las entidades eliminadas
-     * @return Lista de DTOs de las entidades eliminadas
-     */
+    @Override
     public List<T> obtenerEliminados() {
         return repositorio.obtenerEliminados().stream()
             .map(entidad -> mapeador.aDto(Optional.of(entidad)).orElse(null))

@@ -47,7 +47,7 @@ public class TarjetaDTO {
     /**
      * Crea una nueva instancia con fecha de expiración actualizada
      */
-    public TarjetaDTO withFechaExpiracion(LocalDate nuevaFecha) {
+    public TarjetaDTO conFechaExpiracion(LocalDate nuevaFecha) {
         return this.toBuilder()
                 .fechaExpiracion(nuevaFecha)
                 .build();
@@ -56,7 +56,7 @@ public class TarjetaDTO {
     /**
      * Crea una nueva instancia con estado activo actualizado
      */
-    public TarjetaDTO withActiva(boolean nuevaActiva) {
+    public TarjetaDTO conActiva(boolean nuevaActiva) {
         return this.toBuilder()
                 .activa(nuevaActiva)
                 .build();
@@ -65,7 +65,7 @@ public class TarjetaDTO {
     /**
      * Crea una nueva instancia con titular actualizado
      */
-    public TarjetaDTO withTitular(ClienteDTO nuevoTitular) {
+    public TarjetaDTO conTitular(ClienteDTO nuevoTitular) {
         return this.toBuilder()
                 .titular(nuevoTitular)
                 .build();
@@ -74,7 +74,7 @@ public class TarjetaDTO {
     /**
      * Crea una nueva instancia actualizando múltiples campos a la vez
      */
-    public TarjetaDTO withActualizaciones(
+    public TarjetaDTO conActualizaciones(
             Optional<LocalDate> nuevaFecha,
             Optional<Boolean> nuevaActiva) {
         

@@ -8,7 +8,6 @@ import com.mibanco.modelo.enums.TipoOperacionTarjeta;
 import com.mibanco.modelo.enums.TipoTarjeta;
 import com.mibanco.repositorio.TarjetaRepositorio;
 import com.mibanco.servicio.TarjetaServicio;
-import com.mibanco.servicio.util.BaseServicioImpl;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
 
 import java.time.LocalDate;
@@ -142,8 +141,8 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<List<TarjetaDTO>> buscarPorTitularId(Optional<Long> idTitular) {
-        return idTitular.flatMap(id -> 
+    public Optional<List<TarjetaDTO>> buscarPorTitularId(Optional<Long> idCliente) {
+        return idCliente.flatMap(id -> 
             repositorioTarjeta.buscarPorTitularId(Optional.of(id))
                 .flatMap(tarjetas -> Optional.of(
                     tarjetas.stream()

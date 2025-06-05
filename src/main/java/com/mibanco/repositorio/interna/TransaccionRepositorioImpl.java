@@ -67,9 +67,11 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
     public Optional<Transaccion> eliminarPorId(Optional<Long> id) {
         return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);
     }
-    
+
     @Override
     protected Transaccion crearConNuevoId(Transaccion transaccion) {
-        return transaccion.conNuevoId(idContador.getAndIncrement());
+        return transaccion.toBuilder()
+                .id(idContador.getAndIncrement())
+                .build();
     }
 } 

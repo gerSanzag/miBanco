@@ -29,8 +29,8 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOp
     }
     
     @Override
-    public Optional<List<Tarjeta>> buscarPorTitularId(Optional<Long> idTitular) {
-        return idTitular.flatMap(id -> 
+    public Optional<List<Tarjeta>> buscarPorTitularId(Optional<Long> idCliente) {
+        return idCliente.flatMap(id -> 
             buscarTodosPorPredicado(tarjeta -> tarjeta.getTitular().getId().equals(id))
         );
     }

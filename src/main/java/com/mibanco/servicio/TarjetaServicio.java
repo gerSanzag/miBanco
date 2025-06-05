@@ -105,11 +105,11 @@ public interface TarjetaServicio {
     void establecerUsuarioActual(String usuario);
 
     /**
-     * Busca tarjetas por el ID del titular
-     * @param idTitular Optional con el ID del titular
-     * @return Optional con la lista de DTOs de tarjetas del titular
+     * Busca tarjetas por el ID del cliente titular
+     * @param idCliente Optional con el ID del cliente
+     * @return Optional con la lista de DTOs de tarjetas del cliente
      */
-    Optional<List<TarjetaDTO>> buscarPorTitularId(Optional<Long> idTitular);
+    Optional<List<TarjetaDTO>> buscarPorTitularId(Optional<Long> idCliente);
 
     /**
      * Busca tarjetas por el tipo

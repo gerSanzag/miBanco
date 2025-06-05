@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mibanco.modelo.Transaccion;
+import com.mibanco.modelo.enums.TipoOperacionTransaccion;
 import com.mibanco.modelo.enums.TipoTransaccion;
+import com.mibanco.repositorio.util.BaseRepositorio;
 
 /**
  * Interfaz para operaciones CRUD de Transaccion
  * Siguiendo enfoque estrictamente funcional con Optional
  * tanto para parámetros como para resultados
  */
-public interface TransaccionRepositorio {
+public interface TransaccionRepositorio extends BaseRepositorio<Transaccion, Long, TipoOperacionTransaccion> {
     
     
     /**

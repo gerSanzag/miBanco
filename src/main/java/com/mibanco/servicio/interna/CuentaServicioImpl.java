@@ -50,8 +50,8 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
             (cuentaExistente, cuentaNueva) -> cuentaExistente.conActualizaciones(
                 Optional.ofNullable(cuentaNueva.getSaldo()),
                 Optional.ofNullable(cuentaNueva.isActiva())
-            )   
-        );  
+            )
+        );
         guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaVariosCampos);
         return actualizaVariosCampos;
     }
@@ -76,7 +76,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
         );
         guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaSaldo);
         return actualizaSaldo;
-    }   
+    }
 
     @Override
     public Optional<CuentaDTO> actualizarEstadoCuenta(String numeroCuenta, Optional<Boolean> nuevaActiva) {
@@ -90,7 +90,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
         return actualizaEstado;
     }
 
-    
+   
     public Optional<CuentaDTO> actualizarTitularCuenta(String numeroCuenta, Optional<CuentaDTO> nuevoTitular) {
         Optional<CuentaDTO> actualizaTitular = nuevoTitular.flatMap(titularDTO -> 
             clienteMapeador.aEntidad(Optional.of(titularDTO.getTitular()))
