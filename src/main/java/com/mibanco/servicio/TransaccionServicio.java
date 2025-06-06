@@ -4,6 +4,7 @@ import com.mibanco.dto.TransaccionDTO;
 import com.mibanco.modelo.enums.TipoTransaccion;
 import com.mibanco.modelo.enums.TipoOperacionTransaccion;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -87,4 +88,13 @@ public interface TransaccionServicio {
      * @param usuario Usuario actual
      */
     void establecerUsuarioActual(String usuario);
+
+    /**
+     * Realiza un ingreso en una cuenta
+     * @param numeroCuenta Optional con el número de cuenta donde se realiza el ingreso
+     * @param monto Optional con el monto a ingresar
+     * @param descripcion Optional con la descripción del ingreso
+     * @return Optional con el DTO de la transacción de ingreso creada
+     */
+    Optional<TransaccionDTO> ingresar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion);
 } 

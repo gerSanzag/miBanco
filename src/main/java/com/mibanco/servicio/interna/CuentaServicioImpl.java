@@ -46,13 +46,13 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
         Optional<CuentaDTO> actualizaVariosCampos = actualizar(
             numeroCuenta,
             cuentaDTO,
-            TipoOperacionCuenta.ACTUALIZAR,
+            tipoActualizar,
             (cuentaExistente, cuentaNueva) -> cuentaExistente.conActualizaciones(
                 Optional.ofNullable(cuentaNueva.getSaldo()),
                 Optional.ofNullable(cuentaNueva.isActiva())
             )
         );
-        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaVariosCampos);
+        guardar(tipoActualizar, actualizaVariosCampos);
         return actualizaVariosCampos;
     }
 
@@ -74,7 +74,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
             Cuenta::getSaldo,
             Cuenta::conSaldo
         );
-        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaSaldo);
+        guardar(tipoActualizar, actualizaSaldo);
         return actualizaSaldo;
     }
 
@@ -86,7 +86,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
             Cuenta::isActiva,
             Cuenta::conActiva
         );
-        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaEstado);
+        guardar(tipoActualizar, actualizaEstado);
         return actualizaEstado;
     }
 
@@ -101,7 +101,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
                     (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titular).build()
                 ))
         );
-        guardar(TipoOperacionCuenta.ACTUALIZAR, actualizaTitular);
+        guardar(tipoActualizar, actualizaTitular);
         return actualizaTitular;
     }
 

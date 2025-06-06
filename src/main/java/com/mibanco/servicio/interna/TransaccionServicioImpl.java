@@ -8,12 +8,16 @@ import com.mibanco.modelo.enums.TipoTransaccion;
 import com.mibanco.repositorio.TransaccionRepositorio;
 import com.mibanco.servicio.TransaccionServicio;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
+import com.mibanco.servicio.CuentaServicio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
@@ -26,7 +30,7 @@ class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transacci
     
     private static final TransaccionRepositorio repositorioTransaccion;
     private static final TransaccionMapeador mapeador;
-    private final TipoOperacionTransaccion tipoActualizar = TipoOperacionTransaccion.ACTUALIZAR;
+    private static final CuentaServicio cuentaServicio;
     
     // Mapa estático de inversiones de tipos de transacción
     private static final Map<TipoTransaccion, TipoTransaccion> INVERSIONES_TIPO = ofEntries(
@@ -36,9 +40,13 @@ class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transacci
         entry(TipoTransaccion.TRANSFERENCIA_RECIBIDA, TipoTransaccion.TRANSFERENCIA_ENVIADA)
     );
     
+    private final Set<String> cuentasBloqueadas = new HashSet<>();
+    private final Object lock = new Object();
+    
     static {
         repositorioTransaccion = RepositorioFactoria.obtenerInstancia().obtenerRepositorioTransaccion();
         mapeador = new TransaccionMapeador();
+        cuentaServicio = new CuentaServicioImpl();
     }
     
     public TransaccionServicioImpl() {
@@ -141,7 +149,7 @@ class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transacci
     
     @Override
     public boolean eliminarTransaccion(Optional<Long> id) {
-        return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);
+        return eliminarPorId(id, TipoOperacionTransaccion.ELIMINAR);
     }
     
     @Override
@@ -152,5 +160,47 @@ class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transacci
     @Override
     public void establecerUsuarioActual(String usuario) {
         super.establecerUsuarioActual(usuario);
+    }
+
+    private boolean bloquearCuenta(Optional<String> numeroCuenta) {
+        return numeroCuenta.map(numero -> {
+            synchronized (lock) {
+                if (cuentasBloqueadas.contains(numero)) {
+                    return false;
+                }
+                cuentasBloqueadas.add(numero);
+                return true;
+            }
+        }).orElse(false);
+    }
+
+    private void liberarCuenta(Optional<String> numeroCuenta) {
+        numeroCuenta.ifPresent(numero -> {
+            synchronized (lock) {
+                cuentasBloqueadas.remove(numero);
+            }
+        });
+    }
+
+    @Override
+    public Optional<TransaccionDTO> ingresar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
+        return numeroCuenta
+            .filter(numero -> monto.map(cantidad -> cantidad.compareTo(BigDecimal.ZERO) > 0).orElse(false))
+            .flatMap(numero -> cuentaServicio.obtenerCuentaPorNumero(Optional.of(numero)))
+            .map(cuentaDTO -> {
+                BigDecimal nuevoSaldo = cuentaDTO.getSaldo().add(monto.get());
+                return cuentaServicio.actualizarSaldoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(nuevoSaldo));
+            })
+            .flatMap(cuentaActualizada -> cuentaActualizada.map(cuenta -> {
+                TransaccionDTO transaccionDTO = TransaccionDTO.builder()
+                    .numeroCuenta(cuenta.getNumeroCuenta())
+                    .tipo(TipoTransaccion.DEPOSITO)
+                    .monto(monto.get())
+                    .fecha(LocalDateTime.now())
+                    .descripcion(descripcion.orElse("Ingreso en cuenta"))
+                    .build();
+                
+                return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
+            }).orElse(Optional.empty()));
     }
 } 
