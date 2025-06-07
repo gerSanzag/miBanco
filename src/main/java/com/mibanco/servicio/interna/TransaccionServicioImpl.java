@@ -185,22 +185,125 @@ class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transacci
     @Override
     public Optional<TransaccionDTO> ingresar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
         return numeroCuenta
-            .filter(numero -> monto.map(cantidad -> cantidad.compareTo(BigDecimal.ZERO) > 0).orElse(false))
-            .flatMap(numero -> cuentaServicio.obtenerCuentaPorNumero(Optional.of(numero)))
-            .map(cuentaDTO -> {
-                BigDecimal nuevoSaldo = cuentaDTO.getSaldo().add(monto.get());
-                return cuentaServicio.actualizarSaldoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(nuevoSaldo));
-            })
-            .flatMap(cuentaActualizada -> cuentaActualizada.map(cuenta -> {
-                TransaccionDTO transaccionDTO = TransaccionDTO.builder()
-                    .numeroCuenta(cuenta.getNumeroCuenta())
-                    .tipo(TipoTransaccion.DEPOSITO)
-                    .monto(monto.get())
-                    .fecha(LocalDateTime.now())
-                    .descripcion(descripcion.orElse("Ingreso en cuenta"))
-                    .build();
+            .flatMap(numero -> {
+                // Intentamos bloquear la cuenta
+                if (!bloquearCuenta(Optional.of(numero))) {
+                    return Optional.empty();
+                }
                 
-                return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
-            }).orElse(Optional.empty()));
+                try {
+                    // Obtenemos la cuenta
+                    return cuentaServicio.obtenerCuentaPorNumero(Optional.of(numero))
+                        .flatMap(cuentaDTO -> {
+                            // Si la cuenta no está activa, la activamos
+                            if (!cuentaDTO.isActiva()) {
+                                return cuentaServicio.actualizarEstadoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(true));
+                            }
+                            return Optional.of(cuentaDTO);
+                        })
+                        .flatMap(cuentaDTO -> {
+                            // Actualizamos el saldo
+                            BigDecimal nuevoSaldo = cuentaDTO.getSaldo().add(monto.get());
+                            return cuentaServicio.actualizarSaldoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(nuevoSaldo));
+                        })
+                        .flatMap(cuentaActualizada -> {
+                            // Creamos la transacción
+                            TransaccionDTO transaccionDTO = TransaccionDTO.builder()
+                                .numeroCuenta(cuentaActualizada.getNumeroCuenta())
+                                .tipo(TipoTransaccion.DEPOSITO)
+                                .monto(monto.get())
+                                .fecha(LocalDateTime.now())
+                                .descripcion(descripcion.orElse("Ingreso en cuenta"))
+                                .build();
+                            
+                            // Guardamos la transacción
+                            return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
+                        });
+                } finally {
+                    // Siempre liberamos el bloqueo
+                    liberarCuenta(Optional.of(numero));
+                }
+            });
+    }
+
+    @Override
+    public Optional<TransaccionDTO> retirar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
+        return numeroCuenta
+            .filter(numero -> monto.map(cantidad -> cantidad.compareTo(BigDecimal.ZERO) > 0).orElse(false))
+            .flatMap(numero -> {
+                // Intentamos bloquear la cuenta
+                if (!bloquearCuenta(Optional.of(numero))) {
+                    return Optional.empty();
+                }
+                
+                try {
+                    // Obtenemos la cuenta
+                    return cuentaServicio.obtenerCuentaPorNumero(Optional.of(numero))
+                        .flatMap(cuentaDTO -> {
+                            // Si la cuenta no está activa, la activamos
+                            if (!cuentaDTO.isActiva()) {
+                                return cuentaServicio.actualizarEstadoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(true));
+                            }
+                            return Optional.of(cuentaDTO);
+                        })
+                        .filter(cuentaDTO -> cuentaDTO.getSaldo().compareTo(monto.get()) >= 0) // Verificamos saldo suficiente
+                        .flatMap(cuentaDTO -> {
+                            // Actualizamos el saldo
+                            BigDecimal nuevoSaldo = cuentaDTO.getSaldo().subtract(monto.get());
+                            return cuentaServicio.actualizarSaldoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(nuevoSaldo));
+                        })
+                        .flatMap(cuentaActualizada -> {
+                            // Creamos la transacción
+                            TransaccionDTO transaccionDTO = TransaccionDTO.builder()
+                                .numeroCuenta(cuentaActualizada.getNumeroCuenta())
+                                .tipo(TipoTransaccion.RETIRO)
+                                .monto(monto.get())
+                                .fecha(LocalDateTime.now())
+                                .descripcion(descripcion.orElse("Retiro de cuenta"))
+                                .build();
+                            
+                            // Guardamos la transacción
+                            return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
+                        });
+                } finally {
+                    // Siempre liberamos el bloqueo
+                    liberarCuenta(Optional.of(numero));
+                }
+            });
+    }
+
+    @Override
+    public Optional<TransaccionDTO> transferir(Optional<String> numeroCuentaOrigen, Optional<String> numeroCuentaDestino, Optional<BigDecimal> monto, Optional<String> descripcion) {
+        return numeroCuentaOrigen
+            .filter(numero -> monto.map(cantidad -> cantidad.compareTo(BigDecimal.ZERO) > 0).orElse(false))
+            .flatMap(numeroOrigen -> numeroCuentaDestino
+                .flatMap(numeroDestino -> {
+                    // Intentamos bloquear ambas cuentas
+                    if (!bloquearCuenta(Optional.of(numeroOrigen)) || !bloquearCuenta(Optional.of(numeroDestino))) {
+                        return Optional.empty();
+                    }
+                    
+                    try {
+                        // Construimos las descripciones personalizadas
+                        String descripcionRetiro = "Transferencia enviada a cuenta " + numeroDestino + 
+                            descripcion.map(desc -> ": " + desc).orElse("");
+                            
+                        String descripcionIngreso = "Transferencia recibida de cuenta " + numeroOrigen + 
+                            descripcion.map(desc -> ": " + desc).orElse("");
+
+                        // Realizamos el retiro de la cuenta origen
+                        return retirar(Optional.of(numeroOrigen), monto, Optional.of(descripcionRetiro))
+                            .flatMap(transaccionRetiro -> 
+                                // Si el retiro fue exitoso, realizamos el ingreso en la cuenta destino
+                                ingresar(Optional.of(numeroDestino), monto, Optional.of(descripcionIngreso))
+                                    .map(transaccionIngreso -> transaccionRetiro) // Retornamos la transacción de retiro como la principal
+                            );
+                    } finally {
+                        // Siempre liberamos los bloqueos
+                        liberarCuenta(Optional.of(numeroOrigen));
+                        liberarCuenta(Optional.of(numeroDestino));
+                    }
+                })
+            );
     }
 } 

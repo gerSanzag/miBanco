@@ -97,4 +97,23 @@ public interface TransaccionServicio {
      * @return Optional con el DTO de la transacción de ingreso creada
      */
     Optional<TransaccionDTO> ingresar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion);
+
+    /**
+     * Realiza un retiro de una cuenta
+     * @param numeroCuenta Optional con el número de cuenta de donde se realiza el retiro
+     * @param monto Optional con el monto a retirar
+     * @param descripcion Optional con la descripción del retiro
+     * @return Optional con el DTO de la transacción de retiro creada
+     */
+    Optional<TransaccionDTO> retirar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion);
+
+    /**
+     * Realiza una transferencia entre cuentas
+     * @param numeroCuentaOrigen Optional con el número de cuenta de origen
+     * @param numeroCuentaDestino Optional con el número de cuenta de destino
+     * @param monto Optional con el monto a transferir
+     * @param descripcion Optional con la descripción de la transferencia
+     * @return Optional con el DTO de la transacción de transferencia creada
+     */
+    Optional<TransaccionDTO> transferir(Optional<String> numeroCuentaOrigen, Optional<String> numeroCuentaDestino, Optional<BigDecimal> monto, Optional<String> descripcion);
 } 
