@@ -63,12 +63,7 @@ public interface TransaccionServicio {
      */
     Optional<List<TransaccionDTO>> buscarPorRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin);
     
-    /**
-     * Crea una transacción de anulación para una transacción existente
-     * @param idTransaccion Optional con el ID de la transacción a anular
-     * @return Optional con el DTO de la transacción de anulación creada
-     */
-    Optional<TransaccionDTO> anularTransaccion(Optional<Long> idTransaccion);
+ 
     
     /**
      * Elimina una transacción por su ID
@@ -89,31 +84,6 @@ public interface TransaccionServicio {
      */
     void establecerUsuarioActual(String usuario);
 
-    /**
-     * Realiza un ingreso en una cuenta
-     * @param numeroCuenta Optional con el número de cuenta donde se realiza el ingreso
-     * @param monto Optional con el monto a ingresar
-     * @param descripcion Optional con la descripción del ingreso
-     * @return Optional con el DTO de la transacción de ingreso creada
-     */
-    Optional<TransaccionDTO> ingresar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion);
-
-    /**
-     * Realiza un retiro de una cuenta
-     * @param numeroCuenta Optional con el número de cuenta de donde se realiza el retiro
-     * @param monto Optional con el monto a retirar
-     * @param descripcion Optional con la descripción del retiro
-     * @return Optional con el DTO de la transacción de retiro creada
-     */
-    Optional<TransaccionDTO> retirar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion);
-
-    /**
-     * Realiza una transferencia entre cuentas
-     * @param numeroCuentaOrigen Optional con el número de cuenta de origen
-     * @param numeroCuentaDestino Optional con el número de cuenta de destino
-     * @param monto Optional con el monto a transferir
-     * @param descripcion Optional con la descripción de la transferencia
-     * @return Optional con el DTO de la transacción de transferencia creada
-     */
-    Optional<TransaccionDTO> transferir(Optional<String> numeroCuentaOrigen, Optional<String> numeroCuentaDestino, Optional<BigDecimal> monto, Optional<String> descripcion);
+  
+    
 } 
