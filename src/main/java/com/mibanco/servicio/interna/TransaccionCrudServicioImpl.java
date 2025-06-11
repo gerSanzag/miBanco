@@ -6,7 +6,7 @@ import com.mibanco.modelo.Transaccion;
 import com.mibanco.modelo.enums.TipoOperacionTransaccion;
 import com.mibanco.modelo.enums.TipoTransaccion;
 import com.mibanco.repositorio.TransaccionRepositorio;
-import com.mibanco.servicio.TransaccionServicio;
+import com.mibanco.servicio.TransaccionCrudServicio;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Optional;
  * Implementación del servicio de Transacciones
  * Extiende BaseServicioImpl para heredar operaciones CRUD genéricas
  */
-class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transaccion, Long, TipoOperacionTransaccion, TransaccionRepositorio> implements TransaccionServicio {
+class TransaccionCrudServicioImpl extends BaseServicioImpl<TransaccionDTO, Transaccion, Long, TipoOperacionTransaccion, TransaccionRepositorio> implements TransaccionCrudServicio {
     
     private static final TransaccionRepositorio repositorioTransaccion;
     private static final TransaccionMapeador mapeador;
@@ -27,7 +27,7 @@ class TransaccionServicioImpl extends BaseServicioImpl<TransaccionDTO, Transacci
        
     }
     
-    public TransaccionServicioImpl() {
+    public TransaccionCrudServicioImpl() {
         super(repositorioTransaccion, mapeador);
     }
     

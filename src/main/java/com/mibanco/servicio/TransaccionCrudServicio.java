@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * Interfaz de servicio para operaciones con Transacciones
  */
-public interface TransaccionServicio {
+public interface TransaccionCrudServicio {
     
     /**
      * Crea una nueva transacción
