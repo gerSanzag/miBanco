@@ -8,7 +8,10 @@ import com.mibanco.modelo.enums.TipoOperacionCliente;
 import com.mibanco.repositorio.interna.RepositorioFactoria;         
 import com.mibanco.servicio.ClienteServicio;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, TipoOperacionCliente, ClienteRepositorio> implements ClienteServicio {
@@ -27,7 +30,24 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
     }
 
     @Override
-    public Optional<ClienteDTO> crearCliente(Optional<ClienteDTO> clienteDTO) {
+    public Optional<ClienteDTO> crearClienteDto(Map<String, String> datosCliente) {
+        // El servicio crea el DTO internamente
+        ClienteDTO nuevoCliente = ClienteDTO.builder()
+            .nombre(datosCliente.get("nombre"))
+            .apellido(datosCliente.get("apellido"))
+            .dni(datosCliente.get("dni"))
+            .email(datosCliente.get("email"))
+            .telefono(datosCliente.get("telefono"))
+            .direccion(datosCliente.get("direccion"))
+            .fechaNacimiento(LocalDate.parse(datosCliente.get("fechaNacimiento"), DateTimeFormatter.ISO_LOCAL_DATE))
+            .build();
+        
+        // Luego lo guarda usando el método existente
+        return guardar(TipoOperacionCliente.CREAR, Optional.of(nuevoCliente));
+    }
+
+    @Override
+    public Optional<ClienteDTO> guardarCliente(Optional<ClienteDTO> clienteDTO) {
         return guardar(TipoOperacionCliente.CREAR,clienteDTO);
     }
 

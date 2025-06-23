@@ -1,11 +1,13 @@
-package com.mibanco.vista.util;
+package com.mibanco.vista.interna;
 
 import java.util.Scanner;
+
+import com.mibanco.vista.util.Consola;
 
 /**
  * Implementación de la interfaz Consola para manejar la entrada/salida en consola
  */
-public class ConsolaImpl implements Consola {
+class ConsolaImpl implements Consola {
     private final Scanner scanner;
     
     public ConsolaImpl(Scanner scanner) {

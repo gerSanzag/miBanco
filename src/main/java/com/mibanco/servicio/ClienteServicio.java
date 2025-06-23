@@ -2,6 +2,7 @@ package com.mibanco.servicio;
 
 import com.mibanco.dto.ClienteDTO;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -10,11 +11,20 @@ import java.util.Optional;
 public interface ClienteServicio {
     
     /**
-     * Crea un nuevo cliente
-     * @param clienteDTO Optional con los datos del nuevo cliente
+     * Crea un nuevo cliente a partir de datos crudos.
+     * El servicio se encarga de crear el DTO internamente.
+     * 
+     * @param datosCliente Map con los datos crudos del cliente
      * @return Optional con el DTO del cliente creado
      */
-    Optional<ClienteDTO> crearCliente(Optional<ClienteDTO> clienteDTO);
+    Optional<ClienteDTO> crearClienteDto(Map<String, String> datosCliente);
+    
+    /**
+     * Guarda un cliente existente
+     * @param clienteDTO Optional con los datos del cliente a guardar
+     * @return Optional con el DTO del cliente guardado
+     */
+    Optional<ClienteDTO> guardarCliente(Optional<ClienteDTO> clienteDTO);
     
     /**
      * Actualiza la información completa de un cliente
