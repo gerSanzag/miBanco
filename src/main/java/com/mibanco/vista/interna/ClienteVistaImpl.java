@@ -1,7 +1,7 @@
 package com.mibanco.vista.interna;
 
 import com.mibanco.dto.ClienteDTO;
-import com.mibanco.vista.VistaCliente;
+import com.mibanco.vista.ClienteVista;
 import com.mibanco.vista.util.Consola;
 
 import java.time.LocalDate;
@@ -17,18 +17,15 @@ import java.util.Scanner;
  * Implementación de la vista para la entidad Cliente.
  * Visibilidad de paquete para que solo pueda ser instanciada a través de VistaFactoria.
  */
-class VistaClienteImpl implements VistaCliente {
+class ClienteVistaImpl implements ClienteVista {
 
     private final Consola consola;
-    private static final String ACCION_BUSCAR = "buscar";
-    private static final String ACCION_ACTUALIZAR = "actualizar";
-    private static final String ACCION_ELIMINAR = "eliminar";
 
     /**
      * Constructor con visibilidad de paquete.
      * Obtiene la instancia de la consola para la interacción con el usuario.
      */
-    VistaClienteImpl() {
+    ClienteVistaImpl() {
         this.consola = new ConsolaImpl(new Scanner(System.in));
     }
 
@@ -37,9 +34,12 @@ class VistaClienteImpl implements VistaCliente {
         consola.mostrar("\n--- Menú de Gestión de Clientes ---\n");
         consola.mostrar("1. Crear nuevo cliente\n");
         consola.mostrar("2. Buscar cliente por ID\n");
-        consola.mostrar("3. Listar todos los clientes\n");
-        consola.mostrar("4. Actualizar cliente\n");
-        consola.mostrar("5. Eliminar cliente\n");
+        consola.mostrar("3. Buscar cliente por DNI\n");
+        consola.mostrar("4. Listar todos los clientes\n");
+        consola.mostrar("5. Actualizar cliente\n");
+        consola.mostrar("6. Eliminar cliente\n");
+        consola.mostrar("7. Restaurar cliente\n");
+        consola.mostrar("8. Mostrar clientes eliminados\n");
         consola.mostrar("0. Volver al menú principal\n");
         consola.mostrar("------------------------------------\n");
     }
@@ -185,5 +185,38 @@ class VistaClienteImpl implements VistaCliente {
                 mostrarMensaje("Formato de fecha incorrecto. Use yyyy-MM-dd.");
             }
         }
+    }
+
+    @Override
+    public Optional<String> solicitarDni() {
+        consola.mostrar("Introduzca el DNI del cliente: ");
+        String dni = consola.leerLinea().trim();
+        return dni.isEmpty() ? Optional.empty() : Optional.of(dni);
+    }
+
+    @Override
+    public void mostrarClientesEliminados(List<ClienteDTO> clientesEliminados) {
+        consola.mostrar("\n--- Listado de Clientes Eliminados ---\n");
+        
+        Optional.of(clientesEliminados)
+            .filter(lista -> !lista.isEmpty())
+            .ifPresentOrElse(
+                lista -> {
+                    lista.forEach(cliente -> mostrarCliente(Optional.of(cliente)));
+                    consola.mostrar("--------------------------------\n");
+                },
+                () -> consola.mostrar("No hay clientes eliminados.\n")
+            );
+    }
+
+    @Override
+    public boolean confirmarRestauracion(ClienteDTO cliente) {
+        consola.mostrar("\n--- Restaurar Cliente Eliminado ---\n");
+        mostrarCliente(Optional.of(cliente));
+        
+        consola.mostrar("\n¿Desea restaurar este cliente? (s/n): ");
+        String respuesta = consola.leerLinea().toLowerCase();
+        
+        return "s".equals(respuesta);
     }
 } 

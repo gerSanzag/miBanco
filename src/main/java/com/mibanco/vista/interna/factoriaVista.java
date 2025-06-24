@@ -1,23 +1,26 @@
 package com.mibanco.vista.interna;
 
-import com.mibanco.vista.VistaCliente;
+import com.mibanco.vista.ClienteVista;
+import com.mibanco.vista.CuentaVista;
 
 /**
  * Fábrica de vistas que expone las implementaciones.
  * Esta es la única clase que tiene acceso a las implementaciones internas de las vistas.
  * Sigue el patrón Singleton para garantizar una única instancia.
  */
-public final class VistaFactoria {
+public final class factoriaVista {
     
-    private static volatile VistaFactoria instancia;
-    private final VistaCliente vistaCliente;
+    private static volatile factoriaVista instancia;
+    private final ClienteVista vistaCliente;
+    private final CuentaVista vistaCuenta;
     
     /**
      * Constructor privado que inicializa todas las implementaciones de vistas.
      * Al estar en el mismo paquete, tiene acceso a las clases package-private.
      */
-    private VistaFactoria() {
-        this.vistaCliente = new VistaClienteImpl();
+    private factoriaVista() {
+        this.vistaCliente = new ClienteVistaImpl();
+        this.vistaCuenta = new CuentaVistaImpl();
     }
     
     /**
@@ -26,11 +29,11 @@ public final class VistaFactoria {
      * 
      * @return la instancia única de VistaFactoria
      */
-    public static VistaFactoria obtenerInstancia() {
+    public static factoriaVista obtenerInstancia() {
         if (instancia == null) {
-            synchronized (VistaFactoria.class) {
+            synchronized (factoriaVista.class) {
                 if (instancia == null) {
-                    instancia = new VistaFactoria();
+                    instancia = new factoriaVista();
                 }
             }
         }
@@ -42,7 +45,16 @@ public final class VistaFactoria {
      * 
      * @return la interfaz pública de la vista de cliente
      */
-    public VistaCliente obtenerVistaCliente() {
+    public ClienteVista obtenerVistaCliente() {
         return vistaCliente;
+    }
+    
+    /**
+     * Obtiene la vista de cuenta.
+     * 
+     * @return la interfaz pública de la vista de cuenta
+     */
+    public CuentaVista obtenerVistaCuenta() {
+        return vistaCuenta;
     }
 } 

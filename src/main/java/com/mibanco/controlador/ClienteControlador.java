@@ -20,6 +20,12 @@ public interface ClienteControlador {
     void buscarClientePorId();
 
     /**
+     * Maneja la búsqueda de un cliente por DNI.
+     * Solicita el DNI a la vista, lo busca en el servicio y muestra el resultado.
+     */
+    void buscarClientePorDni();
+
+    /**
      * Maneja la visualización de todos los clientes.
      * Obtiene la lista del servicio y la muestra a través de la vista.
      */
@@ -36,6 +42,18 @@ public interface ClienteControlador {
      * Solicita ID, busca cliente, confirma eliminación y elimina.
      */
     void eliminarCliente();
+
+    /**
+     * Maneja la restauración de un cliente eliminado.
+     * Solicita ID, busca cliente eliminado, confirma y restaura.
+     */
+    void restaurarCliente();
+
+    /**
+     * Maneja la visualización de clientes eliminados.
+     * Obtiene la lista de clientes eliminados del servicio y la muestra.
+     */
+    void listarClientesEliminados();
 
     /**
      * Maneja el menú principal de gestión de clientes.

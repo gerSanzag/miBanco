@@ -1,6 +1,7 @@
 package com.mibanco.controlador.interna;
 
 import com.mibanco.controlador.ClienteControlador;
+import com.mibanco.controlador.CuentaControlador;
 
 /**
  * Fábrica de controladores que expone las implementaciones.
@@ -11,6 +12,7 @@ public final class ControladorFactoria {
     
     private static volatile ControladorFactoria instancia;
     private final ClienteControlador clienteControlador;
+    private final CuentaControlador cuentaControlador;
     
     /**
      * Constructor privado que inicializa todas las implementaciones de controladores.
@@ -18,6 +20,7 @@ public final class ControladorFactoria {
      */
     private ControladorFactoria() {
         this.clienteControlador = new ClienteControladorImpl();
+        this.cuentaControlador = new CuentaControladorImpl();
     }
     
     /**
@@ -44,5 +47,14 @@ public final class ControladorFactoria {
      */
     public ClienteControlador obtenerControladorCliente() {
         return clienteControlador;
+    }
+    
+    /**
+     * Obtiene el controlador de cuenta.
+     * 
+     * @return la interfaz pública del controlador de cuenta
+     */
+    public CuentaControlador obtenerControladorCuenta() {
+        return cuentaControlador;
     }
 } 

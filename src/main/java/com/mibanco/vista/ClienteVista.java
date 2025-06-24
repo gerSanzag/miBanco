@@ -10,7 +10,7 @@ import java.util.Optional;
  * Interfaz para la vista de la entidad Cliente.
  * Define los métodos para interactuar con el usuario en lo que respecta a la gestión de clientes.
  */
-public interface VistaCliente {
+public interface ClienteVista {
 
     /**
      * Muestra el menú principal de opciones para la gestión de clientes.
@@ -39,6 +39,13 @@ public interface VistaCliente {
     Optional<Long> solicitarIdCliente();
 
     /**
+     * Solicita al usuario el DNI de un cliente.
+     *
+     * @return un Optional con el DNI del cliente, o un Optional vacío si la entrada está vacía.
+     */
+    Optional<String> solicitarDni();
+
+    /**
      * Muestra los datos modificables de un cliente y solicita los nuevos valores.
      * Solo muestra y permite modificar email, teléfono y dirección.
      *
@@ -63,6 +70,13 @@ public interface VistaCliente {
     void mostrarTodosLosClientes(List<ClienteDTO> clientes);
 
     /**
+     * Muestra una lista de clientes eliminados.
+     *
+     * @param clientesEliminados la lista de DTOs de clientes eliminados a mostrar.
+     */
+    void mostrarClientesEliminados(List<ClienteDTO> clientesEliminados);
+
+    /**
      * Muestra un mensaje genérico en la consola.
      *
      * @param mensaje el mensaje a mostrar.
@@ -78,4 +92,12 @@ public interface VistaCliente {
      * @return true si el usuario confirma la acción, false en caso contrario.
      */
     boolean confirmarAccion(ClienteDTO cliente, String titulo, String mensaje);
+
+    /**
+     * Solicita confirmación para restaurar un cliente eliminado.
+     *
+     * @param cliente el DTO del cliente a restaurar.
+     * @return true si el usuario confirma la restauración, false en caso contrario.
+     */
+    boolean confirmarRestauracion(ClienteDTO cliente);
 } 
