@@ -2350,15 +2350,2350 @@ _**Assistant**_
 
 _**User**_
 
-Olvida la conversacion a partir de este punto.
+Has una compilacion del cliente y crea un test solo para el cliente.
+PROHIBIDO MODIFICAR CODIGO EXISTENTE SIN MI AUTORIZACION.
 
 ---
 
 _**Assistant**_
 
-Entendido, German. He olvidado la conversación a partir de este punto. 
+Perfecto, German. Voy a hacer una compilación del proyecto y crear un test específico para el cliente sin modificar código existente.
 
-¿En qué puedo ayudarte ahora?
+## 1. Primero, compilo el proyecto
+
+
+---
+
+```bash
+cd /Users/german/ejerciciosJava/miBanco && mvn clean compile
+```
+
+```
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ miBanco ---
+[INFO] Deleting /Users/german/ejerciciosJava/miBanco/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ miBanco ---
+[INFO] skip non existing resourceDirectory /Users/german/ejerciciosJava/miBanco/
+src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ miBanco ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 66 source files to /Users/german/ejerciciosJava/miBanco/target/
+classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.734 s
+[INFO] Finished at: 2025-06-24T19:55:10+02:00
+[INFO] ------------------------------------------------------------------------
+
+```
+
+---
+
+¡Excelente! La compilación fue exitosa. Ahora voy a crear un test específico para el cliente.
+
+## 2. Creo el test para el cliente
+
+
+---
+
+```diff
+- 
++ package com.mibanco;
++ 
++ import com.mibanco.controlador.ClienteControlador;
++ import com.mibanco.controlador.interna.ControladorFactoria;
++ import com.mibanco.dto.ClienteDTO;
++ import com.mibanco.servicio.ClienteServicio;
++ import com.mibanco.servicio.interna.ServicioFactoria;
++ 
++ import java.util.List;
++ import java.util.Map;
++ import java.util.Optional;
++ 
++ /**
++  * Test específico para probar todas las funcionalidades del cliente
++  */
++ public class TestCliente {
++ 
++     public static void main(String[] args) {
++         System.out.println("=== TEST DE FUNCIONALIDADES DEL CLIENTE ===\n");
++ 
++         // Obtener instancias
++         ClienteServicio servicio = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();
++         ClienteControlador controlador = ControladorFactoria.obtenerInstancia().obtenerControladorCliente();
++ 
++         // Test 1: Crear cliente
++         testCrearCliente(servicio);
++ 
++         // Test 2: Buscar cliente por ID
++         testBuscarClientePorId(servicio);
++ 
++         // Test 3: Buscar cliente por DNI
++         testBuscarClientePorDni(servicio);
++ 
++         // Test 4: Listar todos los clientes
++         testListarTodosLosClientes(servicio);
++ 
++         // Test 5: Actualizar cliente
++         testActualizarCliente(servicio);
++ 
++         // Test 6: Eliminar cliente
++         testEliminarCliente(servicio);
++ 
++         // Test 7: Mostrar clientes eliminados
++         testMostrarClientesEliminados(servicio);
++ 
++         // Test 8: Restaurar cliente
++         testRestaurarCliente(servicio);
++ 
++         System.out.println("\n=== FIN DE TESTS ===");
++     }
++ 
++     private static void testCrearCliente(ClienteServicio servicio) {
++         System.out.println("--- Test 1: Crear Cliente ---");
++         
++         Map<String, String> datosCliente = Map.of(
++             "nombre", "Juan",
++             "apellido", "Pérez",
++             "dni", "12345678A",
++             "email", "juan.perez@email.com",
++             "telefono", "123456789",
++             "direccion", "Calle Principal 123",
++             "fechaNacimiento", "1990-01-15"
++         );
++ 
++         Optional<ClienteDTO> clienteCreado = servicio.crearClienteDto(datosCliente);
++         
++         clienteCreado.ifPresentOrElse(
++             cliente -> System.out.println("✅ Cliente creado exitosamente: " + cliente.getNombre() + " " + cliente.getApellido() + " (ID: " + cliente.getId() + ")"),
++             () -> System.out.println("❌ Error al crear cliente")
++         );
++         System.out.println();
++     }
++ 
++     private static void testBuscarClientePorId(ClienteServicio servicio) {
++         System.out.println("--- Test 2: Buscar Cliente por ID ---");
++         
++         // Buscar el primer cliente (ID 1)
++         Optional<ClienteDTO> cliente = servicio.obtenerClientePorId(Optional.of(1L));
++         
++         cliente.ifPresentOrElse(
++             c -> System.out.println("✅ Cliente encontrado: " + c.getNombre() + " " + c.getApellido() + " (DNI: " + c.getDni() + ")"),
++             () -> System.out.println("❌ Cliente no encontrado")
++         );
++         System.out.println();
++     }
++ 
++     private static void testBuscarClientePorDni(ClienteServicio servicio) {
++         System.out.println("--- Test 3: Buscar Cliente por DNI ---");
++         
++         Optional<ClienteDTO> cliente = servicio.obtenerClientePorDni(Optional.of("12345678A"));
++         
++         cliente.ifPresentOrElse(
++             c -> System.out.println("✅ Cliente encontrado por DNI: " + c.getNombre() + " " + c.getApellido() + " (ID: " + c.getId() + ")"),
++             () -> System.out.println("❌ Cliente no encontrado por DNI")
++         );
++         System.out.println();
++     }
++ 
++     private static void testListarTodosLosClientes(ClienteServicio servicio) {
++         System.out.println("--- Test 4: Listar Todos los Clientes ---");
++         
++         Optional<List<ClienteDTO>> clientes = servicio.obtenerTodosLosClientes();
++         
++         clientes.ifPresentOrElse(
++             lista -> {
++                 System.out.println("✅ Total de clientes: " + lista.size());
++                 lista.forEach(cliente -> 
++                     System.out.println("  - " + cliente.getNombre() + " " + cliente.getApellido() + " (ID: " + cliente.getId() + ")")
++                 );
++             },
++             () -> System.out.println("❌ Error al obtener lista de clientes")
++         );
++         System.out.println();
++     }
++ 
++     private static void testActualizarCliente(ClienteServicio servicio) {
++         System.out.println("--- Test 5: Actualizar Cliente ---");
++         
++         // Actualizar email del cliente con ID 1
++         Optional<ClienteDTO> clienteActualizado = servicio.actualizarEmailCliente(1L, Optional.of("nuevo.email@test.com"));
++         
++         clienteActualizado.ifPresentOrElse(
++             cliente -> System.out.println("✅ Cliente actualizado: " + cliente.getEmail()),
++             () -> System.out.println("❌ Error al actualizar cliente")
++         );
++         System.out.println();
++     }
++ 
++     private static void testEliminarCliente(ClienteServicio servicio) {
++         System.out.println("--- Test 6: Eliminar Cliente ---");
++         
++         // Eliminar cliente con ID 1
++         boolean eliminado = servicio.eliminarCliente(Optional.of(1L));
++         
++         if (eliminado) {
++             System.out.println("✅ Cliente eliminado exitosamente");
++         } else {
++             System.out.println("❌ Error al eliminar cliente");
++         }
++         System.out.println();
++     }
++ 
++     private static void testMostrarClientesEliminados(ClienteServicio servicio) {
++         System.out.println("--- Test 7: Mostrar Clientes Eliminados ---");
++         
++         List<ClienteDTO> clientesEliminados = servicio.obtenerClientesEliminados();
++         
++         if (!clientesEliminados.isEmpty()) {
++             System.out.println("✅ Clientes eliminados encontrados: " + clientesEliminados.size());
++             clientesEliminados.forEach(cliente -> 
++                 System.out.println("  - " + cliente.getNombre() + " " + cliente.getApellido() + " (ID: " + cliente.getId() + ")")
++             );
++         } else {
++             System.out.println("ℹ️ No hay clientes eliminados");
++         }
++         System.out.println();
++     }
++ 
++     private static void testRestaurarCliente(ClienteServicio servicio) {
++         System.out.println("--- Test 8: Restaurar Cliente ---");
++         
++         // Restaurar cliente con ID 1
++         Optional<ClienteDTO> clienteRestaurado = servicio.restaurarCliente(Optional.of(1L));
++         
++         clienteRestaurado.ifPresentOrElse(
++             cliente -> System.out.println("✅ Cliente restaurado exitosamente: " + cliente.getNombre() + " " + cliente.getApellido()),
++             () -> System.out.println("❌ Error al restaurar cliente")
++         );
++         System.out.println();
++     }
++ } 
+```
+
+---
+
+## 3. Ahora ejecuto el test
+
+
+---
+
+```bash
+mvn exec:java -Dexec.mainClass="com.mibanco.TestCliente"
+```
+
+```
+german@MacBook-Air-de-german miBanco % mvn exec:java -Dexec.mainClass="com.mibanco.TestCliente"
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.1:java (default-cli) @ miBanco ---
+[WARNING] 
+java.lang.ClassNotFoundException: com.mibanco.TestCliente
+    at org.codehaus.mojo.exec.URLClassLoaderBuilder$ExecJavaClassLoader.loadClass (URLClassLoaderBuilder.java:211)
+    at java.lang.ClassLoader.loadClass (ClassLoader.java:528)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doExec (ExecJavaMojo.java:357)
+    at org.codehaus.mojo.exec.ExecJavaMojo.lambda$execute$0 (ExecJavaMojo.java:280)
+    at java.lang.Thread.run (Thread.java:1575)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.278 s
+[INFO] Finished at: 2025-06-24T19:55:43+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.1:java (default-cli) on project miBanco: An exception occurred
+ while executing the Java class. com.mibanco.TestCliente -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Necesito compilar el test primero. Voy a compilar todo el proyecto incluyendo los tests:
+
+
+---
+
+```bash
+mvn clean compile test-compile
+```
+
+```
+german@MacBook-Air-de-german miBanco % mvn clean compile test-compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ miBanco ---
+[INFO] Deleting /Users/german/ejerciciosJava/miBanco/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ miBanco ---
+[INFO] skip non existing resourceDirectory /Users/german/ejerciciosJava/miBanco/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ miBanco ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 66 source files to /Users/german/ejerciciosJava/miBanco/target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ miBanco ---
+[INFO] skip non existing resourceDirectory /Users/german/ejerciciosJava/miBanco/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ miBanco ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 66 source files to /Users/german/ejerciciosJava/miBanco/target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ miBanco ---
+[INFO] skip non existing resourceDirectory /Users/german/ejerciciosJava/miBanco/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ miBanco ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /Users/german/ejerciciosJava/miBanco/target/test-classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.545 s
+[INFO] Finished at: 2025-06-24T19:55:54+02:00
+[INFO] ------------------------------------------------------------------------
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Ahora ejecuto el test:
+
+
+---
+
+```bash
+mvn exec:java -Dexec.mainClass="com.mibanco.TestCliente"
+```
+
+```
+german@MacBook-Air-de-german miBanco % mvn exec:java -Dexec.mainClass="com.mibanco.TestCliente"
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.1:java (default-cli) @ miBanco ---
+[WARNING] 
+java.lang.ClassNotFoundException: com.mibanco.TestCliente
+    at org.codehaus.mojo.exec.URLClassLoaderBuilder$ExecJavaClassLoader.loadClass (URLClassLoaderBuilder.java:211)
+    at java.lang.ClassLoader.loadClass (ClassLoader.java:528)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doExec (ExecJavaMojo.java:357)
+    at org.codehaus.mojo.exec.ExecJavaMojo.lambda$execute$0 (ExecJavaMojo.java:280)
+    at java.lang.Thread.run (Thread.java:1575)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.253 s
+[INFO] Finished at: 2025-06-24T19:56:02+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.1:java (default-cli) on project miBanco: An exception occurred
+ while executing the Java class. com.mibanco.TestCliente -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+
+El error indica que Maven no encuentra la clase `com.mibanco.TestCliente`. Esto suele ocurrir porque los tests están en el directorio `src/test/java`, que no se incluye en el classpath por defecto para la ejecución con `mvn exec:java`.
+
+### ¿Por qué ocurre esto?
+- `mvn exec:java` busca la clase en `target/classes` (código principal), pero los tests se compilan en `target/test-classes`.
+- Para ejecutar un test de integración/manual, lo ideal es moverlo temporalmente a `src/main/java` o configurar el plugin para incluir el classpath de test.
+
+### Soluciones posibles:
+1. **Mover temporalmente `TestCliente.java` a `src/main/java/com/mibanco/`** y volver a compilar.
+2. **Configurar el plugin exec** para incluir el classpath de test (más avanzado).
+
+¿Quieres que mueva el archivo de test a `src/main/java/com/mibanco/` para que puedas ejecutarlo fácilmente y luego lo elimino cuando termines?  
+Esto no modifica ninguna lógica de negocio ni clases existentes, solo es para poder ejecutar el test. ¿Te parece bien?
+
+---
+
+_**User**_
+
+si
+
+---
+
+_**Assistant**_
+
+```bash
+mv src/test/java/com/mibanco/TestCliente.java src/main/java/com/mibanco/TestCliente.java
+```
+
+```
+german@MacBook-Air-de-german miBanco % 
+
+```
+
+---
+
+```bash
+mvn compile && mvn exec:java -Dexec.mainClass="com.mibanco.TestCliente"
+```
+
+```
+german@MacBook-Air-de-german miBanco % 
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+    at com.mibanco.repositorio.interna.BaseRepositorioImpl.<init> (BaseRepositorioImpl.java:41)
+    at com.mibanco.repositorio.interna.ClienteRepositorioImpl.<init> (ClienteRepositorioImpl.java:20)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.<init> (RepositorioFactoria.java:29)
+    at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia (RepositorioFactoria.java:43)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.282 s
+[INFO] Finished at: 2025-06-24T19:57:17+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.1:java (default-cli) on project miBanco: An exception occurred
+ while executing the Java class. null: StackOverflowError -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+```
+
+---
+
+German, el test no se ha podido ejecutar porque hay un **StackOverflowError** causado por una recursión infinita en la obtención de la instancia de la `RepositorioFactoria`.  
+Esto suele ocurrir cuando el patrón Singleton no está bien implementado o hay una dependencia circular en la inicialización de los repositorios.
+
+### ¿Qué significa esto?
+- El error no está en el test, sino en la inicialización de la infraestructura de repositorios.
+- El método `RepositorioFactoria.obtenerInstancia()` se llama a sí mismo infinitamente, probablemente porque algún repositorio depende de la factoria antes de que la instancia esté completamente creada.
+
+### ¿Qué hacer?
+1. **Revisar la implementación de `RepositorioFactoria`** para detectar la recursión.
+2. **No es necesario modificar la lógica de cliente ni de los tests.**
+3. **Solucionar el bug en la factoria** (esto sí requiere tu autorización para modificar código existente).
+
+¿Quieres que te ayude a localizar el problema en la clase `RepositorioFactoria` y te proponga la solución exacta antes de hacer cualquier cambio?
+
+---
+
+_**User**_
+
+si
+
+---
+
+_**Assistant**_
+
+Read file: src/main/java/com/mibanco/repositorio/interna/RepositorioFactoria.java
+
+---
+
+<details>
+            <summary>Searched codebase "RepositorioFactoria" • **14** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `src/main/java/com/mibanco/repositorio/interna/RepositorioFactoria.java` | L1-48 |
+| `src/main/java/com/mibanco/repositorio/interna/RepositorioFactoria.java` | L48-89 |
+| `src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java` | L1-47 |
+| `src/main/java/com/mibanco/repositorio/interna/package-info.java` | L1-10 |
+| `src/main/java/com/mibanco/repositorio/interna/ClienteRepositorioImpl.java` | L1-46 |
+| `src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java` | L104-164 |
+| `src/main/java/com/mibanco/repositorio/interna/CuentaRepositorioImpl.java` | L1-63 |
+| `src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java` | L47-104 |
+| `src/main/java/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.java` | L1-63 |
+| `src/main/java/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.java` | L1-48 |
+| `src/main/java/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.java` | L1-46 |
+| `src/main/java/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.java` | L48-92 |
+| `src/main/java/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.java` | L46-77 |
+| `src/main/java/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.java` | L92-108 |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "RepositorioFactoria" • **25** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `src/main/java/com/mibanco/servicio/interna/AuditoriaServicioImpl.java` | L1-57 |
+| `src/main/java/com/mibanco/servicio/interna/ServicioFactoria.java` | L1-50 |
+| `src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java` | L1-42 |
+| `src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java` | L1-47 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L1-21 |
+| `src/main/java/com/mibanco/servicio/interna/ServicioFactoria.java` | L50-99 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L21-69 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java` | L1-23 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java` | L23-69 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.java` | L19-73 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.java` | L1-19 |
+| `src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java` | L1-22 |
+| `src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java` | L22-58 |
+| `src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java` | L58-111 |
+| `src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java` | L111-128 |
+| `src/main/java/com/mibanco/servicio/interna/AuditoriaServicioImpl.java` | L57-65 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L121-178 |
+| `src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java` | L104-148 |
+| `src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java` | L91-147 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java` | L187-219 |
+| `src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java` | L147-168 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.java` | L73-119 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L69-121 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L178-192 |
+| `src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java` | L47-104 |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "RepositorioFactoria.obtenerInstancia()" • **24** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `src/main/java/com/mibanco/repositorio/interna/RepositorioFactoria.java` | L1-48 |
+| `src/main/java/com/mibanco/servicio/interna/ServicioFactoria.java` | L1-50 |
+| `src/main/java/com/mibanco/controlador/interna/ControladorFactoria.java` | L1-60 |
+| `src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java` | L1-47 |
+| `src/main/java/com/mibanco/servicio/interna/AuditoriaServicioImpl.java` | L1-57 |
+| `src/main/java/com/mibanco/repositorio/interna/RepositorioFactoria.java` | L48-89 |
+| `src/main/java/com/mibanco/vista/interna/factoriaVista.java` | L1-60 |
+| `src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java` | L1-42 |
+| `src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java` | L1-47 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L21-69 |
+| `src/main/java/com/mibanco/servicio/interna/ServicioFactoria.java` | L50-99 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.java` | L19-73 |
+| `src/main/java/com/mibanco/repositorio/interna/package-info.java` | L1-10 |
+| `src/main/java/com/mibanco/repositorio/interna/ClienteRepositorioImpl.java` | L1-46 |
+| `src/main/java/com/mibanco/controlador/interna/ClienteControladorImpl.java` | L1-49 |
+| `src/main/java/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java` | L23-69 |
+| `src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java` | L1-21 |
+| `src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java` | L104-164 |
+| `src/main/java/com/mibanco/repositorio/interna/CuentaRepositorioImpl.java` | L1-63 |
+| `src/main/java/com/mibanco/controlador/interna/CuentaControladorImpl.java` | L1-23 |
+| `src/main/java/com/mibanco/controlador/interna/CuentaControladorImpl.java` | L23-71 |
+| `src/main/java/com/mibanco/repositorio/util/BaseRepositorio.java` | L2-61 |
+| `src/main/java/com/mibanco/repositorio/util/BaseRepositorio.java` | L61-82 |
+| `src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java` | L47-104 |
+
+</details>
+
+---
+
+German, ya tengo el diagnóstico claro del problema de recursión infinita (StackOverflowError) en la inicialización de la `RepositorioFactoria`. Aquí tienes el análisis y la solución propuesta:
+
+---
+
+### **Diagnóstico del problema**
+
+1. **Ciclo de inicialización estática**:
+   - En la clase `BaseRepositorioImpl`, el constructor protegido hace:
+     ```java
+     this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+     ```
+   - Todas las implementaciones de repositorios (`ClienteRepositorioImpl`, `CuentaRepositorioImpl`, etc.) heredan de `BaseRepositorioImpl` y llaman a `super()` en su constructor.
+   - La `RepositorioFactoria` en su constructor privado instancia **todas** las implementaciones de repositorios:
+     ```java
+     this.auditoriaRepository = new AuditoriaRepositorioImpl();
+     this.clienteRepository = new ClienteRepositorioImpl();
+     // etc.
+     ```
+   - Por ejemplo, al crear un `ClienteRepositorioImpl`, se ejecuta el constructor de `BaseRepositorioImpl`, que a su vez llama a `RepositorioFactoria.obtenerInstancia()`, que intenta crear otra vez la `RepositorioFactoria`, y así sucesivamente, generando la recursión infinita.
+
+2. **El ciclo es:**
+   - `RepositorioFactoria.<init>()` → `new ClienteRepositorioImpl()` → `BaseRepositorioImpl.<init>()` → `RepositorioFactoria.obtenerInstancia()` → ... (repite infinitamente)
+
+---
+
+### **Solución recomendada**
+
+**Evitar que el constructor de los repositorios vuelva a pedir la instancia de la factoría durante la inicialización de la propia factoría.**
+
+#### **Opciones de solución:**
+
+1. **Inyección diferida de dependencias (Lazy):**
+   - No inicializar el campo `auditoriaRepository` en el constructor de `BaseRepositorioImpl`, sino hacerlo de forma "perezosa" (lazy) solo cuando se necesite registrar auditoría.
+   - O bien, pasar la instancia de `AuditoriaRepositorio` como parámetro al constructor de cada repositorio desde la factoría.
+
+2. **Solución más sencilla y limpia:**
+   - Modificar el constructor de `BaseRepositorioImpl` para que reciba el `AuditoriaRepositorio` como argumento.
+   - En la `RepositorioFactoria`, primero crear el `AuditoriaRepositorioImpl` y luego pasarlo explícitamente a los demás repositorios al construirlos.
+
+---
+
+### **¿Quieres que realice este refactor para ti?**
+- Es un cambio seguro, funcional y no afecta la lógica de negocio, solo la infraestructura de inicialización.
+- Si lo deseas, te muestro exactamente cómo quedaría el código.
+
+¿Te gustaría que aplique esta solución?
+
+---
+
+_**User**_
+
+Pregunto, recuerda que soy aprendiz:
+El problema es con la fabrica de la auditoria, no?
+Explicame como a un niño pero con nuestro problema directamente, paso por paso el problema a ver si me entero.
+
+---
+
+_**Assistant**_
+
+¡Excelente pregunta, German! Te explico paso a paso como si fuera un cuento para que entiendas perfectamente qué está pasando:
+
+## **El Problema: "La Fábrica que se Come a Sí Misma"** 🏭
+
+### **Paso 1: Todo empieza cuando quieres crear un cliente**
+```
+Tú ejecutas el test → Necesita crear un cliente → Necesita el repositorio de clientes
+```
+
+### **Paso 2: La Fábrica de Repositorios se activa**
+```
+RepositorioFactoria dice: "¡Voy a crear todos los repositorios!"
+```
+
+### **Paso 3: La Fábrica empieza a construir**
+```java
+// En RepositorioFactoria.java, línea 28-32:
+private RepositorioFactoria() {
+    this.auditoriaRepository = new AuditoriaRepositorioImpl();  // ✅ Este funciona bien
+    this.clienteRepository = new ClienteRepositorioImpl();      // ❌ ¡AQUÍ EMPIEZA EL PROBLEMA!
+    this.cuentaRepository = new CuentaRepositorioImpl();
+    // etc...
+}
+```
+
+### **Paso 4: El ClienteRepositorioImpl se está construyendo**
+```java
+// En ClienteRepositorioImpl.java:
+ClienteRepositorioImpl() {
+    super();  // ← Llama al constructor de BaseRepositorioImpl
+}
+```
+
+### **Paso 5: BaseRepositorioImpl se está construyendo**
+```java
+// En BaseRepositorioImpl.java, línea 38:
+protected BaseRepositorioImpl() {
+    this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+    //                                    ↑ ¡AQUÍ ESTÁ EL PROBLEMA!
+}
+```
+
+### **Paso 6: ¡EL CÍRCULO INFINITO!** ��
+
+**Lo que pasa:**
+1. `RepositorioFactoria` está construyéndose
+2. Para construir `ClienteRepositorioImpl`, necesita llamar a `super()`
+3. `BaseRepositorioImpl` dice: "Necesito el repositorio de auditoría"
+4. Llama a `RepositorioFactoria.obtenerInstancia()` 
+5. **¡PERO LA FÁBRICA AÚN NO HA TERMINADO DE CONSTRUIRSE!**
+6. `obtenerInstancia()` dice: "La instancia es null, voy a crear una nueva"
+7. Vuelve al paso 1... **¡Y SE REPITE INFINITAMENTE!**
+
+### **El Problema Visual:**
+```
+RepositorioFactoria (construyéndose)
+    ↓
+ClienteRepositorioImpl (construyéndose)
+    ↓
+BaseRepositorioImpl (construyéndose)
+    ↓
+RepositorioFactoria.obtenerInstancia() ← ¡VUELVE A EMPEZAR!
+    ↓
+RepositorioFactoria (construyéndose otra vez)
+    ↓
+ClienteRepositorioImpl (construyéndose otra vez)
+    ↓
+... ¡INFINITO!
+```
+
+### **¿Por qué pasa esto?**
+- Es como si una fábrica de coches, mientras se está construyendo, necesitara usar otro coche que solo ella puede fabricar
+- Pero como ella misma no está terminada, no puede fabricar ese coche
+- Entonces intenta construirse otra vez para poder fabricar el coche
+- Y así se come a sí misma infinitamente
+
+### **¿La solución?**
+En lugar de que cada repositorio pida la auditoría a la fábrica mientras se está construyendo, la fábrica debe **darle** la auditoría ya lista a cada repositorio.
+
+¿Ahora entiendes mejor el problema, German? ¿Te gustaría que te muestre cómo solucionarlo?
+
+---
+
+_**User**_
+
+ok, y como se hace eso?
+Solo muestrame y ya modificamos luego.
+
+---
+
+_**Assistant**_
+
+¡Perfecto, German! Te muestro exactamente cómo solucionarlo. Es muy sencillo:
+
+## **Solución: La Fábrica "Regala" la Auditoría** ��
+
+### **Paso 1: Modificar BaseRepositorioImpl**
+```java
+// En BaseRepositorioImpl.java - LÍNEA 38
+// CAMBIAR ESTO:
+protected BaseRepositorioImpl() {
+    this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+}
+
+// POR ESTO:
+protected BaseRepositorioImpl(AuditoriaRepositorio auditoriaRepository) {
+    this.auditoriaRepository = auditoriaRepository;
+}
+```
+
+### **Paso 2: Modificar todos los constructores de repositorios**
+```java
+// En ClienteRepositorioImpl.java - LÍNEA 15
+// CAMBIAR ESTO:
+ClienteRepositorioImpl() {
+    super();
+}
+
+// POR ESTO:
+ClienteRepositorioImpl(AuditoriaRepositorio auditoriaRepository) {
+    super(auditoriaRepository);
+}
+```
+
+```java
+// En CuentaRepositorioImpl.java - LÍNEA 18
+// CAMBIAR ESTO:
+CuentaRepositorioImpl() {
+    super();
+}
+
+// POR ESTO:
+CuentaRepositorioImpl(AuditoriaRepositorio auditoriaRepository) {
+    super(auditoriaRepository);
+}
+```
+
+```java
+// En TarjetaRepositorioImpl.java - LÍNEA 18
+// CAMBIAR ESTO:
+TarjetaRepositorioImpl() {
+    super();
+}
+
+// POR ESTO:
+TarjetaRepositorioImpl(AuditoriaRepositorio auditoriaRepository) {
+    super(auditoriaRepository);
+}
+```
+
+```java
+// En TransaccionRepositorioImpl.java - LÍNEA 20
+// CAMBIAR ESTO:
+TransaccionRepositorioImpl() {
+    super();
+}
+
+// POR ESTO:
+TransaccionRepositorioImpl(AuditoriaRepositorio auditoriaRepository) {
+    super(auditoriaRepository);
+}
+```
+
+### **Paso 3: Modificar RepositorioFactoria**
+```java
+// En RepositorioFactoria.java - LÍNEA 28-32
+// CAMBIAR ESTO:
+private RepositorioFactoria() {
+    this.auditoriaRepository = new AuditoriaRepositorioImpl();
+    this.clienteRepository = new ClienteRepositorioImpl();
+    this.cuentaRepository = new CuentaRepositorioImpl();
+    this.tarjetaRepository = new TarjetaRepositorioImpl();
+    this.transaccionRepository = new TransaccionRepositorioImpl();
+}
+
+// POR ESTO:
+private RepositorioFactoria() {
+    this.auditoriaRepository = new AuditoriaRepositorioImpl();
+    this.clienteRepository = new ClienteRepositorioImpl(auditoriaRepository);
+    this.cuentaRepository = new CuentaRepositorioImpl(auditoriaRepository);
+    this.tarjetaRepository = new TarjetaRepositorioImpl(auditoriaRepository);
+    this.transaccionRepository = new TransaccionRepositorioImpl(auditoriaRepository);
+}
+```
+
+## **¿Qué hace esta solución?**
+
+1. **La fábrica crea primero la auditoría** ✅
+2. **Luego "regala" esa auditoría a cada repositorio** ��
+3. **Los repositorios ya no necesitan pedirla a la fábrica** ❌
+4. **¡No hay más círculo infinito!** 🎉
+
+¿Quieres que aplique estos cambios ahora?
+
+---
+
+_**User**_
+
+Pero esto ya nos daba un problema igual antes con la base y la implementacion de la base, por eso se hizo con bloques staticos.
+
+---
+
+_**Assistant**_
+
+¡Excelente observación, German! Tienes razón, ya hemos tenido este problema antes. Los bloques estáticos fueron la solución anterior para evitar dependencias circulares en la inicialización.
+
+Déjame revisar cómo está implementado actualmente en los servicios para ver el patrón que ya usamos:
+
+
+---
+
+Read file: src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java
+
+---
+
+¡Exacto, German! Tienes razón. El patrón que ya usamos en los servicios es con **bloques estáticos**. Veo que en `ClienteServicioImpl` usamos:
+
+```java
+static {
+    repositorioCliente = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCliente();
+    mapeador = new ClienteMapeador();
+}
+```
+
+Pero el problema es que **los repositorios no pueden usar bloques estáticos** porque necesitan la auditoría en el constructor, no en la inicialización estática.
+
+## **La solución correcta es más simple:**
+
+**Eliminar la dependencia de auditoría del constructor de `BaseRepositorioImpl`** y hacer que la auditoría se obtenga de forma "perezosa" (lazy) solo cuando se necesite.
+
+### **Solución con Lazy Loading:**
+
+```java
+// En BaseRepositorioImpl.java
+// CAMBIAR ESTO:
+protected final AuditoriaRepositorio auditoriaRepository;
+
+protected BaseRepositorioImpl() {
+    this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+}
+
+// POR ESTO:
+private AuditoriaRepositorio auditoriaRepository;
+
+protected BaseRepositorioImpl() {
+    // Constructor vacío - sin dependencias
+}
+
+// Método privado para obtener auditoría de forma lazy
+private AuditoriaRepositorio obtenerAuditoria() {
+    if (auditoriaRepository == null) {
+        auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+    }
+    return auditoriaRepository;
+}
+
+// Y cambiar el método registrarAuditoria:
+private void registrarAuditoria(T entidad, E tipoOperacion) {
+    AuditoriaUtil.registrarOperacion(
+        obtenerAuditoria(), // ← Usar el método lazy
+        tipoOperacion,
+        entidad,
+        usuarioActual
+    );
+}
+```
+
+**¿Por qué funciona esto?**
+- Los repositorios se construyen sin dependencias
+- La auditoría solo se obtiene cuando realmente se necesita (al registrar una operación)
+- Para entonces, la `RepositorioFactoria` ya está completamente construida
+
+¿Te parece bien esta solución? Es la más limpia y mantiene el patrón que ya usamos.
+
+---
+
+_**User**_
+
+Es una buena practica?
+
+---
+
+_**Assistant**_
+
+¡Excelente pregunta, German! Es muy importante que te preocupes por las buenas prácticas. Te explico:
+
+## **¿Es una buena práctica el Lazy Loading?**
+
+### **✅ VENTAJAS (Sí es buena práctica):**
+
+1. **Evita dependencias circulares** - Resuelve nuestro problema específico
+2. **Inicialización más rápida** - Solo carga lo que necesita cuando lo necesita
+3. **Menor uso de memoria** - No carga recursos innecesarios
+4. **Patrón muy común** - Se usa en frameworks como Spring, Hibernate, etc.
+5. **Thread-safe** - Si se implementa correctamente
+
+### **❌ DESVENTAJAS (Puntos a considerar):**
+
+1. **Complejidad adicional** - Más código para manejar
+2. **Posible overhead** - Cada vez que se necesita, hay que verificar si ya existe
+3. **Menos predecible** - No sabes exactamente cuándo se inicializará
+
+## **¿Hay mejores alternativas?**
+
+### **Opción 1: Inyección de Dependencias (Mejor práctica)**
+```java
+// En lugar de lazy loading, pasar la dependencia explícitamente
+protected BaseRepositorioImpl(AuditoriaRepositorio auditoria) {
+    this.auditoriaRepository = auditoria;
+}
+```
+
+### **Opción 2: Patrón Builder/Fluent API**
+```java
+// Construir los repositorios paso a paso
+RepositorioFactoria.builder()
+    .withAuditoria(new AuditoriaRepositorioImpl())
+    .withCliente()
+    .withCuenta()
+    .build();
+```
+
+### **Opción 3: Eventos/Observer Pattern**
+```java
+// Los repositorios se registran para recibir auditoría cuando esté lista
+```
+
+## **Mi recomendación para tu caso:**
+
+**El Lazy Loading es una buena práctica aquí** porque:
+
+1. **Resuelve el problema inmediato** sin romper la arquitectura existente
+2. **Es simple de implementar** y entender
+3. **No requiere cambios masivos** en el código
+4. **Es thread-safe** si se implementa correctamente
+5. **Es un patrón estándar** en Java
+
+## **¿Quieres que implemente el Lazy Loading o prefieres explorar otra opción?**
+
+Para un proyecto de aprendizaje como el tuyo, el Lazy Loading es perfecto. Para un proyecto empresarial, probablemente usaríamos inyección de dependencias con un framework como Spring.
+
+¿Qué opinas? ¿Procedemos con el Lazy Loading?
+
+---
+
+_**User**_
+
+En el lazy loading, la auditoria se crea en el metodo que se implementa para ello?
+
+---
+
+_**Assistant**_
+
+¡Excelente pregunta, German! Te explico exactamente cómo funciona:
+
+## **¿Dónde se crea la auditoría en Lazy Loading?**
+
+### **NO se crea en el método lazy, se OBTIENE de la fábrica**
+
+```java
+// El método lazy NO crea la auditoría, solo la obtiene:
+private AuditoriaRepositorio obtenerAuditoria() {
+    if (auditoriaRepository == null) {
+        // ← NO crea aquí, solo obtiene de la fábrica
+        auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+    }
+    return auditoriaRepository;
+}
+```
+
+### **¿Dónde se crea realmente la auditoría?**
+
+**En la `RepositorioFactoria`**, que ya está completamente construida cuando se llama al método lazy:
+
+```java
+// En RepositorioFactoria.java
+private RepositorioFactoria() {
+    this.auditoriaRepository = new AuditoriaRepositorioImpl(); // ← AQUÍ se crea
+    this.clienteRepository = new ClienteRepositorioImpl();
+    // etc...
+}
+```
+
+## **El flujo completo:**
+
+### **Paso 1: Inicialización**
+```
+RepositorioFactoria se construye
+    ↓
+Crea AuditoriaRepositorioImpl (ya está lista)
+    ↓
+Crea ClienteRepositorioImpl (sin auditoría por ahora)
+    ↓
+Crea CuentaRepositorioImpl (sin auditoría por ahora)
+    ↓
+... etc
+```
+
+### **Paso 2: Primera operación que necesita auditoría**
+```
+ClienteRepositorio.crear() se ejecuta
+    ↓
+Llama a registrarAuditoria()
+    ↓
+Llama a obtenerAuditoria() (método lazy)
+    ↓
+RepositorioFactoria.obtenerInstancia() (ya está lista)
+    ↓
+RepositorioFactoria.obtenerRepositorioAuditoria() (devuelve la ya creada)
+    ↓
+¡Listo! Ya tiene la auditoría
+```
+
+## **¿Por qué funciona?**
+
+- **La auditoría se crea UNA SOLA VEZ** en la fábrica
+- **Los repositorios solo la obtienen cuando la necesitan**
+- **No hay recursión** porque la fábrica ya está construida
+- **Es eficiente** porque solo se obtiene una vez por repositorio
+
+¿Ahora entiendes mejor cómo funciona el Lazy Loading, German?
+
+---
+
+_**User**_
+
+En el punto 1, quien llama a la factoria para que se cree?.
+
+
+
+
+---
+
+_**Assistant**_
+
+¡Excelente pregunta, German! Esa es la clave del problema. Te explico:
+
+## **¿Quién llama a la factoria para que se cree?**
+
+### **El problema está aquí:**
+
+En el **constructor de `BaseRepositorioImpl`** (que se ejecuta cuando se construye cualquier repositorio):
+
+```java
+// En BaseRepositorioImpl.java - LÍNEA 38
+protected BaseRepositorioImpl() {
+    this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+    //                                    ↑ ¡AQUÍ SE LLAMA A LA FÁBRICA!
+}
+```
+
+### **El flujo problemático:**
+
+```
+1. RepositorioFactoria.obtenerInstancia() se llama desde algún lugar
+2. RepositorioFactoria dice: "instancia es null, voy a crear una nueva"
+3. RepositorioFactoria() constructor empieza:
+   - this.auditoriaRepository = new AuditoriaRepositorioImpl(); ✅ OK
+   - this.clienteRepository = new ClienteRepositorioImpl(); ❌ PROBLEMA
+4. ClienteRepositorioImpl() constructor llama a super()
+5. BaseRepositorioImpl() constructor se ejecuta
+6. BaseRepositorioImpl llama a RepositorioFactoria.obtenerInstancia() ← ¡VUELVE AL PASO 1!
+```
+
+### **¿Quién llama inicialmente a la factoria?**
+
+**Cualquier clase que necesite un repositorio**, por ejemplo:
+
+```java
+// En ClienteServicioImpl.java - LÍNEA 22
+static {
+    repositorioCliente = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCliente();
+    //                                    ↑ ¡AQUÍ SE LLAMA INICIALMENTE!
+}
+```
+
+```java
+// En TestClienteCompleto.java (cuando ejecutas el test)
+// Al crear el controlador, este crea el servicio, que necesita el repositorio
+```
+
+### **El círculo vicioso:**
+
+1. **Test** → necesita **Controlador**
+2. **Controlador** → necesita **Servicio** 
+3. **Servicio** → necesita **Repositorio**
+4. **Servicio** → llama a **RepositorioFactoria.obtenerInstancia()**
+5. **RepositorioFactoria** → empieza a construir repositorios
+6. **Al construir repositorios** → llaman a **RepositorioFactoria.obtenerInstancia()** otra vez
+7. **¡INFINITO!**
+
+### **La solución con Lazy Loading:**
+
+**Eliminar la llamada a la factoria del constructor** y hacerla solo cuando se necesite:
+
+```java
+// En lugar de esto en el constructor:
+this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+
+// Hacer esto solo cuando se necesite:
+private AuditoriaRepositorio obtenerAuditoria() {
+    if (auditoriaRepository == null) {
+        auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+    }
+    return auditoriaRepository;
+}
+```
+
+¿Ahora entiendes por qué se crea el círculo infinito, German?
+
+---
+
+_**User**_
+
+Este metodo peresozo se crea es en repositorio, no?
+
+---
+
+_**Assistant**_
+
+¡Exacto, German! El método perezoso (lazy) se crea en **`BaseRepositorioImpl`**, que es la clase base de todos los repositorios.
+
+## **¿Dónde se implementa el método lazy?**
+
+### **En `BaseRepositorioImpl.java`:**
+
+```java
+// En BaseRepositorioImpl.java
+abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E>> {
+    
+    // CAMBIAR ESTO:
+    protected final AuditoriaRepositorio auditoriaRepository;
+    
+    protected BaseRepositorioImpl() {
+        this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+    }
+    
+    // POR ESTO:
+    private AuditoriaRepositorio auditoriaRepository; // ← Sin final, sin inicializar
+    
+    protected BaseRepositorioImpl() {
+        // Constructor vacío - sin dependencias
+    }
+    
+    // ← AQUÍ VA EL MÉTODO LAZY
+    private AuditoriaRepositorio obtenerAuditoria() {
+        if (auditoriaRepository == null) {
+            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+        }
+        return auditoriaRepository;
+    }
+    
+    // Y cambiar el método que usa auditoría:
+    private void registrarAuditoria(T entidad, E tipoOperacion) {
+        AuditoriaUtil.registrarOperacion(
+            obtenerAuditoria(), // ← Usar el método lazy aquí
+            tipoOperacion,
+            entidad,
+            usuarioActual
+        );
+    }
+}
+```
+
+## **¿Por qué en BaseRepositorioImpl?**
+
+1. **Es la clase base** de todos los repositorios
+2. **Todos heredan** de ella automáticamente
+3. **Solo hay que cambiar un lugar** en lugar de todos los repositorios
+4. **Mantiene la herencia** y el polimorfismo
+
+## **Los repositorios específicos NO cambian:**
+
+```java
+// ClienteRepositorioImpl.java - NO CAMBIA
+class ClienteRepositorioImpl extends BaseRepositorioImpl<Cliente, Long, TipoOperacionCliente> {
+    
+    ClienteRepositorioImpl() {
+        super(); // ← Sigue igual, pero ahora no hay dependencias circulares
+    }
+    
+    // ... resto del código igual
+}
+```
+
+¿Te queda claro que el método lazy va en `BaseRepositorioImpl`, German?
+
+---
+
+_**User**_
+
+Si y no, je je, o sea que cada vez que se llama a auditoria se pide la instancia, no?
+
+---
+
+_**Assistant**_
+
+¡No, German! 😄 Te explico cómo funciona realmente:
+
+## **¿Se pide la instancia cada vez?**
+
+### **NO, solo la primera vez**
+
+```java
+private AuditoriaRepositorio auditoriaRepository; // ← Empieza como null
+
+private AuditoriaRepositorio obtenerAuditoria() {
+    if (auditoriaRepository == null) {  // ← Solo la primera vez es null
+        auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+        //                                    ↑ Solo aquí se llama a la fábrica
+    }
+    return auditoriaRepository; // ← Las siguientes veces devuelve la que ya tiene
+}
+```
+
+## **Ejemplo práctico:**
+
+### **Primera operación (crear cliente):**
+```
+1. registrarAuditoria() se llama
+2. obtenerAuditoria() se ejecuta
+3. auditoriaRepository es null → SÍ llama a RepositorioFactoria
+4. Guarda la auditoría en auditoriaRepository
+5. Devuelve la auditoría
+```
+
+### **Segunda operación (actualizar cliente):**
+```
+1. registrarAuditoria() se llama
+2. obtenerAuditoria() se ejecuta
+3. auditoriaRepository NO es null → NO llama a RepositorioFactoria
+4. Devuelve la auditoría que ya tiene guardada
+```
+
+### **Tercera operación (eliminar cliente):**
+```
+1. registrarAuditoria() se llama
+2. obtenerAuditoria() se ejecuta
+3. auditoriaRepository NO es null → NO llama a RepositorioFactoria
+4. Devuelve la auditoría que ya tiene guardada
+```
+
+## **Es como una "memoria":**
+
+- **Primera vez:** "No tengo auditoría, voy a pedirla a la fábrica"
+- **Siguientes veces:** "Ya tengo auditoría guardada, la uso directamente"
+
+## **¿Es eficiente?**
+
+**¡Sí!** Solo se llama a la fábrica **UNA VEZ** por repositorio, no cada vez que se necesita auditoría.
+
+¿Ahora entiendes mejor cómo funciona el "lazy loading", German?
+
+---
+
+_**User**_
+
+Vale, si dices que no es una mala practica, procede.
+
+A ver si entiendo los cambios:
+
+Vas a eliminar en del constructor de baseRepositorio el llamado a la fabrica.
+Vas a crear en baseRepositorio el metodo lazy.
+Vas a llamar este metodo en la auditoria.
+Y ya, eso es todo no?, o me he saltado algo?.
+
+---
+
+_**Assistant**_
+
+¡Perfecto, German! Has entendido exactamente los cambios. Solo te falta un pequeño detalle:
+
+## **Los cambios que voy a hacer:**
+
+### **1. ✅ Eliminar en BaseRepositorioImpl el llamado a la fábrica del constructor**
+### **2. ✅ Crear en BaseRepositorioImpl el método lazy**
+### **3. ✅ Llamar este método en registrarAuditoria()**
+### **4. ❌ Te falta: Cambiar el campo auditoriaRepository**
+
+## **El detalle que te faltó:**
+
+**Cambiar el campo `auditoriaRepository` de `final` a normal:**
+
+```java
+// CAMBIAR ESTO:
+protected final AuditoriaRepositorio auditoriaRepository;
+
+// POR ESTO:
+private AuditoriaRepositorio auditoriaRepository; // ← Sin final, sin inicializar
+```
+
+**¿Por qué?**
+- `final` significa que se debe inicializar en el constructor
+- Como no la vamos a inicializar en el constructor, no puede ser `final`
+- La hacemos `private` para que solo el método lazy pueda acceder
+
+## **Resumen completo:**
+
+1. **Eliminar** la inicialización de auditoría del constructor
+2. **Cambiar** el campo de `final` a `private` sin inicializar
+3. **Crear** el método lazy `obtenerAuditoria()`
+4. **Usar** el método lazy en `registrarAuditoria()`
+
+¿Procedo con estos 4 cambios, German?
+
+---
+
+_**User**_
+
+Procede.
+
+---
+
+_**Assistant**_
+
+¡Perfecto, German! Procedo con los cambios para implementar el Lazy Loading y solucionar el StackOverflowError.
+
+
+---
+
+
+
+---
+
+
 
 ---
 

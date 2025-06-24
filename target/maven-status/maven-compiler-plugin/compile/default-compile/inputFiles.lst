@@ -27,6 +27,7 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/mapeador/TransaccionMapeador.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/CuentaVista.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/TestCliente.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/AuditoriaRepositorio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/interna/ConsolaImpl.java

@@ -28,17 +28,27 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     // Contador para generar IDs automáticamente
     protected final AtomicLong idContador = new AtomicLong(1);
     
-    // Repositorio de auditoría
-    protected final AuditoriaRepositorio auditoriaRepository;
+    // Repositorio de auditoría - ahora con lazy loading
+    private AuditoriaRepositorio auditoriaRepository;
     
     // Usuario actual
     protected String usuarioActual = "sistema";
     
     /**
-     * Constructor protegido que obtiene el repositorio de auditoría
+     * Constructor protegido sin dependencias circulares
      */
     protected BaseRepositorioImpl() {
-        this.auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+        // Constructor vacío - sin dependencias
+    }
+    
+    /**
+     * Método lazy para obtener el repositorio de auditoría
+     */
+    private AuditoriaRepositorio obtenerAuditoria() {
+        if (auditoriaRepository == null) {
+            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
+        }
+        return auditoriaRepository;
     }
     
     @Override
@@ -150,7 +160,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
      */
     private void registrarAuditoria(T entidad, E tipoOperacion) {
         AuditoriaUtil.registrarOperacion(
-            auditoriaRepository,
+            obtenerAuditoria(),
             tipoOperacion,
             entidad,
             usuarioActual

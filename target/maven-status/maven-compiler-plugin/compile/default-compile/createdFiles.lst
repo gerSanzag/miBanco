@@ -71,6 +71,7 @@ com/mibanco/servicio/CuentaServicio.class
 com/mibanco/controlador/interna/ClienteControladorImpl.class
 com/mibanco/dto/TransaccionDTO.class
 com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class
+com/mibanco/TestCliente.class
 com/mibanco/modelo/enums/TipoOperacionTarjeta.class
 com/mibanco/modelo/Identificable.class
 com/mibanco/servicio/interna/TarjetaServicioImpl.class
