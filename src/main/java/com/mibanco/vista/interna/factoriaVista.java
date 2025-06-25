@@ -2,6 +2,7 @@ package com.mibanco.vista.interna;
 
 import com.mibanco.vista.ClienteVista;
 import com.mibanco.vista.CuentaVista;
+import com.mibanco.vista.TarjetaVista;
 
 /**
  * Fábrica de vistas que expone las implementaciones.
@@ -13,6 +14,7 @@ public final class factoriaVista {
     private static volatile factoriaVista instancia;
     private final ClienteVista vistaCliente;
     private final CuentaVista vistaCuenta;
+    private final TarjetaVista vistaTarjeta;
     
     /**
      * Constructor privado que inicializa todas las implementaciones de vistas.
@@ -21,6 +23,7 @@ public final class factoriaVista {
     private factoriaVista() {
         this.vistaCliente = new ClienteVistaImpl();
         this.vistaCuenta = new CuentaVistaImpl();
+        this.vistaTarjeta = new TarjetaVistaImpl();
     }
     
     /**
@@ -56,5 +59,14 @@ public final class factoriaVista {
      */
     public CuentaVista obtenerVistaCuenta() {
         return vistaCuenta;
+    }
+    
+    /**
+     * Obtiene la vista de tarjeta.
+     * 
+     * @return la interfaz pública de la vista de tarjeta
+     */
+    public TarjetaVista obtenerVistaTarjeta() {
+        return vistaTarjeta;
     }
 } 
