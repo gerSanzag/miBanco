@@ -17,8 +17,8 @@ import com.mibanco.modelo.enums.TipoTransaccion;
 @Builder(toBuilder = true)
 public class Transaccion implements Identificable {
     Long id;
-    String numeroCuenta;
-    String numeroCuentaDestino;
+    Long numeroCuenta;
+    Long numeroCuentaDestino;
     TipoTransaccion tipo;
     BigDecimal monto;
     LocalDateTime fecha;
@@ -27,7 +27,7 @@ public class Transaccion implements Identificable {
     /**
      * Método factory para crear transacciones
      */
-    public static Transaccion of(Long id, String numeroCuenta, String numeroCuentaDestino,
+    public static Transaccion of(Long id, Long numeroCuenta, Long numeroCuentaDestino,
                                TipoTransaccion tipo, BigDecimal monto, 
                                LocalDateTime fecha, String descripcion) {
         return Transaccion.builder()

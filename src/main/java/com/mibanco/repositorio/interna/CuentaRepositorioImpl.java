@@ -12,7 +12,7 @@ import java.util.List;
  * Implementación del repositorio de Cuentas
  * Visibilidad restringida al paquete internal
  */
-class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, String, TipoOperacionCuenta> implements CuentaRepositorio {
+class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperacionCuenta> implements CuentaRepositorio {
     
     /**
      * Constructor con visibilidad de paquete
@@ -22,7 +22,7 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, String, TipoOper
     }
     
     @Override
-    public Optional<Cuenta> buscarPorNumero(Optional<String> numeroCuenta) {
+    public Optional<Cuenta> buscarPorNumero(Optional<Long> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
             buscarPorPredicado(cuenta -> cuenta.getNumeroCuenta().equals(numero))
         );
@@ -48,7 +48,7 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, String, TipoOper
     }
     
     @Override
-    public Optional<Cuenta> eliminarPorNumero(Optional<String> numeroCuenta) {
+    public Optional<Cuenta> eliminarPorNumero(Optional<Long> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
             buscarPorNumero(Optional.of(numero))
                 .flatMap(cuenta -> eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))
@@ -57,8 +57,9 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, String, TipoOper
     
     @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
+        long numeroAleatorio = System.currentTimeMillis() % 1000000000L;
         return cuenta.toBuilder()
-                .numeroCuenta(String.format("%020d", idContador.getAndIncrement()))
+                .numeroCuenta(numeroAleatorio)
                 .build();
     }
 } 

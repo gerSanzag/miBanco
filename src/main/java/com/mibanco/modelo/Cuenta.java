@@ -16,7 +16,7 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true)
 public class Cuenta implements Identificable {
-    String numeroCuenta;
+    Long numeroCuenta;
     Cliente titular;
     TipoCuenta tipo;
     LocalDateTime fechaCreacion;
@@ -25,18 +25,17 @@ public class Cuenta implements Identificable {
     
     /**
      * Implementación de getId() para la interfaz Identificable
-     * Utilizamos el número de cuenta como ID usando un hash del String
-     * @return Un Long que representa el número de cuenta
+     * @return El número de cuenta como Long
      */
     @Override
     public Long getId() {
-        return numeroCuenta != null ? (long) numeroCuenta.hashCode() : null;
+        return numeroCuenta;
     }
     
     /**
      * Método factory para facilitar la creación de instancias
      */
-    public static Cuenta of(String numeroCuenta, Cliente titular, TipoCuenta tipo, 
+    public static Cuenta of(Long numeroCuenta, Cliente titular, TipoCuenta tipo, 
                            BigDecimal saldo, LocalDateTime fechaCreacion, boolean activa) {
         return Cuenta.builder()
                 .numeroCuenta(numeroCuenta)

@@ -1,8 +1,6 @@
 package com.mibanco.vista;
 
 import com.mibanco.dto.CuentaDTO;
-import com.mibanco.dto.ClienteDTO;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +36,7 @@ public interface CuentaVista {
      *
      * @return un Optional con el número de cuenta, o un Optional vacío si la entrada no es válida.
      */
-    Optional<String> solicitarNumeroCuenta();
+    Optional<Long> solicitarNumeroCuenta();
 
     /**
      * Muestra los datos modificables de una cuenta y solicita los nuevos valores.
@@ -101,4 +99,53 @@ public interface CuentaVista {
      * @return un Optional con el saldo inicial, o un Optional vacío si la entrada no es un número válido.
      */
     Optional<BigDecimal> solicitarSaldoInicial();
+
+    /**
+     * Solicita al usuario el ID del titular para buscar sus cuentas.
+     *
+     * @return un Optional con el ID del titular, o un Optional vacío si la entrada no es un número válido.
+     */
+    Optional<Long> solicitarIdTitularParaBuscar();
+
+    /**
+     * Solicita al usuario el tipo de cuenta para buscar.
+     *
+     * @return un Optional con el tipo de cuenta seleccionado, o un Optional vacío si la entrada no es válida.
+     */
+    Optional<String> solicitarTipoCuentaParaBuscar();
+
+    /**
+     * Solicita al usuario el número de cuenta para restaurar.
+     *
+     * @return un Optional con el número de cuenta, o un Optional vacío si la entrada no es válida.
+     */
+    Optional<Long> solicitarNumeroCuentaParaRestaurar();
+
+    /**
+     * Solicita al usuario el nuevo estado para la cuenta.
+     *
+     * @return un Optional con el nuevo estado (true para activa, false para inactiva), o un Optional vacío si la entrada no es válida.
+     */
+    Optional<Boolean> solicitarNuevoEstado();
+
+    /**
+     * Muestra una lista de cuentas eliminadas.
+     *
+     * @param cuentas la lista de DTOs de cuentas eliminadas a mostrar.
+     */
+    void mostrarCuentasEliminadas(List<CuentaDTO> cuentas);
+
+    /**
+     * Muestra el total de cuentas.
+     *
+     * @param total el número total de cuentas.
+     */
+    void mostrarTotalCuentas(long total);
+
+    /**
+     * Muestra el saldo de una cuenta específica.
+     *
+     * @param cuenta el DTO de la cuenta cuyo saldo se mostrará.
+     */
+    void mostrarSaldoCuenta(CuentaDTO cuenta);
 } 

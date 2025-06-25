@@ -16,7 +16,7 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
 public class CuentaDTO {
-    String numeroCuenta;
+    Long numeroCuenta;
     ClienteDTO titular;
     TipoCuenta tipo;
     BigDecimal saldo;
@@ -27,7 +27,7 @@ public class CuentaDTO {
      * Método estático que construye un CuentaDTO con valores opcionales
      * Ejemplo de uso del enfoque funcional y Optionals
      */
-    public static CuentaDTO of(String numeroCuenta, ClienteDTO titular, TipoCuenta tipo,
+    public static CuentaDTO of(Long numeroCuenta, ClienteDTO titular, TipoCuenta tipo,
                                BigDecimal saldo, Optional<LocalDateTime> fechaCreacion, 
                                Optional<Boolean> activa) {
         return CuentaDTO.builder()

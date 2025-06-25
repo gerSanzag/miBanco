@@ -24,14 +24,14 @@ public interface CuentaServicio {
      * @param cuentaDTO Optional con los nuevos datos de la cuenta
      * @return Optional con el DTO de la cuenta actualizada
      */
-    Optional<CuentaDTO> actualizarVariosCampos(String numeroCuenta, Optional<CuentaDTO> cuentaDTO);
+    Optional<CuentaDTO> actualizarVariosCampos(Long numeroCuenta, Optional<CuentaDTO> cuentaDTO);
     
     /**
      * Obtiene una cuenta por su número
      * @param numeroCuenta Optional con el número de cuenta
      * @return Optional con el DTO de la cuenta
      */
-    Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<String> numeroCuenta);
+    Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<Long> numeroCuenta);
     
     /**
      * Obtiene todas las cuentas
@@ -45,7 +45,7 @@ public interface CuentaServicio {
      * @param nuevoSaldo Optional con el nuevo saldo
      * @return Optional con el DTO de la cuenta actualizada
      */
-    Optional<CuentaDTO> actualizarSaldoCuenta(String numeroCuenta, Optional<BigDecimal> nuevoSaldo);
+    Optional<CuentaDTO> actualizarSaldoCuenta(Long numeroCuenta, Optional<BigDecimal> nuevoSaldo);
     
     /**
      * Actualiza el estado activo de una cuenta
@@ -53,28 +53,28 @@ public interface CuentaServicio {
      * @param nuevaActiva Optional con el nuevo estado
      * @return Optional con el DTO de la cuenta actualizada
      */
-    Optional<CuentaDTO> actualizarEstadoCuenta(String numeroCuenta, Optional<Boolean> nuevaActiva);
+    Optional<CuentaDTO> actualizarEstadoCuenta(Long numeroCuenta, Optional<Boolean> nuevaActiva);
     
     /**
      * Elimina una cuenta por su número
      * @param numeroCuenta Optional con el número de cuenta a eliminar
      * @return true si se eliminó correctamente, false si no
      */
-    boolean eliminarCuenta(Optional<String> numeroCuenta);
+    boolean eliminarCuenta(Optional<Long> numeroCuenta);
 
     /**
      * Elimina una cuenta por su número y devuelve la cuenta eliminada
      * @param numeroCuenta Optional con el número de cuenta a eliminar
      * @return Optional con el DTO de la cuenta eliminada
      */
-    Optional<CuentaDTO> eliminarPorNumero(Optional<String> numeroCuenta);
+    Optional<CuentaDTO> eliminarPorNumero(Optional<Long> numeroCuenta);
 
     /**
      * Restaura una cuenta previamente eliminada
      * @param numeroCuenta Optional con el número de cuenta a restaurar
      * @return Optional con el DTO de la cuenta restaurada
      */
-    Optional<CuentaDTO> restaurarCuenta(Optional<String> numeroCuenta);
+    Optional<CuentaDTO> restaurarCuenta(Optional<Long> numeroCuenta);
 
     /**
      * Obtiene la lista de cuentas eliminadas

@@ -25,7 +25,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
     private static final TransaccionRepositorio repositorioTransaccion;
     private static final TransaccionMapeador mapeador;
     private static final CuentaServicio cuentaServicio;
-    private final Set<String> cuentasBloqueadas = new HashSet<>();
+    private final Set<Long> cuentasBloqueadas = new HashSet<>();
     private final Object lock = new Object();
 
     static {
@@ -48,7 +48,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
     );
  
 
-    private boolean bloquearCuenta(Optional<String> numeroCuenta) {
+    private boolean bloquearCuenta(Optional<Long> numeroCuenta) {
         return numeroCuenta.map(numero -> {
             synchronized (lock) {
                 if (cuentasBloqueadas.contains(numero)) {
@@ -60,7 +60,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
         }).orElse(false);
     }
 
-    private void liberarCuenta(Optional<String> numeroCuenta) {
+    private void liberarCuenta(Optional<Long> numeroCuenta) {
         numeroCuenta.ifPresent(numero -> {
             synchronized (lock) {
                 cuentasBloqueadas.remove(numero);
@@ -69,7 +69,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
     }
 
     @Override
-    public Optional<TransaccionDTO> ingresar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
+    public Optional<TransaccionDTO> ingresar(Optional<Long> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
         return numeroCuenta
             .flatMap(numero -> {
                 // Intentamos bloquear la cuenta
@@ -113,7 +113,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
     }
 
     @Override
-    public Optional<TransaccionDTO> retirar(Optional<String> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
+    public Optional<TransaccionDTO> retirar(Optional<Long> numeroCuenta, Optional<BigDecimal> monto, Optional<String> descripcion) {
         return numeroCuenta
             .filter(numero -> monto.map(cantidad -> cantidad.compareTo(BigDecimal.ZERO) > 0).orElse(false))
             .flatMap(numero -> {
@@ -159,7 +159,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
     }
     
     @Override
-    public Optional<TransaccionDTO> transferir(Optional<String> numeroCuentaOrigen, Optional<String> numeroCuentaDestino, Optional<BigDecimal> monto, Optional<String> descripcion) {
+    public Optional<TransaccionDTO> transferir(Optional<Long> numeroCuentaOrigen, Optional<Long> numeroCuentaDestino, Optional<BigDecimal> monto, Optional<String> descripcion) {
         return numeroCuentaOrigen
             .filter(numero -> monto.map(cantidad -> cantidad.compareTo(BigDecimal.ZERO) > 0).orElse(false))
             .flatMap(numeroOrigen -> numeroCuentaDestino

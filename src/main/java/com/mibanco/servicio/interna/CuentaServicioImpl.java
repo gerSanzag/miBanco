@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Implementación del servicio de cuentas
  */
-class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, TipoOperacionCuenta, CuentaRepositorio> 
+class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoOperacionCuenta, CuentaRepositorio> 
         implements CuentaServicio {
     
     private static final CuentaRepositorio repositorioCuenta;
@@ -42,7 +42,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     }
 
     @Override
-    public Optional<CuentaDTO> actualizarVariosCampos(String numeroCuenta, Optional<CuentaDTO> cuentaDTO) {
+    public Optional<CuentaDTO> actualizarVariosCampos(Long numeroCuenta, Optional<CuentaDTO> cuentaDTO) {
         Optional<CuentaDTO> actualizaVariosCampos = actualizar(
             numeroCuenta,
             cuentaDTO,
@@ -57,8 +57,11 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     }
 
     @Override
-    public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<String> numeroCuenta) {
-        return obtenerPorId(numeroCuenta);
+    public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<Long> numeroCuenta) {
+        return numeroCuenta.flatMap(numero -> 
+            repositorio.buscarPorNumero(Optional.of(numero))
+                .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)))
+        );
     }
 
     @Override
@@ -67,7 +70,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     }
 
     @Override
-    public Optional<CuentaDTO> actualizarSaldoCuenta(String numeroCuenta, Optional<BigDecimal> nuevoSaldo) {
+    public Optional<CuentaDTO> actualizarSaldoCuenta(Long numeroCuenta, Optional<BigDecimal> nuevoSaldo) {
         Optional<CuentaDTO> actualizaSaldo = actualizarCampo(
             numeroCuenta,
             nuevoSaldo,
@@ -79,7 +82,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     }
 
     @Override
-    public Optional<CuentaDTO> actualizarEstadoCuenta(String numeroCuenta, Optional<Boolean> nuevaActiva) {
+    public Optional<CuentaDTO> actualizarEstadoCuenta(Long numeroCuenta, Optional<Boolean> nuevaActiva) {
         Optional<CuentaDTO> actualizaEstado = actualizarCampo(
             numeroCuenta,
             nuevaActiva,
@@ -91,7 +94,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     }
 
    
-    public Optional<CuentaDTO> actualizarTitularCuenta(String numeroCuenta, Optional<CuentaDTO> nuevoTitular) {
+    public Optional<CuentaDTO> actualizarTitularCuenta(Long numeroCuenta, Optional<CuentaDTO> nuevoTitular) {
         Optional<CuentaDTO> actualizaTitular = nuevoTitular.flatMap(titularDTO -> 
             clienteMapeador.aEntidad(Optional.of(titularDTO.getTitular()))
                 .flatMap(titular -> actualizarCampo(
@@ -106,18 +109,18 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, String, Tip
     }
 
     @Override
-    public boolean eliminarCuenta(Optional<String> numeroCuenta) {
+    public boolean eliminarCuenta(Optional<Long> numeroCuenta) {
         return eliminarPorId(numeroCuenta, TipoOperacionCuenta.ELIMINAR);
     }
 
     @Override
-    public Optional<CuentaDTO> eliminarPorNumero(Optional<String> numeroCuenta) {
+    public Optional<CuentaDTO> eliminarPorNumero(Optional<Long> numeroCuenta) {
         return repositorio.eliminarPorNumero(numeroCuenta)
             .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)));
     }
 
     @Override
-    public Optional<CuentaDTO> restaurarCuenta(Optional<String> numeroCuenta) {
+    public Optional<CuentaDTO> restaurarCuenta(Optional<Long> numeroCuenta) {
         return restaurar(numeroCuenta, TipoOperacionCuenta.RESTAURAR);
     }
 

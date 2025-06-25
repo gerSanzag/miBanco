@@ -12,7 +12,7 @@ import java.util.Optional;
  * Interfaz para el repositorio de Cuentas
  * Extiende la interfaz base para heredar operaciones CRUD genéricas
  */
-public interface CuentaRepositorio extends BaseRepositorio<Cuenta, String, TipoOperacionCuenta> {
+public interface CuentaRepositorio extends BaseRepositorio<Cuenta, Long, TipoOperacionCuenta> {
     
     
     /**
@@ -20,7 +20,7 @@ public interface CuentaRepositorio extends BaseRepositorio<Cuenta, String, TipoO
      * @param numeroCuenta Optional con el número de la cuenta a buscar
      * @return Optional con la cuenta si existe
      */
-    Optional<Cuenta> buscarPorNumero(Optional<String> numeroCuenta);
+    Optional<Cuenta> buscarPorNumero(Optional<Long> numeroCuenta);
     
     /**
      * Busca cuentas por el ID del titular
@@ -53,7 +53,7 @@ public interface CuentaRepositorio extends BaseRepositorio<Cuenta, String, TipoO
      * @param numeroCuenta Optional con el número de la cuenta a eliminar
      * @return Optional con la cuenta eliminada o Optional vacío si no existía
      */
-    Optional<Cuenta> eliminarPorNumero(Optional<String> numeroCuenta);
+    Optional<Cuenta> eliminarPorNumero(Optional<Long> numeroCuenta);
     
     /**
      * Obtiene el número de cuentas en el repositorio

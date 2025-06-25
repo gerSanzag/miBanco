@@ -3,7 +3,6 @@ com/mibanco/repositorio/AuditoriaRepositorio.class
 com/mibanco/modelo/enums/TipoOperacionCuenta.class
 com/mibanco/servicio/interna/ClienteServicioImpl.class
 com/mibanco/servicio/ClienteServicio.class
-com/mibanco/TestClienteCompleto.class
 com/mibanco/dto/mapeador/TarjetaMapeador.class
 com/mibanco/repositorio/ClienteRepositorio.class
 com/mibanco/modelo/Transaccion$TransaccionBuilder.class
@@ -48,6 +47,7 @@ com/mibanco/repositorio/util/BaseRepositorio.class
 com/mibanco/util/AuditoriaUtil.class
 com/mibanco/servicio/TarjetaServicio.class
 com/mibanco/modelo/Tarjeta$TarjetaBuilder.class
+com/mibanco/TestCuenta.class
 com/mibanco/repositorio/interna/RepositorioFactoria.class
 com/mibanco/modelo/RegistroAuditoria$RegistroAuditoriaBuilder.class
 com/mibanco/repositorio/TransaccionRepositorio.class

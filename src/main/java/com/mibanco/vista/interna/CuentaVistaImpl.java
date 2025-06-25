@@ -1,10 +1,9 @@
 package com.mibanco.vista.interna;
 
 import com.mibanco.dto.CuentaDTO;
+import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.vista.CuentaVista;
 import com.mibanco.vista.util.Consola;
-import com.mibanco.modelo.enums.TipoCuenta;
-
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -12,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 /**
  * Implementación de la vista para la entidad Cuenta.
@@ -37,6 +39,13 @@ class CuentaVistaImpl implements CuentaVista {
         consola.mostrar("3. Listar todas las cuentas\n");
         consola.mostrar("4. Actualizar cuenta\n");
         consola.mostrar("5. Eliminar cuenta\n");
+        consola.mostrar("6. Buscar cuentas por titular\n");
+        consola.mostrar("7. Buscar cuentas por tipo\n");
+        consola.mostrar("8. Listar cuentas activas\n");
+        consola.mostrar("9. Mostrar cuentas eliminadas\n");
+        consola.mostrar("10. Restaurar cuenta eliminada\n");
+        consola.mostrar("11. Contar total de cuentas\n");
+        consola.mostrar("12. Consultar saldo de cuenta\n");
         consola.mostrar("0. Volver al menú principal\n");
         consola.mostrar("------------------------------------\n");
     }
@@ -57,38 +66,44 @@ class CuentaVistaImpl implements CuentaVista {
         consola.mostrar("\n--- Creación de Nueva Cuenta ---\n");
         Map<String, String> datos = new HashMap<>();
         
-        // Solicitar ID del titular
-        Optional<Long> idTitular = solicitarIdTitular();
-        idTitular.ifPresent(id -> datos.put("idTitular", id.toString()));
+        // Función anidada para validar campos obligatorios
+        Function<Supplier<Optional<?>>, String> solicitarCampo = supplier -> {
+            Optional<?> valor;
+            do {
+                valor = supplier.get();
+                if (valor.isEmpty()) {
+                    mostrarMensaje("Error: Campo obligatorio. Por favor, inténtelo de nuevo.");
+                }
+            } while (valor.isEmpty());
+            return valor.get().toString();
+        };
         
-        // Solicitar tipo de cuenta
-        Optional<String> tipoCuenta = solicitarTipoCuenta();
-        tipoCuenta.ifPresent(tipo -> datos.put("tipoCuenta", tipo));
-        
-        // Solicitar saldo inicial
-        Optional<BigDecimal> saldoInicial = solicitarSaldoInicial();
-        saldoInicial.ifPresent(saldo -> datos.put("saldoInicial", saldo.toString()));
+        // Usar la función anidada para cada campo
+        datos.put("idTitular", solicitarCampo.apply(this::solicitarIdTitular));
+        datos.put("tipoCuenta", solicitarCampo.apply(this::solicitarTipoCuenta));
+        datos.put("saldoInicial", solicitarCampo.apply(this::solicitarSaldoInicial));
         
         return datos;
     }
 
     @Override
-    public Optional<String> solicitarNumeroCuenta() {
+    public Optional<Long> solicitarNumeroCuenta() {
         consola.mostrar("Introduzca el número de cuenta: ");
-        String numeroCuenta = consola.leerLinea();
-        return numeroCuenta.isEmpty() ? Optional.empty() : Optional.of(numeroCuenta);
+        try {
+            return Optional.of(Long.parseLong(consola.leerLinea()));
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error: El número de cuenta debe ser un número válido.");
+            return Optional.empty();
+        }
     }
 
     @Override
     public Map<String, String> solicitarDatosParaActualizar(CuentaDTO cuentaActual) {
         consola.mostrar("\n--- Datos modificables de la Cuenta: " + cuentaActual.getNumeroCuenta() + " ---\n");
-        consola.mostrar("1. Saldo: " + cuentaActual.getSaldo() + "\n");
-        consola.mostrar("2. Estado: " + (cuentaActual.isActiva() ? "Activa" : "Inactiva") + "\n");
+        consola.mostrar("Estado actual: " + (cuentaActual.isActiva() ? "Activa" : "Inactiva") + "\n");
         
-        consola.mostrar("\n¿Cómo desea modificar?\n");
-        consola.mostrar("1. Solo Saldo\n");
-        consola.mostrar("2. Solo Estado\n");
-        consola.mostrar("3. Ambos campos\n");
+        consola.mostrar("\n¿Desea cambiar el estado de la cuenta?\n");
+        consola.mostrar("1. Cambiar estado (Activar/Desactivar)\n");
         consola.mostrar("0. Cancelar\n");
         
         Optional<Integer> opcion = obtenerOpcion();
@@ -96,25 +111,8 @@ class CuentaVistaImpl implements CuentaVista {
         return opcion.map(opt -> {
             Map<String, String> datos = switch (opt) {
                 case 1 -> {
-                    Optional<BigDecimal> nuevoSaldo = solicitarSaldoInicial();
-                    yield nuevoSaldo.map(saldo -> Map.of("saldo", saldo.toString())).orElse(Map.of());
-                }
-                case 2 -> {
-                    consola.mostrar("¿Activar cuenta? (s/n): ");
-                    String respuesta = consola.leerLinea().toLowerCase();
-                    boolean activar = "s".equals(respuesta);
-                    yield Map.of("activa", String.valueOf(activar));
-                }
-                case 3 -> {
-                    Optional<BigDecimal> nuevoSaldo = solicitarSaldoInicial();
-                    consola.mostrar("¿Activar cuenta? (s/n): ");
-                    String respuesta = consola.leerLinea().toLowerCase();
-                    boolean activar = "s".equals(respuesta);
-                    
-                    Map<String, String> datosCompletos = new HashMap<>();
-                    nuevoSaldo.ifPresent(saldo -> datosCompletos.put("saldo", saldo.toString()));
-                    datosCompletos.put("activa", String.valueOf(activar));
-                    yield datosCompletos;
+                    Optional<Boolean> nuevoEstado = solicitarNuevoEstado();
+                    yield nuevoEstado.map(estado -> Map.of("activa", String.valueOf(estado))).orElse(Map.of());
                 }
                 case 0 -> {
                     mostrarMensaje("Operación cancelada.");
@@ -191,25 +189,25 @@ class CuentaVistaImpl implements CuentaVista {
     @Override
     public Optional<String> solicitarTipoCuenta() {
         consola.mostrar("\nTipos de cuenta disponibles:\n");
-        consola.mostrar("1. AHORRO\n");
-        consola.mostrar("2. CORRIENTE\n");
-        consola.mostrar("3. PLAZO_FIJO\n");
-        consola.mostrar("Seleccione el tipo de cuenta (1-3): ");
+        
+        // Recorrer el enum dinámicamente usando Stream
+        TipoCuenta[] tipos = TipoCuenta.values();
+        IntStream.range(0, tipos.length)
+            .forEach(i -> consola.mostrar((i + 1) + ". " + tipos[i].name() + "\n"));
+        
+        consola.mostrar("Seleccione el tipo de cuenta (1-" + tipos.length + "): ");
         
         try {
             int opcion = Integer.parseInt(consola.leerLinea());
-            return switch (opcion) {
-                case 1 -> Optional.of("AHORRO");
-                case 2 -> Optional.of("CORRIENTE");
-                case 3 -> Optional.of("PLAZO_FIJO");
-                default -> {
-                    mostrarMensaje("Opción no válida. Se usará AHORRO por defecto.");
-                    yield Optional.of("AHORRO");
-                }
-            };
+            if (opcion >= 1 && opcion <= tipos.length) {
+                return Optional.of(tipos[opcion - 1].name());
+            } else {
+                mostrarMensaje("Error: Opción no válida.");
+                return Optional.empty();
+            }
         } catch (NumberFormatException e) {
-            mostrarMensaje("Error: Por favor, introduzca un número válido. Se usará AHORRO por defecto.");
-            return Optional.of("AHORRO");
+            mostrarMensaje("Error: Por favor, introduzca un número válido.");
+            return Optional.empty();
         }
     }
 
@@ -222,5 +220,93 @@ class CuentaVistaImpl implements CuentaVista {
             mostrarMensaje("Error: El saldo debe ser un número válido.");
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<Long> solicitarIdTitularParaBuscar() {
+        consola.mostrar("Introduzca el ID del titular para buscar sus cuentas: ");
+        try {
+            return Optional.of(Long.parseLong(consola.leerLinea()));
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<String> solicitarTipoCuentaParaBuscar() {
+        consola.mostrar("\nTipos de cuenta disponibles:\n");
+        
+        // Recorrer el enum dinámicamente usando Stream
+        TipoCuenta[] tipos = TipoCuenta.values();
+        IntStream.range(0, tipos.length)
+            .forEach(i -> consola.mostrar((i + 1) + ". " + tipos[i].name() + "\n"));
+        
+        consola.mostrar("Seleccione el tipo de cuenta para buscar (1-" + tipos.length + "): ");
+        
+        try {
+            int opcion = Integer.parseInt(consola.leerLinea());
+            if (opcion >= 1 && opcion <= tipos.length) {
+                return Optional.of(tipos[opcion - 1].name());
+            } else {
+                mostrarMensaje("Error: Opción no válida.");
+                return Optional.empty();
+            }
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error: Por favor, introduzca un número válido.");
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Long> solicitarNumeroCuentaParaRestaurar() {
+        consola.mostrar("Introduzca el número de cuenta a restaurar: ");
+        try {
+            return Optional.of(Long.parseLong(consola.leerLinea()));
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error: El número de cuenta debe ser un número válido.");
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Boolean> solicitarNuevoEstado() {
+        consola.mostrar("¿Activar cuenta? (s/n): ");
+        String respuesta = consola.leerLinea().toLowerCase();
+        return "s".equals(respuesta) ? Optional.of(true) : 
+               "n".equals(respuesta) ? Optional.of(false) : Optional.empty();
+    }
+
+    @Override
+    public void mostrarCuentasEliminadas(List<CuentaDTO> cuentas) {
+        consola.mostrar("\n--- Listado de Cuentas Eliminadas ---\n");
+        
+        Optional.of(cuentas)
+            .filter(lista -> !lista.isEmpty())
+            .ifPresentOrElse(
+                lista -> {
+                    lista.forEach(cuenta -> mostrarCuenta(Optional.of(cuenta)));
+                    consola.mostrar("-----------------------------------\n");
+                },
+                () -> consola.mostrar("No hay cuentas eliminadas.\n")
+            );
+    }
+
+    @Override
+    public void mostrarTotalCuentas(long total) {
+        consola.mostrar("\n--- Total de Cuentas ---\n");
+        consola.mostrar("Total de cuentas registradas: " + total + "\n");
+        consola.mostrar("---------------------------\n");
+    }
+
+    @Override
+    public void mostrarSaldoCuenta(CuentaDTO cuenta) {
+        consola.mostrar("\n--- Consulta de Saldo ---\n");
+        consola.mostrar("Número de cuenta: " + cuenta.getNumeroCuenta() + "\n");
+        consola.mostrar("Titular: " + cuenta.getTitular().getNombre() + " " + cuenta.getTitular().getApellido() + "\n");
+        consola.mostrar("Tipo de cuenta: " + cuenta.getTipo() + "\n");
+        consola.mostrar("Saldo actual: " + cuenta.getSaldo() + "\n");
+        consola.mostrar("Estado: " + (cuenta.isActiva() ? "Activa" : "Inactiva") + "\n");
+        consola.mostrar("---------------------------\n");
     }
 } 

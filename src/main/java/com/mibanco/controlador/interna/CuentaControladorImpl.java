@@ -78,7 +78,7 @@ class CuentaControladorImpl implements CuentaControlador {
     @Override
     public void buscarCuentaPorNumero() {
         // 1. Solicitar número a la vista
-        Optional<String> numeroCuenta = vista.solicitarNumeroCuenta();
+        Optional<Long> numeroCuenta = vista.solicitarNumeroCuenta();
         
         // 2. Buscar en el servicio
         numeroCuenta.ifPresent(numero -> {
@@ -104,7 +104,7 @@ class CuentaControladorImpl implements CuentaControlador {
     @Override
     public void actualizarCuenta() {
         // 1. Solicitar número
-        Optional<String> numeroCuenta = vista.solicitarNumeroCuenta();
+        Optional<Long> numeroCuenta = vista.solicitarNumeroCuenta();
         
         numeroCuenta.ifPresent(numero -> {
             // 2. Buscar cuenta actual
@@ -129,7 +129,7 @@ class CuentaControladorImpl implements CuentaControlador {
     @Override
     public void eliminarCuenta() {
         // 1. Solicitar número
-        Optional<String> numeroCuenta = vista.solicitarNumeroCuenta();
+        Optional<Long> numeroCuenta = vista.solicitarNumeroCuenta();
         
         numeroCuenta.ifPresent(numero -> {
             // 2. Buscar cuenta
@@ -168,6 +168,13 @@ class CuentaControladorImpl implements CuentaControlador {
                     case 3 -> listarTodasLasCuentas();
                     case 4 -> actualizarCuenta();
                     case 5 -> eliminarCuenta();
+                    case 6 -> buscarCuentasPorTitular();
+                    case 7 -> buscarCuentasPorTipo();
+                    case 8 -> listarCuentasActivas();
+                    case 9 -> mostrarCuentasEliminadas();
+                    case 10 -> restaurarCuenta();
+                    case 11 -> contarCuentas();
+                    case 12 -> consultarSaldoCuenta();
                     case 0 -> vista.mostrarMensaje("Volviendo al menú principal...");
                     default -> vista.mostrarMensaje("Opción no válida.");
                 }
@@ -181,14 +188,14 @@ class CuentaControladorImpl implements CuentaControlador {
     }
 
     /**
-     * Actualiza una cuenta usando los métodos del servicio según la cantidad de campos a modificar.
-     * Si se modifica 1 campo, usa métodos individuales; si se modifican múltiples campos, usa método múltiple.
+     * Actualiza el estado de una cuenta.
+     * Solo permite modificar el estado activo/inactivo de la cuenta.
      * 
      * @param cuentaActual la cuenta actual
-     * @param datosModificacion los datos a modificar
+     * @param datosModificacion los datos a modificar (solo estado)
      */
     private void procesarActualizacionCuenta(CuentaDTO cuentaActual, Map<String, String> datosModificacion) {
-        String numeroCuenta = cuentaActual.getNumeroCuenta();
+        Long numeroCuenta = cuentaActual.getNumeroCuenta();
         
         // Si no hay datos para modificar, no hacer nada
         if (datosModificacion.isEmpty()) {
@@ -196,25 +203,131 @@ class CuentaControladorImpl implements CuentaControlador {
             return;
         }
         
-        // Si tiene 1 campo, método individual; si tiene más, método múltiple
+        // Solo procesar actualización de estado
         Optional.of(datosModificacion)
-            .filter(datos -> datos.size() == 1)
+            .filter(datos -> datos.containsKey("activa"))
             .ifPresentOrElse(
-                datos -> datosModificacion.forEach((campo, valor) -> {
-                    switch (campo) {
-                        case "saldo" -> servicioCuenta.actualizarSaldoCuenta(numeroCuenta, Optional.of(new BigDecimal(valor)));
-                        case "activa" -> servicioCuenta.actualizarEstadoCuenta(numeroCuenta, Optional.of(Boolean.parseBoolean(valor)));
-                    }
-                }),
-                () -> {
-                    // Para múltiples campos, crear un DTO temporal solo con los campos a modificar
-                    CuentaDTO cuentaModificada = CuentaDTO.builder()
-                        .saldo(datosModificacion.containsKey("saldo") ? new BigDecimal(datosModificacion.get("saldo")) : cuentaActual.getSaldo())
-                        .activa(datosModificacion.containsKey("activa") ? Boolean.parseBoolean(datosModificacion.get("activa")) : cuentaActual.isActiva())
-                        .build();
-                    
-                    servicioCuenta.actualizarVariosCampos(numeroCuenta, Optional.of(cuentaModificada));
-                }
+                datos -> {
+                    boolean nuevoEstado = Boolean.parseBoolean(datos.get("activa"));
+                    servicioCuenta.actualizarEstadoCuenta(numeroCuenta, Optional.of(nuevoEstado));
+                },
+                () -> vista.mostrarMensaje("No se especificó un cambio de estado válido.")
             );
+    }
+
+    @Override
+    public void buscarCuentasPorTitular() {
+        // 1. Solicitar ID del titular a la vista
+        Optional<Long> idTitular = vista.solicitarIdTitularParaBuscar();
+        
+        // 2. Buscar cuentas en el servicio
+        idTitular.ifPresent(id -> {
+            Optional<List<CuentaDTO>> cuentas = servicioCuenta.buscarPorTitularId(Optional.of(id));
+            
+            // 3. Mostrar resultado
+            cuentas.ifPresentOrElse(
+                listaCuentas -> {
+                    if (listaCuentas.isEmpty()) {
+                        vista.mostrarMensaje("No se encontraron cuentas para el titular especificado.");
+                    } else {
+                        vista.mostrarTodasLasCuentas(listaCuentas);
+                    }
+                },
+                () -> vista.mostrarMensaje("Error al buscar cuentas del titular.")
+            );
+        });
+    }
+
+    @Override
+    public void buscarCuentasPorTipo() {
+        // 1. Solicitar tipo de cuenta a la vista
+        Optional<String> tipoCuenta = vista.solicitarTipoCuentaParaBuscar();
+        
+        // 2. Buscar cuentas en el servicio
+        tipoCuenta.ifPresent(tipo -> {
+            Optional<List<CuentaDTO>> cuentas = servicioCuenta.buscarPorTipo(Optional.of(TipoCuenta.valueOf(tipo)));
+            
+            // 3. Mostrar resultado
+            cuentas.ifPresentOrElse(
+                listaCuentas -> {
+                    if (listaCuentas.isEmpty()) {
+                        vista.mostrarMensaje("No se encontraron cuentas del tipo especificado.");
+                    } else {
+                        vista.mostrarTodasLasCuentas(listaCuentas);
+                    }
+                },
+                () -> vista.mostrarMensaje("Error al buscar cuentas por tipo.")
+            );
+        });
+    }
+
+    @Override
+    public void listarCuentasActivas() {
+        // 1. Obtener cuentas activas del servicio
+        Optional<List<CuentaDTO>> cuentas = servicioCuenta.buscarActivas();
+        
+        // 2. Mostrar resultado
+        cuentas.ifPresentOrElse(
+            listaCuentas -> {
+                if (listaCuentas.isEmpty()) {
+                    vista.mostrarMensaje("No hay cuentas activas.");
+                } else {
+                    vista.mostrarTodasLasCuentas(listaCuentas);
+                }
+            },
+            () -> vista.mostrarMensaje("Error al obtener cuentas activas.")
+        );
+    }
+
+    @Override
+    public void mostrarCuentasEliminadas() {
+        // 1. Obtener cuentas eliminadas del servicio
+        List<CuentaDTO> cuentasEliminadas = servicioCuenta.obtenerCuentasEliminadas();
+        
+        // 2. Mostrar resultado
+        vista.mostrarCuentasEliminadas(cuentasEliminadas);
+    }
+
+    @Override
+    public void restaurarCuenta() {
+        // 1. Solicitar número de cuenta a la vista
+        Optional<Long> numeroCuenta = vista.solicitarNumeroCuentaParaRestaurar();
+        
+        // 2. Restaurar cuenta en el servicio
+        numeroCuenta.ifPresent(numero -> {
+            Optional<CuentaDTO> cuentaRestaurada = servicioCuenta.restaurarCuenta(Optional.of(numero));
+            
+            // 3. Mostrar resultado
+            cuentaRestaurada.ifPresentOrElse(
+                cuenta -> vista.mostrarMensaje("Cuenta restaurada exitosamente: " + cuenta.getNumeroCuenta()),
+                () -> vista.mostrarMensaje("No se pudo restaurar la cuenta. Verifique que exista en la lista de eliminadas.")
+            );
+        });
+    }
+
+    @Override
+    public void contarCuentas() {
+        // 1. Obtener total de cuentas del servicio
+        long total = servicioCuenta.contarCuentas();
+        
+        // 2. Mostrar resultado
+        vista.mostrarTotalCuentas(total);
+    }
+
+    @Override
+    public void consultarSaldoCuenta() {
+        // 1. Solicitar número de cuenta
+        Optional<Long> numeroCuenta = vista.solicitarNumeroCuenta();
+        
+        // 2. Buscar cuenta en el servicio
+        numeroCuenta.ifPresent(numero -> {
+            Optional<CuentaDTO> cuenta = servicioCuenta.obtenerCuentaPorNumero(Optional.of(numero));
+            
+            // 3. Mostrar saldo
+            cuenta.ifPresentOrElse(
+                cuentaEncontrada -> vista.mostrarSaldoCuenta(cuentaEncontrada),
+                () -> vista.mostrarMensaje("Cuenta no encontrada.")
+            );
+        });
     }
 } 

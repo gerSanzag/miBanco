@@ -40,6 +40,7 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/controlador/interna/CuentaControladorImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/controlador/interna/ControladorFactoria.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoOperacionCuenta.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/TestCuenta.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/TarjetaRepositorio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/TransaccionDTO.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/ServicioFactoria.java
@@ -49,7 +50,6 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/CuentaDTO.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/AuditoriaServicioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/util/BaseServicio.java
-/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/TestClienteCompleto.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/CuentaServicio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/TarjetaServicio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/mapeador/CuentaMapeador.java

@@ -19,8 +19,8 @@ import com.mibanco.modelo.enums.TipoTransaccion;
 @AllArgsConstructor
 public class TransaccionDTO {
     Long id;
-    String numeroCuenta;
-    String numeroCuentaDestino;
+    Long numeroCuenta;
+    Long numeroCuentaDestino;
     TipoTransaccion tipo;
     BigDecimal monto;
     LocalDateTime fecha;
@@ -30,8 +30,8 @@ public class TransaccionDTO {
      * Método estático que construye un TransaccionDTO con valores opcionales
      * Aplicando enfoque funcional con Optional para manejar valores nulos
      */
-    public static TransaccionDTO of(Long id, String numeroCuenta, 
-                                   Optional<String> numeroCuentaDestino,
+    public static TransaccionDTO of(Long id, Long numeroCuenta, 
+                                   Optional<Long> numeroCuentaDestino,
                                    TipoTransaccion tipo, BigDecimal monto,
                                    Optional<LocalDateTime> fecha,
                                    Optional<String> descripcion) {
