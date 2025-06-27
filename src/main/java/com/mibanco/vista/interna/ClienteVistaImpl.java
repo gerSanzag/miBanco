@@ -1,38 +1,37 @@
 package com.mibanco.vista.interna;
 
 import com.mibanco.dto.ClienteDTO;
+import com.mibanco.modelo.Cliente;
 import com.mibanco.vista.ClienteVista;
-import com.mibanco.vista.util.Consola;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 
 /**
  * Implementación de la vista para la entidad Cliente.
  * Visibilidad de paquete para que solo pueda ser instanciada a través de VistaFactoria.
  */
-class ClienteVistaImpl implements ClienteVista {
-
-    private final Consola consola;
+public class ClienteVistaImpl extends BaseVistaImpl<ClienteDTO> implements ClienteVista {
 
     /**
      * Constructor con visibilidad de paquete.
-     * Obtiene la instancia de la consola para la interacción con el usuario.
      */
-    ClienteVistaImpl() {
-        this.consola = new ConsolaImpl(new Scanner(System.in));
+    public ClienteVistaImpl() {
+        super(); // Inicializa la consola a través de BaseVistaImpl
+    }
+
+    @Override
+    public Map<String, String> solicitarDatosParaCrear(String mensaje) {
+        mostrarMensaje(mensaje);
+        return solicitarDatosGenerico(Cliente.class);
     }
 
     @Override
     public void mostrarMenuPrincipal() {
-        consola.mostrar("\n--- Menú de Gestión de Clientes ---\n");
-        consola.mostrar("1. Crear nuevo cliente\n");
+        consola.mostrar("\n=== GESTIÓN DE CLIENTES ===\n");
+        consola.mostrar("1. Crear cliente\n");
         consola.mostrar("2. Buscar cliente por ID\n");
         consola.mostrar("3. Buscar cliente por DNI\n");
         consola.mostrar("4. Listar todos los clientes\n");
@@ -41,150 +40,12 @@ class ClienteVistaImpl implements ClienteVista {
         consola.mostrar("7. Restaurar cliente\n");
         consola.mostrar("8. Mostrar clientes eliminados\n");
         consola.mostrar("0. Volver al menú principal\n");
-        consola.mostrar("------------------------------------\n");
-    }
-
-    @Override
-    public Optional<Integer> obtenerOpcion() {
         consola.mostrar("Seleccione una opción: ");
-        try {
-            return Optional.of(Integer.parseInt(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: Por favor, introduzca un número válido.");
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Map<String, String> solicitarDatosParaCrear() {
-        consola.mostrar("\n--- Creación de Nuevo Cliente ---\n");
-        Map<String, String> datos = new HashMap<>();
-        datos.put("nombre", leerCampo("Nombre completo"));
-        datos.put("apellido", leerCampo("Apellido"));
-        datos.put("dni", leerCampo("DNI"));
-        datos.put("email", leerCampo("Email"));
-        datos.put("telefono", leerCampo("Teléfono"));
-        datos.put("direccion", leerCampo("Dirección"));
-        datos.put("fechaNacimiento", leerFecha("Fecha de Nacimiento (yyyy-MM-dd)"));
-        return datos;
     }
 
     @Override
     public Optional<Long> solicitarIdCliente() {
-        consola.mostrar("Introduzca el ID del cliente: ");
-        try {
-            return Optional.of(Long.parseLong(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: El ID debe ser un número válido.");
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Map<String, String> solicitarDatosParaActualizar(ClienteDTO clienteActual) {
-        consola.mostrar("\n--- Datos modificables del Cliente ID: " + clienteActual.getId() + " ---\n");
-        consola.mostrar("1. Email: " + clienteActual.getEmail() + "\n");
-        consola.mostrar("2. Teléfono: " + clienteActual.getTelefono() + "\n");
-        consola.mostrar("3. Dirección: " + clienteActual.getDireccion() + "\n");
-        
-        consola.mostrar("\n¿Cómo desea modificar?\n");
-        consola.mostrar("1. Solo Email\n");
-        consola.mostrar("2. Solo Teléfono\n");
-        consola.mostrar("3. Solo Dirección\n");
-        consola.mostrar("4. Todos los campos\n");
-        consola.mostrar("0. Cancelar\n");
-        
-        Optional<Integer> opcion = obtenerOpcion();
-        
-        return opcion.map(opt -> {
-            Map<String, String> datos = switch (opt) {
-                case 1 -> Map.of("email", leerCampo("Nuevo Email"));
-                case 2 -> Map.of("telefono", leerCampo("Nuevo Teléfono"));
-                case 3 -> Map.of("direccion", leerCampo("Nueva Dirección"));
-                case 4 -> Map.of(
-                    "email", leerCampo("Nuevo Email"),
-                    "telefono", leerCampo("Nuevo Teléfono"),
-                    "direccion", leerCampo("Nueva Dirección")
-                );
-                case 0 -> {
-                    mostrarMensaje("Operación cancelada.");
-                    yield Map.of();
-                }
-                default -> {
-                    mostrarMensaje("Opción no válida.");
-                    yield Map.of();
-                }
-            };
-            return datos;
-        }).orElse(Map.of());
-    }
-
-    @Override
-    public void mostrarCliente(Optional<ClienteDTO> clienteOpt) {
-        clienteOpt.ifPresentOrElse(
-            cliente -> {
-                consola.mostrar("\n--- Detalles del Cliente ---\n");
-                consola.mostrar("ID: " + cliente.getId() + "\n");
-                consola.mostrar("Nombre: " + cliente.getNombre() + "\n");
-                consola.mostrar("Apellido: " + cliente.getApellido() + "\n");
-                consola.mostrar("DNI: " + cliente.getDni() + "\n");
-                consola.mostrar("Email: " + cliente.getEmail() + "\n");
-                consola.mostrar("Teléfono: " + cliente.getTelefono() + "\n");
-                consola.mostrar("Dirección: " + cliente.getDireccion() + "\n");
-                consola.mostrar("Fecha de Nacimiento: " + cliente.getFechaNacimiento().format(DateTimeFormatter.ISO_LOCAL_DATE) + "\n");
-                consola.mostrar("----------------------------\n");
-            },
-            () -> mostrarMensaje("Cliente no encontrado.")
-        );
-    }
-
-    @Override
-    public void mostrarTodosLosClientes(List<ClienteDTO> clientes) {
-        consola.mostrar("\n--- Listado de Clientes ---\n");
-        
-        Optional.of(clientes)
-            .filter(lista -> !lista.isEmpty())
-            .ifPresentOrElse(
-                lista -> {
-                    lista.forEach(cliente -> mostrarCliente(Optional.of(cliente)));
-                    consola.mostrar("---------------------------\n");
-                },
-                () -> consola.mostrar("No hay clientes registrados.\n")
-            );
-    }
-
-    @Override
-    public void mostrarMensaje(String mensaje) {
-        consola.mostrar(">> " + mensaje + "\n");
-    }
-
-    @Override
-    public boolean confirmarAccion(ClienteDTO cliente, String titulo, String mensaje) {
-        consola.mostrar("\n--- " + titulo + " ---\n");
-        mostrarCliente(Optional.of(cliente));
-        
-        consola.mostrar("\n" + mensaje + " (s/n): ");
-        String respuesta = consola.leerLinea().toLowerCase();
-        
-        return "s".equals(respuesta);
-    }
-
-    private String leerCampo(String nombreCampo) {
-        consola.mostrar(nombreCampo + ": ");
-        return consola.leerLinea();
-    }
-    
-    private String leerFecha(String mensaje) {
-        while (true) {
-            consola.mostrar(mensaje + ": ");
-            String fechaStr = consola.leerLinea();
-            try {
-                LocalDate.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE);
-                return fechaStr;
-            } catch (DateTimeParseException e) {
-                mostrarMensaje("Formato de fecha incorrecto. Use yyyy-MM-dd.");
-            }
-        }
+        return leerNumero("Introduzca el ID del cliente");
     }
 
     @Override
@@ -195,28 +56,90 @@ class ClienteVistaImpl implements ClienteVista {
     }
 
     @Override
-    public void mostrarClientesEliminados(List<ClienteDTO> clientesEliminados) {
-        consola.mostrar("\n--- Listado de Clientes Eliminados ---\n");
+    public void mostrarCliente(Optional<ClienteDTO> cliente) {
+        cliente.ifPresentOrElse(
+            c -> {
+                consola.mostrar("\n--- DATOS DEL CLIENTE ---\n");
+                consola.mostrar("ID: " + c.getId() + "\n");
+                consola.mostrar("Nombre: " + c.getNombre() + "\n");
+                consola.mostrar("Apellido: " + c.getApellido() + "\n");
+                consola.mostrar("DNI: " + c.getDni() + "\n");
+                consola.mostrar("Fecha de Nacimiento: " + c.getFechaNacimiento() + "\n");
+                consola.mostrar("Email: " + c.getEmail() + "\n");
+                consola.mostrar("Teléfono: " + c.getTelefono() + "\n");
+                consola.mostrar("Dirección: " + c.getDireccion() + "\n");
+            },
+            () -> mostrarMensaje("Cliente no encontrado.")
+        );
+    }
+
+    @Override
+    public void mostrarTodosLosClientes(List<ClienteDTO> clientes) {
+        if (clientes.isEmpty()) {
+            mostrarMensaje("No hay clientes registrados.");
+            return;
+        }
         
-        Optional.of(clientesEliminados)
-            .filter(lista -> !lista.isEmpty())
-            .ifPresentOrElse(
-                lista -> {
-                    lista.forEach(cliente -> mostrarCliente(Optional.of(cliente)));
-                    consola.mostrar("--------------------------------\n");
-                },
-                () -> consola.mostrar("No hay clientes eliminados.\n")
-            );
+        consola.mostrar("\n--- LISTA DE CLIENTES ---\n");
+        clientes.forEach(cliente -> {
+            consola.mostrar("ID: " + cliente.getId() + 
+                           " | " + cliente.getNombre() + " " + cliente.getApellido() + 
+                           " | DNI: " + cliente.getDni() + "\n");
+        });
+    }
+
+    @Override
+    public Map<String, String> solicitarDatosParaActualizar(ClienteDTO clienteActual) {
+        consola.mostrar("\n--- ACTUALIZAR CLIENTE ---\n");
+        consola.mostrar("Cliente actual: " + clienteActual.getNombre() + " " + clienteActual.getApellido() + "\n");
+        consola.mostrar("Deje vacío el campo que no desee modificar.\n");
+        
+        Map<String, String> datos = new HashMap<>();
+        
+        // Solo pedir campos que se pueden modificar (no id, fechaCreacion, etc.)
+        String email = leerCampo("Email actual: " + clienteActual.getEmail());
+        if (!email.isEmpty()) datos.put("email", email);
+        
+        String telefono = leerCampo("Teléfono actual: " + clienteActual.getTelefono());
+        if (!telefono.isEmpty()) datos.put("telefono", telefono);
+        
+        String direccion = leerCampo("Dirección actual: " + clienteActual.getDireccion());
+        if (!direccion.isEmpty()) datos.put("direccion", direccion);
+        
+        return datos;
+    }
+
+    @Override
+    public void mostrarEntidad(Optional<ClienteDTO> entidad) {
+        mostrarCliente(entidad);
+    }
+
+    @Override
+    public void mostrarMensaje(String mensaje) {
+        consola.mostrar(">> " + mensaje + "\n");
     }
 
     @Override
     public boolean confirmarRestauracion(ClienteDTO cliente) {
-        consola.mostrar("\n--- Restaurar Cliente Eliminado ---\n");
+        consola.mostrar("\n--- CONFIRMAR RESTAURACIÓN ---\n");
         mostrarCliente(Optional.of(cliente));
-        
-        consola.mostrar("\n¿Desea restaurar este cliente? (s/n): ");
+        consola.mostrar("\n¿Está seguro de que desea restaurar este cliente? (s/n): ");
         String respuesta = consola.leerLinea().toLowerCase();
-        
         return "s".equals(respuesta);
+    }
+
+    @Override
+    public void mostrarClientesEliminados(List<ClienteDTO> clientesEliminados) {
+        if (clientesEliminados.isEmpty()) {
+            mostrarMensaje("No hay clientes eliminados.");
+            return;
+        }
+        
+        consola.mostrar("\n--- CLIENTES ELIMINADOS ---\n");
+        clientesEliminados.forEach(cliente -> {
+            consola.mostrar("ID: " + cliente.getId() + 
+                           " | " + cliente.getNombre() + " " + cliente.getApellido() + 
+                           " | DNI: " + cliente.getDni() + "\n");
+        });
     }
 } 

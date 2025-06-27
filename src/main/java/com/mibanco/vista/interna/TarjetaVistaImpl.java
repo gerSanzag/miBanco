@@ -1,5 +1,6 @@
 package com.mibanco.vista.interna;
 
+import com.mibanco.modelo.Tarjeta;
 import com.mibanco.modelo.enums.TipoTarjeta;
 import com.mibanco.vista.TarjetaVista;
 import com.mibanco.vista.util.Consola;
@@ -13,24 +14,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 /**
  * Implementación de la vista para la entidad Tarjeta.
  * Visibilidad de paquete para que solo pueda ser instanciada a través de VistaFactoria.
  */
-class TarjetaVistaImpl implements TarjetaVista {
-    
-    private final Consola consola;
+class TarjetaVistaImpl extends BaseVistaImpl<TarjetaDTO> implements TarjetaVista {
     
     /**
      * Constructor con visibilidad de paquete.
      * Obtiene la instancia de la consola para la interacción con el usuario.
      */
     TarjetaVistaImpl() {
-        this.consola = new ConsolaImpl(new Scanner(System.in));
+        super();
     }
     
     @Override
@@ -66,27 +63,14 @@ class TarjetaVistaImpl implements TarjetaVista {
     @Override
     public Map<String, String> solicitarDatosParaCrear() {
         consola.mostrar("\n--- Creación de Nueva Tarjeta ---\n");
-        Map<String, String> datos = new HashMap<>();
-        
-        // Función anidada para validar campos obligatorios
-        Function<Supplier<Optional<?>>, String> solicitarCampo = supplier -> {
-            Optional<?> valor;
-            do {
-                valor = supplier.get();
-                if (valor.isEmpty()) {
-                    mostrarMensaje("Error: Campo obligatorio. Por favor, inténtelo de nuevo.");
-                }
-            } while (valor.isEmpty());
-            return valor.get().toString();
-        };
-        
-        // Usar la función anidada para cada campo
-        datos.put("idTitular", solicitarCampo.apply(this::solicitarIdTitular));
-        datos.put("numeroCuentaAsociada", solicitarCampo.apply(this::solicitarNumeroCuentaAsociada));
-        datos.put("tipoTarjeta", solicitarCampo.apply(this::solicitarTipoTarjeta));
-        datos.put("cvv", solicitarCampo.apply(this::solicitarCvv));
-        
-        return datos;
+        return solicitarDatosGenerico(Tarjeta.class);
+    }
+
+    // Implementación del método abstracto de BaseVista
+    @Override
+    public Map<String, String> solicitarDatosParaCrear(String mensaje) {
+        consola.mostrar("\n--- " + mensaje + " ---\n");
+        return solicitarDatosGenerico(Tarjeta.class);
     }
     
     @Override
@@ -179,7 +163,14 @@ class TarjetaVistaImpl implements TarjetaVista {
         
         return "s".equals(respuesta);
     }
+
+    // Implementación del método abstracto de BaseVistaImpl
+    @Override
+    public void mostrarEntidad(Optional<TarjetaDTO> entidad) {
+        mostrarTarjeta(entidad);
+    }
     
+    // Métodos específicos para Tarjeta que no se pueden generalizar
     @Override
     public Optional<Long> solicitarIdTitular() {
         consola.mostrar("Introduzca el ID del titular: ");
@@ -204,11 +195,11 @@ class TarjetaVistaImpl implements TarjetaVista {
         consola.mostrar("Seleccione el tipo de tarjeta (1-" + tipos.length + "): ");
         
         try {
-            int opcion = Integer.parseInt(consola.leerLinea());
-            if (opcion > 0 && opcion <= tipos.length) {
-                return Optional.of(tipos[opcion - 1].name());
+            int seleccion = Integer.parseInt(consola.leerLinea());
+            if (seleccion >= 1 && seleccion <= tipos.length) {
+                return Optional.of(tipos[seleccion - 1].name());
             } else {
-                mostrarMensaje("Error: Opción no válida.");
+                mostrarMensaje("Error: Selección fuera de rango.");
                 return Optional.empty();
             }
         } catch (NumberFormatException e) {
@@ -221,16 +212,13 @@ class TarjetaVistaImpl implements TarjetaVista {
     public Optional<String> solicitarCvv() {
         consola.mostrar("Introduzca el CVV (3 dígitos): ");
         String cvv = consola.leerLinea();
-        if (cvv.isEmpty()) {
+        if (cvv.length() == 3 && cvv.matches("\\d{3}")) {
+            return Optional.of(cvv);
+        } else {
+            mostrarMensaje("Error: El CVV debe tener exactamente 3 dígitos.");
             return Optional.empty();
         }
-        if (cvv.length() != 3 || !cvv.matches("\\d{3}")) {
-            mostrarMensaje("Error: CVV debe tener 3 dígitos numéricos.");
-            return Optional.empty();
-        }
-        return Optional.of(cvv);
     }
-   
     
     @Override
     public Optional<String> solicitarNumeroCuentaAsociada() {
@@ -241,31 +229,31 @@ class TarjetaVistaImpl implements TarjetaVista {
     
     @Override
     public Optional<LocalDate> solicitarFecha() {
-        consola.mostrar("Introduzca la fecha (YYYY-MM-DD): ");
+        consola.mostrar("Introduzca la fecha de expiración (yyyy-MM-dd): ");
         try {
             String fechaStr = consola.leerLinea();
             if (fechaStr.isEmpty()) {
                 return Optional.empty();
             }
-            return Optional.of(LocalDate.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE));
+            LocalDate fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE);
+            return Optional.of(fecha);
         } catch (DateTimeParseException e) {
-            mostrarMensaje("Error: Formato de fecha inválido. Use YYYY-MM-DD.");
+            mostrarMensaje("Error: Formato de fecha incorrecto. Use yyyy-MM-dd.");
             return Optional.empty();
         }
     }
     
     @Override
     public Optional<Boolean> solicitarNuevoEstado() {
-        consola.mostrar("¿Activar tarjeta? (s/n): ");
+        consola.mostrar("¿Desea activar la tarjeta? (s/n): ");
         String respuesta = consola.leerLinea().toLowerCase();
         return "s".equals(respuesta) ? Optional.of(true) : 
                "n".equals(respuesta) ? Optional.of(false) : Optional.empty();
     }
     
-   
     @Override
     public void mostrarTarjetasEliminadas(List<TarjetaDTO> tarjetas) {
-        consola.mostrar("\n--- Listado de Tarjetas Eliminadas ---\n");
+        consola.mostrar("\n--- Tarjetas Eliminadas ---\n");
         
         Optional.of(tarjetas)
             .filter(lista -> !lista.isEmpty())
@@ -280,7 +268,8 @@ class TarjetaVistaImpl implements TarjetaVista {
     
     @Override
     public void mostrarTotalTarjetas(long total) {
-        consola.mostrar(">> Total de tarjetas registradas: " + total + "\n");
+        consola.mostrar("\n--- Total de Tarjetas ---\n");
+        consola.mostrar("Total de tarjetas registradas: " + total + "\n");
+        consola.mostrar("---------------------------\n");
     }
-    
 } 

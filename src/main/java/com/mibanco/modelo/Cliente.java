@@ -1,8 +1,11 @@
 package com.mibanco.modelo;
 
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import lombok.Value;
 import lombok.Builder;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,6 +15,7 @@ import java.util.Optional;
 @Value
 @Builder(toBuilder = true)
 public class Cliente implements Identificable {
+    @NoSolicitar(razon = "Se genera automáticamente")
     Long id;
     String nombre;
     String apellido;
@@ -20,6 +24,22 @@ public class Cliente implements Identificable {
     String email;
     String telefono;
     String direccion;
+    
+    /**
+     * Define los campos requeridos para crear un nuevo cliente
+     * @return Lista de nombres de campos que son obligatorios
+     */
+    public static List<String> obtenerCamposRequeridos() {
+        return Arrays.asList(
+            "nombre",
+            "apellido",
+            "dni",
+            "email",
+            "telefono",
+            "direccion",
+            "fechaNacimiento"
+        );
+    }
     
     /**
      * Método factory que facilita la creación de instancias

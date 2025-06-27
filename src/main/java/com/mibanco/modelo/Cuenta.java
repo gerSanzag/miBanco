@@ -1,5 +1,6 @@
 package com.mibanco.modelo;
 
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,8 +20,13 @@ public class Cuenta implements Identificable {
     Long numeroCuenta;
     Cliente titular;
     TipoCuenta tipo;
+    @NoSolicitar(razon = "Se establece automáticamente al crear")
     LocalDateTime fechaCreacion;
+    @NoSolicitar(razon = "Se establece automáticamente al crear y nunca cambia")
+    BigDecimal saldoInicial;
+    @NoSolicitar(razon = "Se inicializa igual a saldoInicial y solo cambia por transacciones")
     BigDecimal saldo;
+    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
     
     /**
@@ -36,12 +42,13 @@ public class Cuenta implements Identificable {
      * Método factory para facilitar la creación de instancias
      */
     public static Cuenta of(Long numeroCuenta, Cliente titular, TipoCuenta tipo, 
-                           BigDecimal saldo, LocalDateTime fechaCreacion, boolean activa) {
+                           BigDecimal saldoInicial, LocalDateTime fechaCreacion, boolean activa) {
         return Cuenta.builder()
                 .numeroCuenta(numeroCuenta)
                 .titular(titular)
                 .tipo(tipo)
-                .saldo(saldo != null ? saldo : BigDecimal.ZERO)
+                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
+                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
                 .fechaCreacion(fechaCreacion != null ? fechaCreacion : LocalDateTime.now())
                 .activa(activa)
                 .build();

@@ -2,6 +2,7 @@ com/mibanco/dto/mapeador/Mapeador.class
 com/mibanco/repositorio/AuditoriaRepositorio.class
 com/mibanco/modelo/enums/TipoOperacionCuenta.class
 com/mibanco/servicio/interna/ClienteServicioImpl.class
+com/mibanco/controlador/interna/BaseControladorImpl.class
 com/mibanco/servicio/ClienteServicio.class
 com/mibanco/dto/mapeador/TarjetaMapeador.class
 com/mibanco/repositorio/ClienteRepositorio.class
@@ -11,6 +12,7 @@ com/mibanco/modelo/enums/TipoTransaccion.class
 com/mibanco/vista/util/Consola.class
 com/mibanco/repositorio/interna/BaseRepositorioImpl.class
 com/mibanco/dto/RespuestaDTO.class
+com/mibanco/TestReflexion.class
 com/mibanco/vista/interna/CuentaVistaImpl.class
 com/mibanco/modelo/Tarjeta.class
 com/mibanco/repositorio/interna/package-info.class
@@ -19,11 +21,15 @@ com/mibanco/modelo/Cuenta.class
 com/mibanco/vista/interna/ConsolaImpl.class
 com/mibanco/vista/interna/factoriaVista.class
 com/mibanco/repositorio/interna/CuentaRepositorioImpl.class
+com/mibanco/vista/util/BaseVista.class
 com/mibanco/dto/mapeador/TransaccionMapeador.class
 com/mibanco/servicio/interna/AuditoriaServicioImpl.class
 com/mibanco/modelo/Cuenta$CuentaBuilder.class
 com/mibanco/servicio/interna/ServicioFactoria.class
 com/mibanco/dto/RespuestaDTO$RespuestaDTOBuilder.class
+com/mibanco/vista/interna/BaseVistaImpl.class
+com/mibanco/controlador/util/BaseControlador.class
+com/mibanco/vista/TarjetaVista.class
 com/mibanco/dto/TarjetaDTO.class
 com/mibanco/modelo/Cliente.class
 com/mibanco/dto/mapeador/ClienteMapeador.class
@@ -35,6 +41,8 @@ com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class
 com/mibanco/modelo/enums/TipoCuenta.class
 com/mibanco/dto/mapeador/CuentaMapeador.class
 com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class
+com/mibanco/controlador/interna/TarjetaControladorImpl.class
+com/mibanco/controlador/TarjetaControlador.class
 com/mibanco/servicio/util/BaseServicio.class
 com/mibanco/controlador/ClienteControlador.class
 com/mibanco/controlador/interna/CuentaControladorImpl.class
@@ -57,6 +65,7 @@ com/mibanco/vista/interna/ClienteVistaImpl.class
 com/mibanco/repositorio/CuentaRepositorio.class
 com/mibanco/vista/CuentaVista.class
 com/mibanco/dto/ClienteDTO$ClienteDTOBuilder.class
+com/mibanco/TestTarjeta.class
 com/mibanco/servicio/interna/BaseServicioImpl.class
 com/mibanco/modelo/RegistroAuditoria.class
 com/mibanco/repositorio/TarjetaRepositorio.class
@@ -70,8 +79,11 @@ com/mibanco/servicio/interna/CuentaServicioImpl.class
 com/mibanco/servicio/CuentaServicio.class
 com/mibanco/controlador/interna/ClienteControladorImpl.class
 com/mibanco/dto/TransaccionDTO.class
+com/mibanco/vista/interna/TarjetaVistaImpl.class
 com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class
+com/mibanco/util/ReflexionUtil.class
 com/mibanco/TestCliente.class
 com/mibanco/modelo/enums/TipoOperacionTarjeta.class
+com/mibanco/util/ReflexionUtil$NoSolicitar.class
 com/mibanco/modelo/Identificable.class
 com/mibanco/servicio/interna/TarjetaServicioImpl.class

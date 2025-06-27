@@ -36,7 +36,7 @@ class ClienteControladorImpl implements ClienteControlador {
         vista.mostrarMensaje("--- Creación de Nuevo Cliente ---");
         
         // 1. Solicitar datos a la vista
-        Map<String, String> datosCliente = vista.solicitarDatosParaCrear();
+        Map<String, String> datosCliente = vista.solicitarDatosParaCrear("Introduzca los datos del nuevo cliente:");
         
         // 2. Enviar datos crudos al servicio (el servicio crea el DTO internamente)
         Optional<ClienteDTO> clienteCreado = servicio.crearClienteDto(datosCliente);

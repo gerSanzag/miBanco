@@ -1,6 +1,7 @@
 package com.mibanco.vista.interna;
 
 import com.mibanco.dto.CuentaDTO;
+import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.vista.CuentaVista;
 import com.mibanco.vista.util.Consola;
@@ -11,24 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 /**
  * Implementación de la vista para la entidad Cuenta.
  * Visibilidad de paquete para que solo pueda ser instanciada a través de VistaFactoria.
  */
-class CuentaVistaImpl implements CuentaVista {
-
-    private final Consola consola;
+class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
 
     /**
      * Constructor con visibilidad de paquete.
      * Obtiene la instancia de la consola para la interacción con el usuario.
      */
     CuentaVistaImpl() {
-        this.consola = new ConsolaImpl(new Scanner(System.in));
+        super();
     }
 
     @Override
@@ -64,26 +61,13 @@ class CuentaVistaImpl implements CuentaVista {
     @Override
     public Map<String, String> solicitarDatosParaCrear() {
         consola.mostrar("\n--- Creación de Nueva Cuenta ---\n");
-        Map<String, String> datos = new HashMap<>();
-        
-        // Función anidada para validar campos obligatorios
-        Function<Supplier<Optional<?>>, String> solicitarCampo = supplier -> {
-            Optional<?> valor;
-            do {
-                valor = supplier.get();
-                if (valor.isEmpty()) {
-                    mostrarMensaje("Error: Campo obligatorio. Por favor, inténtelo de nuevo.");
-                }
-            } while (valor.isEmpty());
-            return valor.get().toString();
-        };
-        
-        // Usar la función anidada para cada campo
-        datos.put("idTitular", solicitarCampo.apply(this::solicitarIdTitular));
-        datos.put("tipoCuenta", solicitarCampo.apply(this::solicitarTipoCuenta));
-        datos.put("saldoInicial", solicitarCampo.apply(this::solicitarSaldoInicial));
-        
-        return datos;
+        return solicitarDatosGenerico(Cuenta.class);
+    }
+
+    @Override
+    public Map<String, String> solicitarDatosParaCrear(String mensaje) {
+        consola.mostrar("\n--- " + mensaje + " ---\n");
+        return solicitarDatosGenerico(Cuenta.class);
     }
 
     @Override
@@ -175,6 +159,13 @@ class CuentaVistaImpl implements CuentaVista {
         return "s".equals(respuesta);
     }
 
+    // Implementación del método abstracto de BaseVistaImpl
+    @Override
+    public void mostrarEntidad(Optional<CuentaDTO> entidad) {
+        mostrarCuenta(entidad);
+    }
+
+    // Métodos específicos para Cuenta que no se pueden generalizar
     @Override
     public Optional<Long> solicitarIdTitular() {
         consola.mostrar("Introduzca el ID del titular: ");
@@ -198,11 +189,11 @@ class CuentaVistaImpl implements CuentaVista {
         consola.mostrar("Seleccione el tipo de cuenta (1-" + tipos.length + "): ");
         
         try {
-            int opcion = Integer.parseInt(consola.leerLinea());
-            if (opcion >= 1 && opcion <= tipos.length) {
-                return Optional.of(tipos[opcion - 1].name());
+            int seleccion = Integer.parseInt(consola.leerLinea());
+            if (seleccion >= 1 && seleccion <= tipos.length) {
+                return Optional.of(tipos[seleccion - 1].name());
             } else {
-                mostrarMensaje("Error: Opción no válida.");
+                mostrarMensaje("Error: Selección fuera de rango.");
                 return Optional.empty();
             }
         } catch (NumberFormatException e) {
@@ -213,9 +204,13 @@ class CuentaVistaImpl implements CuentaVista {
 
     @Override
     public Optional<BigDecimal> solicitarSaldoInicial() {
-        consola.mostrar("Introduzca el saldo inicial: ");
+        consola.mostrar("Introduzca el saldo inicial (0.00): ");
         try {
-            return Optional.of(new BigDecimal(consola.leerLinea()));
+            String input = consola.leerLinea();
+            if (input.isEmpty()) {
+                return Optional.of(BigDecimal.ZERO);
+            }
+            return Optional.of(new BigDecimal(input));
         } catch (NumberFormatException e) {
             mostrarMensaje("Error: El saldo debe ser un número válido.");
             return Optional.empty();
@@ -224,7 +219,7 @@ class CuentaVistaImpl implements CuentaVista {
 
     @Override
     public Optional<Long> solicitarIdTitularParaBuscar() {
-        consola.mostrar("Introduzca el ID del titular para buscar sus cuentas: ");
+        consola.mostrar("Introduzca el ID del titular para buscar: ");
         try {
             return Optional.of(Long.parseLong(consola.leerLinea()));
         } catch (NumberFormatException e) {
@@ -237,7 +232,6 @@ class CuentaVistaImpl implements CuentaVista {
     public Optional<String> solicitarTipoCuentaParaBuscar() {
         consola.mostrar("\nTipos de cuenta disponibles:\n");
         
-        // Recorrer el enum dinámicamente usando Stream
         TipoCuenta[] tipos = TipoCuenta.values();
         IntStream.range(0, tipos.length)
             .forEach(i -> consola.mostrar((i + 1) + ". " + tipos[i].name() + "\n"));
@@ -245,11 +239,11 @@ class CuentaVistaImpl implements CuentaVista {
         consola.mostrar("Seleccione el tipo de cuenta para buscar (1-" + tipos.length + "): ");
         
         try {
-            int opcion = Integer.parseInt(consola.leerLinea());
-            if (opcion >= 1 && opcion <= tipos.length) {
-                return Optional.of(tipos[opcion - 1].name());
+            int seleccion = Integer.parseInt(consola.leerLinea());
+            if (seleccion >= 1 && seleccion <= tipos.length) {
+                return Optional.of(tipos[seleccion - 1].name());
             } else {
-                mostrarMensaje("Error: Opción no válida.");
+                mostrarMensaje("Error: Selección fuera de rango.");
                 return Optional.empty();
             }
         } catch (NumberFormatException e) {
@@ -271,7 +265,7 @@ class CuentaVistaImpl implements CuentaVista {
 
     @Override
     public Optional<Boolean> solicitarNuevoEstado() {
-        consola.mostrar("¿Activar cuenta? (s/n): ");
+        consola.mostrar("¿Desea activar la cuenta? (s/n): ");
         String respuesta = consola.leerLinea().toLowerCase();
         return "s".equals(respuesta) ? Optional.of(true) : 
                "n".equals(respuesta) ? Optional.of(false) : Optional.empty();
@@ -279,14 +273,14 @@ class CuentaVistaImpl implements CuentaVista {
 
     @Override
     public void mostrarCuentasEliminadas(List<CuentaDTO> cuentas) {
-        consola.mostrar("\n--- Listado de Cuentas Eliminadas ---\n");
+        consola.mostrar("\n--- Cuentas Eliminadas ---\n");
         
         Optional.of(cuentas)
             .filter(lista -> !lista.isEmpty())
             .ifPresentOrElse(
                 lista -> {
                     lista.forEach(cuenta -> mostrarCuenta(Optional.of(cuenta)));
-                    consola.mostrar("-----------------------------------\n");
+                    consola.mostrar("---------------------------\n");
                 },
                 () -> consola.mostrar("No hay cuentas eliminadas.\n")
             );
@@ -301,12 +295,10 @@ class CuentaVistaImpl implements CuentaVista {
 
     @Override
     public void mostrarSaldoCuenta(CuentaDTO cuenta) {
-        consola.mostrar("\n--- Consulta de Saldo ---\n");
+        consola.mostrar("\n--- Saldo de la Cuenta ---\n");
         consola.mostrar("Número de cuenta: " + cuenta.getNumeroCuenta() + "\n");
         consola.mostrar("Titular: " + cuenta.getTitular().getNombre() + " " + cuenta.getTitular().getApellido() + "\n");
-        consola.mostrar("Tipo de cuenta: " + cuenta.getTipo() + "\n");
         consola.mostrar("Saldo actual: " + cuenta.getSaldo() + "\n");
-        consola.mostrar("Estado: " + (cuenta.isActiva() ? "Activa" : "Inactiva") + "\n");
         consola.mostrar("---------------------------\n");
     }
 } 

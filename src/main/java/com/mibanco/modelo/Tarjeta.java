@@ -1,5 +1,6 @@
 package com.mibanco.modelo;
 
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -16,12 +17,16 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true)
 public class Tarjeta implements Identificable {
+    @NoSolicitar(razon = "Se genera automáticamente")
     String numero;
     Cliente titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
+    @NoSolicitar(razon = "Se genera automáticamente")
     String cvv;
+    @NoSolicitar(razon = "Se establece automáticamente (+3 años)")
     LocalDate fechaExpiracion;
+    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
     
     /**

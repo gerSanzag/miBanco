@@ -19,6 +19,7 @@ public class CuentaDTO {
     Long numeroCuenta;
     ClienteDTO titular;
     TipoCuenta tipo;
+    BigDecimal saldoInicial;
     BigDecimal saldo;
     LocalDateTime fechaCreacion;
     boolean activa;
@@ -28,13 +29,14 @@ public class CuentaDTO {
      * Ejemplo de uso del enfoque funcional y Optionals
      */
     public static CuentaDTO of(Long numeroCuenta, ClienteDTO titular, TipoCuenta tipo,
-                               BigDecimal saldo, Optional<LocalDateTime> fechaCreacion, 
+                               BigDecimal saldoInicial, Optional<LocalDateTime> fechaCreacion, 
                                Optional<Boolean> activa) {
         return CuentaDTO.builder()
                 .numeroCuenta(numeroCuenta)
                 .titular(titular)
                 .tipo(tipo)
-                .saldo(saldo)
+                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
+                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
                 .fechaCreacion(fechaCreacion.orElse(LocalDateTime.now()))
                 .activa(activa.orElse(true))
                 .build();
