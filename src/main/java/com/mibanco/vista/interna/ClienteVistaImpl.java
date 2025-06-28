@@ -45,7 +45,8 @@ public class ClienteVistaImpl extends BaseVistaImpl<ClienteDTO> implements Clien
 
     @Override
     public Optional<Long> solicitarIdCliente() {
-        return leerNumero("Introduzca el ID del cliente");
+        return leerNumero("Introduzca el ID del cliente", 
+        "El ID debe ser un número válido.");
     }
 
     @Override
@@ -55,24 +56,7 @@ public class ClienteVistaImpl extends BaseVistaImpl<ClienteDTO> implements Clien
         return dni.isEmpty() ? Optional.empty() : Optional.of(dni);
     }
 
-    @Override
-    public void mostrarCliente(Optional<ClienteDTO> cliente) {
-        cliente.ifPresentOrElse(
-            c -> {
-                consola.mostrar("\n--- DATOS DEL CLIENTE ---\n");
-                consola.mostrar("ID: " + c.getId() + "\n");
-                consola.mostrar("Nombre: " + c.getNombre() + "\n");
-                consola.mostrar("Apellido: " + c.getApellido() + "\n");
-                consola.mostrar("DNI: " + c.getDni() + "\n");
-                consola.mostrar("Fecha de Nacimiento: " + c.getFechaNacimiento() + "\n");
-                consola.mostrar("Email: " + c.getEmail() + "\n");
-                consola.mostrar("Teléfono: " + c.getTelefono() + "\n");
-                consola.mostrar("Dirección: " + c.getDireccion() + "\n");
-            },
-            () -> mostrarMensaje("Cliente no encontrado.")
-        );
-    }
-
+ 
     @Override
     public void mostrarTodosLosClientes(List<ClienteDTO> clientes) {
         if (clientes.isEmpty()) {
@@ -82,9 +66,7 @@ public class ClienteVistaImpl extends BaseVistaImpl<ClienteDTO> implements Clien
         
         consola.mostrar("\n--- LISTA DE CLIENTES ---\n");
         clientes.forEach(cliente -> {
-            consola.mostrar("ID: " + cliente.getId() + 
-                           " | " + cliente.getNombre() + " " + cliente.getApellido() + 
-                           " | DNI: " + cliente.getDni() + "\n");
+            mostrarEntidad(Optional.of(cliente));   
         });
     }
 
@@ -110,8 +92,21 @@ public class ClienteVistaImpl extends BaseVistaImpl<ClienteDTO> implements Clien
     }
 
     @Override
-    public void mostrarEntidad(Optional<ClienteDTO> entidad) {
-        mostrarCliente(entidad);
+    public void mostrarEntidad(Optional<ClienteDTO> cliente) {
+        cliente.ifPresentOrElse(
+            c -> {
+                consola.mostrar("\n--- DATOS DEL CLIENTE ---\n");
+                consola.mostrar("ID: " + c.getId() + "\n");
+                consola.mostrar("Nombre: " + c.getNombre() + "\n");
+                consola.mostrar("Apellido: " + c.getApellido() + "\n");
+                consola.mostrar("DNI: " + c.getDni() + "\n");
+                consola.mostrar("Fecha de Nacimiento: " + c.getFechaNacimiento() + "\n");
+                consola.mostrar("Email: " + c.getEmail() + "\n");
+                consola.mostrar("Teléfono: " + c.getTelefono() + "\n");
+                consola.mostrar("Dirección: " + c.getDireccion() + "\n");
+            },
+            () -> mostrarMensaje("Cliente no encontrado.")
+        );
     }
 
     @Override
@@ -122,7 +117,7 @@ public class ClienteVistaImpl extends BaseVistaImpl<ClienteDTO> implements Clien
     @Override
     public boolean confirmarRestauracion(ClienteDTO cliente) {
         consola.mostrar("\n--- CONFIRMAR RESTAURACIÓN ---\n");
-        mostrarCliente(Optional.of(cliente));
+        mostrarEntidad(Optional.of(cliente));
         consola.mostrar("\n¿Está seguro de que desea restaurar este cliente? (s/n): ");
         String respuesta = consola.leerLinea().toLowerCase();
         return "s".equals(respuesta);

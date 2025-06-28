@@ -11,12 +11,12 @@ import java.math.BigDecimal;
  */
 public interface CuentaServicio {
     
-    /**
-     * Crea una nueva cuenta
-     * @param cuentaDTO Optional con los datos de la nueva cuenta
-     * @return Optional con el DTO de la cuenta creada
-     */
-    Optional<CuentaDTO> crearCuenta(Optional<CuentaDTO> cuentaDTO);
+    // /**
+    //  * Crea una nueva cuenta
+    //  * @param cuentaDTO Optional con los datos de la nueva cuenta
+    //  * @return Optional con el DTO de la cuenta creada
+    //  */
+    // Optional<CuentaDTO> guardarCuenta(Optional<CuentaDTO> cuentaDTO);
     
     /**
      * Actualiza la información completa de una cuenta

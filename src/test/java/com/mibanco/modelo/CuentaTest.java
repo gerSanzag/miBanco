@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Optional;
+import com.mibanco.modelo.enums.TipoCuenta;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -21,8 +24,8 @@ public class CuentaTest {
     @BeforeEach
     public void setUp() {
         // Crear un cliente de prueba
-        cliente = Cliente.of(1L, "Juan", "Pérez", "juan.perez@email.com", 
-                           "12345678A", "123456789", LocalDateTime.now(), true);
+        cliente = Cliente.of(1L, "Juan", "Pérez", "12345678A", 
+                           LocalDate.now(), "juan.perez@email.com", "123456789", "Calle Principal 123");
         
         // Crear una cuenta de prueba
         cuenta = Cuenta.of(1001L, cliente, TipoCuenta.AHORRO, 

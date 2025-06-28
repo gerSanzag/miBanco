@@ -6,14 +6,16 @@ import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.repositorio.CuentaRepositorio;
+import com.mibanco.servicio.ClienteServicio;
 import com.mibanco.servicio.CuentaServicio;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
-
+import com.mibanco.servicio.TransaccionOperacionesServicio;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 /**
  * Implementación del servicio de cuentas
@@ -22,24 +24,29 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
         implements CuentaServicio {
     
     private static final CuentaRepositorio repositorioCuenta;
+    private static ClienteServicio clienteServicio;
     private static final CuentaMapeador mapeador;
     private static final ClienteMapeador clienteMapeador;
     private final TipoOperacionCuenta tipoActualizar = TipoOperacionCuenta.ACTUALIZAR;
-
+    private static CuentaDtoProcesadorServicio cuentaDtoProcesador;
+    
     static {
         repositorioCuenta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCuenta();
         clienteMapeador = new ClienteMapeador();
         mapeador = new CuentaMapeador(clienteMapeador);
+        clienteServicio = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();
+        cuentaDtoProcesador = new CuentaDtoProcesadorServicio(clienteServicio);
     }
 
     public CuentaServicioImpl() {
         super(repositorioCuenta, mapeador);
+        
     }
 
-    @Override
-    public Optional<CuentaDTO> crearCuenta(Optional<CuentaDTO> cuentaDTO) {
-        return guardar(TipoOperacionCuenta.CREAR, cuentaDTO);
-    }
+    // @Override
+    // public Optional<CuentaDTO> guardarCuenta(Optional<CuentaDTO> cuentaDTO) {
+    //     return guardar(TipoOperacionCuenta.CREAR, cuentaDTO);
+    // }
 
     @Override
     public Optional<CuentaDTO> actualizarVariosCampos(Long numeroCuenta, Optional<CuentaDTO> cuentaDTO) {
@@ -167,5 +174,18 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
                 .filter(java.util.Objects::nonNull)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
             );
+    }
+
+    /**
+     * Crea una cuenta DTO con saldo inicial obligatorio usando programación funcional
+     * La cuenta se crea una sola vez con el saldo inicial incluido
+     * Elimina los if anidados usando Optional chaining y early returns
+     * Garantiza consistencia transaccional: valida antes de persistir
+     */
+    public Optional<CuentaDTO> crearCuentaDto(Map<String, String> datosCrudos, BigDecimal montoInicial, TransaccionOperacionesServicio transaccionServicio) {
+        return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)
+            .flatMap(cuentaDTO -> cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))
+            .flatMap(cuentaConSaldo -> guardar(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo)))
+            .or(() -> Optional.empty());
     }
 } 

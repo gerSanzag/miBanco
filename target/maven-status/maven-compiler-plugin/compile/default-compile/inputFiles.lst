@@ -22,6 +22,7 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoCuenta.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoOperacionTransaccion.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/CuentaDtoProcesadorServicio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoOperacionCliente.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/ClienteRepositorioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/ClienteVista.java

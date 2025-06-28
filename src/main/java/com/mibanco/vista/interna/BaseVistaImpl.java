@@ -4,7 +4,6 @@ import com.mibanco.util.ReflexionUtil;
 import com.mibanco.vista.util.BaseVista;
 import com.mibanco.vista.util.Consola;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
@@ -13,7 +12,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
+
 
 /**
  * Implementación base para todas las vistas
@@ -33,6 +32,7 @@ abstract class BaseVistaImpl<T> implements BaseVista<T> {
     
     @Override
     public Optional<Integer> obtenerOpcion() {
+        consola.mostrar("Seleccione una opción: ");
         try {
             return Optional.of(Integer.parseInt(consola.leerLinea().trim()));
         } catch (NumberFormatException e) {
@@ -66,78 +66,69 @@ abstract class BaseVistaImpl<T> implements BaseVista<T> {
         Map<String, String> datos = new HashMap<>();
         
         for (String campo : campos) {
-            String valor = solicitarCampoPorTipo(campo, modelo);
-            if (valor == null) {
+            Optional<String> valorOpt = solicitarCampoPorTipo(campo, modelo);
+            if (valorOpt.isEmpty()) {
                 return new HashMap<>(); // Cancelar si algún campo falla
             }
-            datos.put(campo, valor);
+            datos.put(campo, valorOpt.get());
         }
         
         return datos;
     }
     
     /**
-     * Solicita un campo según su tipo usando reflexión
-     * @param campo Nombre del campo
-     * @param modelo Clase del modelo
-     * @return Valor del campo o null si se cancela
+     * Solicita un campo con validación específica usando enfoque funcional
+     * Usa un Map de funciones para evitar múltiples if anidados
      */
-    private String solicitarCampoPorTipo(String campo, Class<?> modelo) {
-        // Validaciones específicas por tipo de campo
-        if (campo.toLowerCase().contains("fecha")) {
-            return solicitarFecha(campo);
-        }
+    private Optional<String> solicitarCampoPorTipo(String campo, Class<?> modelo) {
+        // Map funcional de validadores por tipo de campo
+        Map<String, Function<String, Optional<String>>> validadores = Map.of(
+            "fecha", this::solicitarFecha,
+            "email", campoStr -> solicitarEmail(campoStr),
+            "telefono", campoStr -> solicitarTelefono(campoStr),
+            "teléfono", campoStr -> solicitarTelefono(campoStr),
+            "dni", campoStr -> solicitarIdentificacion(campoStr),
+            "identificacion", campoStr -> solicitarIdentificacion(campoStr),
+            "saldo", campoStr -> solicitarDecimal(campoStr),
+            "monto", campoStr -> solicitarDecimal(campoStr)
+        );
         
-        if (campo.toLowerCase().contains("email")) {
-            return solicitarEmail(campo);
-        }
-        
-        if (campo.toLowerCase().contains("telefono") || campo.toLowerCase().contains("teléfono")) {
-            return solicitarTelefono(campo);
-        }
-        
-        if (campo.toLowerCase().contains("dni") || campo.toLowerCase().contains("identificacion")) {
-            return solicitarIdentificacion(campo);
-        }
-        
-        if (campo.toLowerCase().contains("saldo") || campo.toLowerCase().contains("monto")) {
-            return solicitarDecimal(campo);
-        }
-        
-        // Para el resto de campos, lectura simple con validación básica
-        return leerCampoConValidacion(campo);
+        // Enfoque funcional: buscar validador y aplicarlo
+        String campoLower = campo.toLowerCase();
+        return validadores.entrySet().stream()
+            .filter(entry -> campoLower.contains(entry.getKey()))
+            .findFirst()
+            .flatMap(entry -> entry.getValue().apply(campo))
+            .or(() -> leerCampoConValidacion(campo));
     }
     
     /**
-     * Solicita una fecha con validación mejorada
+     * Solicita una fecha con validación mejorada usando enfoque funcional
      * @param nombreCampo Nombre del campo de fecha
-     * @return Fecha en formato String o null si se cancela
+     * @return Optional con la fecha en formato String o vacío si se cancela
      */
-    private String solicitarFecha(String nombreCampo) {
+    private Optional<String> solicitarFecha(String nombreCampo) {
         while (true) {
             String fechaStr = leerCampo(nombreCampo + " (yyyy-MM-dd)");
-            if (fechaStr.isEmpty()) {
-                return null; // Cancelar
-            }
+            if (fechaStr.isEmpty()) return Optional.empty();
             
             try {
                 LocalDate fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE);
                 
-                // Validar que la fecha no sea futura para fechas de nacimiento
-                if (nombreCampo.toLowerCase().contains("nacimiento")) {
-                    if (fecha.isAfter(LocalDate.now())) {
-                        mostrarMensaje("Error: La fecha de nacimiento no puede ser futura.");
-                        continue;
-                    }
-                }
-                
-                // Validar que la fecha no sea muy antigua
-                if (fecha.isBefore(LocalDate.of(1900, 1, 1))) {
-                    mostrarMensaje("Error: La fecha parece ser muy antigua. Verifique el formato.");
-                    continue;
-                }
-                
-                return fechaStr;
+                // Validaciones funcionales con Optional
+                return Optional.of(fecha)
+                    .filter(f -> nombreCampo.toLowerCase().contains("nacimiento") ? !f.isAfter(LocalDate.now()) : true)
+                    .filter(f -> !f.isBefore(LocalDate.of(1900, 1, 1)))
+                    .map(f -> fechaStr)
+                    .or(() -> {
+                        if (nombreCampo.toLowerCase().contains("nacimiento") && fecha.isAfter(LocalDate.now())) {
+                            mostrarMensaje("Error: La fecha de nacimiento no puede ser futura.");
+                        } else if (fecha.isBefore(LocalDate.of(1900, 1, 1))) {
+                            mostrarMensaje("Error: La fecha parece ser muy antigua. Verifique el formato.");
+                        }
+                        return Optional.empty(); // Para continuar el bucle
+                    });
+                    
             } catch (DateTimeParseException e) {
                 mostrarMensaje("Error: Formato de fecha incorrecto. Use yyyy-MM-dd (ejemplo: 1990-05-15).");
             }
@@ -147,92 +138,96 @@ abstract class BaseVistaImpl<T> implements BaseVista<T> {
     /**
      * Solicita un email con validación
      * @param nombreCampo Nombre del campo
-     * @return Email validado o null si se cancela
+     * @return Optional con email validado o vacío si se cancela
      */
-    private String solicitarEmail(String nombreCampo) {
+    private Optional<String> solicitarEmail(String nombreCampo) {
         while (true) {
             String email = leerCampo(nombreCampo);
-            if (email.isEmpty()) {
-                return null; // Cancelar
+            if (email == null || email.isEmpty()) {
+                return Optional.empty(); // Cancelar
             }
-            
-            // Validación básica de email
-            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-                return email;
-            } else {
-                mostrarMensaje("Error: Formato de email incorrecto. Use ejemplo@dominio.com");
-            }
+            return Optional.ofNullable(email)
+                .flatMap(e -> e.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") 
+                    ? Optional.of(e) 
+                    : Optional.empty())
+                .or(() -> {
+                    mostrarMensaje("Error: El formato de email no es válido.");
+                    return Optional.empty();
+                });
         }
     }
     
     /**
      * Solicita un teléfono con validación
      * @param nombreCampo Nombre del campo
-     * @return Teléfono validado o null si se cancela
+     * @return Optional con teléfono validado o vacío si se cancela
      */
-    private String solicitarTelefono(String nombreCampo) {
+    private Optional<String> solicitarTelefono(String nombreCampo) {
         while (true) {
             String telefono = leerCampo(nombreCampo);
-            if (telefono.isEmpty()) {
-                return null; // Cancelar
+            if (telefono == null || telefono.isEmpty()) {
+                return Optional.empty(); // Cancelar
             }
             
             // Eliminar espacios y caracteres especiales
             String telefonoLimpio = telefono.replaceAll("[\\s\\-\\(\\)]", "");
             
-            // Validar que sea numérico y tenga longitud razonable
-            if (telefonoLimpio.matches("\\d{9,15}")) {
-                return telefonoLimpio;
-            } else {
-                mostrarMensaje("Error: El teléfono debe tener entre 9 y 15 dígitos.");
-            }
+            return Optional.ofNullable(telefonoLimpio)
+                .flatMap(t -> t.matches("\\d{9,15}") ? Optional.of(t) : Optional.empty())
+                .or(() -> {
+                    mostrarMensaje("Error: El teléfono debe tener entre 9 y 15 dígitos.");
+                    return Optional.empty();
+                });
         }
     }
     
     /**
      * Solicita identificación con validación
      * @param nombreCampo Nombre del campo
-     * @return Identificación validada o null si se cancela
+     * @return Optional con identificación validada o vacío si se cancela
      */
-    private String solicitarIdentificacion(String nombreCampo) {
+    private Optional<String> solicitarIdentificacion(String nombreCampo) {
         while (true) {
             String identificacion = leerCampo(nombreCampo);
-            if (identificacion.isEmpty()) {
-                return null; // Cancelar
+            if (identificacion == null || identificacion.isEmpty()) {
+                return Optional.empty(); // Cancelar
             }
             
-            // Validar que tenga longitud razonable y formato alfanumérico
-            if (identificacion.matches("^[A-Za-z0-9]{5,20}$")) {
-                return identificacion.toUpperCase();
-            } else {
-                mostrarMensaje("Error: La identificación debe tener entre 5 y 20 caracteres alfanuméricos.");
-            }
+            return Optional.ofNullable(identificacion)
+                .flatMap(id -> id.matches("^[A-Za-z0-9]{5,20}$") ? Optional.of(id.toUpperCase()) : Optional.empty())
+                .or(() -> {
+                    mostrarMensaje("Error: La identificación debe tener entre 5 y 20 caracteres alfanuméricos.");
+                    return Optional.empty();
+                });
         }
     }
     
     /**
      * Solicita un valor decimal con validación
      * @param nombreCampo Nombre del campo
-     * @return Decimal validado o null si se cancela
+     * @return Optional con decimal validado o vacío si se cancela
      */
-    private String solicitarDecimal(String nombreCampo) {
+    private Optional<String> solicitarDecimal(String nombreCampo) {
         while (true) {
             String valor = leerCampo(nombreCampo);
-            if (valor.isEmpty()) {
-                return "0.00"; // Valor por defecto
+            if (valor == null || valor.isEmpty()) {
+                return Optional.of("0.00"); // Valor por defecto
             }
             
             try {
                 double decimal = Double.parseDouble(valor);
-                if (decimal < 0) {
-                    mostrarMensaje("Error: El valor no puede ser negativo.");
-                    continue;
-                }
-                if (decimal > 999999999.99) {
-                    mostrarMensaje("Error: El valor es demasiado alto.");
-                    continue;
-                }
-                return String.format("%.2f", decimal);
+                return Optional.of(decimal)
+                    .filter(d -> d >= 0)
+                    .filter(d -> d <= 999999999.99)
+                    .map(d -> String.format("%.2f", d))
+                    .or(() -> {
+                        if (decimal < 0) {
+                            mostrarMensaje("Error: El valor no puede ser negativo.");
+                        } else {
+                            mostrarMensaje("Error: El valor es demasiado alto.");
+                        }
+                        return Optional.empty();
+                    });
             } catch (NumberFormatException e) {
                 mostrarMensaje("Error: Por favor, introduzca un número válido (ejemplo: 100.50).");
             }
@@ -242,29 +237,27 @@ abstract class BaseVistaImpl<T> implements BaseVista<T> {
     /**
      * Método protegido para leer un campo de texto con validación básica
      * @param nombreCampo Nombre del campo a leer
-     * @return Valor del campo
+     * @return Optional con valor del campo o vacío si se cancela
      */
-    private String leerCampoConValidacion(String nombreCampo) {
+    private Optional<String> leerCampoConValidacion(String nombreCampo) {
         while (true) {
             String valor = leerCampo(nombreCampo);
-            if (valor.isEmpty()) {
+            if (valor == null || valor.isEmpty()) {
                 mostrarMensaje("Error: Este campo es obligatorio.");
                 continue;
             }
             
-            // Validar longitud mínima
-            if (valor.length() < 2) {
-                mostrarMensaje("Error: El campo debe tener al menos 2 caracteres.");
-                continue;
-            }
-            
-            // Validar longitud máxima
-            if (valor.length() > 100) {
-                mostrarMensaje("Error: El campo es demasiado largo (máximo 100 caracteres).");
-                continue;
-            }
-            
-            return valor;
+            return Optional.ofNullable(valor)
+                .filter(v -> v.length() >= 2)
+                .filter(v -> v.length() <= 100)
+                .or(() -> {
+                    if (valor.length() < 2) {
+                        mostrarMensaje("Error: El campo debe tener al menos 2 caracteres.");
+                    } else {
+                        mostrarMensaje("Error: El campo es demasiado largo (máximo 100 caracteres).");
+                    }
+                    return Optional.empty();
+                });
         }
     }
     
@@ -278,18 +271,41 @@ abstract class BaseVistaImpl<T> implements BaseVista<T> {
         return consola.leerLinea().trim();
     }
     
+   
     /**
-     * Método protegido para leer un número
+     * Método genérico para leer un número Long con mensaje personalizado
      * @param mensaje Mensaje a mostrar
+     * @param mensajeError Mensaje de error personalizado
      * @return Optional con el número o vacío si no es válido
      */
-    protected Optional<Long> leerNumero(String mensaje) {
+    protected Optional<Long> leerNumero(String mensaje, String mensajeError) {
         consola.mostrar(mensaje + ": ");
         try {
             String input = consola.leerLinea().trim();
             return input.isEmpty() ? Optional.empty() : Optional.of(Long.parseLong(input));
         } catch (NumberFormatException e) {
-            mostrarMensaje("Error: Por favor, introduzca un número válido.");
+            mostrarMensaje("Error: " + mensajeError);
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Método genérico para leer un número Integer con validación de rango
+     * @param mensaje Mensaje a mostrar
+     * @param min Valor mínimo (inclusive)
+     * @param max Valor máximo (inclusive)
+     * @param mensajeError Mensaje de error personalizado
+     * @return Optional con el número o vacío si no es válido
+     */
+    protected Optional<Integer> leerNumeroConRango(String mensaje, int min, int max, String mensajeError) {
+        consola.mostrar(mensaje + ": ");
+        try {
+            int seleccion = Integer.parseInt(consola.leerLinea().trim());
+            return (seleccion >= min && seleccion <= max) 
+                ? Optional.of(seleccion) 
+                : Optional.empty();
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error: " + mensajeError);
             return Optional.empty();
         }
     }

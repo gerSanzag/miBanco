@@ -4,14 +4,11 @@ import com.mibanco.dto.CuentaDTO;
 import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.vista.CuentaVista;
-import com.mibanco.vista.util.Consola;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.stream.IntStream;
 
 /**
@@ -48,17 +45,6 @@ class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
     }
 
     @Override
-    public Optional<Integer> obtenerOpcion() {
-        consola.mostrar("Seleccione una opción: ");
-        try {
-            return Optional.of(Integer.parseInt(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: Por favor, introduzca un número válido.");
-            return Optional.empty();
-        }
-    }
-
-    @Override
     public Map<String, String> solicitarDatosParaCrear() {
         consola.mostrar("\n--- Creación de Nueva Cuenta ---\n");
         return solicitarDatosGenerico(Cuenta.class);
@@ -72,13 +58,7 @@ class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
 
     @Override
     public Optional<Long> solicitarNumeroCuenta() {
-        consola.mostrar("Introduzca el número de cuenta: ");
-        try {
-            return Optional.of(Long.parseLong(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: El número de cuenta debe ser un número válido.");
-            return Optional.empty();
-        }
+        return leerNumero("Introduzca el número de cuenta", "El número de cuenta debe ser un número válido.");
     }
 
     @Override
@@ -168,13 +148,7 @@ class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
     // Métodos específicos para Cuenta que no se pueden generalizar
     @Override
     public Optional<Long> solicitarIdTitular() {
-        consola.mostrar("Introduzca el ID del titular: ");
-        try {
-            return Optional.of(Long.parseLong(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: El ID debe ser un número válido.");
-            return Optional.empty();
-        }
+        return leerNumero("Introduzca el ID del titular", "El ID debe ser un número válido.");
     }
 
     @Override
@@ -186,20 +160,12 @@ class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
         IntStream.range(0, tipos.length)
             .forEach(i -> consola.mostrar((i + 1) + ". " + tipos[i].name() + "\n"));
         
-        consola.mostrar("Seleccione el tipo de cuenta (1-" + tipos.length + "): ");
-        
-        try {
-            int seleccion = Integer.parseInt(consola.leerLinea());
-            if (seleccion >= 1 && seleccion <= tipos.length) {
-                return Optional.of(tipos[seleccion - 1].name());
-            } else {
-                mostrarMensaje("Error: Selección fuera de rango.");
-                return Optional.empty();
-            }
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: Por favor, introduzca un número válido.");
-            return Optional.empty();
-        }
+        return leerNumeroConRango(
+            "Seleccione el tipo de cuenta (1-" + tipos.length + ")", 
+            1, 
+            tipos.length, 
+            "Selección fuera de rango."
+        ).map(seleccion -> tipos[seleccion - 1].name());
     }
 
     @Override
@@ -219,13 +185,7 @@ class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
 
     @Override
     public Optional<Long> solicitarIdTitularParaBuscar() {
-        consola.mostrar("Introduzca el ID del titular para buscar: ");
-        try {
-            return Optional.of(Long.parseLong(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: El ID debe ser un número válido.");
-            return Optional.empty();
-        }
+        return leerNumero("Introduzca el ID del titular para buscar", "El ID debe ser un número válido.");
     }
 
     @Override
@@ -236,31 +196,17 @@ class CuentaVistaImpl extends BaseVistaImpl<CuentaDTO> implements CuentaVista {
         IntStream.range(0, tipos.length)
             .forEach(i -> consola.mostrar((i + 1) + ". " + tipos[i].name() + "\n"));
         
-        consola.mostrar("Seleccione el tipo de cuenta para buscar (1-" + tipos.length + "): ");
-        
-        try {
-            int seleccion = Integer.parseInt(consola.leerLinea());
-            if (seleccion >= 1 && seleccion <= tipos.length) {
-                return Optional.of(tipos[seleccion - 1].name());
-            } else {
-                mostrarMensaje("Error: Selección fuera de rango.");
-                return Optional.empty();
-            }
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: Por favor, introduzca un número válido.");
-            return Optional.empty();
-        }
+        return leerNumeroConRango(
+            "Seleccione el tipo de cuenta para buscar (1-" + tipos.length + ")", 
+            1, 
+            tipos.length, 
+            "Selección fuera de rango."
+        ).map(seleccion -> tipos[seleccion - 1].name());
     }
 
     @Override
     public Optional<Long> solicitarNumeroCuentaParaRestaurar() {
-        consola.mostrar("Introduzca el número de cuenta a restaurar: ");
-        try {
-            return Optional.of(Long.parseLong(consola.leerLinea()));
-        } catch (NumberFormatException e) {
-            mostrarMensaje("Error: El número de cuenta debe ser un número válido.");
-            return Optional.empty();
-        }
+        return leerNumero("Introduzca el número de cuenta a restaurar", "El número de cuenta debe ser un número válido.");
     }
 
     @Override

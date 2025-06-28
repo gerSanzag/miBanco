@@ -25,13 +25,7 @@ public interface ClienteVista extends BaseVista<ClienteDTO> {
      */
     Optional<String> solicitarDni();
 
-    /**
-     * Muestra los detalles de un cliente específico.
-     * Si el Optional está vacío, informa al usuario que el cliente no fue encontrado.
-     * @param cliente el Optional que contiene el DTO del cliente a mostrar.
-     */
-    void mostrarCliente(Optional<ClienteDTO> cliente);
-
+  
     /**
      * Muestra una lista de todos los clientes registrados.
      * @param clientes la lista de DTOs de clientes a mostrar.
