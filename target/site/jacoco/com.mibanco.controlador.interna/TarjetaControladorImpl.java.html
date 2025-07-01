@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TarjetaControladorImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.controlador.interna</a> &gt; <span class="el_source">TarjetaControladorImpl.java</span></div><h1>TarjetaControladorImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.controlador.interna;
+
+import com.mibanco.controlador.TarjetaControlador;
+import com.mibanco.dto.TarjetaDTO;
+import com.mibanco.dto.ClienteDTO;
+import com.mibanco.modelo.enums.TipoTarjeta;
+import com.mibanco.servicio.TarjetaServicio;
+import com.mibanco.servicio.ClienteServicio;
+import com.mibanco.servicio.interna.ServicioFactoria;
+import com.mibanco.vista.TarjetaVista;
+import com.mibanco.vista.interna.factoriaVista;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Implementación del controlador de Tarjetas
+ * Coordina entre la vista y el servicio de tarjetas
+ */
+class TarjetaControladorImpl implements TarjetaControlador {
+    
+    private final TarjetaServicio servicioTarjeta;
+    private final ClienteServicio servicioCliente;
+    private final TarjetaVista vista;
+    
+<span class="nc" id="L30">    public TarjetaControladorImpl() {</span>
+<span class="nc" id="L31">        this.servicioTarjeta = ServicioFactoria.obtenerInstancia().obtenerServicioTarjeta();</span>
+<span class="nc" id="L32">        this.servicioCliente = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();</span>
+<span class="nc" id="L33">        this.vista = factoriaVista.obtenerInstancia().obtenerVistaTarjeta();</span>
+<span class="nc" id="L34">    }</span>
+    
+    @Override
+    public void crearTarjeta() {
+        // 1. Solicitar datos a la vista
+<span class="nc" id="L39">        Map&lt;String, String&gt; datosTarjeta = vista.solicitarDatosParaCrear();</span>
+        
+        // 2. Verificar que la vista devolvió datos válidos
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (datosTarjeta.isEmpty()) {</span>
+<span class="nc" id="L43">            return; // La vista ya mostró el mensaje de error</span>
+        }
+        
+        // 3. Obtener el cliente titular
+<span class="nc" id="L47">        Optional&lt;ClienteDTO&gt; titular = servicioCliente.obtenerClientePorId(</span>
+<span class="nc" id="L48">            Optional.of(Long.parseLong(datosTarjeta.get(&quot;idTitular&quot;)))</span>
+        );
+        
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (titular.isEmpty()) {</span>
+<span class="nc" id="L52">            vista.mostrarMensaje(&quot;Error: No se encontró el cliente titular.&quot;);</span>
+<span class="nc" id="L53">            return;</span>
+        }
+        
+        // 4. Crear tarjeta en el servicio
+<span class="nc" id="L57">        TarjetaDTO nuevaTarjeta = TarjetaDTO.builder()</span>
+<span class="nc" id="L58">            .titular(titular.get())</span>
+<span class="nc" id="L59">            .numeroCuentaAsociada(datosTarjeta.get(&quot;numeroCuentaAsociada&quot;))</span>
+<span class="nc" id="L60">            .tipo(TipoTarjeta.valueOf(datosTarjeta.get(&quot;tipoTarjeta&quot;)))</span>
+<span class="nc" id="L61">            .activa(true)</span>
+<span class="nc" id="L62">            .build();</span>
+        
+<span class="nc" id="L64">        Optional&lt;TarjetaDTO&gt; tarjetaCreada = servicioTarjeta.crearTarjeta(Optional.of(nuevaTarjeta));</span>
+        
+<span class="nc" id="L66">        tarjetaCreada.ifPresentOrElse(</span>
+<span class="nc" id="L67">            tarjeta -&gt; vista.mostrarMensaje(&quot;Tarjeta creada exitosamente: &quot; + tarjeta.getNumero()),</span>
+<span class="nc" id="L68">            () -&gt; vista.mostrarMensaje(&quot;Error al crear la tarjeta.&quot;)</span>
+        );
+<span class="nc" id="L70">    }</span>
+    
+    @Override
+    public void buscarTarjetaPorNumero() {
+        // 1. Solicitar número a la vista
+<span class="nc" id="L75">        Optional&lt;String&gt; numeroTarjeta = vista.solicitarNumeroTarjeta();</span>
+        
+        // 2. Buscar en el servicio
+<span class="nc" id="L78">        numeroTarjeta.ifPresent(numero -&gt; {</span>
+<span class="nc" id="L79">            Optional&lt;TarjetaDTO&gt; tarjeta = servicioTarjeta.obtenerTarjetaPorNumero(Optional.of(numero));</span>
+            
+<span class="nc" id="L81">            tarjeta.ifPresentOrElse(</span>
+<span class="nc" id="L82">                t -&gt; vista.mostrarTarjeta(Optional.of(t)),</span>
+<span class="nc" id="L83">                () -&gt; vista.mostrarMensaje(&quot;Tarjeta no encontrada.&quot;)</span>
+            );
+<span class="nc" id="L85">        });</span>
+<span class="nc" id="L86">    }</span>
+    
+    @Override
+    public void listarTodasLasTarjetas() {
+<span class="nc" id="L90">        Optional&lt;List&lt;TarjetaDTO&gt;&gt; tarjetas = servicioTarjeta.obtenerTodasLasTarjetas();</span>
+        
+<span class="nc" id="L92">        tarjetas.ifPresentOrElse(</span>
+<span class="nc" id="L93">            lista -&gt; {</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">                if (lista.isEmpty()) {</span>
+<span class="nc" id="L95">                    vista.mostrarMensaje(&quot;No hay tarjetas registradas.&quot;);</span>
+<span class="nc" id="L96">                } else {</span>
+<span class="nc" id="L97">                    vista.mostrarListaTarjetas(lista);</span>
+                }
+<span class="nc" id="L99">            },</span>
+<span class="nc" id="L100">            () -&gt; vista.mostrarMensaje(&quot;Error al obtener la lista de tarjetas.&quot;)</span>
+        );
+<span class="nc" id="L102">    }</span>
+    
+    @Override
+    public void actualizarTarjeta() {
+        // 1. Solicitar número
+<span class="nc" id="L107">        Optional&lt;String&gt; numeroTarjeta = vista.solicitarNumeroTarjeta();</span>
+        
+<span class="nc" id="L109">        numeroTarjeta.ifPresent(numero -&gt; {</span>
+            // 2. Buscar tarjeta actual
+<span class="nc" id="L111">            Optional&lt;TarjetaDTO&gt; tarjetaActual = servicioTarjeta.obtenerTarjetaPorNumero(Optional.of(numero));</span>
+            
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (tarjetaActual.isEmpty()) {</span>
+<span class="nc" id="L114">                vista.mostrarMensaje(&quot;Tarjeta no encontrada.&quot;);</span>
+<span class="nc" id="L115">                return;</span>
+            }
+            
+            // 3. Solicitar datos de modificación
+<span class="nc" id="L119">            Map&lt;String, String&gt; datosModificacion = vista.solicitarDatosParaActualizar(tarjetaActual.get());</span>
+            
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (datosModificacion.isEmpty()) {</span>
+<span class="nc" id="L122">                vista.mostrarMensaje(&quot;Operación cancelada.&quot;);</span>
+<span class="nc" id="L123">                return;</span>
+            }
+            
+            // 4. Confirmar acción
+<span class="nc bnc" id="L127" title="All 2 branches missed.">            if (!vista.confirmarAccion(tarjetaActual.get(), &quot;Confirmar Actualización&quot;, &quot;¿Está seguro de que desea actualizar la tarjeta?&quot;)) {</span>
+<span class="nc" id="L128">                vista.mostrarMensaje(&quot;Operación cancelada.&quot;);</span>
+<span class="nc" id="L129">                return;</span>
+            }
+            
+            // 5. Procesar actualización
+<span class="nc" id="L133">            procesarActualizacionTarjeta(tarjetaActual.get(), datosModificacion);</span>
+<span class="nc" id="L134">        });</span>
+<span class="nc" id="L135">    }</span>
+    
+    @Override
+    public void eliminarTarjeta() {
+        // 1. Solicitar número
+<span class="nc" id="L140">        Optional&lt;String&gt; numeroTarjeta = vista.solicitarNumeroTarjeta();</span>
+        
+<span class="nc" id="L142">        numeroTarjeta.ifPresent(numero -&gt; {</span>
+            // 2. Buscar tarjeta para mostrar información
+<span class="nc" id="L144">            Optional&lt;TarjetaDTO&gt; tarjetaActual = servicioTarjeta.obtenerTarjetaPorNumero(Optional.of(numero));</span>
+            
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (tarjetaActual.isEmpty()) {</span>
+<span class="nc" id="L147">                vista.mostrarMensaje(&quot;Tarjeta no encontrada.&quot;);</span>
+<span class="nc" id="L148">                return;</span>
+            }
+            
+            // 3. Confirmar eliminación
+<span class="nc bnc" id="L152" title="All 2 branches missed.">            if (!vista.confirmarAccion(tarjetaActual.get(), &quot;Confirmar Eliminación&quot;, &quot;¿Está seguro de que desea eliminar la tarjeta?&quot;)) {</span>
+<span class="nc" id="L153">                vista.mostrarMensaje(&quot;Operación cancelada.&quot;);</span>
+<span class="nc" id="L154">                return;</span>
+            }
+            
+            // 4. Eliminar tarjeta
+<span class="nc" id="L158">            boolean eliminada = servicioTarjeta.eliminarTarjeta(Optional.of(numero));</span>
+            
+<span class="nc bnc" id="L160" title="All 2 branches missed.">            if (eliminada) {</span>
+<span class="nc" id="L161">                vista.mostrarMensaje(&quot;Tarjeta eliminada exitosamente.&quot;);</span>
+<span class="nc" id="L162">            } else {</span>
+<span class="nc" id="L163">                vista.mostrarMensaje(&quot;Error al eliminar la tarjeta.&quot;);</span>
+            }
+<span class="nc" id="L165">        });</span>
+<span class="nc" id="L166">    }</span>
+    
+    @Override
+    public void restaurarTarjeta() {
+        // 1. Solicitar número de tarjeta a la vista
+<span class="nc" id="L171">        Optional&lt;String&gt; numeroTarjeta = vista.solicitarNumeroTarjeta();</span>
+        
+        // 2. Restaurar tarjeta en el servicio
+<span class="nc" id="L174">        numeroTarjeta.ifPresent(numero -&gt; {</span>
+<span class="nc" id="L175">            Optional&lt;TarjetaDTO&gt; tarjetaRestaurada = servicioTarjeta.restaurarTarjeta(Optional.of(numero));</span>
+            
+<span class="nc" id="L177">            tarjetaRestaurada.ifPresentOrElse(</span>
+<span class="nc" id="L178">                tarjeta -&gt; vista.mostrarMensaje(&quot;Tarjeta restaurada exitosamente: &quot; + tarjeta.getNumero()),</span>
+<span class="nc" id="L179">                () -&gt; vista.mostrarMensaje(&quot;Error al restaurar la tarjeta.&quot;)</span>
+            );
+<span class="nc" id="L181">        });</span>
+<span class="nc" id="L182">    }</span>
+    
+    @Override
+    public void buscarTarjetasPorTitular() {
+<span class="nc" id="L186">        Optional&lt;Long&gt; idTitular = vista.solicitarIdTitular();</span>
+        
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (idTitular.isEmpty()) {</span>
+<span class="nc" id="L189">            vista.mostrarMensaje(&quot;Búsqueda cancelada.&quot;);</span>
+<span class="nc" id="L190">            return;</span>
+        }
+        
+<span class="nc" id="L193">        Optional&lt;List&lt;TarjetaDTO&gt;&gt; tarjetas = servicioTarjeta.buscarPorTitularId(idTitular);</span>
+        
+<span class="nc" id="L195">        tarjetas.ifPresentOrElse(</span>
+<span class="nc" id="L196">            lista -&gt; {</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">                if (lista.isEmpty()) {</span>
+<span class="nc" id="L198">                    vista.mostrarMensaje(&quot;No hay tarjetas para este titular.&quot;);</span>
+<span class="nc" id="L199">                } else {</span>
+<span class="nc" id="L200">                    vista.mostrarMensaje(&quot;Tarjetas del titular encontradas: &quot; + lista.size());</span>
+<span class="nc" id="L201">                    vista.mostrarListaTarjetas(lista);</span>
+                }
+<span class="nc" id="L203">            },</span>
+<span class="nc" id="L204">            () -&gt; vista.mostrarMensaje(&quot;Error al buscar tarjetas por titular.&quot;)</span>
+        );
+<span class="nc" id="L206">    }</span>
+    
+    @Override
+    public void buscarTarjetasPorTipo() {
+<span class="nc" id="L210">        Optional&lt;String&gt; tipoStr = vista.solicitarTipoTarjeta();</span>
+        
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (tipoStr.isEmpty()) {</span>
+<span class="nc" id="L213">            vista.mostrarMensaje(&quot;Búsqueda cancelada.&quot;);</span>
+<span class="nc" id="L214">            return;</span>
+        }
+        
+        try {
+<span class="nc" id="L218">            TipoTarjeta tipo = TipoTarjeta.valueOf(tipoStr.get());</span>
+<span class="nc" id="L219">            Optional&lt;List&lt;TarjetaDTO&gt;&gt; tarjetas = servicioTarjeta.buscarPorTipo(Optional.of(tipo));</span>
+            
+<span class="nc" id="L221">            tarjetas.ifPresentOrElse(</span>
+<span class="nc" id="L222">                lista -&gt; {</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">                    if (lista.isEmpty()) {</span>
+<span class="nc" id="L224">                        vista.mostrarMensaje(&quot;No hay tarjetas de este tipo.&quot;);</span>
+<span class="nc" id="L225">                    } else {</span>
+<span class="nc" id="L226">                        vista.mostrarMensaje(&quot;Tarjetas de tipo &quot; + tipo + &quot; encontradas: &quot; + lista.size());</span>
+<span class="nc" id="L227">                        vista.mostrarListaTarjetas(lista);</span>
+                    }
+<span class="nc" id="L229">                },</span>
+<span class="nc" id="L230">                () -&gt; vista.mostrarMensaje(&quot;Error al buscar tarjetas por tipo.&quot;)</span>
+            );
+<span class="nc" id="L232">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L233">            vista.mostrarMensaje(&quot;Tipo de tarjeta no válido.&quot;);</span>
+        }
+<span class="nc" id="L235">    }</span>
+    
+    @Override
+    public void buscarTarjetasPorCuentaAsociada() {
+<span class="nc" id="L239">        Optional&lt;String&gt; numeroCuenta = vista.solicitarNumeroCuentaAsociada();</span>
+        
+<span class="nc bnc" id="L241" title="All 2 branches missed.">        if (numeroCuenta.isEmpty()) {</span>
+<span class="nc" id="L242">            vista.mostrarMensaje(&quot;Búsqueda cancelada.&quot;);</span>
+<span class="nc" id="L243">            return;</span>
+        }
+        
+<span class="nc" id="L246">        Optional&lt;List&lt;TarjetaDTO&gt;&gt; tarjetas = servicioTarjeta.buscarPorCuentaAsociada(numeroCuenta);</span>
+        
+<span class="nc" id="L248">        tarjetas.ifPresentOrElse(</span>
+<span class="nc" id="L249">            lista -&gt; {</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">                if (lista.isEmpty()) {</span>
+<span class="nc" id="L251">                    vista.mostrarMensaje(&quot;No hay tarjetas asociadas a esta cuenta.&quot;);</span>
+<span class="nc" id="L252">                } else {</span>
+<span class="nc" id="L253">                    vista.mostrarMensaje(&quot;Tarjetas asociadas a la cuenta encontradas: &quot; + lista.size());</span>
+<span class="nc" id="L254">                    vista.mostrarListaTarjetas(lista);</span>
+                }
+<span class="nc" id="L256">            },</span>
+<span class="nc" id="L257">            () -&gt; vista.mostrarMensaje(&quot;Error al buscar tarjetas por cuenta asociada.&quot;)</span>
+        );
+<span class="nc" id="L259">    }</span>
+    
+    @Override
+    public void listarTarjetasActivas() {
+<span class="nc" id="L263">        Optional&lt;List&lt;TarjetaDTO&gt;&gt; tarjetas = servicioTarjeta.buscarActivas();</span>
+        
+<span class="nc" id="L265">        tarjetas.ifPresentOrElse(</span>
+<span class="nc" id="L266">            lista -&gt; {</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">                if (lista.isEmpty()) {</span>
+<span class="nc" id="L268">                    vista.mostrarMensaje(&quot;No hay tarjetas activas.&quot;);</span>
+<span class="nc" id="L269">                } else {</span>
+<span class="nc" id="L270">                    vista.mostrarMensaje(&quot;Tarjetas activas encontradas: &quot; + lista.size());</span>
+<span class="nc" id="L271">                    vista.mostrarListaTarjetas(lista);</span>
+                }
+<span class="nc" id="L273">            },</span>
+<span class="nc" id="L274">            () -&gt; vista.mostrarMensaje(&quot;Error al obtener tarjetas activas.&quot;)</span>
+        );
+<span class="nc" id="L276">    }</span>
+    
+    @Override
+    public void mostrarTarjetasEliminadas() {
+<span class="nc" id="L280">        List&lt;TarjetaDTO&gt; tarjetasEliminadas = servicioTarjeta.obtenerTarjetasEliminadas();</span>
+        
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        if (tarjetasEliminadas.isEmpty()) {</span>
+<span class="nc" id="L283">            vista.mostrarMensaje(&quot;No hay tarjetas eliminadas.&quot;);</span>
+<span class="nc" id="L284">        } else {</span>
+<span class="nc" id="L285">            vista.mostrarMensaje(&quot;Tarjetas eliminadas encontradas: &quot; + tarjetasEliminadas.size());</span>
+<span class="nc" id="L286">            vista.mostrarListaTarjetas(tarjetasEliminadas);</span>
+        }
+<span class="nc" id="L288">    }</span>
+    
+    @Override
+    public void contarTarjetas() {
+<span class="nc" id="L292">        long total = servicioTarjeta.contarTarjetas();</span>
+<span class="nc" id="L293">        vista.mostrarMensaje(&quot;Total de tarjetas registradas: &quot; + total);</span>
+<span class="nc" id="L294">    }</span>
+    
+    @Override
+    public void mostrarMenuPrincipal() {
+<span class="nc" id="L298">        boolean continuar = true;</span>
+        
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        while (continuar) {</span>
+<span class="nc" id="L301">            vista.mostrarMensaje(&quot;\n=== MENÚ DE TARJETAS ===&quot;);</span>
+<span class="nc" id="L302">            vista.mostrarMensaje(&quot;1. Crear tarjeta&quot;);</span>
+<span class="nc" id="L303">            vista.mostrarMensaje(&quot;2. Buscar tarjeta por número&quot;);</span>
+<span class="nc" id="L304">            vista.mostrarMensaje(&quot;3. Listar todas las tarjetas&quot;);</span>
+<span class="nc" id="L305">            vista.mostrarMensaje(&quot;4. Actualizar tarjeta&quot;);</span>
+<span class="nc" id="L306">            vista.mostrarMensaje(&quot;5. Eliminar tarjeta&quot;);</span>
+<span class="nc" id="L307">            vista.mostrarMensaje(&quot;6. Restaurar tarjeta&quot;);</span>
+<span class="nc" id="L308">            vista.mostrarMensaje(&quot;7. Buscar tarjetas por titular&quot;);</span>
+<span class="nc" id="L309">            vista.mostrarMensaje(&quot;8. Buscar tarjetas por tipo&quot;);</span>
+<span class="nc" id="L310">            vista.mostrarMensaje(&quot;9. Buscar tarjetas por cuenta asociada&quot;);</span>
+<span class="nc" id="L311">            vista.mostrarMensaje(&quot;10. Listar tarjetas activas&quot;);</span>
+<span class="nc" id="L312">            vista.mostrarMensaje(&quot;11. Mostrar tarjetas eliminadas&quot;);</span>
+<span class="nc" id="L313">            vista.mostrarMensaje(&quot;12. Contar tarjetas&quot;);</span>
+<span class="nc" id="L314">            vista.mostrarMensaje(&quot;0. Salir&quot;);</span>
+<span class="nc" id="L315">            vista.mostrarMensaje(&quot;Seleccione una opción: &quot;);</span>
+            
+            try {
+<span class="nc" id="L318">                String opcion = vista.solicitarNumeroTarjeta().orElse(&quot;0&quot;);</span>
+<span class="nc" id="L319">                int opcionInt = Integer.parseInt(opcion);</span>
+                
+<span class="nc bnc" id="L321" title="All 14 branches missed.">                switch (opcionInt) {</span>
+<span class="nc" id="L322">                    case 0 -&gt; continuar = false;</span>
+<span class="nc" id="L323">                    case 1 -&gt; crearTarjeta();</span>
+<span class="nc" id="L324">                    case 2 -&gt; buscarTarjetaPorNumero();</span>
+<span class="nc" id="L325">                    case 3 -&gt; listarTodasLasTarjetas();</span>
+<span class="nc" id="L326">                    case 4 -&gt; actualizarTarjeta();</span>
+<span class="nc" id="L327">                    case 5 -&gt; eliminarTarjeta();</span>
+<span class="nc" id="L328">                    case 6 -&gt; restaurarTarjeta();</span>
+<span class="nc" id="L329">                    case 7 -&gt; buscarTarjetasPorTitular();</span>
+<span class="nc" id="L330">                    case 8 -&gt; buscarTarjetasPorTipo();</span>
+<span class="nc" id="L331">                    case 9 -&gt; buscarTarjetasPorCuentaAsociada();</span>
+<span class="nc" id="L332">                    case 10 -&gt; listarTarjetasActivas();</span>
+<span class="nc" id="L333">                    case 11 -&gt; mostrarTarjetasEliminadas();</span>
+<span class="nc" id="L334">                    case 12 -&gt; contarTarjetas();</span>
+<span class="nc" id="L335">                    default -&gt; vista.mostrarMensaje(&quot;Opción no válida.&quot;);</span>
+                }
+<span class="nc" id="L337">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L338">                vista.mostrarMensaje(&quot;Por favor, introduzca un número válido.&quot;);</span>
+            }
+        }
+<span class="nc" id="L341">    }</span>
+    
+    /**
+     * Procesa la actualización de una tarjeta con los datos proporcionados
+     * @param tarjetaActual La tarjeta actual
+     * @param datosModificacion Los datos a modificar
+     */
+    private void procesarActualizacionTarjeta(TarjetaDTO tarjetaActual, Map&lt;String, String&gt; datosModificacion) {
+<span class="nc" id="L349">        String numeroTarjeta = tarjetaActual.getNumero();</span>
+        
+        // Si no hay datos para modificar, no hacer nada
+<span class="nc bnc" id="L352" title="All 2 branches missed.">        if (datosModificacion.isEmpty()) {</span>
+<span class="nc" id="L353">            vista.mostrarMensaje(&quot;No se especificaron datos para modificar.&quot;);</span>
+<span class="nc" id="L354">            return;</span>
+        }
+        
+        // Procesar cada campo modificado
+<span class="nc" id="L358">        datosModificacion.forEach((campo, valor) -&gt; {</span>
+<span class="nc bnc" id="L359" title="All 3 branches missed.">            switch (campo) {</span>
+                case &quot;activa&quot; -&gt; {
+<span class="nc" id="L361">                    boolean nuevaActiva = Boolean.parseBoolean(valor);</span>
+<span class="nc" id="L362">                    Optional&lt;TarjetaDTO&gt; tarjetaActualizada = servicioTarjeta.actualizarEstadoTarjeta(</span>
+<span class="nc" id="L363">                        numeroTarjeta, Optional.of(nuevaActiva)</span>
+                    );
+<span class="nc" id="L365">                    tarjetaActualizada.ifPresentOrElse(</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">                        t -&gt; vista.mostrarMensaje(&quot;Estado actualizado: &quot; + (t.isActiva() ? &quot;Activa&quot; : &quot;Inactiva&quot;)),</span>
+<span class="nc" id="L367">                        () -&gt; vista.mostrarMensaje(&quot;Error al actualizar el estado.&quot;)</span>
+                    );
+                }
+                case &quot;fechaExpiracion&quot; -&gt; {
+                    try {
+<span class="nc" id="L372">                        LocalDate nuevaFecha = LocalDate.parse(valor, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="nc" id="L373">                        Optional&lt;TarjetaDTO&gt; tarjetaActualizada = servicioTarjeta.actualizarFechaExpiracion(</span>
+<span class="nc" id="L374">                            numeroTarjeta, Optional.of(nuevaFecha)</span>
+                        );
+<span class="nc" id="L376">                        tarjetaActualizada.ifPresentOrElse(</span>
+<span class="nc" id="L377">                            t -&gt; vista.mostrarMensaje(&quot;Fecha de expiración actualizada: &quot; + t.getFechaExpiracion()),</span>
+<span class="nc" id="L378">                            () -&gt; vista.mostrarMensaje(&quot;Error al actualizar la fecha de expiración.&quot;)</span>
+                        );
+<span class="nc" id="L380">                    } catch (DateTimeParseException e) {</span>
+<span class="nc" id="L381">                        vista.mostrarMensaje(&quot;Formato de fecha inválido.&quot;);</span>
+                    }
+                }
+<span class="nc" id="L384">                default -&gt; vista.mostrarMensaje(&quot;Campo no reconocido: &quot; + campo);</span>
+            }
+<span class="nc" id="L386">        });</span>
+<span class="nc" id="L387">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

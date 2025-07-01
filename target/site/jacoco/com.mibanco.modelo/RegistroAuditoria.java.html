@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegistroAuditoria.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.modelo</a> &gt; <span class="el_source">RegistroAuditoria.java</span></div><h1>RegistroAuditoria.java</h1><pre class="source lang-java linenums">package com.mibanco.modelo;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
+
+
+/**
+ * Registro inmutable de auditoría para cualquier entidad
+ * Utiliza dos tipos genéricos:
+ * - T para la entidad (debe implementar Identificable)
+ * - E para el tipo de operación (debe ser un enum)
+ */
+@Value
+@Builder(toBuilder = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE) // Constructor privado para forzar uso del Builder
+public class RegistroAuditoria&lt;T extends Identificable, E extends Enum&lt;E&gt;&gt; {
+    // ID único del registro
+    UUID id;
+    
+    // Tipo de operación (cualquier enum)
+    E tipoOperacion;
+    
+    // Fecha y hora exacta del evento
+    LocalDateTime fechaHora;
+    
+    // La entidad involucrada (debe implementar Identificable)
+    T entidad;
+    
+    // Usuario que realizó la operación
+    String usuario;
+    
+    // Monto de la operación (útil para operaciones financieras)
+    Double monto;
+    
+    // Información adicional de la operación
+    String detalles;
+    
+    /**
+     * Método factory para crear registros básicos
+     * @param tipoOperacion Tipo de operación (enum)
+     * @param entidad Entidad afectada
+     * @param usuario Usuario que realizó la operación
+     * @return Registro de auditoría inmutable
+     */
+    public static &lt;T extends Identificable, E extends Enum&lt;E&gt;&gt; RegistroAuditoria&lt;T, E&gt; of(
+            E tipoOperacion, 
+            T entidad, 
+            String usuario) {
+        
+<span class="nc" id="L55">        return RegistroAuditoria.&lt;T, E&gt;builder()</span>
+<span class="nc" id="L56">                .id(UUID.randomUUID())</span>
+<span class="nc" id="L57">                .tipoOperacion(tipoOperacion)</span>
+<span class="nc" id="L58">                .fechaHora(LocalDateTime.now())</span>
+<span class="nc" id="L59">                .entidad(entidad)</span>
+<span class="nc" id="L60">                .usuario(usuario)</span>
+<span class="nc" id="L61">                .build();</span>
+    }
+    
+    /**
+     * Método factory para crear registros con información financiera
+     * @param tipoOperacion Tipo de operación (enum)
+     * @param entidad Entidad afectada
+     * @param usuario Usuario que realizó la operación
+     * @param monto Monto de la operación financiera
+     * @param detalles Detalles adicionales
+     * @return Registro de auditoría inmutable
+     */
+    public static &lt;T extends Identificable, E extends Enum&lt;E&gt;&gt; RegistroAuditoria&lt;T, E&gt; ofDetallado(
+            E tipoOperacion, 
+            T entidad, 
+            String usuario,
+            Double monto,
+            String detalles) {
+        
+<span class="nc" id="L80">        return RegistroAuditoria.&lt;T, E&gt;builder()</span>
+<span class="nc" id="L81">                .id(UUID.randomUUID())</span>
+<span class="nc" id="L82">                .tipoOperacion(tipoOperacion)</span>
+<span class="nc" id="L83">                .fechaHora(LocalDateTime.now())</span>
+<span class="nc" id="L84">                .entidad(entidad)</span>
+<span class="nc" id="L85">                .usuario(usuario)</span>
+<span class="nc" id="L86">                .monto(monto)</span>
+<span class="nc" id="L87">                .detalles(detalles)</span>
+<span class="nc" id="L88">                .build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

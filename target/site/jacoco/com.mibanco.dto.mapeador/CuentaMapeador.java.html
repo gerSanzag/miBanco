@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaMapeador.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.dto.mapeador</a> &gt; <span class="el_source">CuentaMapeador.java</span></div><h1>CuentaMapeador.java</h1><pre class="source lang-java linenums">package com.mibanco.dto.mapeador;
+
+import com.mibanco.dto.CuentaDTO;
+import com.mibanco.modelo.Cuenta;
+import com.mibanco.modelo.Cliente;
+import com.mibanco.dto.ClienteDTO;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+/**
+ * Implementación de Mapper para Cliente utilizando enfoque funcional
+ */
+public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
+    private final Mapeador&lt;Cliente, ClienteDTO&gt; clienteMapeador;
+
+<span class="nc" id="L18">    public CuentaMapeador(Mapeador&lt;Cliente, ClienteDTO&gt; clienteMapeador) {</span>
+<span class="nc" id="L19">        this.clienteMapeador = clienteMapeador;</span>
+<span class="nc" id="L20">    }</span>
+
+    /**
+     * Convierte una cuenta a CuentaDTO
+     * Implementación estrictamente funcional con Optional
+     */
+    @Override
+    public Optional&lt;CuentaDTO&gt; aDto(Optional&lt;Cuenta&gt; cuentaOpt) {
+<span class="nc" id="L28">        return cuentaOpt.map(cuenta -&gt; CuentaDTO.builder()</span>
+<span class="nc" id="L29">            .numeroCuenta(cuenta.getNumeroCuenta())</span>
+<span class="nc" id="L30">            .titular(clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null))</span>
+<span class="nc" id="L31">            .tipo(cuenta.getTipo())</span>
+<span class="nc" id="L32">            .saldo(cuenta.getSaldo())</span>
+<span class="nc" id="L33">            .fechaCreacion(cuenta.getFechaCreacion())</span>
+<span class="nc" id="L34">            .activa(cuenta.isActiva())</span>
+<span class="nc" id="L35">            .build());</span>
+    }
+
+    /**
+     * Convierte un CuentaDTO a Cuenta
+     * Implementación estrictamente funcional con Optional
+     */
+    @Override
+    public Optional&lt;Cuenta&gt; aEntidad(Optional&lt;CuentaDTO&gt; dtoOpt) {
+<span class="nc" id="L44">        return dtoOpt.map(dto -&gt; Cuenta.builder()</span>
+<span class="nc" id="L45">            .numeroCuenta(dto.getNumeroCuenta())</span>
+<span class="nc" id="L46">            .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))</span>
+<span class="nc" id="L47">            .tipo(dto.getTipo())</span>
+<span class="nc" id="L48">            .saldo(dto.getSaldo())</span>
+<span class="nc" id="L49">            .fechaCreacion(dto.getFechaCreacion())</span>
+<span class="nc" id="L50">            .activa(dto.isActiva())</span>
+<span class="nc" id="L51">            .build());</span>
+    }
+   
+    /**
+     * Sobrecarga que acepta Cuenta directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional&lt;CuentaDTO&gt; aDtoDirecto(Cuenta cuenta) {
+<span class="nc" id="L59">        return aDto(Optional.ofNullable(cuenta));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta CuentaDTO directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional&lt;Cuenta&gt; aEntidadDirecta(CuentaDTO dto) {
+<span class="nc" id="L67">        return aEntidad(Optional.ofNullable(dto));</span>
+    }
+    
+    /**
+     * Convierte una lista de Cuenta a lista de CuentaDTO
+     * Utilizando programación funcional con streams
+     * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
+     */
+    public Optional&lt;List&lt;CuentaDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Cuenta&gt;&gt; cuentas) {
+<span class="nc" id="L76">        return cuentas.map(list -&gt; list.stream()</span>
+<span class="nc" id="L77">                        .map(cuenta -&gt; aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L78">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L79">                .collect(Collectors.toList()));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta List&lt;Cuenta&gt; directamente
+     */
+    public Optional&lt;List&lt;CuentaDTO&gt;&gt; aListaDto(List&lt;Cuenta&gt; cuentas) {
+<span class="nc" id="L86">        return aListaDto(Optional.ofNullable(cuentas));</span>
+    }
+    
+    /**
+     * Convierte una lista de CuentaDTO a lista de Cuenta
+     * Utilizando programación funcional con streams
+     * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
+     */
+    public Optional&lt;List&lt;Cuenta&gt;&gt; aListaEntidad(Optional&lt;List&lt;CuentaDTO&gt;&gt; dtos) {
+<span class="nc" id="L95">        return dtos.map(list -&gt; list.stream()</span>
+<span class="nc" id="L96">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="nc" id="L97">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L98">                .collect(Collectors.toList()));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta List&lt;CuentaDTO&gt; directamente
+     */
+    public Optional&lt;List&lt;Cuenta&gt;&gt; aListaEntidad(List&lt;CuentaDTO&gt; dtos) {
+<span class="nc" id="L105">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

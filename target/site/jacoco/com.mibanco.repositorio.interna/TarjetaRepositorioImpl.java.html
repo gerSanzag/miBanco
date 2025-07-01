@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TarjetaRepositorioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">TarjetaRepositorioImpl.java</span></div><h1>TarjetaRepositorioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
+
+import com.mibanco.modelo.Tarjeta;
+import com.mibanco.modelo.enums.TipoOperacionTarjeta;
+import com.mibanco.modelo.enums.TipoTarjeta;
+import com.mibanco.repositorio.TarjetaRepositorio;
+
+import java.util.Optional;
+import java.util.List;
+
+/**
+ * Implementación del repositorio de Tarjetas
+ * Visibilidad restringida al paquete internal
+ */
+class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, TipoOperacionTarjeta&gt; implements TarjetaRepositorio {
+    
+    /**
+     * Constructor con visibilidad de paquete
+     */
+    TarjetaRepositorioImpl() {
+<span class="nc" id="L21">        super();</span>
+<span class="nc" id="L22">    }</span>
+    
+    @Override
+    public Optional&lt;Tarjeta&gt; buscarPorNumero(Optional&lt;String&gt; numeroTarjeta) {
+<span class="nc" id="L26">        return numeroTarjeta.flatMap(numero -&gt; </span>
+<span class="nc" id="L27">            buscarPorPredicado(tarjeta -&gt; tarjeta.getNumero().equals(numero))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idCliente) {
+<span class="nc" id="L33">        return idCliente.flatMap(id -&gt; </span>
+<span class="nc" id="L34">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTitular().getId().equals(id))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorCuentaAsociada(Optional&lt;String&gt; numeroCuenta) {
+<span class="nc" id="L40">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L41">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getNumeroCuentaAsociada().equals(numero))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorTipo(Optional&lt;TipoTarjeta&gt; tipo) {
+<span class="nc" id="L47">        return tipo.flatMap(t -&gt; </span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTipo() == t)</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarActivas() {
+<span class="nc" id="L54">        return buscarTodosPorPredicado(Tarjeta::isActiva);</span>
+    }
+    
+    @Override
+    protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
+<span class="nc" id="L59">        return tarjeta.toBuilder()</span>
+<span class="nc" id="L60">                .numero(String.format(&quot;%016d&quot;, idContador.getAndIncrement()))</span>
+<span class="nc" id="L61">                .build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

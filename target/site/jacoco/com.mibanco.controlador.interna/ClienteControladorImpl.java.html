@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteControladorImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.controlador.interna</a> &gt; <span class="el_source">ClienteControladorImpl.java</span></div><h1>ClienteControladorImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.controlador.interna;
+
+import com.mibanco.dto.ClienteDTO;
+import com.mibanco.controlador.ClienteControlador;
+import com.mibanco.servicio.ClienteServicio;
+import com.mibanco.servicio.interna.ServicioFactoria;
+import com.mibanco.vista.ClienteVista;
+import com.mibanco.vista.interna.factoriaVista;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Implementación del controlador para la entidad Cliente.
+ * Visibilidad de paquete para que solo pueda ser instanciada a través de ControladorFactoria.
+ * Maneja la lógica de coordinación entre la vista y el servicio.
+ */
+class ClienteControladorImpl implements ClienteControlador {
+
+    private final ClienteServicio servicio;
+    private final ClienteVista vista;
+
+    /**
+     * Constructor con visibilidad de paquete.
+     * Obtiene las instancias del servicio y la vista a través de sus respectivas fábricas.
+     */
+    ClienteControladorImpl() {
+        this.servicio = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();
+        this.vista = factoriaVista.obtenerInstancia().obtenerVistaCliente();
+    }
+
+    @Override
+<span class="nc" id="L35">    public void crearCliente() {</span>
+        vista.mostrarMensaje(&quot;--- Creación de Nuevo Cliente ---&quot;);
+        
+        // 1. Solicitar datos a la vista
+        Map&lt;String, String&gt; datosCliente = vista.solicitarDatosParaCrear(&quot;Introduzca los datos del nuevo cliente:&quot;);
+        
+        // 2. Enviar datos crudos al servicio (el servicio crea el DTO internamente)
+        Optional&lt;ClienteDTO&gt; clienteCreado = servicio.crearClienteDto(datosCliente);
+        
+        // 3. Mostrar resultado
+        clienteCreado.ifPresentOrElse(
+            cliente -&gt; vista.mostrarMensaje(&quot;Cliente creado exitosamente con ID: &quot; + cliente.getId()),
+            () -&gt; vista.mostrarMensaje(&quot;Error al crear el cliente.&quot;)
+        );
+    }
+
+    @Override
+    public void buscarClientePorId() {
+        // 1. Solicitar ID a la vista
+        Optional&lt;Long&gt; idCliente = vista.solicitarIdCliente();
+        
+        // 2. Buscar en el servicio
+        idCliente.ifPresent(id -&gt; {
+            Optional&lt;ClienteDTO&gt; cliente = servicio.obtenerClientePorId(Optional.of(id));
+            
+            // 3. Mostrar resultado
+<span class="nc" id="L61">            vista.mostrarCliente(cliente);</span>
+        });
+    }
+
+    @Override
+<span class="nc" id="L66">    public void listarTodosLosClientes() {</span>
+        // 1. Obtener lista del servicio
+        Optional&lt;List&lt;ClienteDTO&gt;&gt; clientes = servicio.obtenerTodosLosClientes();
+        
+        // 2. Mostrar resultado
+        clientes.ifPresentOrElse(
+            listaClientes -&gt; vista.mostrarTodosLosClientes(listaClientes),
+            () -&gt; vista.mostrarMensaje(&quot;Error al obtener la lista de clientes.&quot;)
+        );
+    }
+
+    @Override
+<span class="nc" id="L78">    public void actualizarCliente() {</span>
+        // 1. Solicitar ID
+        Optional&lt;Long&gt; idCliente = vista.solicitarIdCliente();
+        
+        idCliente.ifPresent(id -&gt; {
+            // 2. Buscar cliente actual
+            Optional&lt;ClienteDTO&gt; clienteActual = servicio.obtenerClientePorId(Optional.of(id));
+            
+            clienteActual.ifPresent(cliente -&gt; {
+                // 3. Solicitar datos de modificación
+                Map&lt;String, String&gt; datosModificacion = vista.solicitarDatosParaActualizar(cliente);
+                
+                // 4. Mostrar y confirmar antes de actualizar
+                if (vista.confirmarAccion(cliente, &quot;Datos a Modificar&quot;, &quot;¿Confirma la actualización?&quot;)) {
+                    // 5. Actualizar cliente individualmente o en masa
+                    procesarActualizacionCliente(cliente, datosModificacion);
+                    vista.mostrarMensaje(&quot;Cliente actualizado exitosamente.&quot;);
+                } else {
+                    vista.mostrarMensaje(&quot;Actualización cancelada.&quot;);
+                }
+            });
+        });
+    }
+
+    @Override
+<span class="nc" id="L103">    public void eliminarCliente() {</span>
+        // 1. Solicitar ID
+        Optional&lt;Long&gt; idCliente = vista.solicitarIdCliente();
+        
+        idCliente.ifPresent(id -&gt; {
+            // 2. Buscar cliente
+            Optional&lt;ClienteDTO&gt; cliente = servicio.obtenerClientePorId(Optional.of(id));
+            
+            cliente.ifPresent(c -&gt; {
+                // 3. Confirmar eliminación y procesar
+                Optional.of(c)
+                    .filter(clienteAEliminar -&gt; vista.confirmarAccion(clienteAEliminar, &quot;Cliente a Eliminar&quot;, &quot;¿Está seguro de que desea eliminar este cliente?&quot;))
+                    .ifPresentOrElse(
+                        clienteConfirmado -&gt; {
+                            // 4. Eliminar
+                            boolean eliminado = servicio.eliminarCliente(Optional.of(id));
+                            
+                            Optional.of(eliminado)
+                                .filter(resultado -&gt; resultado)
+                                .ifPresentOrElse(
+                                    resultado -&gt; vista.mostrarMensaje(&quot;Cliente eliminado exitosamente.&quot;),
+                                    () -&gt; vista.mostrarMensaje(&quot;Error al eliminar el cliente.&quot;)
+                                );
+                        },
+                        () -&gt; vista.mostrarMensaje(&quot;Eliminación cancelada.&quot;)
+                    );
+            });
+        });
+    }
+
+    @Override
+<span class="nc" id="L134">    public void mostrarMenuPrincipal() {</span>
+        boolean continuar = true;
+        
+        while (continuar) {
+            vista.mostrarMenuPrincipal();
+            Optional&lt;Integer&gt; opcion = vista.obtenerOpcion();
+            
+            opcion.ifPresent(opt -&gt; {
+                switch (opt) {
+                    case 1 -&gt; crearCliente();
+                    case 2 -&gt; buscarClientePorId();
+                    case 3 -&gt; buscarClientePorDni();
+                    case 4 -&gt; listarTodosLosClientes();
+                    case 5 -&gt; actualizarCliente();
+                    case 6 -&gt; eliminarCliente();
+                    case 7 -&gt; restaurarCliente();
+                    case 8 -&gt; listarClientesEliminados();
+                    case 0 -&gt; vista.mostrarMensaje(&quot;Volviendo al menú principal...&quot;);
+                    default -&gt; vista.mostrarMensaje(&quot;Opción no válida.&quot;);
+                }
+            });
+            
+            // Si la opción es 0, salir del bucle
+            if (opcion.isPresent() &amp;&amp; opcion.get() == 0) {
+                continuar = false;
+            }
+        }
+    }
+
+    /**
+     * Actualiza un cliente usando los métodos del servicio según la cantidad de campos a modificar.
+     * Si se modifica 1 campo, usa métodos individuales; si se modifican múltiples campos, usa método múltiple.
+     * 
+     * @param clienteActual el cliente actual
+     * @param datosModificacion los datos a modificar
+     */
+<span class="nc" id="L170">    private void procesarActualizacionCliente(ClienteDTO clienteActual, Map&lt;String, String&gt; datosModificacion) {</span>
+        Long id = clienteActual.getId();
+        
+        // Si no hay datos para modificar, no hacer nada
+        if (datosModificacion.isEmpty()) {
+            vista.mostrarMensaje(&quot;No se realizaron modificaciones.&quot;);
+            return;
+        }
+        
+        // Si tiene 1 campo, método individual; si tiene más, método múltiple
+        Optional.of(datosModificacion)
+            .filter(datos -&gt; datos.size() == 1)
+            .ifPresentOrElse(
+                datos -&gt; datosModificacion.forEach((campo, valor) -&gt; {
+                    switch (campo) {
+                        case &quot;email&quot; -&gt; servicio.actualizarEmailCliente(id, Optional.of(valor));
+                        case &quot;telefono&quot; -&gt; servicio.actualizarTelefonoCliente(id, Optional.of(valor));
+                        case &quot;direccion&quot; -&gt; servicio.actualizarDireccionCliente(id, Optional.of(valor));
+                    }
+                }),
+                () -&gt; {
+                    // Para múltiples campos, crear un DTO temporal solo con los campos a modificar
+                    servicio.actualizarVariosCampos(id, Optional.of(ClienteDTO.builder()
+                        .email(datosModificacion.get(&quot;email&quot;))
+                        .telefono(datosModificacion.get(&quot;telefono&quot;))
+                        .direccion(datosModificacion.get(&quot;direccion&quot;))
+                        .build()));
+                }
+            );
+    }
+
+    @Override
+    public void buscarClientePorDni() {
+        // 1. Solicitar DNI a la vista
+        Optional&lt;String&gt; dniCliente = vista.solicitarDni();
+        
+        // 2. Buscar en el servicio
+        dniCliente.ifPresent(dni -&gt; {
+            Optional&lt;ClienteDTO&gt; cliente = servicio.obtenerClientePorDni(Optional.of(dni));
+            
+            // 3. Mostrar resultado
+<span class="nc" id="L211">            vista.mostrarCliente(cliente);</span>
+        });
+    }
+
+    @Override
+<span class="nc" id="L216">    public void restaurarCliente() {</span>
+        // 1. Solicitar ID
+        Optional&lt;Long&gt; idCliente = vista.solicitarIdCliente();
+        
+        idCliente.ifPresent(id -&gt; {
+            // 2. Obtener lista de clientes eliminados
+            List&lt;ClienteDTO&gt; clientesEliminados = servicio.obtenerClientesEliminados();
+            
+            // 3. Buscar el cliente en la lista de eliminados
+            Optional&lt;ClienteDTO&gt; clienteAEliminado = clientesEliminados.stream()
+                .filter(cliente -&gt; cliente.getId().equals(id))
+                .findFirst();
+            
+            // 4. Si lo encuentra, pedir confirmación y restaurarlo
+            clienteAEliminado.ifPresentOrElse(
+                cliente -&gt; {
+                    // 5. Pedir confirmación antes de restaurar
+                    Optional.of(cliente)
+                        .filter(clienteConfirmar -&gt; vista.confirmarRestauracion(clienteConfirmar))
+                        .ifPresentOrElse(
+                            clienteConfirmado -&gt; {
+                                // 6. Restaurar el cliente
+                                Optional&lt;ClienteDTO&gt; clienteRestaurado = servicio.restaurarCliente(Optional.of(id));
+                                clienteRestaurado.ifPresentOrElse(
+                                    restaurado -&gt; {
+                                        vista.mostrarMensaje(&quot;Cliente restaurado exitosamente.&quot;);
+                                    },
+                                    () -&gt; vista.mostrarMensaje(&quot;Error al restaurar el cliente.&quot;)
+                                );
+                            },
+                            () -&gt; vista.mostrarMensaje(&quot;Restauración cancelada.&quot;)
+                        );
+                },
+                () -&gt; vista.mostrarMensaje(&quot;Cliente no encontrado en la lista de eliminados.&quot;)
+            );
+        });
+    }
+
+    @Override
+<span class="nc" id="L255">    public void listarClientesEliminados() {</span>
+        // 1. Obtener lista de clientes eliminados del servicio
+        List&lt;ClienteDTO&gt; clientesEliminados = servicio.obtenerClientesEliminados();
+        
+        // 2. Mostrar resultado
+        vista.mostrarClientesEliminados(clientesEliminados);
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.dto</a> &gt; <span class="el_source">ClienteDTO.java</span></div><h1>ClienteDTO.java</h1><pre class="source lang-java linenums">package com.mibanco.dto;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import lombok.Builder;
+import lombok.Value;
+
+/**
+ * DTO para transferir información de Cliente entre capas
+ * Utilizamos @Value para crear una clase inmutable (enfoque funcional)
+ * y Optional para manejar posibles valores nulos
+ */
+@Value
+@Builder(toBuilder = true) // Habilitamos toBuilder para facilitar la creación de nuevas instancias
+public class ClienteDTO {
+    Long id;
+    String nombre;
+    String apellido;
+    String dni;
+    String email;
+    String telefono;
+    LocalDate fechaNacimiento;
+    String direccion;
+
+    /**
+     * Método estático que construye un ClienteDTO con valores opcionales
+     * Ejemplo de uso del enfoque funcional y Optionals
+     */
+    public static ClienteDTO of(Long id, String nombre, String apellido, String dni, 
+                                Optional&lt;String&gt; email, Optional&lt;String&gt; telefono,
+                                Optional&lt;LocalDate&gt; fechaNacimiento, Optional&lt;String&gt; direccion) {
+<span class="nc" id="L33">        return ClienteDTO.builder()</span>
+<span class="nc" id="L34">                .id(id)</span>
+<span class="nc" id="L35">                .nombre(nombre)</span>
+<span class="nc" id="L36">                .apellido(apellido)</span>
+<span class="nc" id="L37">                .dni(dni)</span>
+<span class="nc" id="L38">                .email(email.orElse(null))</span>
+<span class="nc" id="L39">                .telefono(telefono.orElse(null))</span>
+<span class="nc" id="L40">                .fechaNacimiento(fechaNacimiento.orElse(null))</span>
+<span class="nc" id="L41">                .direccion(direccion.orElse(null))</span>
+<span class="nc" id="L42">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar el email
+     * @return Una nueva instancia con el email actualizado
+     */
+    public ClienteDTO conEmail(String nuevoEmail) {
+<span class="nc" id="L50">        return this.toBuilder()</span>
+<span class="nc" id="L51">                .email(nuevoEmail)</span>
+<span class="nc" id="L52">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar el teléfono
+     * @return Una nueva instancia con el teléfono actualizado
+     */
+    public ClienteDTO conTelefono(String nuevoTelefono) {
+<span class="nc" id="L60">        return this.toBuilder()</span>
+<span class="nc" id="L61">                .telefono(nuevoTelefono)</span>
+<span class="nc" id="L62">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar la dirección
+     * @return Una nueva instancia con la dirección actualizada
+     */
+    public ClienteDTO conDireccion(String nuevaDireccion) {
+<span class="nc" id="L70">        return this.toBuilder()</span>
+<span class="nc" id="L71">                .direccion(nuevaDireccion)</span>
+<span class="nc" id="L72">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar múltiples campos a la vez
+     * @return Una nueva instancia con los campos actualizados
+     */
+    public ClienteDTO conDatosContacto(Optional&lt;String&gt; nuevoEmail, 
+                                      Optional&lt;String&gt; nuevoTelefono, 
+                                      Optional&lt;String&gt; nuevaDireccion) {
+<span class="nc" id="L82">        return this.toBuilder()</span>
+<span class="nc" id="L83">                .email(nuevoEmail.orElse(this.email))</span>
+<span class="nc" id="L84">                .telefono(nuevoTelefono.orElse(this.telefono))</span>
+<span class="nc" id="L85">                .direccion(nuevaDireccion.orElse(this.direccion))</span>
+<span class="nc" id="L86">                .build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

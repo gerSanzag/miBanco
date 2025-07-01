@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaControladorImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.controlador.interna</a> &gt; <span class="el_source">CuentaControladorImpl.java</span></div><h1>CuentaControladorImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.controlador.interna;
+
+import com.mibanco.dto.CuentaDTO;
+import com.mibanco.dto.ClienteDTO;
+import com.mibanco.controlador.CuentaControlador;
+import com.mibanco.servicio.CuentaServicio;
+import com.mibanco.servicio.ClienteServicio;
+import com.mibanco.servicio.interna.ServicioFactoria;
+import com.mibanco.vista.CuentaVista;
+import com.mibanco.vista.interna.factoriaVista;
+import com.mibanco.modelo.enums.TipoCuenta;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Implementación del controlador para la entidad Cuenta.
+ * Visibilidad de paquete para que solo pueda ser instanciada a través de ControladorFactoria.
+ * Maneja la lógica de coordinación entre la vista y el servicio.
+ */
+class CuentaControladorImpl implements CuentaControlador {
+
+    private final CuentaServicio servicioCuenta;
+    private final ClienteServicio servicioCliente;
+    private final CuentaVista vista;
+
+    /**
+     * Constructor con visibilidad de paquete.
+     * Obtiene las instancias del servicio y la vista a través de sus respectivas fábricas.
+     */
+<span class="nc" id="L33">    CuentaControladorImpl() {</span>
+<span class="nc" id="L34">        this.servicioCuenta = ServicioFactoria.obtenerInstancia().obtenerServicioCuenta();</span>
+<span class="nc" id="L35">        this.servicioCliente = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();</span>
+<span class="nc" id="L36">        this.vista = factoriaVista.obtenerInstancia().obtenerVistaCuenta();</span>
+<span class="nc" id="L37">    }</span>
+
+    @Override
+    public void crearCuenta() {
+        vista.mostrarMensaje(&quot;--- Creación de Nueva Cuenta ---&quot;);
+        
+        // 1. Solicitar datos a la vista
+        Map&lt;String, String&gt; datosCuenta = vista.solicitarDatosParaCrear();
+        
+        // 2. Validar que tenemos todos los datos necesarios
+        if (!datosCuenta.containsKey(&quot;idTitular&quot;) || !datosCuenta.containsKey(&quot;tipoCuenta&quot;) || !datosCuenta.containsKey(&quot;saldoInicial&quot;)) {
+            vista.mostrarMensaje(&quot;Error: Faltan datos requeridos para crear la cuenta.&quot;);
+            return;
+        }
+        
+        // 3. Obtener el titular
+        Optional&lt;ClienteDTO&gt; titular = servicioCliente.obtenerClientePorId(Optional.of(Long.parseLong(datosCuenta.get(&quot;idTitular&quot;))));
+        
+        if (titular.isEmpty()) {
+            vista.mostrarMensaje(&quot;Error: El titular especificado no existe.&quot;);
+            return;
+        }
+        
+        // 4. Crear el DTO de la cuenta
+        CuentaDTO nuevaCuenta = CuentaDTO.builder()
+            .titular(titular.get())
+            .tipo(TipoCuenta.valueOf(datosCuenta.get(&quot;tipoCuenta&quot;)))
+            .saldo(new BigDecimal(datosCuenta.get(&quot;saldoInicial&quot;)))
+            .activa(true)
+            .build();
+        
+        // 5. Guardar la cuenta
+<span class="nc" id="L69">        Optional&lt;CuentaDTO&gt; cuentaCreada = servicioCuenta.crearCuenta(Optional.of(nuevaCuenta));</span>
+        
+        // 6. Mostrar resultado
+        cuentaCreada.ifPresentOrElse(
+            cuenta -&gt; vista.mostrarMensaje(&quot;Cuenta creada exitosamente con número: &quot; + cuenta.getNumeroCuenta()),
+            () -&gt; vista.mostrarMensaje(&quot;Error al crear la cuenta.&quot;)
+        );
+    }
+
+    @Override
+    public void buscarCuentaPorNumero() {
+        // 1. Solicitar número a la vista
+<span class="nc" id="L81">        Optional&lt;Long&gt; numeroCuenta = vista.solicitarNumeroCuenta();</span>
+        
+        // 2. Buscar en el servicio
+<span class="nc" id="L84">        numeroCuenta.ifPresent(numero -&gt; {</span>
+<span class="nc" id="L85">            Optional&lt;CuentaDTO&gt; cuenta = servicioCuenta.obtenerCuentaPorNumero(Optional.of(numero));</span>
+            
+            // 3. Mostrar resultado
+<span class="nc" id="L88">            vista.mostrarCuenta(cuenta);</span>
+<span class="nc" id="L89">        });</span>
+<span class="nc" id="L90">    }</span>
+
+    @Override
+    public void listarTodasLasCuentas() {
+        // 1. Obtener lista del servicio
+<span class="nc" id="L95">        Optional&lt;List&lt;CuentaDTO&gt;&gt; cuentas = servicioCuenta.obtenerTodasLasCuentas();</span>
+        
+        // 2. Mostrar resultado
+<span class="nc" id="L98">        cuentas.ifPresentOrElse(</span>
+<span class="nc" id="L99">            listaCuentas -&gt; vista.mostrarTodasLasCuentas(listaCuentas),</span>
+<span class="nc" id="L100">            () -&gt; vista.mostrarMensaje(&quot;Error al obtener la lista de cuentas.&quot;)</span>
+        );
+<span class="nc" id="L102">    }</span>
+
+    @Override
+    public void actualizarCuenta() {
+        // 1. Solicitar número
+<span class="nc" id="L107">        Optional&lt;Long&gt; numeroCuenta = vista.solicitarNumeroCuenta();</span>
+        
+<span class="nc" id="L109">        numeroCuenta.ifPresent(numero -&gt; {</span>
+            // 2. Buscar cuenta actual
+<span class="nc" id="L111">            Optional&lt;CuentaDTO&gt; cuentaActual = servicioCuenta.obtenerCuentaPorNumero(Optional.of(numero));</span>
+            
+<span class="nc" id="L113">            cuentaActual.ifPresent(cuenta -&gt; {</span>
+                // 3. Solicitar datos de modificación
+<span class="nc" id="L115">                Map&lt;String, String&gt; datosModificacion = vista.solicitarDatosParaActualizar(cuenta);</span>
+                
+                // 4. Mostrar y confirmar antes de actualizar
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                if (vista.confirmarAccion(cuenta, &quot;Datos a Modificar&quot;, &quot;¿Confirma la actualización?&quot;)) {</span>
+                    // 5. Actualizar cuenta
+<span class="nc" id="L120">                    procesarActualizacionCuenta(cuenta, datosModificacion);</span>
+<span class="nc" id="L121">                    vista.mostrarMensaje(&quot;Cuenta actualizada exitosamente.&quot;);</span>
+<span class="nc" id="L122">                } else {</span>
+<span class="nc" id="L123">                    vista.mostrarMensaje(&quot;Actualización cancelada.&quot;);</span>
+                }
+<span class="nc" id="L125">            });</span>
+<span class="nc" id="L126">        });</span>
+<span class="nc" id="L127">    }</span>
+
+    @Override
+    public void eliminarCuenta() {
+        // 1. Solicitar número
+<span class="nc" id="L132">        Optional&lt;Long&gt; numeroCuenta = vista.solicitarNumeroCuenta();</span>
+        
+<span class="nc" id="L134">        numeroCuenta.ifPresent(numero -&gt; {</span>
+            // 2. Buscar cuenta
+<span class="nc" id="L136">            Optional&lt;CuentaDTO&gt; cuenta = servicioCuenta.obtenerCuentaPorNumero(Optional.of(numero));</span>
+            
+<span class="nc" id="L138">            cuenta.ifPresent(c -&gt; {</span>
+                // 3. Confirmar eliminación
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                if (vista.confirmarAccion(c, &quot;Cuenta a Eliminar&quot;, &quot;¿Está seguro de que desea eliminar esta cuenta?&quot;)) {</span>
+                    // 4. Eliminar
+<span class="nc" id="L142">                    boolean eliminada = servicioCuenta.eliminarCuenta(Optional.of(numero));</span>
+                    
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                    if (eliminada) {</span>
+<span class="nc" id="L145">                        vista.mostrarMensaje(&quot;Cuenta eliminada exitosamente.&quot;);</span>
+<span class="nc" id="L146">                    } else {</span>
+<span class="nc" id="L147">                        vista.mostrarMensaje(&quot;Error al eliminar la cuenta.&quot;);</span>
+                    }
+<span class="nc" id="L149">                } else {</span>
+<span class="nc" id="L150">                    vista.mostrarMensaje(&quot;Eliminación cancelada.&quot;);</span>
+                }
+<span class="nc" id="L152">            });</span>
+<span class="nc" id="L153">        });</span>
+<span class="nc" id="L154">    }</span>
+
+    @Override
+    public void mostrarMenuPrincipal() {
+<span class="nc" id="L158">        boolean continuar = true;</span>
+        
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        while (continuar) {</span>
+<span class="nc" id="L161">            vista.mostrarMenuPrincipal();</span>
+<span class="nc" id="L162">            Optional&lt;Integer&gt; opcion = vista.obtenerOpcion();</span>
+            
+<span class="nc" id="L164">            opcion.ifPresent(opt -&gt; {</span>
+<span class="nc bnc" id="L165" title="All 14 branches missed.">                switch (opt) {</span>
+<span class="nc" id="L166">                    case 1 -&gt; crearCuenta();</span>
+<span class="nc" id="L167">                    case 2 -&gt; buscarCuentaPorNumero();</span>
+<span class="nc" id="L168">                    case 3 -&gt; listarTodasLasCuentas();</span>
+<span class="nc" id="L169">                    case 4 -&gt; actualizarCuenta();</span>
+<span class="nc" id="L170">                    case 5 -&gt; eliminarCuenta();</span>
+<span class="nc" id="L171">                    case 6 -&gt; buscarCuentasPorTitular();</span>
+<span class="nc" id="L172">                    case 7 -&gt; buscarCuentasPorTipo();</span>
+<span class="nc" id="L173">                    case 8 -&gt; listarCuentasActivas();</span>
+<span class="nc" id="L174">                    case 9 -&gt; mostrarCuentasEliminadas();</span>
+<span class="nc" id="L175">                    case 10 -&gt; restaurarCuenta();</span>
+<span class="nc" id="L176">                    case 11 -&gt; contarCuentas();</span>
+<span class="nc" id="L177">                    case 12 -&gt; consultarSaldoCuenta();</span>
+<span class="nc" id="L178">                    case 0 -&gt; vista.mostrarMensaje(&quot;Volviendo al menú principal...&quot;);</span>
+<span class="nc" id="L179">                    default -&gt; vista.mostrarMensaje(&quot;Opción no válida.&quot;);</span>
+                }
+<span class="nc" id="L181">            });</span>
+            
+            // Si la opción es 0, salir del bucle
+<span class="nc bnc" id="L184" title="All 4 branches missed.">            if (opcion.isPresent() &amp;&amp; opcion.get() == 0) {</span>
+<span class="nc" id="L185">                continuar = false;</span>
+            }
+        }
+<span class="nc" id="L188">    }</span>
+
+    /**
+     * Actualiza el estado de una cuenta.
+     * Solo permite modificar el estado activo/inactivo de la cuenta.
+     * 
+     * @param cuentaActual la cuenta actual
+     * @param datosModificacion los datos a modificar (solo estado)
+     */
+    private void procesarActualizacionCuenta(CuentaDTO cuentaActual, Map&lt;String, String&gt; datosModificacion) {
+<span class="nc" id="L198">        Long numeroCuenta = cuentaActual.getNumeroCuenta();</span>
+        
+        // Si no hay datos para modificar, no hacer nada
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (datosModificacion.isEmpty()) {</span>
+<span class="nc" id="L202">            vista.mostrarMensaje(&quot;No se realizaron modificaciones.&quot;);</span>
+<span class="nc" id="L203">            return;</span>
+        }
+        
+        // Solo procesar actualización de estado
+<span class="nc" id="L207">        Optional.of(datosModificacion)</span>
+<span class="nc" id="L208">            .filter(datos -&gt; datos.containsKey(&quot;activa&quot;))</span>
+<span class="nc" id="L209">            .ifPresentOrElse(</span>
+<span class="nc" id="L210">                datos -&gt; {</span>
+<span class="nc" id="L211">                    boolean nuevoEstado = Boolean.parseBoolean(datos.get(&quot;activa&quot;));</span>
+<span class="nc" id="L212">                    servicioCuenta.actualizarEstadoCuenta(numeroCuenta, Optional.of(nuevoEstado));</span>
+<span class="nc" id="L213">                },</span>
+<span class="nc" id="L214">                () -&gt; vista.mostrarMensaje(&quot;No se especificó un cambio de estado válido.&quot;)</span>
+            );
+<span class="nc" id="L216">    }</span>
+
+    @Override
+    public void buscarCuentasPorTitular() {
+        // 1. Solicitar ID del titular a la vista
+<span class="nc" id="L221">        Optional&lt;Long&gt; idTitular = vista.solicitarIdTitularParaBuscar();</span>
+        
+        // 2. Buscar cuentas en el servicio
+<span class="nc" id="L224">        idTitular.ifPresent(id -&gt; {</span>
+<span class="nc" id="L225">            Optional&lt;List&lt;CuentaDTO&gt;&gt; cuentas = servicioCuenta.buscarPorTitularId(Optional.of(id));</span>
+            
+            // 3. Mostrar resultado
+<span class="nc" id="L228">            cuentas.ifPresentOrElse(</span>
+<span class="nc" id="L229">                listaCuentas -&gt; {</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">                    if (listaCuentas.isEmpty()) {</span>
+<span class="nc" id="L231">                        vista.mostrarMensaje(&quot;No se encontraron cuentas para el titular especificado.&quot;);</span>
+<span class="nc" id="L232">                    } else {</span>
+<span class="nc" id="L233">                        vista.mostrarTodasLasCuentas(listaCuentas);</span>
+                    }
+<span class="nc" id="L235">                },</span>
+<span class="nc" id="L236">                () -&gt; vista.mostrarMensaje(&quot;Error al buscar cuentas del titular.&quot;)</span>
+            );
+<span class="nc" id="L238">        });</span>
+<span class="nc" id="L239">    }</span>
+
+    @Override
+    public void buscarCuentasPorTipo() {
+        // 1. Solicitar tipo de cuenta a la vista
+<span class="nc" id="L244">        Optional&lt;String&gt; tipoCuenta = vista.solicitarTipoCuentaParaBuscar();</span>
+        
+        // 2. Buscar cuentas en el servicio
+<span class="nc" id="L247">        tipoCuenta.ifPresent(tipo -&gt; {</span>
+<span class="nc" id="L248">            Optional&lt;List&lt;CuentaDTO&gt;&gt; cuentas = servicioCuenta.buscarPorTipo(Optional.of(TipoCuenta.valueOf(tipo)));</span>
+            
+            // 3. Mostrar resultado
+<span class="nc" id="L251">            cuentas.ifPresentOrElse(</span>
+<span class="nc" id="L252">                listaCuentas -&gt; {</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">                    if (listaCuentas.isEmpty()) {</span>
+<span class="nc" id="L254">                        vista.mostrarMensaje(&quot;No se encontraron cuentas del tipo especificado.&quot;);</span>
+<span class="nc" id="L255">                    } else {</span>
+<span class="nc" id="L256">                        vista.mostrarTodasLasCuentas(listaCuentas);</span>
+                    }
+<span class="nc" id="L258">                },</span>
+<span class="nc" id="L259">                () -&gt; vista.mostrarMensaje(&quot;Error al buscar cuentas por tipo.&quot;)</span>
+            );
+<span class="nc" id="L261">        });</span>
+<span class="nc" id="L262">    }</span>
+
+    @Override
+    public void listarCuentasActivas() {
+        // 1. Obtener cuentas activas del servicio
+<span class="nc" id="L267">        Optional&lt;List&lt;CuentaDTO&gt;&gt; cuentas = servicioCuenta.buscarActivas();</span>
+        
+        // 2. Mostrar resultado
+<span class="nc" id="L270">        cuentas.ifPresentOrElse(</span>
+<span class="nc" id="L271">            listaCuentas -&gt; {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                if (listaCuentas.isEmpty()) {</span>
+<span class="nc" id="L273">                    vista.mostrarMensaje(&quot;No hay cuentas activas.&quot;);</span>
+<span class="nc" id="L274">                } else {</span>
+<span class="nc" id="L275">                    vista.mostrarTodasLasCuentas(listaCuentas);</span>
+                }
+<span class="nc" id="L277">            },</span>
+<span class="nc" id="L278">            () -&gt; vista.mostrarMensaje(&quot;Error al obtener cuentas activas.&quot;)</span>
+        );
+<span class="nc" id="L280">    }</span>
+
+    @Override
+    public void mostrarCuentasEliminadas() {
+        // 1. Obtener cuentas eliminadas del servicio
+<span class="nc" id="L285">        List&lt;CuentaDTO&gt; cuentasEliminadas = servicioCuenta.obtenerCuentasEliminadas();</span>
+        
+        // 2. Mostrar resultado
+<span class="nc" id="L288">        vista.mostrarCuentasEliminadas(cuentasEliminadas);</span>
+<span class="nc" id="L289">    }</span>
+
+    @Override
+    public void restaurarCuenta() {
+        // 1. Solicitar número de cuenta a la vista
+<span class="nc" id="L294">        Optional&lt;Long&gt; numeroCuenta = vista.solicitarNumeroCuentaParaRestaurar();</span>
+        
+        // 2. Restaurar cuenta en el servicio
+<span class="nc" id="L297">        numeroCuenta.ifPresent(numero -&gt; {</span>
+<span class="nc" id="L298">            Optional&lt;CuentaDTO&gt; cuentaRestaurada = servicioCuenta.restaurarCuenta(Optional.of(numero));</span>
+            
+            // 3. Mostrar resultado
+<span class="nc" id="L301">            cuentaRestaurada.ifPresentOrElse(</span>
+<span class="nc" id="L302">                cuenta -&gt; vista.mostrarMensaje(&quot;Cuenta restaurada exitosamente: &quot; + cuenta.getNumeroCuenta()),</span>
+<span class="nc" id="L303">                () -&gt; vista.mostrarMensaje(&quot;No se pudo restaurar la cuenta. Verifique que exista en la lista de eliminadas.&quot;)</span>
+            );
+<span class="nc" id="L305">        });</span>
+<span class="nc" id="L306">    }</span>
+
+    @Override
+    public void contarCuentas() {
+        // 1. Obtener total de cuentas del servicio
+<span class="nc" id="L311">        long total = servicioCuenta.contarCuentas();</span>
+        
+        // 2. Mostrar resultado
+<span class="nc" id="L314">        vista.mostrarTotalCuentas(total);</span>
+<span class="nc" id="L315">    }</span>
+
+    @Override
+    public void consultarSaldoCuenta() {
+        // 1. Solicitar número de cuenta
+<span class="nc" id="L320">        Optional&lt;Long&gt; numeroCuenta = vista.solicitarNumeroCuenta();</span>
+        
+        // 2. Buscar cuenta en el servicio
+<span class="nc" id="L323">        numeroCuenta.ifPresent(numero -&gt; {</span>
+<span class="nc" id="L324">            Optional&lt;CuentaDTO&gt; cuenta = servicioCuenta.obtenerCuentaPorNumero(Optional.of(numero));</span>
+            
+            // 3. Mostrar saldo
+<span class="nc" id="L327">            cuenta.ifPresentOrElse(</span>
+<span class="nc" id="L328">                cuentaEncontrada -&gt; vista.mostrarSaldoCuenta(cuentaEncontrada),</span>
+<span class="nc" id="L329">                () -&gt; vista.mostrarMensaje(&quot;Cuenta no encontrada.&quot;)</span>
+            );
+<span class="nc" id="L331">        });</span>
+<span class="nc" id="L332">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

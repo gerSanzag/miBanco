@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tarjeta.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.modelo</a> &gt; <span class="el_source">Tarjeta.java</span></div><h1>Tarjeta.java</h1><pre class="source lang-java linenums">package com.mibanco.modelo;
+
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import com.mibanco.modelo.enums.TipoTarjeta;
+
+import lombok.Builder;
+import lombok.Value;
+
+
+/**
+ * Clase que representa una tarjeta bancaria
+ * Implementa un enfoque completamente funcional con inmutabilidad total
+ */
+@Value
+@Builder(toBuilder = true)
+public class Tarjeta implements Identificable {
+    @NoSolicitar(razon = &quot;Se genera automáticamente&quot;)
+    String numero;
+    Cliente titular;
+    String numeroCuentaAsociada;
+    TipoTarjeta tipo;
+    @NoSolicitar(razon = &quot;Se genera automáticamente&quot;)
+    String cvv;
+    @NoSolicitar(razon = &quot;Se establece automáticamente (+3 años)&quot;)
+    LocalDate fechaExpiracion;
+    @NoSolicitar(razon = &quot;Se establece por defecto como activa&quot;)
+    boolean activa;
+    
+    /**
+     * Implementación de getId() para la interfaz Identificable
+     * Utilizamos el número de tarjeta como ID usando un hash del String
+     * @return Un Long que representa el número de tarjeta
+     */
+    @Override
+    public Long getId() {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        return numero != null ? (long) numero.hashCode() : null;</span>
+    }
+    
+    /**
+     * Método factory para facilitar la creación de instancias
+     */
+    public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
+                            TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
+<span class="nc" id="L47">        return Tarjeta.builder()</span>
+<span class="nc" id="L48">                .numero(numero)</span>
+<span class="nc" id="L49">                .titular(titular)</span>
+<span class="nc" id="L50">                .numeroCuentaAsociada(numeroCuentaAsociada)</span>
+<span class="nc" id="L51">                .tipo(tipo)</span>
+<span class="nc" id="L52">                .fechaExpiracion(fechaExpiracion)</span>
+<span class="nc" id="L53">                .cvv(cvv)</span>
+<span class="nc" id="L54">                .activa(activa)</span>
+<span class="nc" id="L55">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar la fecha de expiración
+     * @return Una nueva instancia con la fecha actualizada
+     */
+    public Tarjeta conFechaExpiracion(LocalDate nuevaFecha) {
+<span class="nc" id="L63">        return this.toBuilder()</span>
+<span class="nc" id="L64">                .fechaExpiracion(nuevaFecha)</span>
+<span class="nc" id="L65">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar el estado activo
+     * @return Una nueva instancia con el estado actualizado
+     */
+    public Tarjeta conActiva(boolean nuevaActiva) {
+<span class="nc" id="L73">        return this.toBuilder()</span>
+<span class="nc" id="L74">                .activa(nuevaActiva)</span>
+<span class="nc" id="L75">                .build();</span>
+    }
+    
+    /**
+     * Versión inmutable para actualizar múltiples campos a la vez
+     * @return Una nueva instancia con los campos actualizados
+     */
+    public Tarjeta conActualizaciones(Optional&lt;LocalDate&gt; nuevaFecha, Optional&lt;Boolean&gt; nuevaActiva) {
+<span class="nc" id="L83">        return this.toBuilder()</span>
+<span class="nc" id="L84">                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))</span>
+<span class="nc" id="L85">                .activa(nuevaActiva.orElse(this.activa))</span>
+<span class="nc" id="L86">                .build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

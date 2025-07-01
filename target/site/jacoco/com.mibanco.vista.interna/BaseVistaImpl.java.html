@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseVistaImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.vista.interna</a> &gt; <span class="el_source">BaseVistaImpl.java</span></div><h1>BaseVistaImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.vista.interna;
+
+import com.mibanco.util.ReflexionUtil;
+import com.mibanco.vista.util.BaseVista;
+import com.mibanco.vista.util.Consola;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
+
+
+/**
+ * Implementación base para todas las vistas
+ * Proporciona la funcionalidad común que comparten todas las vistas
+ * @param &lt;T&gt; Tipo de DTO que maneja la vista
+ */
+abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
+    
+    protected final Consola consola;
+    
+    /**
+     * Constructor protegido que inicializa la consola
+     */
+<span class="nc" id="L29">    protected BaseVistaImpl() {</span>
+<span class="nc" id="L30">        this.consola = new ConsolaImpl(new Scanner(System.in));</span>
+<span class="nc" id="L31">    }</span>
+    
+    @Override
+    public Optional&lt;Integer&gt; obtenerOpcion() {
+<span class="nc" id="L35">        consola.mostrar(&quot;Seleccione una opción: &quot;);</span>
+        try {
+<span class="nc" id="L37">            return Optional.of(Integer.parseInt(consola.leerLinea().trim()));</span>
+<span class="nc" id="L38">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L39">            mostrarMensaje(&quot;Error: Por favor, introduzca un número válido.&quot;);</span>
+<span class="nc" id="L40">            return Optional.empty();</span>
+        }
+    }
+    
+    @Override
+    public void mostrarMensaje(String mensaje) {
+<span class="nc" id="L46">        consola.mostrar(&quot;&gt;&gt; &quot; + mensaje + &quot;\n&quot;);</span>
+<span class="nc" id="L47">    }</span>
+    
+    @Override
+    public boolean confirmarAccion(T entidad, String titulo, String mensaje) {
+<span class="nc" id="L51">        consola.mostrar(&quot;\n--- &quot; + titulo + &quot; ---\n&quot;);</span>
+<span class="nc" id="L52">        mostrarEntidad(Optional.of(entidad));</span>
+<span class="nc" id="L53">        consola.mostrar(&quot;\n&quot; + mensaje + &quot; (s/n): &quot;);</span>
+<span class="nc" id="L54">        String respuesta = consola.leerLinea().toLowerCase();</span>
+<span class="nc" id="L55">        return &quot;s&quot;.equals(respuesta);</span>
+    }
+    
+    /**
+     * Método genérico para solicitar datos de cualquier modelo
+     * Usa reflexión para obtener los campos requeridos automáticamente
+     * @param modelo Clase del modelo (ej: Cliente.class)
+     * @return Map con los datos solicitados o Map vacío si se cancela
+     */
+    protected Map&lt;String, String&gt; solicitarDatosGenerico(Class&lt;?&gt; modelo) {
+<span class="nc" id="L65">        List&lt;String&gt; campos = ReflexionUtil.obtenerCamposRequeridos(modelo);</span>
+<span class="nc" id="L66">        Map&lt;String, String&gt; datos = new HashMap&lt;&gt;();</span>
+        
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (String campo : campos) {</span>
+<span class="nc" id="L69">            Optional&lt;String&gt; valorOpt = solicitarCampoPorTipo(campo, modelo);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (valorOpt.isEmpty()) {</span>
+<span class="nc" id="L71">                return new HashMap&lt;&gt;(); // Cancelar si algún campo falla</span>
+            }
+<span class="nc" id="L73">            datos.put(campo, valorOpt.get());</span>
+        }
+        
+<span class="nc" id="L76">        return datos;</span>
+    }
+    
+    /**
+     * Solicita un campo con validación específica usando enfoque funcional
+     * Usa un Map de funciones para evitar múltiples if anidados
+     */
+    private Optional&lt;String&gt; solicitarCampoPorTipo(String campo, Class&lt;?&gt; modelo) {
+        // Map funcional de validadores por tipo de campo
+<span class="nc" id="L85">        Map&lt;String, Function&lt;String, Optional&lt;String&gt;&gt;&gt; validadores = Map.of(</span>
+<span class="nc" id="L86">            &quot;fecha&quot;, this::solicitarFecha,</span>
+<span class="nc" id="L87">            &quot;email&quot;, campoStr -&gt; solicitarEmail(campoStr),</span>
+<span class="nc" id="L88">            &quot;telefono&quot;, campoStr -&gt; solicitarTelefono(campoStr),</span>
+<span class="nc" id="L89">            &quot;teléfono&quot;, campoStr -&gt; solicitarTelefono(campoStr),</span>
+<span class="nc" id="L90">            &quot;dni&quot;, campoStr -&gt; solicitarIdentificacion(campoStr),</span>
+<span class="nc" id="L91">            &quot;identificacion&quot;, campoStr -&gt; solicitarIdentificacion(campoStr),</span>
+<span class="nc" id="L92">            &quot;saldo&quot;, campoStr -&gt; solicitarDecimal(campoStr),</span>
+<span class="nc" id="L93">            &quot;monto&quot;, campoStr -&gt; solicitarDecimal(campoStr)</span>
+        );
+        
+        // Enfoque funcional: buscar validador y aplicarlo
+<span class="nc" id="L97">        String campoLower = campo.toLowerCase();</span>
+<span class="nc" id="L98">        return validadores.entrySet().stream()</span>
+<span class="nc" id="L99">            .filter(entry -&gt; campoLower.contains(entry.getKey()))</span>
+<span class="nc" id="L100">            .findFirst()</span>
+<span class="nc" id="L101">            .flatMap(entry -&gt; entry.getValue().apply(campo))</span>
+<span class="nc" id="L102">            .or(() -&gt; leerCampoConValidacion(campo));</span>
+    }
+    
+    /**
+     * Solicita una fecha con validación mejorada usando enfoque funcional
+     * @param nombreCampo Nombre del campo de fecha
+     * @return Optional con la fecha en formato String o vacío si se cancela
+     */
+    private Optional&lt;String&gt; solicitarFecha(String nombreCampo) {
+<span class="nc" id="L111">        while (true) {</span>
+<span class="nc" id="L112">            String fechaStr = leerCampo(nombreCampo + &quot; (yyyy-MM-dd)&quot;);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (fechaStr.isEmpty()) return Optional.empty();</span>
+            
+            try {
+<span class="nc" id="L116">                LocalDate fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+                
+                // Validaciones funcionales con Optional
+<span class="nc" id="L119">                return Optional.of(fecha)</span>
+<span class="nc bnc" id="L120" title="All 4 branches missed.">                    .filter(f -&gt; nombreCampo.toLowerCase().contains(&quot;nacimiento&quot;) ? !f.isAfter(LocalDate.now()) : true)</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                    .filter(f -&gt; !f.isBefore(LocalDate.of(1900, 1, 1)))</span>
+<span class="nc" id="L122">                    .map(f -&gt; fechaStr)</span>
+<span class="nc" id="L123">                    .or(() -&gt; {</span>
+<span class="nc bnc" id="L124" title="All 4 branches missed.">                        if (nombreCampo.toLowerCase().contains(&quot;nacimiento&quot;) &amp;&amp; fecha.isAfter(LocalDate.now())) {</span>
+<span class="nc" id="L125">                            mostrarMensaje(&quot;Error: La fecha de nacimiento no puede ser futura.&quot;);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                        } else if (fecha.isBefore(LocalDate.of(1900, 1, 1))) {</span>
+<span class="nc" id="L127">                            mostrarMensaje(&quot;Error: La fecha parece ser muy antigua. Verifique el formato.&quot;);</span>
+                        }
+<span class="nc" id="L129">                        return Optional.empty(); // Para continuar el bucle</span>
+                    });
+                    
+<span class="nc" id="L132">            } catch (DateTimeParseException e) {</span>
+<span class="nc" id="L133">                mostrarMensaje(&quot;Error: Formato de fecha incorrecto. Use yyyy-MM-dd (ejemplo: 1990-05-15).&quot;);</span>
+            }
+        }
+    }
+    
+    /**
+     * Solicita un email con validación
+     * @param nombreCampo Nombre del campo
+     * @return Optional con email validado o vacío si se cancela
+     */
+    private Optional&lt;String&gt; solicitarEmail(String nombreCampo) {
+        while (true) {
+<span class="nc" id="L145">            String email = leerCampo(nombreCampo);</span>
+<span class="nc bnc" id="L146" title="All 4 branches missed.">            if (email == null || email.isEmpty()) {</span>
+<span class="nc" id="L147">                return Optional.empty(); // Cancelar</span>
+            }
+<span class="nc" id="L149">            return Optional.ofNullable(email)</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                .flatMap(e -&gt; e.matches(&quot;^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$&quot;) </span>
+<span class="nc" id="L151">                    ? Optional.of(e) </span>
+<span class="nc" id="L152">                    : Optional.empty())</span>
+<span class="nc" id="L153">                .or(() -&gt; {</span>
+<span class="nc" id="L154">                    mostrarMensaje(&quot;Error: El formato de email no es válido.&quot;);</span>
+<span class="nc" id="L155">                    return Optional.empty();</span>
+                });
+        }
+    }
+    
+    /**
+     * Solicita un teléfono con validación
+     * @param nombreCampo Nombre del campo
+     * @return Optional con teléfono validado o vacío si se cancela
+     */
+    private Optional&lt;String&gt; solicitarTelefono(String nombreCampo) {
+        while (true) {
+<span class="nc" id="L167">            String telefono = leerCampo(nombreCampo);</span>
+<span class="nc bnc" id="L168" title="All 4 branches missed.">            if (telefono == null || telefono.isEmpty()) {</span>
+<span class="nc" id="L169">                return Optional.empty(); // Cancelar</span>
+            }
+            
+            // Eliminar espacios y caracteres especiales
+<span class="nc" id="L173">            String telefonoLimpio = telefono.replaceAll(&quot;[\\s\\-\\(\\)]&quot;, &quot;&quot;);</span>
+            
+<span class="nc" id="L175">            return Optional.ofNullable(telefonoLimpio)</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">                .flatMap(t -&gt; t.matches(&quot;\\d{9,15}&quot;) ? Optional.of(t) : Optional.empty())</span>
+<span class="nc" id="L177">                .or(() -&gt; {</span>
+<span class="nc" id="L178">                    mostrarMensaje(&quot;Error: El teléfono debe tener entre 9 y 15 dígitos.&quot;);</span>
+<span class="nc" id="L179">                    return Optional.empty();</span>
+                });
+        }
+    }
+    
+    /**
+     * Solicita identificación con validación
+     * @param nombreCampo Nombre del campo
+     * @return Optional con identificación validada o vacío si se cancela
+     */
+    private Optional&lt;String&gt; solicitarIdentificacion(String nombreCampo) {
+        while (true) {
+<span class="nc" id="L191">            String identificacion = leerCampo(nombreCampo);</span>
+<span class="nc bnc" id="L192" title="All 4 branches missed.">            if (identificacion == null || identificacion.isEmpty()) {</span>
+<span class="nc" id="L193">                return Optional.empty(); // Cancelar</span>
+            }
+            
+<span class="nc" id="L196">            return Optional.ofNullable(identificacion)</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">                .flatMap(id -&gt; id.matches(&quot;^[A-Za-z0-9]{5,20}$&quot;) ? Optional.of(id.toUpperCase()) : Optional.empty())</span>
+<span class="nc" id="L198">                .or(() -&gt; {</span>
+<span class="nc" id="L199">                    mostrarMensaje(&quot;Error: La identificación debe tener entre 5 y 20 caracteres alfanuméricos.&quot;);</span>
+<span class="nc" id="L200">                    return Optional.empty();</span>
+                });
+        }
+    }
+    
+    /**
+     * Solicita un valor decimal con validación
+     * @param nombreCampo Nombre del campo
+     * @return Optional con decimal validado o vacío si se cancela
+     */
+    private Optional&lt;String&gt; solicitarDecimal(String nombreCampo) {
+<span class="nc" id="L211">        while (true) {</span>
+<span class="nc" id="L212">            String valor = leerCampo(nombreCampo);</span>
+<span class="nc bnc" id="L213" title="All 4 branches missed.">            if (valor == null || valor.isEmpty()) {</span>
+<span class="nc" id="L214">                return Optional.of(&quot;0.00&quot;); // Valor por defecto</span>
+            }
+            
+            try {
+<span class="nc" id="L218">                double decimal = Double.parseDouble(valor);</span>
+<span class="nc" id="L219">                return Optional.of(decimal)</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">                    .filter(d -&gt; d &gt;= 0)</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                    .filter(d -&gt; d &lt;= 999999999.99)</span>
+<span class="nc" id="L222">                    .map(d -&gt; String.format(&quot;%.2f&quot;, d))</span>
+<span class="nc" id="L223">                    .or(() -&gt; {</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">                        if (decimal &lt; 0) {</span>
+<span class="nc" id="L225">                            mostrarMensaje(&quot;Error: El valor no puede ser negativo.&quot;);</span>
+<span class="nc" id="L226">                        } else {</span>
+<span class="nc" id="L227">                            mostrarMensaje(&quot;Error: El valor es demasiado alto.&quot;);</span>
+                        }
+<span class="nc" id="L229">                        return Optional.empty();</span>
+                    });
+<span class="nc" id="L231">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L232">                mostrarMensaje(&quot;Error: Por favor, introduzca un número válido (ejemplo: 100.50).&quot;);</span>
+            }
+        }
+    }
+    
+    /**
+     * Método protegido para leer un campo de texto con validación básica
+     * @param nombreCampo Nombre del campo a leer
+     * @return Optional con valor del campo o vacío si se cancela
+     */
+    private Optional&lt;String&gt; leerCampoConValidacion(String nombreCampo) {
+        while (true) {
+<span class="nc" id="L244">            String valor = leerCampo(nombreCampo);</span>
+<span class="nc bnc" id="L245" title="All 4 branches missed.">            if (valor == null || valor.isEmpty()) {</span>
+<span class="nc" id="L246">                mostrarMensaje(&quot;Error: Este campo es obligatorio.&quot;);</span>
+<span class="nc" id="L247">                continue;</span>
+            }
+            
+<span class="nc" id="L250">            return Optional.ofNullable(valor)</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">                .filter(v -&gt; v.length() &gt;= 2)</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">                .filter(v -&gt; v.length() &lt;= 100)</span>
+<span class="nc" id="L253">                .or(() -&gt; {</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">                    if (valor.length() &lt; 2) {</span>
+<span class="nc" id="L255">                        mostrarMensaje(&quot;Error: El campo debe tener al menos 2 caracteres.&quot;);</span>
+<span class="nc" id="L256">                    } else {</span>
+<span class="nc" id="L257">                        mostrarMensaje(&quot;Error: El campo es demasiado largo (máximo 100 caracteres).&quot;);</span>
+                    }
+<span class="nc" id="L259">                    return Optional.empty();</span>
+                });
+        }
+    }
+    
+    /**
+     * Método protegido para leer un campo de texto
+     * @param nombreCampo Nombre del campo a leer
+     * @return Valor del campo
+     */
+    protected String leerCampo(String nombreCampo) {
+<span class="nc" id="L270">        consola.mostrar(nombreCampo + &quot;: &quot;);</span>
+<span class="nc" id="L271">        return consola.leerLinea().trim();</span>
+    }
+    
+   
+    /**
+     * Método genérico para leer un número Long con mensaje personalizado
+     * @param mensaje Mensaje a mostrar
+     * @param mensajeError Mensaje de error personalizado
+     * @return Optional con el número o vacío si no es válido
+     */
+    protected Optional&lt;Long&gt; leerNumero(String mensaje, String mensajeError) {
+<span class="nc" id="L282">        consola.mostrar(mensaje + &quot;: &quot;);</span>
+        try {
+<span class="nc" id="L284">            String input = consola.leerLinea().trim();</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">            return input.isEmpty() ? Optional.empty() : Optional.of(Long.parseLong(input));</span>
+<span class="nc" id="L286">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L287">            mostrarMensaje(&quot;Error: &quot; + mensajeError);</span>
+<span class="nc" id="L288">            return Optional.empty();</span>
+        }
+    }
+    
+    /**
+     * Método genérico para leer un número Integer con validación de rango
+     * @param mensaje Mensaje a mostrar
+     * @param min Valor mínimo (inclusive)
+     * @param max Valor máximo (inclusive)
+     * @param mensajeError Mensaje de error personalizado
+     * @return Optional con el número o vacío si no es válido
+     */
+    protected Optional&lt;Integer&gt; leerNumeroConRango(String mensaje, int min, int max, String mensajeError) {
+<span class="nc" id="L301">        consola.mostrar(mensaje + &quot;: &quot;);</span>
+        try {
+<span class="nc" id="L303">            int seleccion = Integer.parseInt(consola.leerLinea().trim());</span>
+<span class="nc bnc" id="L304" title="All 4 branches missed.">            return (seleccion &gt;= min &amp;&amp; seleccion &lt;= max) </span>
+<span class="nc" id="L305">                ? Optional.of(seleccion) </span>
+<span class="nc" id="L306">                : Optional.empty();</span>
+<span class="nc" id="L307">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L308">            mostrarMensaje(&quot;Error: &quot; + mensajeError);</span>
+<span class="nc" id="L309">            return Optional.empty();</span>
+        }
+    }
+    
+    /**
+     * Método abstracto para mostrar una entidad
+     * Cada vista debe implementar cómo mostrar su tipo específico de entidad
+     * @param entidad Optional con la entidad a mostrar
+     */
+    public abstract void mostrarEntidad(Optional&lt;T&gt; entidad);
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

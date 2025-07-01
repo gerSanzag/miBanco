@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransaccionRepositorioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">TransaccionRepositorioImpl.java</span></div><h1>TransaccionRepositorioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
+
+import com.mibanco.modelo.Transaccion;
+import com.mibanco.modelo.enums.TipoOperacionTransaccion;
+import com.mibanco.modelo.enums.TipoTransaccion;
+import com.mibanco.repositorio.TransaccionRepositorio;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.List;
+
+/**
+ * Implementación del repositorio de Transacciones
+ * Visibilidad restringida al paquete internal
+ */
+class TransaccionRepositorioImpl extends BaseRepositorioImpl&lt;Transaccion, Long, TipoOperacionTransaccion&gt; implements TransaccionRepositorio {
+    
+    /**
+     * Constructor con visibilidad de paquete
+     */
+    TransaccionRepositorioImpl() {
+<span class="nc" id="L23">        super();</span>
+<span class="nc" id="L24">    }</span>
+   
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorCuenta(Optional&lt;String&gt; numeroCuenta) {
+<span class="nc" id="L28">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L29">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getNumeroCuenta().equals(numero))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorTipo(Optional&lt;TipoTransaccion&gt; tipo) {
+<span class="nc" id="L35">        return tipo.flatMap(t -&gt; </span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getTipo() == t)</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorFecha(Optional&lt;LocalDate&gt; fecha) {
+<span class="nc" id="L42">        return fecha.flatMap(f -&gt; </span>
+<span class="nc" id="L43">            buscarTodosPorPredicado(transaccion -&gt; </span>
+<span class="nc" id="L44">                transaccion.getFecha().toLocalDate().equals(f))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorRangoFechas(Optional&lt;LocalDate&gt; fechaInicio, Optional&lt;LocalDate&gt; fechaFin) {
+<span class="nc" id="L50">        return fechaInicio.flatMap(inicio -&gt; </span>
+<span class="nc" id="L51">            fechaFin.flatMap(fin -&gt; </span>
+<span class="nc" id="L52">                buscarTodosPorPredicado(transaccion -&gt; {</span>
+<span class="nc" id="L53">                    LocalDateTime fechaTransaccion = transaccion.getFecha();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">                    return !fechaTransaccion.toLocalDate().isBefore(inicio) &amp;&amp; </span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                           !fechaTransaccion.toLocalDate().isAfter(fin);</span>
+<span class="nc" id="L56">                })</span>
+<span class="nc" id="L57">            )</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarTodas() {
+<span class="nc" id="L63">        return buscarTodos();</span>
+    }
+    
+    @Override
+    public Optional&lt;Transaccion&gt; eliminarPorId(Optional&lt;Long&gt; id) {
+<span class="nc" id="L68">        return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);</span>
+    }
+
+    @Override
+    protected Transaccion crearConNuevoId(Transaccion transaccion) {
+<span class="nc" id="L73">        return transaccion.toBuilder()</span>
+<span class="nc" id="L74">                .id(idContador.getAndIncrement())</span>
+<span class="nc" id="L75">                .build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
