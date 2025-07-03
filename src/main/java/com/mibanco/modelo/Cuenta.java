@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import com.mibanco.modelo.enums.TipoCuenta;
 
 import lombok.Builder;
@@ -17,7 +19,9 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true)
 public class Cuenta implements Identificable {
+    @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
     Long numeroCuenta;
+    @NotNull(message = "El titular es obligatorio")
     Cliente titular;
     TipoCuenta tipo;
     @NoSolicitar(razon = "Se establece automáticamente al crear")

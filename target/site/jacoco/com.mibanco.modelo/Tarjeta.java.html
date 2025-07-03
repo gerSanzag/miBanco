@@ -4,6 +4,8 @@ import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import com.mibanco.modelo.enums.TipoTarjeta;
 
 import lombok.Builder;
@@ -19,6 +21,7 @@ import lombok.Value;
 public class Tarjeta implements Identificable {
     @NoSolicitar(razon = &quot;Se genera automáticamente&quot;)
     String numero;
+    @NotNull(message = &quot;El titular no puede ser nulo&quot;)
     Cliente titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
@@ -36,7 +39,7 @@ public class Tarjeta implements Identificable {
      */
     @Override
     public Long getId() {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        return numero != null ? (long) numero.hashCode() : null;</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        return numero != null ? (long) numero.hashCode() : null;</span>
     }
     
     /**
@@ -44,15 +47,15 @@ public class Tarjeta implements Identificable {
      */
     public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
                             TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
-<span class="nc" id="L47">        return Tarjeta.builder()</span>
-<span class="nc" id="L48">                .numero(numero)</span>
-<span class="nc" id="L49">                .titular(titular)</span>
-<span class="nc" id="L50">                .numeroCuentaAsociada(numeroCuentaAsociada)</span>
-<span class="nc" id="L51">                .tipo(tipo)</span>
-<span class="nc" id="L52">                .fechaExpiracion(fechaExpiracion)</span>
-<span class="nc" id="L53">                .cvv(cvv)</span>
-<span class="nc" id="L54">                .activa(activa)</span>
-<span class="nc" id="L55">                .build();</span>
+<span class="fc" id="L50">        return Tarjeta.builder()</span>
+<span class="fc" id="L51">                .numero(numero)</span>
+<span class="fc" id="L52">                .titular(titular)</span>
+<span class="fc" id="L53">                .numeroCuentaAsociada(numeroCuentaAsociada)</span>
+<span class="fc" id="L54">                .tipo(tipo)</span>
+<span class="fc" id="L55">                .fechaExpiracion(fechaExpiracion)</span>
+<span class="fc" id="L56">                .cvv(cvv)</span>
+<span class="fc" id="L57">                .activa(activa)</span>
+<span class="fc" id="L58">                .build();</span>
     }
     
     /**
@@ -60,9 +63,9 @@ public class Tarjeta implements Identificable {
      * @return Una nueva instancia con la fecha actualizada
      */
     public Tarjeta conFechaExpiracion(LocalDate nuevaFecha) {
-<span class="nc" id="L63">        return this.toBuilder()</span>
-<span class="nc" id="L64">                .fechaExpiracion(nuevaFecha)</span>
-<span class="nc" id="L65">                .build();</span>
+<span class="fc" id="L66">        return this.toBuilder()</span>
+<span class="fc" id="L67">                .fechaExpiracion(nuevaFecha)</span>
+<span class="fc" id="L68">                .build();</span>
     }
     
     /**
@@ -70,9 +73,9 @@ public class Tarjeta implements Identificable {
      * @return Una nueva instancia con el estado actualizado
      */
     public Tarjeta conActiva(boolean nuevaActiva) {
-<span class="nc" id="L73">        return this.toBuilder()</span>
-<span class="nc" id="L74">                .activa(nuevaActiva)</span>
-<span class="nc" id="L75">                .build();</span>
+<span class="fc" id="L76">        return this.toBuilder()</span>
+<span class="fc" id="L77">                .activa(nuevaActiva)</span>
+<span class="fc" id="L78">                .build();</span>
     }
     
     /**
@@ -80,10 +83,10 @@ public class Tarjeta implements Identificable {
      * @return Una nueva instancia con los campos actualizados
      */
     public Tarjeta conActualizaciones(Optional&lt;LocalDate&gt; nuevaFecha, Optional&lt;Boolean&gt; nuevaActiva) {
-<span class="nc" id="L83">        return this.toBuilder()</span>
-<span class="nc" id="L84">                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))</span>
-<span class="nc" id="L85">                .activa(nuevaActiva.orElse(this.activa))</span>
-<span class="nc" id="L86">                .build();</span>
+<span class="fc" id="L86">        return this.toBuilder()</span>
+<span class="fc" id="L87">                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))</span>
+<span class="fc" id="L88">                .activa(nuevaActiva.orElse(this.activa))</span>
+<span class="fc" id="L89">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

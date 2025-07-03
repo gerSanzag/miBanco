@@ -4,6 +4,8 @@ import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import com.mibanco.modelo.enums.TipoTarjeta;
 
 import lombok.Builder;
@@ -19,6 +21,7 @@ import lombok.Value;
 public class Tarjeta implements Identificable {
     @NoSolicitar(razon = "Se genera automáticamente")
     String numero;
+    @NotNull(message = "El titular no puede ser nulo")
     Cliente titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;

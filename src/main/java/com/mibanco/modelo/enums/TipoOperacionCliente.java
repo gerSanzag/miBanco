@@ -14,5 +14,4 @@ public enum TipoOperacionCliente  {
     DESBLOQUEAR,
     CAMBIAR_DATOS_CONTACTO;
 
-    
 } 

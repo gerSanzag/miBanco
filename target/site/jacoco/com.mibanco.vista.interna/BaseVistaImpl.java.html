@@ -71,7 +71,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
 <span class="nc" id="L71">                return new HashMap&lt;&gt;(); // Cancelar si algún campo falla</span>
             }
 <span class="nc" id="L73">            datos.put(campo, valorOpt.get());</span>
-        }
+<span class="nc" id="L74">        }</span>
         
 <span class="nc" id="L76">        return datos;</span>
     }
@@ -83,7 +83,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
     private Optional&lt;String&gt; solicitarCampoPorTipo(String campo, Class&lt;?&gt; modelo) {
         // Map funcional de validadores por tipo de campo
 <span class="nc" id="L85">        Map&lt;String, Function&lt;String, Optional&lt;String&gt;&gt;&gt; validadores = Map.of(</span>
-<span class="nc" id="L86">            &quot;fecha&quot;, this::solicitarFecha,</span>
+            &quot;fecha&quot;, this::solicitarFecha,
 <span class="nc" id="L87">            &quot;email&quot;, campoStr -&gt; solicitarEmail(campoStr),</span>
 <span class="nc" id="L88">            &quot;telefono&quot;, campoStr -&gt; solicitarTelefono(campoStr),</span>
 <span class="nc" id="L89">            &quot;teléfono&quot;, campoStr -&gt; solicitarTelefono(campoStr),</span>
@@ -108,7 +108,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
      * @return Optional con la fecha en formato String o vacío si se cancela
      */
     private Optional&lt;String&gt; solicitarFecha(String nombreCampo) {
-<span class="nc" id="L111">        while (true) {</span>
+        while (true) {
 <span class="nc" id="L112">            String fechaStr = leerCampo(nombreCampo + &quot; (yyyy-MM-dd)&quot;);</span>
 <span class="nc bnc" id="L113" title="All 2 branches missed.">            if (fechaStr.isEmpty()) return Optional.empty();</span>
             
@@ -132,7 +132,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
 <span class="nc" id="L132">            } catch (DateTimeParseException e) {</span>
 <span class="nc" id="L133">                mostrarMensaje(&quot;Error: Formato de fecha incorrecto. Use yyyy-MM-dd (ejemplo: 1990-05-15).&quot;);</span>
             }
-        }
+<span class="nc" id="L135">        }</span>
     }
     
     /**
@@ -208,7 +208,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
      * @return Optional con decimal validado o vacío si se cancela
      */
     private Optional&lt;String&gt; solicitarDecimal(String nombreCampo) {
-<span class="nc" id="L211">        while (true) {</span>
+        while (true) {
 <span class="nc" id="L212">            String valor = leerCampo(nombreCampo);</span>
 <span class="nc bnc" id="L213" title="All 4 branches missed.">            if (valor == null || valor.isEmpty()) {</span>
 <span class="nc" id="L214">                return Optional.of(&quot;0.00&quot;); // Valor por defecto</span>
@@ -223,7 +223,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
 <span class="nc" id="L223">                    .or(() -&gt; {</span>
 <span class="nc bnc" id="L224" title="All 2 branches missed.">                        if (decimal &lt; 0) {</span>
 <span class="nc" id="L225">                            mostrarMensaje(&quot;Error: El valor no puede ser negativo.&quot;);</span>
-<span class="nc" id="L226">                        } else {</span>
+                        } else {
 <span class="nc" id="L227">                            mostrarMensaje(&quot;Error: El valor es demasiado alto.&quot;);</span>
                         }
 <span class="nc" id="L229">                        return Optional.empty();</span>
@@ -231,7 +231,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
 <span class="nc" id="L231">            } catch (NumberFormatException e) {</span>
 <span class="nc" id="L232">                mostrarMensaje(&quot;Error: Por favor, introduzca un número válido (ejemplo: 100.50).&quot;);</span>
             }
-        }
+<span class="nc" id="L234">        }</span>
     }
     
     /**
@@ -253,7 +253,7 @@ abstract class BaseVistaImpl&lt;T&gt; implements BaseVista&lt;T&gt; {
 <span class="nc" id="L253">                .or(() -&gt; {</span>
 <span class="nc bnc" id="L254" title="All 2 branches missed.">                    if (valor.length() &lt; 2) {</span>
 <span class="nc" id="L255">                        mostrarMensaje(&quot;Error: El campo debe tener al menos 2 caracteres.&quot;);</span>
-<span class="nc" id="L256">                    } else {</span>
+                    } else {
 <span class="nc" id="L257">                        mostrarMensaje(&quot;Error: El campo es demasiado largo (máximo 100 caracteres).&quot;);</span>
                     }
 <span class="nc" id="L259">                    return Optional.empty();</span>

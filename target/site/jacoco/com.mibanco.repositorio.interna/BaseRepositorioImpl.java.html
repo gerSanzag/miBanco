@@ -75,7 +75,7 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
 <span class="nc" id="L75">                    entidades.add(entidad);</span>
 <span class="nc" id="L76">                    registrarAuditoria(entidad, tipoOperacion);</span>
 <span class="nc" id="L77">                    return entidad;</span>
-<span class="nc" id="L78">                })</span>
+                })
         );
     }
     
@@ -161,9 +161,9 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     private void registrarAuditoria(T entidad, E tipoOperacion) {
 <span class="nc" id="L162">        AuditoriaUtil.registrarOperacion(</span>
 <span class="nc" id="L163">            obtenerAuditoria(),</span>
-<span class="nc" id="L164">            tipoOperacion,</span>
-<span class="nc" id="L165">            entidad,</span>
-<span class="nc" id="L166">            usuarioActual</span>
+            tipoOperacion,
+            entidad,
+            usuarioActual
         );
 <span class="nc" id="L168">    }</span>
 

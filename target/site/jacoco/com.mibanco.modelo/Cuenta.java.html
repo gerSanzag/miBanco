@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import com.mibanco.modelo.enums.TipoCuenta;
 
 import lombok.Builder;
@@ -17,7 +19,9 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true)
 public class Cuenta implements Identificable {
+    @NoSolicitar(razon = &quot;Se establece automáticamente en el repositorio&quot;)
     Long numeroCuenta;
+    @NotNull(message = &quot;El titular es obligatorio&quot;)
     Cliente titular;
     TipoCuenta tipo;
     @NoSolicitar(razon = &quot;Se establece automáticamente al crear&quot;)
@@ -35,7 +39,7 @@ public class Cuenta implements Identificable {
      */
     @Override
     public Long getId() {
-<span class="nc" id="L38">        return numeroCuenta;</span>
+<span class="fc" id="L42">        return numeroCuenta;</span>
     }
     
     /**
@@ -43,15 +47,15 @@ public class Cuenta implements Identificable {
      */
     public static Cuenta of(Long numeroCuenta, Cliente titular, TipoCuenta tipo, 
                            BigDecimal saldoInicial, LocalDateTime fechaCreacion, boolean activa) {
-<span class="nc" id="L46">        return Cuenta.builder()</span>
-<span class="nc" id="L47">                .numeroCuenta(numeroCuenta)</span>
-<span class="nc" id="L48">                .titular(titular)</span>
-<span class="nc" id="L49">                .tipo(tipo)</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">                .fechaCreacion(fechaCreacion != null ? fechaCreacion : LocalDateTime.now())</span>
-<span class="nc" id="L53">                .activa(activa)</span>
-<span class="nc" id="L54">                .build();</span>
+<span class="fc" id="L50">        return Cuenta.builder()</span>
+<span class="fc" id="L51">                .numeroCuenta(numeroCuenta)</span>
+<span class="fc" id="L52">                .titular(titular)</span>
+<span class="fc" id="L53">                .tipo(tipo)</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                .fechaCreacion(fechaCreacion != null ? fechaCreacion : LocalDateTime.now())</span>
+<span class="fc" id="L57">                .activa(activa)</span>
+<span class="fc" id="L58">                .build();</span>
     }
     
     /**
@@ -59,9 +63,9 @@ public class Cuenta implements Identificable {
      * @return Una nueva instancia con el saldo actualizado
      */
     public Cuenta conSaldo(BigDecimal nuevoSaldo) {
-<span class="nc" id="L62">        return this.toBuilder()</span>
-<span class="nc" id="L63">                .saldo(nuevoSaldo)</span>
-<span class="nc" id="L64">                .build();</span>
+<span class="fc" id="L66">        return this.toBuilder()</span>
+<span class="fc" id="L67">                .saldo(nuevoSaldo)</span>
+<span class="fc" id="L68">                .build();</span>
     }
     
     /**
@@ -69,9 +73,9 @@ public class Cuenta implements Identificable {
      * @return Una nueva instancia con el estado actualizado
      */
     public Cuenta conActiva(boolean nuevaActiva) {
-<span class="nc" id="L72">        return this.toBuilder()</span>
-<span class="nc" id="L73">                .activa(nuevaActiva)</span>
-<span class="nc" id="L74">                .build();</span>
+<span class="fc" id="L76">        return this.toBuilder()</span>
+<span class="fc" id="L77">                .activa(nuevaActiva)</span>
+<span class="fc" id="L78">                .build();</span>
     }
     
     /**
@@ -79,10 +83,10 @@ public class Cuenta implements Identificable {
      * @return Una nueva instancia con los campos actualizados
      */
     public Cuenta conActualizaciones(Optional&lt;BigDecimal&gt; nuevoSaldo, Optional&lt;Boolean&gt; nuevaActiva) {
-<span class="nc" id="L82">        return this.toBuilder()</span>
-<span class="nc" id="L83">                .saldo(nuevoSaldo.orElse(this.saldo))</span>
-<span class="nc" id="L84">                .activa(nuevaActiva.orElse(this.activa))</span>
-<span class="nc" id="L85">                .build();</span>
+<span class="fc" id="L86">        return this.toBuilder()</span>
+<span class="fc" id="L87">                .saldo(nuevoSaldo.orElse(this.saldo))</span>
+<span class="fc" id="L88">                .activa(nuevaActiva.orElse(this.activa))</span>
+<span class="fc" id="L89">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
