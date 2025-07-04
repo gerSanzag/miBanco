@@ -202,8 +202,8 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
                             .orElse(transaccionOriginal.getTipo());
                     
                     // Crear nueva transacción de anulación
-                    Transaccion transaccionAnulacion = transaccionOriginal.toBuilder()
-                            .id(null)
+                    Transaccion transaccionAnulacion = Transaccion.builder()
+                            .id(transaccionOriginal.getId())
                             .numeroCuenta(transaccionOriginal.getNumeroCuentaDestino())
                             .numeroCuentaDestino(transaccionOriginal.getNumeroCuenta())
                             .tipo(nuevoTipo)

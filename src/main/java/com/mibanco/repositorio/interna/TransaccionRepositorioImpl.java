@@ -70,7 +70,7 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
 
     @Override
     protected Transaccion crearConNuevoId(Transaccion transaccion) {
-        return transaccion.toBuilder()
+        return Transaccion.builder()
                 .id(idContador.getAndIncrement())
                 .build();
     }

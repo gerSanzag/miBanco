@@ -16,7 +16,7 @@ import lombok.Value;
  * - E para el tipo de operación (debe ser un enum)
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE) // Constructor privado para forzar uso del Builder
 public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
     // ID único del registro

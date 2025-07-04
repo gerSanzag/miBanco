@@ -14,7 +14,7 @@ import com.mibanco.modelo.enums.TipoTransaccion;
  * por lo que implementamos un enfoque completamente inmutable
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 public class Transaccion implements Identificable {
     Long id;
     Long numeroCuenta;

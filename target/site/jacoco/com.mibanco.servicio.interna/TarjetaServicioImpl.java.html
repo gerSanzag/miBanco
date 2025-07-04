@@ -43,13 +43,13 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarVariosCampos(String numeroTarjeta, Optional&lt;TarjetaDTO&gt; tarjetaDTO) {
 <span class="nc" id="L45">        Optional&lt;TarjetaDTO&gt; actualizaVariosCampos = actualizar(</span>
-            numeroTarjeta,
-            tarjetaDTO,
-            tipoActualizar,
+<span class="nc" id="L46">            numeroTarjeta,</span>
+<span class="nc" id="L47">            tarjetaDTO,</span>
+<span class="nc" id="L48">            tipoActualizar,</span>
 <span class="nc" id="L49">            (tarjetaExistente, tarjetaNueva) -&gt; tarjetaExistente.conActualizaciones(</span>
 <span class="nc" id="L50">                Optional.ofNullable(tarjetaNueva.getFechaExpiracion()),</span>
 <span class="nc" id="L51">                Optional.ofNullable(tarjetaNueva.isActiva())</span>
-            )
+<span class="nc" id="L52">            )</span>
         );
 <span class="nc" id="L54">        guardar(tipoActualizar, actualizaVariosCampos);</span>
 <span class="nc" id="L55">        return actualizaVariosCampos;</span>
@@ -71,10 +71,10 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarFechaExpiracion(String numeroTarjeta, Optional&lt;LocalDate&gt; nuevaFecha) {
 <span class="nc" id="L73">        Optional&lt;TarjetaDTO&gt; actualizaFecha = actualizarCampo(</span>
-            numeroTarjeta,
-            nuevaFecha,
-            Tarjeta::getFechaExpiracion,
-            Tarjeta::conFechaExpiracion
+<span class="nc" id="L74">            numeroTarjeta,</span>
+<span class="nc" id="L75">            nuevaFecha,</span>
+<span class="nc" id="L76">            Tarjeta::getFechaExpiracion,</span>
+<span class="nc" id="L77">            Tarjeta::conFechaExpiracion</span>
         );
 <span class="nc" id="L79">        guardar(tipoActualizar, actualizaFecha);</span>
 <span class="nc" id="L80">        return actualizaFecha;</span>
@@ -83,10 +83,10 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarEstadoTarjeta(String numeroTarjeta, Optional&lt;Boolean&gt; nuevaActiva) {
 <span class="nc" id="L85">        Optional&lt;TarjetaDTO&gt; actualizaEstado = actualizarCampo(</span>
-            numeroTarjeta,
-            nuevaActiva,
-            Tarjeta::isActiva,
-            Tarjeta::conActiva
+<span class="nc" id="L86">            numeroTarjeta,</span>
+<span class="nc" id="L87">            nuevaActiva,</span>
+<span class="nc" id="L88">            Tarjeta::isActiva,</span>
+<span class="nc" id="L89">            Tarjeta::conActiva</span>
         );
 <span class="nc" id="L91">        guardar(tipoActualizar, actualizaEstado);</span>
 <span class="nc" id="L92">        return actualizaEstado;</span>
@@ -97,11 +97,11 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L97">        Optional&lt;TarjetaDTO&gt; actualizaTitular = nuevoTitular.flatMap(dto -&gt; </span>
 <span class="nc" id="L98">            clienteMapeador.aEntidad(Optional.of(dto.getTitular()))</span>
 <span class="nc" id="L99">                .flatMap(titular -&gt; actualizarCampo(</span>
-                    numeroTarjeta,
+<span class="nc" id="L100">                    numeroTarjeta,</span>
 <span class="nc" id="L101">                    Optional.of(titular),</span>
-                    Tarjeta::getTitular,
+<span class="nc" id="L102">                    Tarjeta::getTitular,</span>
 <span class="nc" id="L103">                    (tarjeta, nvoTitular) -&gt; tarjeta.toBuilder().titular(titular).build()</span>
-                ))
+<span class="nc" id="L104">                ))</span>
         );
 <span class="nc" id="L106">        guardar(tipoActualizar, actualizaTitular);</span>
 <span class="nc" id="L107">        return actualizaTitular;</span>
@@ -149,7 +149,7 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L149">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
 <span class="nc" id="L150">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L151">                        .toList()</span>
-                ))
+<span class="nc" id="L152">                ))</span>
         );
     }
     
@@ -162,7 +162,7 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L162">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
 <span class="nc" id="L163">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L164">                        .toList()</span>
-                ))
+<span class="nc" id="L165">                ))</span>
         );
     }
     
@@ -174,7 +174,7 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L174">                    .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
 <span class="nc" id="L175">                    .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L176">                    .toList()</span>
-            ));
+<span class="nc" id="L177">            ));</span>
     }
     
     @Override
@@ -186,7 +186,7 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L186">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
 <span class="nc" id="L187">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L188">                        .toList()</span>
-                ))
+<span class="nc" id="L189">                ))</span>
         );
     }
 } 
