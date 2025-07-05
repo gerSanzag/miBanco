@@ -29,20 +29,20 @@ public class RespuestaDTO&lt;T&gt; {
      * @return ResponseDTO con éxito
      */
     public static &lt;T&gt; RespuestaDTO&lt;T&gt; success(T data, Optional&lt;String&gt; message) {
-<span class="nc" id="L32">        return RespuestaDTO.&lt;T&gt;builder()</span>
-<span class="nc" id="L33">                .success(true)</span>
-<span class="nc" id="L34">                .message(message.orElse(&quot;Operación realizada con éxito&quot;))</span>
-<span class="nc" id="L35">                .data(data)</span>
-<span class="nc" id="L36">                .errors(Collections.emptyList())</span>
-<span class="nc" id="L37">                .timestamp(LocalDateTime.now())</span>
-<span class="nc" id="L38">                .build();</span>
+<span class="fc" id="L32">        return RespuestaDTO.&lt;T&gt;builder()</span>
+<span class="fc" id="L33">                .success(true)</span>
+<span class="fc" id="L34">                .message(message.orElse(&quot;Operación realizada con éxito&quot;))</span>
+<span class="fc" id="L35">                .data(data)</span>
+<span class="fc" id="L36">                .errors(Collections.emptyList())</span>
+<span class="fc" id="L37">                .timestamp(LocalDateTime.now())</span>
+<span class="fc" id="L38">                .build();</span>
     }
 
     /**
      * Método factory simplificado para crear una respuesta exitosa
      */
     public static &lt;T&gt; RespuestaDTO&lt;T&gt; success(T data) {
-<span class="nc" id="L45">        return success(data, Optional.empty());</span>
+<span class="fc" id="L45">        return success(data, Optional.empty());</span>
     }
 
     /**
@@ -52,20 +52,20 @@ public class RespuestaDTO&lt;T&gt; {
      * @return ResponseDTO con error
      */
     public static &lt;T&gt; RespuestaDTO&lt;T&gt; error(String message, Optional&lt;List&lt;String&gt;&gt; errors) {
-<span class="nc" id="L55">        return RespuestaDTO.&lt;T&gt;builder()</span>
-<span class="nc" id="L56">                .success(false)</span>
-<span class="nc" id="L57">                .message(message)</span>
-<span class="nc" id="L58">                .data(null)</span>
-<span class="nc" id="L59">                .errors(errors.orElse(Collections.emptyList()))</span>
-<span class="nc" id="L60">                .timestamp(LocalDateTime.now())</span>
-<span class="nc" id="L61">                .build();</span>
+<span class="fc" id="L55">        return RespuestaDTO.&lt;T&gt;builder()</span>
+<span class="fc" id="L56">                .success(false)</span>
+<span class="fc" id="L57">                .message(message)</span>
+<span class="fc" id="L58">                .data(null)</span>
+<span class="fc" id="L59">                .errors(errors.orElse(Collections.emptyList()))</span>
+<span class="fc" id="L60">                .timestamp(LocalDateTime.now())</span>
+<span class="fc" id="L61">                .build();</span>
     }
 
     /**
      * Método factory simplificado para crear una respuesta de error
      */
     public static &lt;T&gt; RespuestaDTO&lt;T&gt; error(String message) {
-<span class="nc" id="L68">        return error(message, Optional.empty());</span>
+<span class="fc" id="L68">        return error(message, Optional.empty());</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

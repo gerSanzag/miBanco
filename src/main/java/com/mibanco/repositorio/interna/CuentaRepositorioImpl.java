@@ -1,5 +1,6 @@
 package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.CuentaDTO;
 import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
@@ -56,7 +57,7 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
     }
     
     @Override
-    protected Cuenta crearConNuevoId(Cuenta cuenta) {
+    protected CuentaDTO crearConNuevoId(CuentaDTO cuenta) {
         long numeroAleatorio = System.currentTimeMillis() % 1000000000L;
         return cuenta.toBuilder()
                 .numeroCuenta(numeroAleatorio)
