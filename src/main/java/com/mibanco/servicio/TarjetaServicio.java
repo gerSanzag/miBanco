@@ -2,10 +2,9 @@ package com.mibanco.servicio;
 
 import com.mibanco.dto.TarjetaDTO;
 import com.mibanco.modelo.enums.TipoTarjeta;
-import com.mibanco.modelo.enums.TipoOperacionTarjeta;
-
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -14,11 +13,12 @@ import java.util.Optional;
 public interface TarjetaServicio {
     
     /**
-     * Crea una nueva tarjeta
-     * @param tarjetaDTO Optional con los datos de la nueva tarjeta
+     * Crea una nueva tarjeta a partir de datos crudos
+     * @param datosTarjeta Mapa con los datos crudos de la tarjeta
      * @return Optional con el DTO de la tarjeta creada
      */
-    Optional<TarjetaDTO> crearTarjeta(Optional<TarjetaDTO> tarjetaDTO);
+    Optional<TarjetaDTO> crearTarjetaDto(Map<String, String> datosTarjeta);
+    
     
     /**
      * Actualiza la información completa de una tarjeta

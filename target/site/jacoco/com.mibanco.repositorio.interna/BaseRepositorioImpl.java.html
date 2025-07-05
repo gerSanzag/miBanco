@@ -59,10 +59,10 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     @Override
     public Optional&lt;T&gt; crear(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
 <span class="nc" id="L61">        return entityOpt.map(entity -&gt; {</span>
-<span class="nc" id="L62">            T nuevaEntidad = crearConNuevoId(entity);</span>
-<span class="nc" id="L63">            entidades.add(nuevaEntidad);</span>
-<span class="nc" id="L64">            registrarAuditoria(nuevaEntidad, tipoOperacion);</span>
-<span class="nc" id="L65">            return Optional.of(nuevaEntidad);</span>
+            // T nuevaEntidad = crearConNuevoId(entity);
+<span class="nc" id="L63">            entidades.add(entity);</span>
+<span class="nc" id="L64">            registrarAuditoria(entity, tipoOperacion);</span>
+<span class="nc" id="L65">            return Optional.of(entity);</span>
 <span class="nc" id="L66">        }).orElse(Optional.empty());</span>
     }
     
@@ -150,26 +150,22 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
         });
     }
     
-    /**
-     * Método abstracto protegido para crear entidad con nuevo ID
-     */
-    protected abstract T crearConNuevoId(T entity);
     
     /**
      * Método privado para registrar auditoría
      */
     private void registrarAuditoria(T entidad, E tipoOperacion) {
-<span class="nc" id="L162">        AuditoriaUtil.registrarOperacion(</span>
-<span class="nc" id="L163">            obtenerAuditoria(),</span>
-<span class="nc" id="L164">            tipoOperacion,</span>
-<span class="nc" id="L165">            entidad,</span>
-<span class="nc" id="L166">            usuarioActual</span>
+<span class="nc" id="L158">        AuditoriaUtil.registrarOperacion(</span>
+<span class="nc" id="L159">            obtenerAuditoria(),</span>
+<span class="nc" id="L160">            tipoOperacion,</span>
+<span class="nc" id="L161">            entidad,</span>
+<span class="nc" id="L162">            usuarioActual</span>
         );
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L164">    }</span>
 
     @Override
     public List&lt;T&gt; obtenerEliminados() {
-<span class="nc" id="L172">        return entidadesEliminadas;</span>
+<span class="nc" id="L168">        return entidadesEliminadas;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

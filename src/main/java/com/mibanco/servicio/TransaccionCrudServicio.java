@@ -2,11 +2,9 @@ package com.mibanco.servicio;
 
 import com.mibanco.dto.TransaccionDTO;
 import com.mibanco.modelo.enums.TipoTransaccion;
-import com.mibanco.modelo.enums.TipoOperacionTransaccion;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -15,11 +13,11 @@ import java.util.Optional;
 public interface TransaccionCrudServicio {
     
     /**
-     * Crea una nueva transacción
-     * @param transaccionDTO Optional con los datos de la nueva transacción
+     * Crea una nueva transacción con datos crudos y generación automática de ID
+     * @param datosTransaccion Map con los datos de la transacción (numeroCuenta, numeroCuentaDestino, tipo, monto, descripcion)
      * @return Optional con el DTO de la transacción creada
      */
-    Optional<TransaccionDTO> crearTransaccion(Optional<TransaccionDTO> transaccionDTO);
+    Optional<TransaccionDTO> crearTransaccion(Map<String, String> datosTransaccion);
     
     /**
      * Obtiene una transacción por su ID

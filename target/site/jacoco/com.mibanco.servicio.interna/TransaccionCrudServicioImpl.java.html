@@ -8,9 +8,15 @@ import com.mibanco.modelo.enums.TipoTransaccion;
 import com.mibanco.repositorio.TransaccionRepositorio;
 import com.mibanco.servicio.TransaccionCrudServicio;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 /**
  * Implementación del servicio de Transacciones
@@ -20,100 +26,145 @@ class TransaccionCrudServicioImpl extends BaseServicioImpl&lt;TransaccionDTO, Tr
     
     private static final TransaccionRepositorio repositorioTransaccion;
     private static final TransaccionMapeador mapeador;
+<span class="nc" id="L29">    private static final AtomicLong idContador = new AtomicLong(0);</span>
    
     static {
-<span class="nc" id="L25">        repositorioTransaccion = RepositorioFactoria.obtenerInstancia().obtenerRepositorioTransaccion();</span>
-<span class="nc" id="L26">        mapeador = new TransaccionMapeador();</span>
+<span class="nc" id="L32">        repositorioTransaccion = RepositorioFactoria.obtenerInstancia().obtenerRepositorioTransaccion();</span>
+<span class="nc" id="L33">        mapeador = new TransaccionMapeador();</span>
        
-<span class="nc" id="L28">    }</span>
+<span class="nc" id="L35">    }</span>
     
     public TransaccionCrudServicioImpl() {
-<span class="nc" id="L31">        super(repositorioTransaccion, mapeador);</span>
-<span class="nc" id="L32">    }</span>
+<span class="nc" id="L38">        super(repositorioTransaccion, mapeador);</span>
+<span class="nc" id="L39">    }</span>
     
     @Override
-    public Optional&lt;TransaccionDTO&gt; crearTransaccion(Optional&lt;TransaccionDTO&gt; transaccionDTO) {
-<span class="nc" id="L36">        return guardar(TipoOperacionTransaccion.CREAR, transaccionDTO);</span>
+    public Optional&lt;TransaccionDTO&gt; crearTransaccion(Map&lt;String, String&gt; datosTransaccion) {
+<span class="nc" id="L43">        return Optional.ofNullable(datosTransaccion)</span>
+<span class="nc" id="L44">                .flatMap(datos -&gt; {</span>
+                    try {
+                        // ✅ Supplier para generar ID secuencial automáticamente
+<span class="nc" id="L47">                        Supplier&lt;Long&gt; idSupplier = () -&gt; </span>
+<span class="nc" id="L48">                            idContador.incrementAndGet();</span>
+                        
+                        // Extraer y validar datos del Map
+<span class="nc" id="L51">                        Long numeroCuenta = Optional.ofNullable(datos.get(&quot;numeroCuenta&quot;))</span>
+<span class="nc" id="L52">                                .map(Long::parseLong)</span>
+<span class="nc" id="L53">                                .orElse(null);</span>
+                        
+<span class="nc" id="L55">                        Long numeroCuentaDestino = Optional.ofNullable(datos.get(&quot;numeroCuentaDestino&quot;))</span>
+<span class="nc" id="L56">                                .map(Long::parseLong)</span>
+<span class="nc" id="L57">                                .orElse(null);</span>
+                        
+<span class="nc" id="L59">                        TipoTransaccion tipo = Optional.ofNullable(datos.get(&quot;tipo&quot;))</span>
+<span class="nc" id="L60">                                .map(TipoTransaccion::valueOf)</span>
+<span class="nc" id="L61">                                .orElse(null);</span>
+                        
+<span class="nc" id="L63">                        BigDecimal monto = Optional.ofNullable(datos.get(&quot;monto&quot;))</span>
+<span class="nc" id="L64">                                .map(BigDecimal::new)</span>
+<span class="nc" id="L65">                                .orElse(null);</span>
+                        
+<span class="nc" id="L67">                        String descripcion = datos.getOrDefault(&quot;descripcion&quot;, &quot;&quot;);</span>
+                        
+                        // Crear DTO con datos validados y ID generado automáticamente
+<span class="nc" id="L70">                        TransaccionDTO transaccionDTO = TransaccionDTO.builder()</span>
+<span class="nc" id="L71">                                .id(idSupplier.get()) // ✅ Generar ID secuencial automáticamente</span>
+<span class="nc" id="L72">                                .numeroCuenta(numeroCuenta)</span>
+<span class="nc" id="L73">                                .numeroCuentaDestino(numeroCuentaDestino)</span>
+<span class="nc" id="L74">                                .tipo(tipo)</span>
+<span class="nc" id="L75">                                .monto(monto)</span>
+<span class="nc" id="L76">                                .fecha(LocalDateTime.now())</span>
+<span class="nc" id="L77">                                .descripcion(descripcion)</span>
+<span class="nc" id="L78">                                .build();</span>
+                        
+                        // Guardar usando el método heredado
+<span class="nc" id="L81">                        return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));</span>
+                        
+<span class="nc" id="L83">                    } catch (IllegalArgumentException e) {</span>
+                        // Manejo funcional de errores de parsing
+<span class="nc" id="L85">                        return Optional.empty();</span>
+                    }
+                });
     }
     
     @Override
     public Optional&lt;TransaccionDTO&gt; obtenerTransaccionPorId(Optional&lt;Long&gt; id) {
-<span class="nc" id="L41">        return obtenerPorId(id);</span>
+<span class="nc" id="L92">        return obtenerPorId(id);</span>
     }
     
     @Override
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; obtenerTodasLasTransacciones() {
-<span class="nc" id="L46">        return obtenerTodos();</span>
+<span class="nc" id="L97">        return obtenerTodos();</span>
     }
     
     @Override
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; buscarPorCuenta(Optional&lt;String&gt; numeroCuenta) {
-<span class="nc" id="L51">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L52">            repositorioTransaccion.buscarPorCuenta(Optional.of(numero))</span>
-<span class="nc" id="L53">                .flatMap(transacciones -&gt; Optional.of(</span>
-<span class="nc" id="L54">                    transacciones.stream()</span>
-<span class="nc" id="L55">                        .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
-<span class="nc" id="L56">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L57">                        .toList()</span>
-<span class="nc" id="L58">                ))</span>
+<span class="nc" id="L102">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L103">            repositorioTransaccion.buscarPorCuenta(Optional.of(numero))</span>
+<span class="nc" id="L104">                .flatMap(transacciones -&gt; Optional.of(</span>
+<span class="nc" id="L105">                    transacciones.stream()</span>
+<span class="nc" id="L106">                        .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
+<span class="nc" id="L107">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L108">                        .toList()</span>
+<span class="nc" id="L109">                ))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; buscarPorTipo(Optional&lt;TipoTransaccion&gt; tipo) {
-<span class="nc" id="L64">        return tipo.flatMap(t -&gt; </span>
-<span class="nc" id="L65">            repositorioTransaccion.buscarPorTipo(Optional.of(t))</span>
-<span class="nc" id="L66">                .flatMap(transacciones -&gt; Optional.of(</span>
-<span class="nc" id="L67">                    transacciones.stream()</span>
-<span class="nc" id="L68">                        .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
-<span class="nc" id="L69">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L70">                        .toList()</span>
-<span class="nc" id="L71">                ))</span>
+<span class="nc" id="L115">        return tipo.flatMap(t -&gt; </span>
+<span class="nc" id="L116">            repositorioTransaccion.buscarPorTipo(Optional.of(t))</span>
+<span class="nc" id="L117">                .flatMap(transacciones -&gt; Optional.of(</span>
+<span class="nc" id="L118">                    transacciones.stream()</span>
+<span class="nc" id="L119">                        .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
+<span class="nc" id="L120">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L121">                        .toList()</span>
+<span class="nc" id="L122">                ))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; buscarPorFecha(Optional&lt;LocalDate&gt; fecha) {
-<span class="nc" id="L77">        return fecha.flatMap(f -&gt; </span>
-<span class="nc" id="L78">            repositorioTransaccion.buscarPorFecha(Optional.of(f))</span>
-<span class="nc" id="L79">                .flatMap(transacciones -&gt; Optional.of(</span>
-<span class="nc" id="L80">                    transacciones.stream()</span>
-<span class="nc" id="L81">                        .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
-<span class="nc" id="L82">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L83">                        .toList()</span>
-<span class="nc" id="L84">                ))</span>
+<span class="nc" id="L128">        return fecha.flatMap(f -&gt; </span>
+<span class="nc" id="L129">            repositorioTransaccion.buscarPorFecha(Optional.of(f))</span>
+<span class="nc" id="L130">                .flatMap(transacciones -&gt; Optional.of(</span>
+<span class="nc" id="L131">                    transacciones.stream()</span>
+<span class="nc" id="L132">                        .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
+<span class="nc" id="L133">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L134">                        .toList()</span>
+<span class="nc" id="L135">                ))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; buscarPorRangoFechas(Optional&lt;LocalDate&gt; fechaInicio, Optional&lt;LocalDate&gt; fechaFin) {
-<span class="nc" id="L90">        return fechaInicio.flatMap(inicio -&gt; </span>
-<span class="nc" id="L91">            fechaFin.flatMap(fin -&gt; </span>
-<span class="nc" id="L92">                repositorioTransaccion.buscarPorRangoFechas(Optional.of(inicio), Optional.of(fin))</span>
-<span class="nc" id="L93">                    .flatMap(transacciones -&gt; Optional.of(</span>
-<span class="nc" id="L94">                        transacciones.stream()</span>
-<span class="nc" id="L95">                            .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
-<span class="nc" id="L96">                            .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L97">                            .toList()</span>
-<span class="nc" id="L98">                    ))</span>
-<span class="nc" id="L99">            )</span>
+<span class="nc" id="L141">        return fechaInicio.flatMap(inicio -&gt; </span>
+<span class="nc" id="L142">            fechaFin.flatMap(fin -&gt; </span>
+<span class="nc" id="L143">                repositorioTransaccion.buscarPorRangoFechas(Optional.of(inicio), Optional.of(fin))</span>
+<span class="nc" id="L144">                    .flatMap(transacciones -&gt; Optional.of(</span>
+<span class="nc" id="L145">                        transacciones.stream()</span>
+<span class="nc" id="L146">                            .map(transaccion -&gt; mapeador.aDto(Optional.of(transaccion)).orElse(null))</span>
+<span class="nc" id="L147">                            .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L148">                            .toList()</span>
+<span class="nc" id="L149">                    ))</span>
+<span class="nc" id="L150">            )</span>
         );
     }
     
     @Override
     public boolean eliminarTransaccion(Optional&lt;Long&gt; id) {
-<span class="nc" id="L105">        return eliminarPorId(id, TipoOperacionTransaccion.ELIMINAR);</span>
+<span class="nc" id="L156">        return eliminarPorId(id, TipoOperacionTransaccion.ELIMINAR);</span>
     }
     
     @Override
     public long contarTransacciones() {
-<span class="nc" id="L110">        return contarRegistros();</span>
+<span class="nc" id="L161">        return contarRegistros();</span>
     }
     
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L115">        super.establecerUsuarioActual(usuario);</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L166">        super.establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L167">    }</span>
 
     
 } 

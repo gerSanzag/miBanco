@@ -56,11 +56,5 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
         );
     }
     
-    @Override
-    protected CuentaDTO crearConNuevoId(CuentaDTO cuenta) {
-        long numeroAleatorio = System.currentTimeMillis() % 1000000000L;
-        return cuenta.toBuilder()
-                .numeroCuenta(numeroAleatorio)
-                .build();
-    }
+   
 } 

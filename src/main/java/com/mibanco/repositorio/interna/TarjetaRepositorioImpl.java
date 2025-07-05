@@ -54,10 +54,4 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOp
         return buscarTodosPorPredicado(Tarjeta::isActiva);
     }
     
-    @Override
-    protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
-        return tarjeta.toBuilder()
-                .numero(String.format("%016d", idContador.getAndIncrement()))
-                .build();
-    }
 } 
