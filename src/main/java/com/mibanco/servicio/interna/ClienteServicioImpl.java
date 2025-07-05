@@ -53,54 +53,58 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
 
     @Override
     public Optional<ClienteDTO> actualizarVariosCampos(Long id, Optional<ClienteDTO> clienteDTO) {
-        Optional<ClienteDTO> actualizaVariosCampos = actualizar(
-            id,
-            clienteDTO,
-            tipoActualizar,
-            (clienteExistente, clienteNuevo) -> clienteExistente.conDatosContacto(
-                Optional.ofNullable(clienteNuevo.getEmail()),
-                Optional.ofNullable(clienteNuevo.getTelefono()),
-                Optional.ofNullable(clienteNuevo.getDireccion())
-            )
-        );
-        guardar(tipoActualizar, actualizaVariosCampos);
-        return actualizaVariosCampos;
+        return clienteDTO.flatMap(nuevoCliente -> {
+            // Obtener el cliente existente
+            Optional<ClienteDTO> clienteExistenteOpt = obtenerPorId(Optional.of(id));
+            
+            return clienteExistenteOpt.map(clienteExistente -> {
+                // Actualizar usando métodos del DTO
+                ClienteDTO clienteActualizado = clienteExistente.conDatosContacto(
+                    Optional.ofNullable(nuevoCliente.getEmail()),
+                    Optional.ofNullable(nuevoCliente.getTelefono()),
+                    Optional.ofNullable(nuevoCliente.getDireccion())
+                );
+                
+                // Guardar y retornar
+                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+            });
+        });
     }
 
     @Override
     public Optional<ClienteDTO> actualizarEmailCliente(Long id, Optional<String> nuevoEmail) {
-        Optional<ClienteDTO> actualizadoEmail = actualizarCampo(
-            id,
-            nuevoEmail,
-            Cliente::getEmail,
-            Cliente::conEmail
-        );
-        guardar(tipoActualizar, actualizadoEmail);
-        return actualizadoEmail;
+        return nuevoEmail.flatMap(email -> {
+            Optional<ClienteDTO> clienteExistenteOpt = obtenerPorId(Optional.of(id));
+            
+            return clienteExistenteOpt.map(clienteExistente -> {
+                ClienteDTO clienteActualizado = clienteExistente.conEmail(email);
+                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+            });
+        });
     }
 
     @Override
     public Optional<ClienteDTO> actualizarTelefonoCliente(Long id, Optional<String> nuevoTelefono) {
-        Optional<ClienteDTO> actualizaTelefono = actualizarCampo(
-            id,
-            nuevoTelefono,
-            Cliente::getTelefono,
-            Cliente::conTelefono
-        );
-        guardar(tipoActualizar, actualizaTelefono);
-        return actualizaTelefono;
+        return nuevoTelefono.flatMap(telefono -> {
+            Optional<ClienteDTO> clienteExistenteOpt = obtenerPorId(Optional.of(id));
+            
+            return clienteExistenteOpt.map(clienteExistente -> {
+                ClienteDTO clienteActualizado = clienteExistente.conTelefono(telefono);
+                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+            });
+        });
     }
 
     @Override
     public Optional<ClienteDTO> actualizarDireccionCliente(Long id, Optional<String> nuevaDireccion) {
-        Optional<ClienteDTO> actualizaDireccion = actualizarCampo(
-            id,
-            nuevaDireccion,
-            Cliente::getDireccion,
-            Cliente::conDireccion
-        );
-        guardar(tipoActualizar, actualizaDireccion);
-        return actualizaDireccion;
+        return nuevaDireccion.flatMap(direccion -> {
+            Optional<ClienteDTO> clienteExistenteOpt = obtenerPorId(Optional.of(id));
+            
+            return clienteExistenteOpt.map(clienteExistente -> {
+                ClienteDTO clienteActualizado = clienteExistente.conDireccion(direccion);
+                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+            });
+        });
     }
 
     @Override

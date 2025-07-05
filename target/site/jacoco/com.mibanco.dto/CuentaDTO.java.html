@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoCuenta;
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 
 import lombok.Builder;
 import lombok.Value;
@@ -16,30 +17,35 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos &quot;with&quot;
 public class CuentaDTO {
+    @NoSolicitar(razon = &quot;Se establece automáticamente en el repositorio&quot;)
     Long numeroCuenta;
     ClienteDTO titular;
     TipoCuenta tipo;
-    BigDecimal saldoInicial;
-    BigDecimal saldo;
+    @NoSolicitar(razon = &quot;Se establece automáticamente al crear&quot;)
     LocalDateTime fechaCreacion;
+    @NoSolicitar(razon = &quot;Se establece automáticamente al crear y nunca cambia&quot;)
+    BigDecimal saldoInicial;
+    @NoSolicitar(razon = &quot;Se inicializa igual a saldoInicial y solo cambia por transacciones&quot;)
+    BigDecimal saldo;
+    @NoSolicitar(razon = &quot;Se establece por defecto como activa&quot;)
     boolean activa;
 
     /**
      * Método estático que construye un CuentaDTO con valores opcionales
      * Ejemplo de uso del enfoque funcional y Optionals
      */
-    public static CuentaDTO of(Long numeroCuenta, ClienteDTO titular, TipoCuenta tipo,
+        public static CuentaDTO of(Long numeroCuenta, Optional&lt;ClienteDTO&gt; titular, Optional&lt;TipoCuenta&gt; tipo,
                                BigDecimal saldoInicial, Optional&lt;LocalDateTime&gt; fechaCreacion, 
                                Optional&lt;Boolean&gt; activa) {
-<span class="nc" id="L34">        return CuentaDTO.builder()</span>
-<span class="nc" id="L35">                .numeroCuenta(numeroCuenta)</span>
-<span class="nc" id="L36">                .titular(titular)</span>
-<span class="nc" id="L37">                .tipo(tipo)</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
-<span class="nc" id="L40">                .fechaCreacion(fechaCreacion.orElse(LocalDateTime.now()))</span>
-<span class="nc" id="L41">                .activa(activa.orElse(true))</span>
-<span class="nc" id="L42">                .build();</span>
+<span class="fc" id="L40">        return CuentaDTO.builder()</span>
+<span class="fc" id="L41">                .numeroCuenta(numeroCuenta)</span>
+<span class="fc" id="L42">                .titular(titular.orElse(null))</span>
+<span class="fc" id="L43">                .tipo(tipo.orElse(null))</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)</span>
+<span class="fc" id="L46">                .fechaCreacion(fechaCreacion.orElse(LocalDateTime.now()))</span>
+<span class="fc" id="L47">                .activa(activa.orElse(true))</span>
+<span class="fc" id="L48">                .build();</span>
     }
     
     /**
@@ -47,9 +53,9 @@ public class CuentaDTO {
      * Método &quot;with&quot; para transformación inmutable
      */
     public CuentaDTO conSaldo(BigDecimal nuevoSaldo) {
-<span class="nc" id="L50">        return this.toBuilder()</span>
-<span class="nc" id="L51">                .saldo(nuevoSaldo)</span>
-<span class="nc" id="L52">                .build();</span>
+<span class="fc" id="L56">        return this.toBuilder()</span>
+<span class="fc" id="L57">                .saldo(nuevoSaldo)</span>
+<span class="fc" id="L58">                .build();</span>
     }
     
     /**
@@ -57,9 +63,9 @@ public class CuentaDTO {
      * Método &quot;with&quot; para transformación inmutable
      */
     public CuentaDTO conActiva(boolean nuevaActiva) {
-<span class="nc" id="L60">        return this.toBuilder()</span>
-<span class="nc" id="L61">                .activa(nuevaActiva)</span>
-<span class="nc" id="L62">                .build();</span>
+<span class="fc" id="L66">        return this.toBuilder()</span>
+<span class="fc" id="L67">                .activa(nuevaActiva)</span>
+<span class="fc" id="L68">                .build();</span>
     }
     
     /**
@@ -67,9 +73,9 @@ public class CuentaDTO {
      * Método &quot;with&quot; para transformación inmutable
      */
     public CuentaDTO conTitular(ClienteDTO nuevoTitular) {
-<span class="nc" id="L70">        return this.toBuilder()</span>
-<span class="nc" id="L71">                .titular(nuevoTitular)</span>
-<span class="nc" id="L72">                .build();</span>
+<span class="fc" id="L76">        return this.toBuilder()</span>
+<span class="fc" id="L77">                .titular(nuevoTitular)</span>
+<span class="fc" id="L78">                .build();</span>
     }
     
     /**
@@ -80,10 +86,10 @@ public class CuentaDTO {
             Optional&lt;BigDecimal&gt; nuevoSaldo,
             Optional&lt;Boolean&gt; nuevaActiva) {
         
-<span class="nc" id="L83">        return this.toBuilder()</span>
-<span class="nc" id="L84">                .saldo(nuevoSaldo.orElse(this.saldo))</span>
-<span class="nc" id="L85">                .activa(nuevaActiva.orElse(this.activa))</span>
-<span class="nc" id="L86">                .build();</span>
+<span class="fc" id="L89">        return this.toBuilder()</span>
+<span class="fc" id="L90">                .saldo(nuevoSaldo.orElse(this.saldo))</span>
+<span class="fc" id="L91">                .activa(nuevaActiva.orElse(this.activa))</span>
+<span class="fc" id="L92">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

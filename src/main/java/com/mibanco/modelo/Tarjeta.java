@@ -1,10 +1,6 @@
 package com.mibanco.modelo;
 
-import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import java.time.LocalDate;
-import java.util.Optional;
-
-import javax.validation.constraints.NotNull;
 
 import com.mibanco.modelo.enums.TipoTarjeta;
 
@@ -17,19 +13,15 @@ import lombok.Value;
  * Implementa un enfoque completamente funcional con inmutabilidad total
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 public class Tarjeta implements Identificable {
-    @NoSolicitar(razon = "Se genera automáticamente")
+
     String numero;
-    @NotNull(message = "El titular no puede ser nulo")
     Cliente titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
-    @NoSolicitar(razon = "Se genera automáticamente")
     String cvv;
-    @NoSolicitar(razon = "Se establece automáticamente (+3 años)")
     LocalDate fechaExpiracion;
-    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
     
     /**
@@ -58,34 +50,4 @@ public class Tarjeta implements Identificable {
                 .build();
     }
     
-    /**
-     * Versión inmutable para actualizar la fecha de expiración
-     * @return Una nueva instancia con la fecha actualizada
-     */
-    public Tarjeta conFechaExpiracion(LocalDate nuevaFecha) {
-        return this.toBuilder()
-                .fechaExpiracion(nuevaFecha)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar el estado activo
-     * @return Una nueva instancia con el estado actualizado
-     */
-    public Tarjeta conActiva(boolean nuevaActiva) {
-        return this.toBuilder()
-                .activa(nuevaActiva)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar múltiples campos a la vez
-     * @return Una nueva instancia con los campos actualizados
-     */
-    public Tarjeta conActualizaciones(Optional<LocalDate> nuevaFecha, Optional<Boolean> nuevaActiva) {
-        return this.toBuilder()
-                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
-                .activa(nuevaActiva.orElse(this.activa))
-                .build();
-    }
 } 

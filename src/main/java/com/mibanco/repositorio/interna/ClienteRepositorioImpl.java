@@ -34,8 +34,15 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl<Cliente, Long, TipoOper
     
     @Override
     protected Cliente crearConNuevoId(Cliente cliente) {
-        return cliente.toBuilder()
+        return Cliente.builder()
                 .id(idContador.getAndIncrement())
+                .nombre(cliente.getNombre())
+                .apellido(cliente.getApellido())
+                .dni(cliente.getDni())
+                .fechaNacimiento(cliente.getFechaNacimiento())
+                .email(cliente.getEmail())
+                .telefono(cliente.getTelefono())
+                .direccion(cliente.getDireccion())
                 .build();
     }
     

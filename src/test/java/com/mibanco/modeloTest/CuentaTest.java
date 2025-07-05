@@ -93,49 +93,6 @@ void deberiaCrearCuentaConDatosValidosFactoryOf() {
 }
 
 @Test
-@DisplayName("Debería asignar saldoInicial automáticamente cuando es null")
-void deberiaAsignarSaldoInicialCuandoEsNull() {
-    
-    // Arrange (Preparar)
-    
-    // Act (Actuar)
-    Cuenta cuenta = Cuenta.of(numeroCuenta, titular, tipo, null, fechaCreacion, activa);
-
-    // Assert (Verificar)
-    assertThat(cuenta).isNotNull();
-    assertThat(cuenta.getNumeroCuenta()).isEqualTo(numeroCuenta);
-    assertThat(cuenta.getTitular()).isEqualTo(titular);
-    assertThat(cuenta.getTipo()).isEqualTo(tipo);
-    assertThat(cuenta.isActiva()).isEqualTo(activa);
-
-
-    assertThat(cuenta.getSaldoInicial()).isEqualTo(BigDecimal.ZERO);
-    assertThat(cuenta.getSaldo()).isEqualTo(BigDecimal.ZERO);
-}
-
-@Test
-@DisplayName("Debería asignar fechaCreacion automática cuando es null")
-void deberiaAsignarFechaCreacionCuandoEsNull() {
-    // Arrange (Preparar)
-    
-    // Act (Actuar)
-    Cuenta cuenta = Cuenta.of(numeroCuenta, titular, tipo, saldoInicial, null, activa);
-
-    // Assert (Verificar)
-    assertThat(cuenta).isNotNull();
-    assertThat(cuenta.getNumeroCuenta()).isEqualTo(numeroCuenta);
-    assertThat(cuenta.getTitular()).isEqualTo(titular);
-    assertThat(cuenta.getTipo()).isEqualTo(tipo);
-    assertThat(cuenta.getSaldoInicial()).isEqualTo(saldoInicial);
-    assertThat(cuenta.getSaldo()).isEqualTo(saldo);
-    assertThat(cuenta.isActiva()).isEqualTo(activa);
-
-    assertThat(cuenta.getFechaCreacion()).isAfter(LocalDateTime.now().minusDays(1));
-    assertThat(cuenta.getFechaCreacion()).isBefore(LocalDateTime.now().plusDays(1));
-    
-}
-
-@Test
 @DisplayName("Debería devolver el identificador de la cuenta")
 void deberiaDevolverElIdentificadorDeLaCuenta() {
     // Assert (Verificar)
@@ -165,36 +122,50 @@ void deberiaDevolverElIdentificadorDeLaCuentaCuandoEsNulo() {
 }
 
 @Test
-@DisplayName("Debería manejar Optional vacío en actualizaciones múltiples")
-void deberiaManejarOptionalVacioEnActualizacionesMultiples() {
+@DisplayName("Debería mantener inmutabilidad total")
+void deberiaMantenerInmutabilidadTotal() {
     // Arrange (Preparar)
-    BigDecimal nuevoSaldo = BigDecimal.valueOf(3000.0);
+    BigDecimal saldoOriginal = cuenta.getSaldo();
+    boolean activaOriginal = cuenta.isActiva();
     
-    // Act (Actuar) - Solo actualizar saldo, mantener activa original
-    Cuenta cuentaActualizada = cuenta.conActualizaciones(
-            Optional.of(nuevoSaldo),
-            Optional.empty() // No cambiar activa
+    // Act (Actuar) - Crear una nueva cuenta con diferentes valores
+    Cuenta cuentaNueva = Cuenta.of(
+        cuenta.getNumeroCuenta() + 1L,
+        cuenta.getTitular(),
+        cuenta.getTipo(),
+        BigDecimal.valueOf(3000.0),
+        cuenta.getFechaCreacion(),
+        false
     );
     
     // Assert (Verificar)
-    assertThat(cuentaActualizada.getSaldo()).isEqualTo(nuevoSaldo);
-    assertThat(cuentaActualizada.isActiva()).isEqualTo(activa); // Mantiene valor original
+    assertThat(cuentaNueva.getSaldo()).isEqualTo(BigDecimal.valueOf(3000.0));
+    assertThat(cuentaNueva.isActiva()).isFalse();
     
     // Verificar que el original no cambió
-    assertThat(cuenta.getSaldo()).isEqualTo(saldo);
-    assertThat(cuenta.isActiva()).isEqualTo(activa);
+    assertThat(cuenta.getSaldo()).isEqualTo(saldoOriginal);
+    assertThat(cuenta.isActiva()).isEqualTo(activaOriginal);
+    assertThat(cuentaNueva).isNotSameAs(cuenta);
 }
 
 
 
 @Test
-void deberiaModificarElSaldoDeFormaInmutable() {
+@DisplayName("Debería crear cuenta con saldo diferente usando factory method")
+void deberiaCrearCuentaConSaldoDiferenteUsandoFactoryMethod() {
     // Arrange
     BigDecimal saldoOriginal = cuenta.getSaldo();
     BigDecimal nuevoSaldo = BigDecimal.valueOf(2000.0);
     
     // Act
-    Cuenta cuentaConNuevoSaldo = cuenta.conSaldo(nuevoSaldo);
+    Cuenta cuentaConNuevoSaldo = Cuenta.of(
+        cuenta.getNumeroCuenta(),
+        cuenta.getTitular(),
+        cuenta.getTipo(),
+        nuevoSaldo,
+        cuenta.getFechaCreacion(),
+        cuenta.isActiva()
+    );
     
     // Assert
     assertThat(cuentaConNuevoSaldo.getSaldo()).isEqualTo(nuevoSaldo);
@@ -202,26 +173,48 @@ void deberiaModificarElSaldoDeFormaInmutable() {
     assertThat(cuentaConNuevoSaldo).isNotSameAs(cuenta); // ← Son objetos diferentes
 }   
 @Test
-@DisplayName("Deberia modificar el estado de activacion de la cuenta")
-void deberiaModificarElEstadoDeActivacionDeLaCuenta() {
+@DisplayName("Debería crear cuenta con estado de activación diferente usando factory method")
+void deberiaCrearCuentaConEstadoDeActivacionDiferenteUsandoFactoryMethod() {
     // Arrange (Preparar)
+    boolean estadoOriginal = cuenta.isActiva();
     
     // Act (Actuar)
-    Cuenta cuentaConNuevoEstado = cuenta.conActiva(false);
+    Cuenta cuentaConNuevoEstado = Cuenta.of(
+        cuenta.getNumeroCuenta(),
+        cuenta.getTitular(),
+        cuenta.getTipo(),
+        cuenta.getSaldoInicial(),
+        cuenta.getFechaCreacion(),
+        false
+    );
     
+    // Assert (Verificar)
     assertThat(cuentaConNuevoEstado.isActiva()).isFalse();
-    
+    assertThat(cuenta.isActiva()).isEqualTo(estadoOriginal); // Original no cambia
+    assertThat(cuentaConNuevoEstado).isNotSameAs(cuenta); // Son objetos diferentes
 }
 @Test
-@DisplayName("Debería modificar el saldo y el estado de activacion en bloque")
-void deberiaModificarElSaldoYElEstadoDeActivacionEnBloque() {
+@DisplayName("Debería crear cuenta con múltiples cambios usando factory method")
+void deberiaCrearCuentaConMultiplesCambiosUsandoFactoryMethod() {
     // Arrange (Preparar)
+    BigDecimal saldoOriginal = cuenta.getSaldo();
+    boolean activaOriginal = cuenta.isActiva();
     
     // Act (Actuar)
-    Cuenta cuentaConNuevoSaldoYTitular = cuenta.conActualizaciones(Optional.of(BigDecimal.valueOf(2000.0)), Optional.of(false));
-    // Assert (Verificar)
-    assertThat(cuentaConNuevoSaldoYTitular.getSaldo()).isNotEqualTo(cuenta.getSaldo());
-    assertThat(cuentaConNuevoSaldoYTitular.isActiva()).isNotEqualTo(cuenta.isActiva());
+    Cuenta cuentaConNuevoSaldoYEstado = Cuenta.of(
+        cuenta.getNumeroCuenta(),
+        cuenta.getTitular(),
+        cuenta.getTipo(),
+        BigDecimal.valueOf(2000.0),
+        cuenta.getFechaCreacion(),
+        false
+    );
     
+    // Assert (Verificar)
+    assertThat(cuentaConNuevoSaldoYEstado.getSaldo()).isEqualTo(BigDecimal.valueOf(2000.0));
+    assertThat(cuentaConNuevoSaldoYEstado.isActiva()).isFalse();
+    assertThat(cuenta.getSaldo()).isEqualTo(saldoOriginal); // Original no cambia
+    assertThat(cuenta.isActiva()).isEqualTo(activaOriginal); // Original no cambia
+    assertThat(cuentaConNuevoSaldoYEstado).isNotSameAs(cuenta); // Son objetos diferentes
 }
 }

@@ -73,8 +73,8 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L73">        Optional&lt;TarjetaDTO&gt; actualizaFecha = actualizarCampo(</span>
 <span class="nc" id="L74">            numeroTarjeta,</span>
 <span class="nc" id="L75">            nuevaFecha,</span>
-<span class="nc" id="L76">            Tarjeta::getFechaExpiracion,</span>
-<span class="nc" id="L77">            Tarjeta::conFechaExpiracion</span>
+<span class="nc" id="L76">            TarjetaDTO::getFechaExpiracion,</span>
+<span class="nc" id="L77">            TarjetaDTO::conFechaExpiracion</span>
         );
 <span class="nc" id="L79">        guardar(tipoActualizar, actualizaFecha);</span>
 <span class="nc" id="L80">        return actualizaFecha;</span>
@@ -85,8 +85,8 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L85">        Optional&lt;TarjetaDTO&gt; actualizaEstado = actualizarCampo(</span>
 <span class="nc" id="L86">            numeroTarjeta,</span>
 <span class="nc" id="L87">            nuevaActiva,</span>
-<span class="nc" id="L88">            Tarjeta::isActiva,</span>
-<span class="nc" id="L89">            Tarjeta::conActiva</span>
+<span class="nc" id="L88">            TarjetaDTO::isActiva,</span>
+<span class="nc" id="L89">            TarjetaDTO::conActiva </span>
         );
 <span class="nc" id="L91">        guardar(tipoActualizar, actualizaEstado);</span>
 <span class="nc" id="L92">        return actualizaEstado;</span>
@@ -95,11 +95,11 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarTitularTarjeta(String numeroTarjeta, Optional&lt;TarjetaDTO&gt; nuevoTitular) {
 <span class="nc" id="L97">        Optional&lt;TarjetaDTO&gt; actualizaTitular = nuevoTitular.flatMap(dto -&gt; </span>
-<span class="nc" id="L98">            clienteMapeador.aEntidad(Optional.of(dto.getTitular()))</span>
+<span class="nc" id="L98">                Optional.of(dto.getTitular())   </span>
 <span class="nc" id="L99">                .flatMap(titular -&gt; actualizarCampo(</span>
 <span class="nc" id="L100">                    numeroTarjeta,</span>
 <span class="nc" id="L101">                    Optional.of(titular),</span>
-<span class="nc" id="L102">                    Tarjeta::getTitular,</span>
+<span class="nc" id="L102">                    TarjetaDTO::getTitular,</span>
 <span class="nc" id="L103">                    (tarjeta, nvoTitular) -&gt; tarjeta.toBuilder().titular(titular).build()</span>
 <span class="nc" id="L104">                ))</span>
         );

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoTarjeta;
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 
 import lombok.Builder;
 import lombok.Value;
@@ -16,29 +17,29 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
 public class TarjetaDTO {
+    @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
     String numero;
     ClienteDTO titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
     LocalDate fechaExpiracion;
-    // Omitimos intencionalmente el CVV por seguridad en los DTOs
     boolean activa;
 
     /**
      * Método estático que construye un TarjetaDTO con valores opcionales
      * Aplicando enfoque funcional con Optional para manejar valores nulos
      */
-    public static TarjetaDTO of(String numero, ClienteDTO titular, String numeroCuentaAsociada,
-                               TipoTarjeta tipo, Optional<LocalDate> fechaExpiracion,
+    public static TarjetaDTO of(String numero, Optional<ClienteDTO> titular, Optional<String> numeroCuentaAsociada,
+                               Optional<TipoTarjeta> tipo, Optional<LocalDate> fechaExpiracion,
                                Optional<Boolean> activa) {
         
         LocalDate fechaExp = fechaExpiracion.orElse(LocalDate.now().plusYears(3));
         
         return TarjetaDTO.builder()
                 .numero(numero)
-                .titular(titular)
-                .numeroCuentaAsociada(numeroCuentaAsociada)
-                .tipo(tipo)
+                .titular(titular.orElse(null))
+                .numeroCuentaAsociada(numeroCuentaAsociada.orElse(null))
+                .tipo(tipo.orElse(null))
                 .fechaExpiracion(fechaExp)
                 .activa(activa.orElse(true))
                 .build();

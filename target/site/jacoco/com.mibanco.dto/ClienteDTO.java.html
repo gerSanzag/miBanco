@@ -3,6 +3,8 @@
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
+
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,32 +16,33 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar la creación de nuevas instancias
 public class ClienteDTO {
+    @NoSolicitar(razon = &quot;Se genera automáticamente&quot;)
     Long id;
     String nombre;
     String apellido;
     String dni;
+    LocalDate fechaNacimiento;
     String email;
     String telefono;
-    LocalDate fechaNacimiento;
     String direccion;
 
     /**
      * Método estático que construye un ClienteDTO con valores opcionales
      * Ejemplo de uso del enfoque funcional y Optionals
      */
-    public static ClienteDTO of(Long id, String nombre, String apellido, String dni, 
+    public static ClienteDTO of(Long id, Optional&lt;String&gt; nombre, Optional&lt;String&gt; apellido, Optional&lt;String&gt; dni, 
                                 Optional&lt;String&gt; email, Optional&lt;String&gt; telefono,
                                 Optional&lt;LocalDate&gt; fechaNacimiento, Optional&lt;String&gt; direccion) {
-<span class="nc" id="L33">        return ClienteDTO.builder()</span>
-<span class="nc" id="L34">                .id(id)</span>
-<span class="nc" id="L35">                .nombre(nombre)</span>
-<span class="nc" id="L36">                .apellido(apellido)</span>
-<span class="nc" id="L37">                .dni(dni)</span>
-<span class="nc" id="L38">                .email(email.orElse(null))</span>
-<span class="nc" id="L39">                .telefono(telefono.orElse(null))</span>
-<span class="nc" id="L40">                .fechaNacimiento(fechaNacimiento.orElse(null))</span>
-<span class="nc" id="L41">                .direccion(direccion.orElse(null))</span>
-<span class="nc" id="L42">                .build();</span>
+<span class="fc" id="L36">        return ClienteDTO.builder()</span>
+<span class="fc" id="L37">                .id(id)</span>
+<span class="fc" id="L38">                .nombre(nombre.orElse(null))</span>
+<span class="fc" id="L39">                .apellido(apellido.orElse(null))</span>
+<span class="fc" id="L40">                .dni(dni.orElse(null))</span>
+<span class="fc" id="L41">                .email(email.orElse(null))</span>
+<span class="fc" id="L42">                .telefono(telefono.orElse(null))</span>
+<span class="fc" id="L43">                .fechaNacimiento(fechaNacimiento.orElse(null))</span>
+<span class="fc" id="L44">                .direccion(direccion.orElse(null))</span>
+<span class="fc" id="L45">                .build();</span>
     }
     
     /**
@@ -47,9 +50,9 @@ public class ClienteDTO {
      * @return Una nueva instancia con el email actualizado
      */
     public ClienteDTO conEmail(String nuevoEmail) {
-<span class="nc" id="L50">        return this.toBuilder()</span>
-<span class="nc" id="L51">                .email(nuevoEmail)</span>
-<span class="nc" id="L52">                .build();</span>
+<span class="fc" id="L53">        return this.toBuilder()</span>
+<span class="fc" id="L54">                .email(nuevoEmail)</span>
+<span class="fc" id="L55">                .build();</span>
     }
     
     /**
@@ -57,9 +60,9 @@ public class ClienteDTO {
      * @return Una nueva instancia con el teléfono actualizado
      */
     public ClienteDTO conTelefono(String nuevoTelefono) {
-<span class="nc" id="L60">        return this.toBuilder()</span>
-<span class="nc" id="L61">                .telefono(nuevoTelefono)</span>
-<span class="nc" id="L62">                .build();</span>
+<span class="fc" id="L63">        return this.toBuilder()</span>
+<span class="fc" id="L64">                .telefono(nuevoTelefono)</span>
+<span class="fc" id="L65">                .build();</span>
     }
     
     /**
@@ -67,9 +70,9 @@ public class ClienteDTO {
      * @return Una nueva instancia con la dirección actualizada
      */
     public ClienteDTO conDireccion(String nuevaDireccion) {
-<span class="nc" id="L70">        return this.toBuilder()</span>
-<span class="nc" id="L71">                .direccion(nuevaDireccion)</span>
-<span class="nc" id="L72">                .build();</span>
+<span class="fc" id="L73">        return this.toBuilder()</span>
+<span class="fc" id="L74">                .direccion(nuevaDireccion)</span>
+<span class="fc" id="L75">                .build();</span>
     }
     
     /**
@@ -79,11 +82,11 @@ public class ClienteDTO {
     public ClienteDTO conDatosContacto(Optional&lt;String&gt; nuevoEmail, 
                                       Optional&lt;String&gt; nuevoTelefono, 
                                       Optional&lt;String&gt; nuevaDireccion) {
-<span class="nc" id="L82">        return this.toBuilder()</span>
-<span class="nc" id="L83">                .email(nuevoEmail.orElse(this.email))</span>
-<span class="nc" id="L84">                .telefono(nuevoTelefono.orElse(this.telefono))</span>
-<span class="nc" id="L85">                .direccion(nuevaDireccion.orElse(this.direccion))</span>
-<span class="nc" id="L86">                .build();</span>
+<span class="fc" id="L85">        return this.toBuilder()</span>
+<span class="fc" id="L86">                .email(nuevoEmail.orElse(this.email))</span>
+<span class="fc" id="L87">                .telefono(nuevoTelefono.orElse(this.telefono))</span>
+<span class="fc" id="L88">                .direccion(nuevaDireccion.orElse(this.direccion))</span>
+<span class="fc" id="L89">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

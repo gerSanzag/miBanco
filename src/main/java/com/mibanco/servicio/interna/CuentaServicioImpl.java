@@ -81,8 +81,8 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
         Optional<CuentaDTO> actualizaSaldo = actualizarCampo(
             numeroCuenta,
             nuevoSaldo,
-            Cuenta::getSaldo,
-            Cuenta::conSaldo
+            CuentaDTO::getSaldo,
+            CuentaDTO::conSaldo
         );
         guardar(tipoActualizar, actualizaSaldo);
         return actualizaSaldo;
@@ -93,8 +93,8 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
         Optional<CuentaDTO> actualizaEstado = actualizarCampo(
             numeroCuenta,
             nuevaActiva,
-            Cuenta::isActiva,
-            Cuenta::conActiva
+            CuentaDTO::isActiva,
+            CuentaDTO::conActiva
         );
         guardar(tipoActualizar, actualizaEstado);
         return actualizaEstado;
@@ -107,8 +107,8 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
                 .flatMap(titular -> actualizarCampo(
                     numeroCuenta,
                     Optional.of(titular),
-                    Cuenta::getTitular,
-                    (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titular).build()
+                    CuentaDTO::getTitular,
+                    (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titularDTO.getTitular() ).build()
                 ))
         );
         guardar(tipoActualizar, actualizaTitular);

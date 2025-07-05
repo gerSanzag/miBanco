@@ -81,8 +81,8 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
 <span class="nc" id="L81">        Optional&lt;CuentaDTO&gt; actualizaSaldo = actualizarCampo(</span>
 <span class="nc" id="L82">            numeroCuenta,</span>
 <span class="nc" id="L83">            nuevoSaldo,</span>
-<span class="nc" id="L84">            Cuenta::getSaldo,</span>
-<span class="nc" id="L85">            Cuenta::conSaldo</span>
+<span class="nc" id="L84">            CuentaDTO::getSaldo,</span>
+<span class="nc" id="L85">            CuentaDTO::conSaldo</span>
         );
 <span class="nc" id="L87">        guardar(tipoActualizar, actualizaSaldo);</span>
 <span class="nc" id="L88">        return actualizaSaldo;</span>
@@ -93,8 +93,8 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
 <span class="nc" id="L93">        Optional&lt;CuentaDTO&gt; actualizaEstado = actualizarCampo(</span>
 <span class="nc" id="L94">            numeroCuenta,</span>
 <span class="nc" id="L95">            nuevaActiva,</span>
-<span class="nc" id="L96">            Cuenta::isActiva,</span>
-<span class="nc" id="L97">            Cuenta::conActiva</span>
+<span class="nc" id="L96">            CuentaDTO::isActiva,</span>
+<span class="nc" id="L97">            CuentaDTO::conActiva</span>
         );
 <span class="nc" id="L99">        guardar(tipoActualizar, actualizaEstado);</span>
 <span class="nc" id="L100">        return actualizaEstado;</span>
@@ -107,8 +107,8 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
 <span class="nc" id="L107">                .flatMap(titular -&gt; actualizarCampo(</span>
 <span class="nc" id="L108">                    numeroCuenta,</span>
 <span class="nc" id="L109">                    Optional.of(titular),</span>
-<span class="nc" id="L110">                    Cuenta::getTitular,</span>
-<span class="nc" id="L111">                    (cuenta, nvoTitular) -&gt; cuenta.toBuilder().titular(titular).build()</span>
+<span class="nc" id="L110">                    CuentaDTO::getTitular,</span>
+<span class="nc" id="L111">                    (cuenta, nvoTitular) -&gt; cuenta.toBuilder().titular(titularDTO.getTitular() ).build()</span>
 <span class="nc" id="L112">                ))</span>
         );
 <span class="nc" id="L114">        guardar(tipoActualizar, actualizaTitular);</span>

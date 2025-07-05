@@ -9,15 +9,17 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoTransaccion;
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 
 /**
  * DTO para transferir información de Transacción entre capas
  * Utilizamos enfoque inmutable con @Value para promover la programación funcional
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 public class TransaccionDTO {
+    @NoSolicitar(razon = &quot;Se establece automáticamente en el repositorio&quot;)
     Long id;
     Long numeroCuenta;
     Long numeroCuentaDestino;
@@ -32,19 +34,19 @@ public class TransaccionDTO {
      */
     public static TransaccionDTO of(Long id, Long numeroCuenta, 
                                    Optional&lt;Long&gt; numeroCuentaDestino,
-                                   TipoTransaccion tipo, BigDecimal monto,
+                                   Optional&lt;TipoTransaccion&gt; tipo, Optional&lt;BigDecimal&gt; monto,
                                    Optional&lt;LocalDateTime&gt; fecha,
                                    Optional&lt;String&gt; descripcion) {
         
-<span class="nc" id="L39">        return TransaccionDTO.builder()</span>
-<span class="nc" id="L40">                .id(id)</span>
-<span class="nc" id="L41">                .numeroCuenta(numeroCuenta)</span>
-<span class="nc" id="L42">                .numeroCuentaDestino(numeroCuentaDestino.orElse(null))</span>
-<span class="nc" id="L43">                .tipo(tipo)</span>
-<span class="nc" id="L44">                .monto(monto)</span>
-<span class="nc" id="L45">                .fecha(fecha.orElse(LocalDateTime.now()))</span>
-<span class="nc" id="L46">                .descripcion(descripcion.orElse(&quot;&quot;))</span>
-<span class="nc" id="L47">                .build();</span>
+<span class="fc" id="L41">        return TransaccionDTO.builder()</span>
+<span class="fc" id="L42">                .id(id)</span>
+<span class="fc" id="L43">                .numeroCuenta(numeroCuenta)</span>
+<span class="fc" id="L44">                .numeroCuentaDestino(numeroCuentaDestino.orElse(null))</span>
+<span class="fc" id="L45">                .tipo(tipo.orElse(null))</span>
+<span class="fc" id="L46">                .monto(monto.orElse(null))</span>
+<span class="fc" id="L47">                .fecha(fecha.orElse(LocalDateTime.now()))</span>
+<span class="fc" id="L48">                .descripcion(descripcion.orElse(&quot;&quot;))</span>
+<span class="fc" id="L49">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

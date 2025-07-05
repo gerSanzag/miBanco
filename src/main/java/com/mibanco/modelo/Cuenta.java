@@ -1,11 +1,7 @@
 package com.mibanco.modelo;
 
-import com.mibanco.util.ReflexionUtil.NoSolicitar;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-
-import javax.validation.constraints.NotNull;
 
 import com.mibanco.modelo.enums.TipoCuenta;
 
@@ -17,20 +13,15 @@ import lombok.Value;
  * Implementa un enfoque completamente funcional con inmutabilidad total
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 public class Cuenta implements Identificable {
-    @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
+    
     Long numeroCuenta;
-    @NotNull(message = "El titular es obligatorio")
     Cliente titular;
     TipoCuenta tipo;
-    @NoSolicitar(razon = "Se establece automáticamente al crear")
     LocalDateTime fechaCreacion;
-    @NoSolicitar(razon = "Se establece automáticamente al crear y nunca cambia")
     BigDecimal saldoInicial;
-    @NoSolicitar(razon = "Se inicializa igual a saldoInicial y solo cambia por transacciones")
     BigDecimal saldo;
-    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
     
     /**
@@ -51,41 +42,11 @@ public class Cuenta implements Identificable {
                 .numeroCuenta(numeroCuenta)
                 .titular(titular)
                 .tipo(tipo)
-                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
-                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
-                .fechaCreacion(fechaCreacion != null ? fechaCreacion : LocalDateTime.now())
+                .saldoInicial(saldoInicial)
+                .saldo(saldoInicial)
+                .fechaCreacion(fechaCreacion)
                 .activa(activa)
                 .build();
     }
     
-    /**
-     * Versión inmutable para actualizar el saldo
-     * @return Una nueva instancia con el saldo actualizado
-     */
-    public Cuenta conSaldo(BigDecimal nuevoSaldo) {
-        return this.toBuilder()
-                .saldo(nuevoSaldo)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar el estado activo
-     * @return Una nueva instancia con el estado actualizado
-     */
-    public Cuenta conActiva(boolean nuevaActiva) {
-        return this.toBuilder()
-                .activa(nuevaActiva)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar múltiples campos a la vez
-     * @return Una nueva instancia con los campos actualizados
-     */
-    public Cuenta conActualizaciones(Optional<BigDecimal> nuevoSaldo, Optional<Boolean> nuevaActiva) {
-        return this.toBuilder()
-                .saldo(nuevoSaldo.orElse(this.saldo))
-                .activa(nuevaActiva.orElse(this.activa))
-                .build();
-    }
 } 

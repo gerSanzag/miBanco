@@ -73,8 +73,8 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
         Optional<TarjetaDTO> actualizaFecha = actualizarCampo(
             numeroTarjeta,
             nuevaFecha,
-            Tarjeta::getFechaExpiracion,
-            Tarjeta::conFechaExpiracion
+            TarjetaDTO::getFechaExpiracion,
+            TarjetaDTO::conFechaExpiracion
         );
         guardar(tipoActualizar, actualizaFecha);
         return actualizaFecha;
@@ -85,8 +85,8 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
         Optional<TarjetaDTO> actualizaEstado = actualizarCampo(
             numeroTarjeta,
             nuevaActiva,
-            Tarjeta::isActiva,
-            Tarjeta::conActiva
+            TarjetaDTO::isActiva,
+            TarjetaDTO::conActiva 
         );
         guardar(tipoActualizar, actualizaEstado);
         return actualizaEstado;
@@ -95,11 +95,11 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     @Override
     public Optional<TarjetaDTO> actualizarTitularTarjeta(String numeroTarjeta, Optional<TarjetaDTO> nuevoTitular) {
         Optional<TarjetaDTO> actualizaTitular = nuevoTitular.flatMap(dto -> 
-            clienteMapeador.aEntidad(Optional.of(dto.getTitular()))
+                Optional.of(dto.getTitular())   
                 .flatMap(titular -> actualizarCampo(
                     numeroTarjeta,
                     Optional.of(titular),
-                    Tarjeta::getTitular,
+                    TarjetaDTO::getTitular,
                     (tarjeta, nvoTitular) -> tarjeta.toBuilder().titular(titular).build()
                 ))
         );

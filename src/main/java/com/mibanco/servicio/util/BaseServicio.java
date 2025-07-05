@@ -34,8 +34,8 @@ public interface BaseServicio<T, E extends Identificable, ID, O extends Enum<O>>
     <V> Optional<T> actualizarCampo(
             ID id,
             Optional<V> nuevoValor,
-            Function<E, V> valorActual,
-            BiFunction<E, V, E> actualizador);
+            Function<T, V> valorActual,
+            BiFunction<T, V, T> actualizador);
 
     /**
      * Método genérico para actualizar una entidad existente
@@ -49,7 +49,7 @@ public interface BaseServicio<T, E extends Identificable, ID, O extends Enum<O>>
             ID id,
             Optional<T> dto,
             O tipoOperacion,
-            BiFunction<E, E, E> actualizador);
+            BiFunction<T, E, T> actualizador);
 
     /**
      * Método genérico para obtener una entidad por su ID

@@ -47,14 +47,13 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
     public <V> Optional<T> actualizarCampo(
             ID id,
             Optional<V> nuevoValor,
-            Function<E, V> valorActual,
-            BiFunction<E, V, E> actualizador) {
+            Function<T, V> valorActual,
+            BiFunction<T, V, T> actualizador) {
             
         return Optional.ofNullable(id)
             .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
-            .map(entidad -> actualizador.apply(entidad, 
-                nuevoValor.orElse(valorActual.apply(entidad))))
             .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)));
+            
     }
 
     @Override
@@ -62,15 +61,10 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
             ID id,
             Optional<T> dto,
             O tipoOperacion,
-            BiFunction<E, E, E> actualizador) {
+            BiFunction<T, E, T> actualizador) {
             
         return Optional.ofNullable(id)
             .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
-            .map(entidadExistente -> 
-                dto.flatMap(d -> mapeador.aEntidad(Optional.of(d)))
-                    .map(entidadNueva -> actualizador.apply(entidadExistente, entidadNueva))
-                    .orElse(entidadExistente)
-            )
             .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
             .flatMap(dtoActualizado -> guardar(tipoOperacion, Optional.of(dtoActualizado)));
     }

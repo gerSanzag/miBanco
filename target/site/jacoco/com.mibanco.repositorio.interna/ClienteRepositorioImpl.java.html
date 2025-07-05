@@ -34,14 +34,21 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
     
     @Override
     protected Cliente crearConNuevoId(Cliente cliente) {
-<span class="nc" id="L37">        return cliente.toBuilder()</span>
+<span class="nc" id="L37">        return Cliente.builder()</span>
 <span class="nc" id="L38">                .id(idContador.getAndIncrement())</span>
-<span class="nc" id="L39">                .build();</span>
+<span class="nc" id="L39">                .nombre(cliente.getNombre())</span>
+<span class="nc" id="L40">                .apellido(cliente.getApellido())</span>
+<span class="nc" id="L41">                .dni(cliente.getDni())</span>
+<span class="nc" id="L42">                .fechaNacimiento(cliente.getFechaNacimiento())</span>
+<span class="nc" id="L43">                .email(cliente.getEmail())</span>
+<span class="nc" id="L44">                .telefono(cliente.getTelefono())</span>
+<span class="nc" id="L45">                .direccion(cliente.getDireccion())</span>
+<span class="nc" id="L46">                .build();</span>
     }
     
     @Override
     public ArrayList&lt;Cliente&gt; obtenerClientesEliminados() {
-<span class="nc" id="L44">        return new ArrayList&lt;&gt;(entidadesEliminadas);</span>
+<span class="nc" id="L51">        return new ArrayList&lt;&gt;(entidadesEliminadas);</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

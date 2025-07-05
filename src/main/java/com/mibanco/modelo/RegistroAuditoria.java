@@ -1,6 +1,7 @@
 package com.mibanco.modelo;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.AccessLevel;
@@ -48,16 +49,16 @@ public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
      * @return Registro de auditoría inmutable
      */
     public static <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> of(
-            E tipoOperacion, 
-            T entidad, 
-            String usuario) {
+            Optional<E> tipoOperacion, 
+            Optional<T> entidad, 
+            Optional<String> usuario) {
         
         return RegistroAuditoria.<T, E>builder()
                 .id(UUID.randomUUID())
-                .tipoOperacion(tipoOperacion)
+                .tipoOperacion(tipoOperacion.orElse(null))
                 .fechaHora(LocalDateTime.now())
-                .entidad(entidad)
-                .usuario(usuario)
+                .entidad(entidad.orElse(null))
+                .usuario(usuario.orElse(null))
                 .build();
     }
     
@@ -71,20 +72,20 @@ public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
      * @return Registro de auditoría inmutable
      */
     public static <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> ofDetallado(
-            E tipoOperacion, 
-            T entidad, 
-            String usuario,
-            Double monto,
-            String detalles) {
+            Optional<E> tipoOperacion, 
+            Optional<T> entidad, 
+            Optional<String> usuario,
+            Optional<Double> monto,
+            Optional<String> detalles) {
         
         return RegistroAuditoria.<T, E>builder()
                 .id(UUID.randomUUID())
-                .tipoOperacion(tipoOperacion)
+                .tipoOperacion(tipoOperacion.orElse(null))       
                 .fechaHora(LocalDateTime.now())
-                .entidad(entidad)
-                .usuario(usuario)
-                .monto(monto)
-                .detalles(detalles)
+                .entidad(entidad.orElse(null))
+                .usuario(usuario.orElse(null))
+                .monto(monto.orElse(null))
+                .detalles(detalles.orElse(null))
                 .build();
     }
 } 

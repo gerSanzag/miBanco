@@ -3,6 +3,8 @@ package com.mibanco.dto;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
+
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,27 +16,28 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar la creación de nuevas instancias
 public class ClienteDTO {
+    @NoSolicitar(razon = "Se genera automáticamente")
     Long id;
     String nombre;
     String apellido;
     String dni;
+    LocalDate fechaNacimiento;
     String email;
     String telefono;
-    LocalDate fechaNacimiento;
     String direccion;
 
     /**
      * Método estático que construye un ClienteDTO con valores opcionales
      * Ejemplo de uso del enfoque funcional y Optionals
      */
-    public static ClienteDTO of(Long id, String nombre, String apellido, String dni, 
+    public static ClienteDTO of(Long id, Optional<String> nombre, Optional<String> apellido, Optional<String> dni, 
                                 Optional<String> email, Optional<String> telefono,
                                 Optional<LocalDate> fechaNacimiento, Optional<String> direccion) {
         return ClienteDTO.builder()
                 .id(id)
-                .nombre(nombre)
-                .apellido(apellido)
-                .dni(dni)
+                .nombre(nombre.orElse(null))
+                .apellido(apellido.orElse(null))
+                .dni(dni.orElse(null))
                 .email(email.orElse(null))
                 .telefono(telefono.orElse(null))
                 .fechaNacimiento(fechaNacimiento.orElse(null))

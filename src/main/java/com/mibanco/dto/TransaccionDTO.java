@@ -9,15 +9,17 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoTransaccion;
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 
 /**
  * DTO para transferir información de Transacción entre capas
  * Utilizamos enfoque inmutable con @Value para promover la programación funcional
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 public class TransaccionDTO {
+    @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
     Long id;
     Long numeroCuenta;
     Long numeroCuentaDestino;
@@ -32,7 +34,7 @@ public class TransaccionDTO {
      */
     public static TransaccionDTO of(Long id, Long numeroCuenta, 
                                    Optional<Long> numeroCuentaDestino,
-                                   TipoTransaccion tipo, BigDecimal monto,
+                                   Optional<TipoTransaccion> tipo, Optional<BigDecimal> monto,
                                    Optional<LocalDateTime> fecha,
                                    Optional<String> descripcion) {
         
@@ -40,8 +42,8 @@ public class TransaccionDTO {
                 .id(id)
                 .numeroCuenta(numeroCuenta)
                 .numeroCuentaDestino(numeroCuentaDestino.orElse(null))
-                .tipo(tipo)
-                .monto(monto)
+                .tipo(tipo.orElse(null))
+                .monto(monto.orElse(null))
                 .fecha(fecha.orElse(LocalDateTime.now()))
                 .descripcion(descripcion.orElse(""))
                 .build();

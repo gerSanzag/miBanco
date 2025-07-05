@@ -57,10 +57,10 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
     
     @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
-<span class="nc" id="L60">        long numeroAleatorio = System.currentTimeMillis() % 1000000000L;</span>
+        long numeroAleatorio = System.currentTimeMillis() % 1000000000L;
 <span class="nc" id="L61">        return cuenta.toBuilder()</span>
-<span class="nc" id="L62">                .numeroCuenta(numeroAleatorio)</span>
-<span class="nc" id="L63">                .build();</span>
+                .numeroCuenta(numeroAleatorio)
+                .build();
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

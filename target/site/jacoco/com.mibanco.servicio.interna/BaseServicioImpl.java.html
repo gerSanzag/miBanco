@@ -47,14 +47,13 @@ abstract class BaseServicioImpl&lt;T, E extends Identificable, ID, O extends Enu
     public &lt;V&gt; Optional&lt;T&gt; actualizarCampo(
             ID id,
             Optional&lt;V&gt; nuevoValor,
-            Function&lt;E, V&gt; valorActual,
-            BiFunction&lt;E, V, E&gt; actualizador) {
+            Function&lt;T, V&gt; valorActual,
+            BiFunction&lt;T, V, T&gt; actualizador) {
             
 <span class="nc" id="L53">        return Optional.ofNullable(id)</span>
 <span class="nc" id="L54">            .flatMap(idValue -&gt; repositorio.buscarPorId(Optional.of(idValue)))</span>
-<span class="nc" id="L55">            .map(entidad -&gt; actualizador.apply(entidad, </span>
-<span class="nc" id="L56">                nuevoValor.orElse(valorActual.apply(entidad))))</span>
-<span class="nc" id="L57">            .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)));</span>
+<span class="nc" id="L55">            .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)));</span>
+            
     }
 
     @Override
@@ -62,67 +61,62 @@ abstract class BaseServicioImpl&lt;T, E extends Identificable, ID, O extends Enu
             ID id,
             Optional&lt;T&gt; dto,
             O tipoOperacion,
-            BiFunction&lt;E, E, E&gt; actualizador) {
+            BiFunction&lt;T, E, T&gt; actualizador) {
             
-<span class="nc" id="L67">        return Optional.ofNullable(id)</span>
-<span class="nc" id="L68">            .flatMap(idValue -&gt; repositorio.buscarPorId(Optional.of(idValue)))</span>
-<span class="nc" id="L69">            .map(entidadExistente -&gt; </span>
-<span class="nc" id="L70">                dto.flatMap(d -&gt; mapeador.aEntidad(Optional.of(d)))</span>
-<span class="nc" id="L71">                    .map(entidadNueva -&gt; actualizador.apply(entidadExistente, entidadNueva))</span>
-<span class="nc" id="L72">                    .orElse(entidadExistente)</span>
-            )
-<span class="nc" id="L74">            .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
-<span class="nc" id="L75">            .flatMap(dtoActualizado -&gt; guardar(tipoOperacion, Optional.of(dtoActualizado)));</span>
+<span class="nc" id="L66">        return Optional.ofNullable(id)</span>
+<span class="nc" id="L67">            .flatMap(idValue -&gt; repositorio.buscarPorId(Optional.of(idValue)))</span>
+<span class="nc" id="L68">            .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
+<span class="nc" id="L69">            .flatMap(dtoActualizado -&gt; guardar(tipoOperacion, Optional.of(dtoActualizado)));</span>
     }
 
     @Override
     public Optional&lt;T&gt; obtenerPorId(Optional&lt;ID&gt; id) {
-<span class="nc" id="L80">        return id.flatMap(idValue -&gt; </span>
-<span class="nc" id="L81">            repositorio.buscarPorId(Optional.of(idValue))</span>
-<span class="nc" id="L82">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
+<span class="nc" id="L74">        return id.flatMap(idValue -&gt; </span>
+<span class="nc" id="L75">            repositorio.buscarPorId(Optional.of(idValue))</span>
+<span class="nc" id="L76">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
         );
     }
 
     @Override
     public Optional&lt;List&lt;T&gt;&gt; obtenerTodos() {
-<span class="nc" id="L88">        return repositorio.buscarTodos()</span>
-<span class="nc" id="L89">            .map(entidades -&gt; entidades.stream()</span>
-<span class="nc" id="L90">                .map(entidad -&gt; mapeador.aDto(Optional.of(entidad)).orElse(null))</span>
-<span class="nc" id="L91">                .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L92">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="nc" id="L82">        return repositorio.buscarTodos()</span>
+<span class="nc" id="L83">            .map(entidades -&gt; entidades.stream()</span>
+<span class="nc" id="L84">                .map(entidad -&gt; mapeador.aDto(Optional.of(entidad)).orElse(null))</span>
+<span class="nc" id="L85">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L86">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
             );
     }
 
     @Override
     public boolean eliminarPorId(Optional&lt;ID&gt; id, O tipoOperacion) {
-<span class="nc" id="L98">        return id.flatMap(idValue -&gt; </span>
-<span class="nc" id="L99">            repositorio.eliminarPorId(Optional.of(idValue), tipoOperacion)</span>
-<span class="nc" id="L100">        ).isPresent();</span>
+<span class="nc" id="L92">        return id.flatMap(idValue -&gt; </span>
+<span class="nc" id="L93">            repositorio.eliminarPorId(Optional.of(idValue), tipoOperacion)</span>
+<span class="nc" id="L94">        ).isPresent();</span>
     }
 
     @Override
     public long contarRegistros() {
-<span class="nc" id="L105">        return repositorio.contarRegistros();</span>
+<span class="nc" id="L99">        return repositorio.contarRegistros();</span>
     }
 
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L110">        repositorio.setUsuarioActual(usuario);</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L104">        repositorio.setUsuarioActual(usuario);</span>
+<span class="nc" id="L105">    }</span>
 
     @Override
     public List&lt;T&gt; obtenerEliminados() {
-<span class="nc" id="L115">        return repositorio.obtenerEliminados().stream()</span>
-<span class="nc" id="L116">            .map(entidad -&gt; mapeador.aDto(Optional.of(entidad)).orElse(null))</span>
-<span class="nc" id="L117">            .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L118">            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);</span>
+<span class="nc" id="L109">        return repositorio.obtenerEliminados().stream()</span>
+<span class="nc" id="L110">            .map(entidad -&gt; mapeador.aDto(Optional.of(entidad)).orElse(null))</span>
+<span class="nc" id="L111">            .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L112">            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);</span>
     }
 
     @Override
     public Optional&lt;T&gt; restaurar(Optional&lt;ID&gt; id, O tipoOperacion) {
-<span class="nc" id="L123">        return id.flatMap(idValue -&gt; </span>
-<span class="nc" id="L124">            repositorio.restaurar(Optional.of(idValue), tipoOperacion)</span>
-<span class="nc" id="L125">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
+<span class="nc" id="L117">        return id.flatMap(idValue -&gt; </span>
+<span class="nc" id="L118">            repositorio.restaurar(Optional.of(idValue), tipoOperacion)</span>
+<span class="nc" id="L119">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
         );
     }
 } 

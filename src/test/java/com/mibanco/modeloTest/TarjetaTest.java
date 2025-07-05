@@ -109,13 +109,21 @@ class TarjetaTest {
     }
 
     @Test
-    @DisplayName("Debería actualizar fecha de expiración de forma inmutable")
-    void deberiaActualizarFechaExpiracionDeFormaInmutable() {
+    @DisplayName("Debería crear tarjeta con fecha de expiración diferente usando factory method")
+    void deberiaCrearTarjetaConFechaExpiracionDiferenteUsandoFactoryMethod() {
         // Arrange (Preparar)
         LocalDate nuevaFecha = LocalDate.now().plusYears(5);
         
         // Act (Actuar)
-        Tarjeta tarjetaActualizada = tarjeta.conFechaExpiracion(nuevaFecha);
+        Tarjeta tarjetaActualizada = Tarjeta.of(
+            tarjeta.getNumero(),
+            tarjeta.getTitular(),
+            tarjeta.getNumeroCuentaAsociada(),
+            tarjeta.getTipo(),
+            nuevaFecha,
+            tarjeta.getCvv(),
+            tarjeta.isActiva()
+        );
         
         // Assert (Verificar)
         assertThat(tarjetaActualizada.getFechaExpiracion()).isEqualTo(nuevaFecha);
@@ -124,13 +132,21 @@ class TarjetaTest {
     }
 
     @Test
-    @DisplayName("Debería actualizar estado activo de forma inmutable")
-    void deberiaActualizarEstadoActivoDeFormaInmutable() {
+    @DisplayName("Debería crear tarjeta con estado activo diferente usando factory method")
+    void deberiaCrearTarjetaConEstadoActivoDiferenteUsandoFactoryMethod() {
         // Arrange (Preparar)
         boolean nuevoEstado = false;
         
         // Act (Actuar)
-        Tarjeta tarjetaActualizada = tarjeta.conActiva(nuevoEstado);
+        Tarjeta tarjetaActualizada = Tarjeta.of(
+            tarjeta.getNumero(),
+            tarjeta.getTitular(),
+            tarjeta.getNumeroCuentaAsociada(),
+            tarjeta.getTipo(),
+            tarjeta.getFechaExpiracion(),
+            tarjeta.getCvv(),
+            nuevoEstado
+        );
         
         // Assert (Verificar)
         assertThat(tarjetaActualizada.isActiva()).isEqualTo(nuevoEstado);
@@ -139,16 +155,21 @@ class TarjetaTest {
     }
 
     @Test
-    @DisplayName("Debería actualizar múltiples campos de forma inmutable")
-    void deberiaActualizarMultiplesCamposDeFormaInmutable() {
+    @DisplayName("Debería crear tarjeta con múltiples cambios usando factory method")
+    void deberiaCrearTarjetaConMultiplesCambiosUsandoFactoryMethod() {
         // Arrange (Preparar)
         LocalDate nuevaFecha = LocalDate.now().plusYears(4);
         boolean nuevoEstado = false;
         
         // Act (Actuar)
-        Tarjeta tarjetaActualizada = tarjeta.conActualizaciones(
-                Optional.of(nuevaFecha),
-                Optional.of(nuevoEstado)
+        Tarjeta tarjetaActualizada = Tarjeta.of(
+            tarjeta.getNumero(),
+            tarjeta.getTitular(),
+            tarjeta.getNumeroCuentaAsociada(),
+            tarjeta.getTipo(),
+            nuevaFecha,
+            tarjeta.getCvv(),
+            nuevoEstado
         );
         
         // Assert (Verificar)
@@ -161,23 +182,29 @@ class TarjetaTest {
     }
 
     @Test
-    @DisplayName("Debería manejar Optional vacío en actualizaciones múltiples")
-    void deberiaManejarOptionalVacioEnActualizacionesMultiples() {
+    @DisplayName("Debería mantener inmutabilidad total")
+    void deberiaMantenerInmutabilidadTotal() {
         // Arrange (Preparar)
-        LocalDate nuevaFecha = LocalDate.now().plusYears(4);
+        LocalDate fechaOriginal = tarjeta.getFechaExpiracion();
+        boolean activaOriginal = tarjeta.isActiva();
         
-        // Act (Actuar) - Solo actualizar fecha, mantener activa original
-        Tarjeta tarjetaActualizada = tarjeta.conActualizaciones(
-                Optional.of(nuevaFecha),
-                Optional.empty() // No cambiar activa
+        // Act (Actuar) - Crear nueva instancia con algunos cambios
+        Tarjeta tarjetaNueva = Tarjeta.of(
+            tarjeta.getNumero(),
+            tarjeta.getTitular(),
+            tarjeta.getNumeroCuentaAsociada(),
+            tarjeta.getTipo(),
+            LocalDate.now().plusYears(4),
+            tarjeta.getCvv(),
+            tarjeta.isActiva()
         );
         
         // Assert (Verificar)
-        assertThat(tarjetaActualizada.getFechaExpiracion()).isEqualTo(nuevaFecha);
-        assertThat(tarjetaActualizada.isActiva()).isEqualTo(activa); // Mantiene valor original
+        assertThat(tarjetaNueva.getFechaExpiracion()).isNotEqualTo(fechaOriginal);
+        assertThat(tarjetaNueva.isActiva()).isEqualTo(activaOriginal); // Mantiene valor original
         
         // Verificar que el original no cambió
-        assertThat(tarjeta.getFechaExpiracion()).isEqualTo(fechaExpiracion);
-        assertThat(tarjeta.isActiva()).isEqualTo(activa);
+        assertThat(tarjeta.getFechaExpiracion()).isEqualTo(fechaOriginal);
+        assertThat(tarjeta.isActiva()).isEqualTo(activaOriginal);
     }
 }
