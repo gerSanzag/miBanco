@@ -59,10 +59,10 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     @Override
     public Optional<T> crear(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.map(entity -> {
-            T nuevaEntidad = crearConNuevoId(entity);
-            entidades.add(nuevaEntidad);
-            registrarAuditoria(nuevaEntidad, tipoOperacion);
-            return Optional.of(nuevaEntidad);
+            // T nuevaEntidad = crearConNuevoId(entity);
+            entidades.add(entity);
+            registrarAuditoria(entity, tipoOperacion);
+            return Optional.of(entity);
         }).orElse(Optional.empty());
     }
     
@@ -150,10 +150,6 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
         });
     }
     
-    /**
-     * Método abstracto protegido para crear entidad con nuevo ID
-     */
-    protected abstract T crearConNuevoId(T entity);
     
     /**
      * Método privado para registrar auditoría

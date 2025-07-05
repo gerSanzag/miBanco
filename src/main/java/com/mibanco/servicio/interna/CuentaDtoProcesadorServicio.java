@@ -88,14 +88,17 @@ public class CuentaDtoProcesadorServicio {
      */
     private Optional<CuentaDTO> construirCuentaDTO(Map<String, String> datosCrudos, ClienteDTO titular) {
         try {
+            // ✅ Supplier para generar ID automáticamente
+            java.util.function.Supplier<Long> idSupplier = () -> 
+                System.currentTimeMillis() % 1000000000L;
+
             CuentaDTO.CuentaDTOBuilder builder = CuentaDTO.builder()
                 .titular(titular);
 
-            // Aplicar transformaciones funcionales
-            Optional.ofNullable(datosCrudos.get("numeroCuenta"))
-                .map(Long::parseLong)
-                .ifPresent(builder::numeroCuenta);
+            // ✅ Generar ID directamente
+            builder.numeroCuenta(idSupplier.get());
 
+            // Aplicar transformaciones funcionales
             Optional.ofNullable(datosCrudos.get("tipo"))
                 .map(com.mibanco.modelo.enums.TipoCuenta::valueOf)
                 .ifPresent(builder::tipo);

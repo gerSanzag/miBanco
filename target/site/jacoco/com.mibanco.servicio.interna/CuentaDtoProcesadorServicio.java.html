@@ -88,31 +88,34 @@ public class CuentaDtoProcesadorServicio {
      */
     private Optional&lt;CuentaDTO&gt; construirCuentaDTO(Map&lt;String, String&gt; datosCrudos, ClienteDTO titular) {
         try {
-<span class="nc" id="L91">            CuentaDTO.CuentaDTOBuilder builder = CuentaDTO.builder()</span>
-<span class="nc" id="L92">                .titular(titular);</span>
+            // ✅ Supplier para generar ID automáticamente
+<span class="nc" id="L92">            java.util.function.Supplier&lt;Long&gt; idSupplier = () -&gt; </span>
+<span class="nc" id="L93">                System.currentTimeMillis() % 1000000000L;</span>
+
+<span class="nc" id="L95">            CuentaDTO.CuentaDTOBuilder builder = CuentaDTO.builder()</span>
+<span class="nc" id="L96">                .titular(titular);</span>
+
+            // ✅ Generar ID directamente
+<span class="nc" id="L99">            builder.numeroCuenta(idSupplier.get());</span>
 
             // Aplicar transformaciones funcionales
-<span class="nc" id="L95">            Optional.ofNullable(datosCrudos.get(&quot;numeroCuenta&quot;))</span>
-<span class="nc" id="L96">                .map(Long::parseLong)</span>
-<span class="nc" id="L97">                .ifPresent(builder::numeroCuenta);</span>
+<span class="nc" id="L102">            Optional.ofNullable(datosCrudos.get(&quot;tipo&quot;))</span>
+<span class="nc" id="L103">                .map(com.mibanco.modelo.enums.TipoCuenta::valueOf)</span>
+<span class="nc" id="L104">                .ifPresent(builder::tipo);</span>
 
-<span class="nc" id="L99">            Optional.ofNullable(datosCrudos.get(&quot;tipo&quot;))</span>
-<span class="nc" id="L100">                .map(com.mibanco.modelo.enums.TipoCuenta::valueOf)</span>
-<span class="nc" id="L101">                .ifPresent(builder::tipo);</span>
-
-<span class="nc" id="L103">            Optional.ofNullable(datosCrudos.get(&quot;fechaCreacion&quot;))</span>
-<span class="nc" id="L104">                .map(java.time.LocalDateTime::parse)</span>
-<span class="nc" id="L105">                .ifPresent(builder::fechaCreacion);</span>
+<span class="nc" id="L106">            Optional.ofNullable(datosCrudos.get(&quot;fechaCreacion&quot;))</span>
+<span class="nc" id="L107">                .map(java.time.LocalDateTime::parse)</span>
+<span class="nc" id="L108">                .ifPresent(builder::fechaCreacion);</span>
 
             // Estado activo por defecto
-<span class="nc" id="L108">            Optional.ofNullable(datosCrudos.get(&quot;activa&quot;))</span>
-<span class="nc" id="L109">                .map(Boolean::parseBoolean)</span>
-<span class="nc" id="L110">                .or(() -&gt; Optional.of(true))</span>
-<span class="nc" id="L111">                .ifPresent(builder::activa);</span>
+<span class="nc" id="L111">            Optional.ofNullable(datosCrudos.get(&quot;activa&quot;))</span>
+<span class="nc" id="L112">                .map(Boolean::parseBoolean)</span>
+<span class="nc" id="L113">                .or(() -&gt; Optional.of(true))</span>
+<span class="nc" id="L114">                .ifPresent(builder::activa);</span>
 
-<span class="nc" id="L113">            return Optional.of(builder.build());</span>
-<span class="nc" id="L114">        } catch (Exception e) {</span>
-<span class="nc" id="L115">            return Optional.empty();</span>
+<span class="nc" id="L116">            return Optional.of(builder.build());</span>
+<span class="nc" id="L117">        } catch (Exception e) {</span>
+<span class="nc" id="L118">            return Optional.empty();</span>
         }
     }
 } 

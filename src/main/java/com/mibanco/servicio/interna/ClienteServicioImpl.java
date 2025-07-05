@@ -18,6 +18,7 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
     
     private static final ClienteRepositorio repositorioCliente;
     private static final ClienteMapeador mapeador;
+    private static final java.util.concurrent.atomic.AtomicLong idContador = new java.util.concurrent.atomic.AtomicLong(0);
     private final TipoOperacionCliente tipoActualizar = TipoOperacionCliente.ACTUALIZAR;
     
     static {
@@ -31,8 +32,13 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
 
     @Override
     public Optional<ClienteDTO> crearClienteDto(Map<String, String> datosCliente) {
+        // ✅ Supplier para generar ID secuencial automáticamente
+        java.util.function.Supplier<Long> idSupplier = () -> 
+            idContador.incrementAndGet();
+        
         // El servicio crea el DTO internamente
         ClienteDTO nuevoCliente = ClienteDTO.builder()
+            .id(idSupplier.get()) // ✅ Generar ID secuencial automáticamente
             .nombre(datosCliente.get("nombre"))
             .apellido(datosCliente.get("apellido"))
             .dni(datosCliente.get("dni"))

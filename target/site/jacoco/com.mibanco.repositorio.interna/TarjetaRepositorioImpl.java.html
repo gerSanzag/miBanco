@@ -54,11 +54,5 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, Tip
 <span class="nc" id="L54">        return buscarTodosPorPredicado(Tarjeta::isActiva);</span>
     }
     
-    @Override
-    protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
-<span class="nc" id="L59">        return tarjeta.toBuilder()</span>
-                .numero(String.format(&quot;%016d&quot;, idContador.getAndIncrement()))
-                .build();
-    }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

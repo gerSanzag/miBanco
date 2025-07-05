@@ -11,7 +11,9 @@ import com.mibanco.servicio.TarjetaServicio;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -23,6 +25,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     private static final TarjetaRepositorio repositorioTarjeta;
     private static final TarjetaMapeador mapeador;
     private static final ClienteMapeador clienteMapeador;
+    private static final java.util.concurrent.atomic.AtomicLong idContador = new java.util.concurrent.atomic.AtomicLong(0);
     private final TipoOperacionTarjeta tipoActualizar = TipoOperacionTarjeta.ACTUALIZAR;
     
     static {
@@ -36,9 +39,25 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<TarjetaDTO> crearTarjeta(Optional<TarjetaDTO> tarjetaDTO) {
-        return guardar(TipoOperacionTarjeta.CREAR, tarjetaDTO);
+    public Optional<TarjetaDTO> crearTarjetaDto(Map<String, String> datosTarjeta) {
+        // ✅ Supplier para generar número de tarjeta automáticamente
+        java.util.function.Supplier<String> numeroSupplier = () -> 
+            String.format("%016d", idContador.incrementAndGet());
+        
+        // El servicio crea el DTO internamente
+        TarjetaDTO nuevaTarjeta = TarjetaDTO.builder()
+            .numero(numeroSupplier.get()) // ✅ Generar número automáticamente
+            .numeroCuentaAsociada(datosTarjeta.get("numeroCuentaAsociada"))
+            .tipo(com.mibanco.modelo.enums.TipoTarjeta.valueOf(datosTarjeta.get("tipo")))
+            .fechaExpiracion(LocalDate.parse(datosTarjeta.get("fechaExpiracion"), DateTimeFormatter.ISO_LOCAL_DATE))
+            .activa(Boolean.parseBoolean(datosTarjeta.get("activa")))
+            .build();
+        
+        // Luego lo guarda usando el método existente
+        return guardar(TipoOperacionTarjeta.CREAR, Optional.of(nuevaTarjeta));
     }
+    
+    
     
     @Override
     public Optional<TarjetaDTO> actualizarVariosCampos(String numeroTarjeta, Optional<TarjetaDTO> tarjetaDTO) {

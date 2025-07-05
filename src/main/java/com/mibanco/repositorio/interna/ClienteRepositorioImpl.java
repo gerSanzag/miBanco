@@ -32,20 +32,7 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl<Cliente, Long, TipoOper
         return restaurar(id, TipoOperacionCliente.RESTAURAR);
     }
     
-    @Override
-    protected Cliente crearConNuevoId(Cliente cliente) {
-        return Cliente.builder()
-                .id(idContador.getAndIncrement())
-                .nombre(cliente.getNombre())
-                .apellido(cliente.getApellido())
-                .dni(cliente.getDni())
-                .fechaNacimiento(cliente.getFechaNacimiento())
-                .email(cliente.getEmail())
-                .telefono(cliente.getTelefono())
-                .direccion(cliente.getDireccion())
-                .build();
-    }
-    
+  
     @Override
     public ArrayList<Cliente> obtenerClientesEliminados() {
         return new ArrayList<>(entidadesEliminadas);

@@ -23,7 +23,6 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoOperacionCliente.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/ClienteRepositorioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/ClienteVista.java
-/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/package-info.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/util/Consola.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/interna/factoriaVista.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/TransaccionOperacionesServicio.java

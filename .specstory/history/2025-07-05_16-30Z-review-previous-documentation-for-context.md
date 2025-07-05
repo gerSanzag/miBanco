@@ -7,13 +7,20 @@ _**User**_
 @/miBanco @2025-07-04_18-41Z-ejercicio-de-aprendizaje-test-en-java-005.md @testMentoria.mdc 
 
 Revisa la documentación anterior para que te pongas en contexto.
+<<<<<<< HEAD
 Solo ponte en contexto, no modifiques nada.
+=======
+>>>>>>> feature/modificacion-en-creacion-del-id
 
 ---
 
 _**Assistant**_
 
+<<<<<<< HEAD
 ¡Perfecto German! Voy a revisar la documentación anterior para ponerme en contexto completo de tu proyecto miBanco.
+=======
+¡Hola German! Voy a revisar la documentación anterior para ponerme en contexto completo de tu proyecto miBanco.
+>>>>>>> feature/modificacion-en-creacion-del-id
 
 
 ---
@@ -26,6 +33,7 @@ Read file: .specstory/history/2025-07-04_18-41Z-ejercicio-de-aprendizaje-test-en
 
 ---
 
+<<<<<<< HEAD
 Read file: .specstory/history/2025-07-04_18-41Z-ejercicio-de-aprendizaje-test-en-java-005.md
 
 ---
@@ -85,10 +93,13 @@ aunque no se ven problemas, revisa para que te asegures que todo esta correcto y
 _**Assistant**_
 
 ¡Perfecto German! Voy a revisar los repositorios que has modificado para asegurarme de que todo está correcto y no hay nada roto. Empezaré compilando el proyecto para ver si hay errores:
+=======
+>>>>>>> feature/modificacion-en-creacion-del-id
 
 
 ---
 
+<<<<<<< HEAD
 ```bash
 cd /Users/german/ejerciciosJava/miBanco && mvn compile
 ```
@@ -1062,3 +1073,5 @@ El siguiente paso es hacer el merge de la rama `feature/modificacion-en-creacion
 
 ---
 
+=======
+>>>>>>> feature/modificacion-en-creacion-del-id
