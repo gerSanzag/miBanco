@@ -18,12 +18,13 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
     
     private static final ClienteRepositorio repositorioCliente;
     private static final ClienteMapeador mapeador;
-    private static final java.util.concurrent.atomic.AtomicLong idContador = new java.util.concurrent.atomic.AtomicLong(0);
+    private static final ClienteDtoProcesadorServicio clienteDtoProcesador;
     private final TipoOperacionCliente tipoActualizar = TipoOperacionCliente.ACTUALIZAR;
     
     static {
         repositorioCliente = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCliente();
         mapeador = new ClienteMapeador();
+        clienteDtoProcesador = new ClienteDtoProcesadorServicio();
     }
     
     public ClienteServicioImpl() {
@@ -32,24 +33,9 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
 
     @Override
     public Optional<ClienteDTO> crearClienteDto(Map<String, String> datosCliente) {
-        // ✅ Supplier para generar ID secuencial automáticamente
-        java.util.function.Supplier<Long> idSupplier = () -> 
-            idContador.incrementAndGet();
-        
-        // El servicio crea el DTO internamente
-        ClienteDTO nuevoCliente = ClienteDTO.builder()
-            .id(idSupplier.get()) // ✅ Generar ID secuencial automáticamente
-            .nombre(datosCliente.get("nombre"))
-            .apellido(datosCliente.get("apellido"))
-            .dni(datosCliente.get("dni"))
-            .email(datosCliente.get("email"))
-            .telefono(datosCliente.get("telefono"))
-            .direccion(datosCliente.get("direccion"))
-            .fechaNacimiento(LocalDate.parse(datosCliente.get("fechaNacimiento"), DateTimeFormatter.ISO_LOCAL_DATE))
-            .build();
-        
-        // Luego lo guarda usando el método existente
-        return guardar(TipoOperacionCliente.CREAR, Optional.of(nuevoCliente));
+        // Usar el procesador especializado para crear el DTO con validaciones
+        return clienteDtoProcesador.procesarClienteDto(datosCliente)
+            .flatMap(clienteDto -> guardar(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));
     }
 
     @Override

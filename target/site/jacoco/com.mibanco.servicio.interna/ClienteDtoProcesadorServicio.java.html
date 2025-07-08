@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteDtoProcesadorServicio.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.servicio.interna</a> &gt; <span class="el_source">ClienteDtoProcesadorServicio.java</span></div><h1>ClienteDtoProcesadorServicio.java</h1><pre class="source lang-java linenums">package com.mibanco.servicio.interna;
+
+import com.mibanco.dto.ClienteDTO;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Servicio especializado en procesar la creación de ClienteDTO
+ * Aplica el Principio de Responsabilidad Única (SRP)
+ * Se encarga únicamente de transformar datos crudos en ClienteDTO válidos
+ * y procesar operaciones relacionadas con el cliente
+ */
+<span class="nc" id="L15">public class ClienteDtoProcesadorServicio {</span>
+    
+    /**
+     * Procesa los datos crudos y crea un ClienteDTO válido
+     * @param datosCrudos Mapa con los datos del cliente
+     * @return Optional con el ClienteDTO procesado o vacío si hay errores
+     */
+    public Optional&lt;ClienteDTO&gt; procesarClienteDto(Map&lt;String, String&gt; datosCrudos) {
+<span class="nc" id="L23">        return Optional.of(datosCrudos)</span>
+<span class="nc" id="L24">            .flatMap(this::construirClienteDTO);</span>
+    }
+    
+    /**
+     * Construye el ClienteDTO a partir de los datos crudos
+     */
+    private Optional&lt;ClienteDTO&gt; construirClienteDTO(Map&lt;String, String&gt; datosCrudos) {
+        try {
+<span class="nc" id="L32">            ClienteDTO.ClienteDTOBuilder builder = ClienteDTO.builder();</span>
+
+            // Aplicar transformaciones funcionales con validaciones
+<span class="nc" id="L35">            Optional.ofNullable(datosCrudos.get(&quot;nombre&quot;))</span>
+<span class="nc" id="L36">                .ifPresent(builder::nombre);</span>
+
+<span class="nc" id="L38">            Optional.ofNullable(datosCrudos.get(&quot;apellido&quot;))</span>
+<span class="nc" id="L39">                .ifPresent(builder::apellido);</span>
+
+<span class="nc" id="L41">            Optional.ofNullable(datosCrudos.get(&quot;dni&quot;))</span>
+<span class="nc" id="L42">                .ifPresent(builder::dni);</span>
+
+<span class="nc" id="L44">            Optional.ofNullable(datosCrudos.get(&quot;email&quot;))</span>
+<span class="nc" id="L45">                .ifPresent(builder::email);</span>
+
+<span class="nc" id="L47">            Optional.ofNullable(datosCrudos.get(&quot;telefono&quot;))</span>
+<span class="nc" id="L48">                .ifPresent(builder::telefono);</span>
+
+<span class="nc" id="L50">            Optional.ofNullable(datosCrudos.get(&quot;direccion&quot;))</span>
+<span class="nc" id="L51">                .ifPresent(builder::direccion);</span>
+
+            // Procesar fecha de nacimiento con validación
+<span class="nc" id="L54">            Optional.ofNullable(datosCrudos.get(&quot;fechaNacimiento&quot;))</span>
+<span class="nc" id="L55">                .map(fecha -&gt; LocalDate.parse(fecha, DateTimeFormatter.ISO_LOCAL_DATE))</span>
+<span class="nc" id="L56">                .ifPresent(builder::fechaNacimiento);</span>
+
+<span class="nc" id="L58">            return Optional.of(builder.build());</span>
+<span class="nc" id="L59">        } catch (Exception e) {</span>
+<span class="nc" id="L60">            return Optional.empty();</span>
+        }
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

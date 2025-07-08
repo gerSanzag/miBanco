@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
  * Implementación de Mapper para Transaccion utilizando enfoque funcional
  */
 <span class="nc" id="L13">public class TransaccionMapeador implements Mapeador&lt;Transaccion, TransaccionDTO&gt; {</span>
+    
+    // ✅ Supplier para generar ID secuencial automáticamente
+<span class="nc" id="L16">    private final java.util.function.Supplier&lt;Long&gt; idSupplier = () -&gt; </span>
+<span class="nc" id="L17">        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();</span>
 
     /**
      * Convierte una transacción a TransaccionDTO
@@ -18,15 +22,15 @@ import java.util.stream.Collectors;
      */
     @Override
     public Optional&lt;TransaccionDTO&gt; aDto(Optional&lt;Transaccion&gt; transaccionOpt) {
-<span class="nc" id="L21">        return transaccionOpt.map(transaccion -&gt; TransaccionDTO.builder()</span>
-<span class="nc" id="L22">            .id(transaccion.getId())</span>
-<span class="nc" id="L23">            .numeroCuenta(transaccion.getNumeroCuenta())</span>
-<span class="nc" id="L24">            .numeroCuentaDestino(transaccion.getNumeroCuentaDestino())</span>
-<span class="nc" id="L25">            .tipo(transaccion.getTipo())</span>
-<span class="nc" id="L26">            .monto(transaccion.getMonto())</span>
-<span class="nc" id="L27">            .fecha(transaccion.getFecha())</span>
-<span class="nc" id="L28">            .descripcion(transaccion.getDescripcion())</span>
-<span class="nc" id="L29">            .build());</span>
+<span class="nc" id="L25">        return transaccionOpt.map(transaccion -&gt; TransaccionDTO.builder()</span>
+<span class="nc" id="L26">            .id(transaccion.getId())</span>
+<span class="nc" id="L27">            .numeroCuenta(transaccion.getNumeroCuenta())</span>
+<span class="nc" id="L28">            .numeroCuentaDestino(transaccion.getNumeroCuentaDestino())</span>
+<span class="nc" id="L29">            .tipo(transaccion.getTipo())</span>
+<span class="nc" id="L30">            .monto(transaccion.getMonto())</span>
+<span class="nc" id="L31">            .fecha(transaccion.getFecha())</span>
+<span class="nc" id="L32">            .descripcion(transaccion.getDescripcion())</span>
+<span class="nc" id="L33">            .build());</span>
     }
 
     /**
@@ -35,15 +39,15 @@ import java.util.stream.Collectors;
      */
     @Override
     public Optional&lt;Transaccion&gt; aEntidad(Optional&lt;TransaccionDTO&gt; dtoOpt) {
-<span class="nc" id="L38">        return dtoOpt.map(dto -&gt; Transaccion.builder()</span>
-<span class="nc" id="L39">            .id(dto.getId())</span>
-<span class="nc" id="L40">            .numeroCuenta(dto.getNumeroCuenta())</span>
-<span class="nc" id="L41">            .numeroCuentaDestino(dto.getNumeroCuentaDestino())</span>
-<span class="nc" id="L42">            .tipo(dto.getTipo())</span>
-<span class="nc" id="L43">            .monto(dto.getMonto())</span>
-<span class="nc" id="L44">            .fecha(dto.getFecha())</span>
-<span class="nc" id="L45">            .descripcion(dto.getDescripcion())</span>
-<span class="nc" id="L46">            .build());</span>
+<span class="nc" id="L42">        return dtoOpt.map(dto -&gt; Transaccion.builder()</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            .id(dto.getId() != null ? dto.getId() : idSupplier.get()) // ✅ Generar ID automáticamente si es null</span>
+<span class="nc" id="L44">            .numeroCuenta(dto.getNumeroCuenta())</span>
+<span class="nc" id="L45">            .numeroCuentaDestino(dto.getNumeroCuentaDestino())</span>
+<span class="nc" id="L46">            .tipo(dto.getTipo())</span>
+<span class="nc" id="L47">            .monto(dto.getMonto())</span>
+<span class="nc" id="L48">            .fecha(dto.getFecha())</span>
+<span class="nc" id="L49">            .descripcion(dto.getDescripcion())</span>
+<span class="nc" id="L50">            .build());</span>
     }
    
     /**
@@ -51,7 +55,7 @@ import java.util.stream.Collectors;
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;TransaccionDTO&gt; aDtoDirecto(Transaccion transaccion) {
-<span class="nc" id="L54">        return aDto(Optional.ofNullable(transaccion));</span>
+<span class="nc" id="L58">        return aDto(Optional.ofNullable(transaccion));</span>
     }
     
     /**
@@ -59,7 +63,7 @@ import java.util.stream.Collectors;
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;Transaccion&gt; aEntidadDirecta(TransaccionDTO dto) {
-<span class="nc" id="L62">        return aEntidad(Optional.ofNullable(dto));</span>
+<span class="nc" id="L66">        return aEntidad(Optional.ofNullable(dto));</span>
     }
     
     /**
@@ -68,17 +72,17 @@ import java.util.stream.Collectors;
      * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Transaccion&gt;&gt; transacciones) {
-<span class="nc" id="L71">        return transacciones.map(list -&gt; list.stream()</span>
-<span class="nc" id="L72">                        .map(transaccion -&gt; aDto(Optional.of(transaccion)).orElse(null))</span>
-<span class="nc" id="L73">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L74">                .collect(Collectors.toList()));</span>
+<span class="nc" id="L75">        return transacciones.map(list -&gt; list.stream()</span>
+<span class="nc" id="L76">                        .map(transaccion -&gt; aDto(Optional.of(transaccion)).orElse(null))</span>
+<span class="nc" id="L77">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L78">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;Transaccion&gt; directamente
      */
     public Optional&lt;List&lt;TransaccionDTO&gt;&gt; aListaDto(List&lt;Transaccion&gt; transacciones) {
-<span class="nc" id="L81">        return aListaDto(Optional.ofNullable(transacciones));</span>
+<span class="nc" id="L85">        return aListaDto(Optional.ofNullable(transacciones));</span>
     }
     
     /**
@@ -87,17 +91,17 @@ import java.util.stream.Collectors;
      * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;Transaccion&gt;&gt; aListaEntidad(Optional&lt;List&lt;TransaccionDTO&gt;&gt; dtos) {
-<span class="nc" id="L90">        return dtos.map(list -&gt; list.stream()</span>
-<span class="nc" id="L91">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
-<span class="nc" id="L92">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L93">                .collect(Collectors.toList()));</span>
+<span class="nc" id="L94">        return dtos.map(list -&gt; list.stream()</span>
+<span class="nc" id="L95">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="nc" id="L96">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L97">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;TransaccionDTO&gt; directamente
      */
     public Optional&lt;List&lt;Transaccion&gt;&gt; aListaEntidad(List&lt;TransaccionDTO&gt; dtos) {
-<span class="nc" id="L100">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+<span class="nc" id="L104">        return aListaEntidad(Optional.ofNullable(dtos));</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

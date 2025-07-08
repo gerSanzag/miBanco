@@ -29,8 +29,7 @@ public class CuentaDtoProcesadorServicio {
      */
     public Optional<CuentaDTO> procesarCuentaDto(Map<String, String> datosCrudos) {
         return Optional.of(datosCrudos)
-            .flatMap(this::extraerIdTitular)
-            .flatMap(this::obtenerClientePorId)
+            .flatMap(this::obtenerTitularPorId)
             .flatMap(titular -> construirCuentaDTO(datosCrudos, titular));
     }
     
@@ -69,18 +68,12 @@ public class CuentaDtoProcesadorServicio {
     }
     
     /**
-     * Extrae el ID del titular desde el mapa de datos
+     * Extrae el ID del titular y obtiene el cliente en un solo método funcional
      */
-    private Optional<Long> extraerIdTitular(Map<String, String> datosCrudos) {
+    private Optional<ClienteDTO> obtenerTitularPorId(Map<String, String> datosCrudos) {
         return Optional.ofNullable(datosCrudos.get("idTitular"))
-            .map(Long::parseLong);
-    }
-    
-    /**
-     * Obtiene el cliente por ID usando el servicio
-     */
-    private Optional<ClienteDTO> obtenerClientePorId(Long idTitular) {
-        return clienteServicio.obtenerClientePorId(Optional.of(idTitular));
+            .map(Long::parseLong)
+            .flatMap(idTitular -> clienteServicio.obtenerClientePorId(Optional.of(idTitular)));
     }
     
     /**
@@ -88,15 +81,8 @@ public class CuentaDtoProcesadorServicio {
      */
     private Optional<CuentaDTO> construirCuentaDTO(Map<String, String> datosCrudos, ClienteDTO titular) {
         try {
-            // ✅ Supplier para generar ID automáticamente
-            java.util.function.Supplier<Long> idSupplier = () -> 
-                System.currentTimeMillis() % 1000000000L;
-
             CuentaDTO.CuentaDTOBuilder builder = CuentaDTO.builder()
                 .titular(titular);
-
-            // ✅ Generar ID directamente
-            builder.numeroCuenta(idSupplier.get());
 
             // Aplicar transformaciones funcionales
             Optional.ofNullable(datosCrudos.get("tipo"))

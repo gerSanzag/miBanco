@@ -53,8 +53,8 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl&lt;Transaccion, Lon
 <span class="nc" id="L53">                    LocalDateTime fechaTransaccion = transaccion.getFecha();</span>
 <span class="nc bnc" id="L54" title="All 2 branches missed.">                    return !fechaTransaccion.toLocalDate().isBefore(inicio) &amp;&amp; </span>
 <span class="nc bnc" id="L55" title="All 2 branches missed.">                           !fechaTransaccion.toLocalDate().isAfter(fin);</span>
-<span class="nc" id="L56">                })</span>
-<span class="nc" id="L57">            )</span>
+                })
+            )
         );
     }
     

@@ -34,7 +34,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
         repositorioCuenta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCuenta();
         clienteMapeador = new ClienteMapeador();
         mapeador = new CuentaMapeador(clienteMapeador);
-        clienteServicio = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();
+        clienteServicio = FactoriaServicio.obtenerInstancia().obtenerServicioCliente();
         cuentaDtoProcesador = new CuentaDtoProcesadorServicio(clienteServicio);
     }
 

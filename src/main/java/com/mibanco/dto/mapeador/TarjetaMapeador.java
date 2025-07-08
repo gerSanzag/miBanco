@@ -18,7 +18,13 @@ public class TarjetaMapeador implements Mapeador<Tarjeta, TarjetaDTO> {
     public TarjetaMapeador(Mapeador<Cliente, ClienteDTO> clienteMapeador) {
         this.clienteMapeador = clienteMapeador;
     }
+// Después de la línea 18, agregar:
+private final java.util.function.Supplier<String> cvvSupplier = () -> 
+    String.format("%03d", new java.util.Random().nextInt(900) + 100);
 
+// ✅ Supplier para generar número de tarjeta automáticamente
+private final java.util.function.Supplier<String> numeroTarjetaSupplier = () -> 
+    String.format("%016d", new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet());
     /**
      * Convierte una tarjeta a TarjetaDTO
      * Implementación estrictamente funcional con Optional
@@ -42,12 +48,12 @@ public class TarjetaMapeador implements Mapeador<Tarjeta, TarjetaDTO> {
     @Override
     public Optional<Tarjeta> aEntidad(Optional<TarjetaDTO> dtoOpt) {
         return dtoOpt.map(dto -> Tarjeta.builder()
-            .numero(dto.getNumero())
+            .numero(dto.getNumero() != null ? dto.getNumero() : numeroTarjetaSupplier.get()) // ✅ Generar número automáticamente si es null
             .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))
             .numeroCuentaAsociada(dto.getNumeroCuentaAsociada())
             .tipo(dto.getTipo())
             .fechaExpiracion(dto.getFechaExpiracion())
-            .cvv("") // El CVV no se incluye en el DTO por seguridad
+            .cvv(cvvSupplier.get()) // Generar CVV automáticamente (100-999)
             .activa(dto.isActiva())
             .build());
     }

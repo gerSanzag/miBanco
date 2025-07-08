@@ -23,16 +23,16 @@ import java.util.Optional;
     public static &lt;T extends Identificable, E extends Enum&lt;E&gt;&gt; 
            RegistroAuditoria&lt;T, E&gt; registrarOperacion(
                AuditoriaRepositorio auditoriaRepository,
-               E tipoOperacion, 
-               T entidad, 
-               String usuario) {
+               Optional&lt;E&gt; tipoOperacion, 
+               Optional&lt;T&gt; entidad, 
+               Optional&lt;String&gt; usuario) {
         
         // Crear registro de auditoría
-<span class="nc" id="L31">        RegistroAuditoria&lt;T, E&gt; registro = RegistroAuditoria.of(tipoOperacion, entidad, usuario);</span>
+<span class="fc" id="L31">        RegistroAuditoria&lt;T, E&gt; registro = RegistroAuditoria.of(tipoOperacion, entidad, usuario);</span>
         
         // Guardar y devolver
-        Optional&lt;RegistroAuditoria&lt;T, E&gt;&gt; registroGuardado = auditoriaRepository.registrar(Optional.of(registro));
-        return registroGuardado.orElse(registro);
+<span class="fc" id="L34">        Optional&lt;RegistroAuditoria&lt;T, E&gt;&gt; registroGuardado = auditoriaRepository.registrar(Optional.of(registro));</span>
+<span class="fc" id="L35">        return registroGuardado.orElse(registro);</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

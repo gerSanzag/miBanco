@@ -29,9 +29,8 @@ public class CuentaDtoProcesadorServicio {
      */
     public Optional&lt;CuentaDTO&gt; procesarCuentaDto(Map&lt;String, String&gt; datosCrudos) {
 <span class="nc" id="L31">        return Optional.of(datosCrudos)</span>
-<span class="nc" id="L32">            .flatMap(this::extraerIdTitular)</span>
-<span class="nc" id="L33">            .flatMap(this::obtenerClientePorId)</span>
-<span class="nc" id="L34">            .flatMap(titular -&gt; construirCuentaDTO(datosCrudos, titular));</span>
+<span class="nc" id="L32">            .flatMap(this::obtenerTitularPorId)</span>
+<span class="nc" id="L33">            .flatMap(titular -&gt; construirCuentaDTO(datosCrudos, titular));</span>
     }
     
     /**
@@ -44,15 +43,15 @@ public class CuentaDtoProcesadorServicio {
     public Optional&lt;CuentaDTO&gt; procesarIngresoInicial(CuentaDTO cuentaCreada, 
                                                       BigDecimal montoInicial, 
                                                       TransaccionOperacionesServicio transaccionServicio) {
-<span class="nc" id="L47">        Long numeroCuenta = cuentaCreada.getNumeroCuenta();</span>
+<span class="nc" id="L46">        Long numeroCuenta = cuentaCreada.getNumeroCuenta();</span>
         
-<span class="nc" id="L49">        return transaccionServicio.ingresar(</span>
-<span class="nc" id="L50">                Optional.of(numeroCuenta),</span>
-<span class="nc" id="L51">                Optional.of(montoInicial),</span>
-<span class="nc" id="L52">                Optional.of(&quot;Ingreso inicial de apertura&quot;)</span>
+<span class="nc" id="L48">        return transaccionServicio.ingresar(</span>
+<span class="nc" id="L49">                Optional.of(numeroCuenta),</span>
+<span class="nc" id="L50">                Optional.of(montoInicial),</span>
+<span class="nc" id="L51">                Optional.of(&quot;Ingreso inicial de apertura&quot;)</span>
             )
-<span class="nc" id="L54">            .map(transaccion -&gt; actualizarCuentaConSaldo(cuentaCreada, montoInicial))</span>
-<span class="nc" id="L55">            .or(() -&gt; Optional.empty());</span>
+<span class="nc" id="L53">            .map(transaccion -&gt; actualizarCuentaConSaldo(cuentaCreada, montoInicial))</span>
+<span class="nc" id="L54">            .or(() -&gt; Optional.empty());</span>
     }
     
     /**
@@ -62,25 +61,19 @@ public class CuentaDtoProcesadorServicio {
      * @return La cuenta actualizada
      */
     public CuentaDTO actualizarCuentaConSaldo(CuentaDTO cuenta, BigDecimal saldo) {
-<span class="nc" id="L65">        return cuenta.toBuilder()</span>
-<span class="nc" id="L66">            .saldoInicial(saldo)</span>
-<span class="nc" id="L67">            .saldo(saldo)</span>
-<span class="nc" id="L68">            .build();</span>
+<span class="nc" id="L64">        return cuenta.toBuilder()</span>
+<span class="nc" id="L65">            .saldoInicial(saldo)</span>
+<span class="nc" id="L66">            .saldo(saldo)</span>
+<span class="nc" id="L67">            .build();</span>
     }
     
     /**
-     * Extrae el ID del titular desde el mapa de datos
+     * Extrae el ID del titular y obtiene el cliente en un solo método funcional
      */
-    private Optional&lt;Long&gt; extraerIdTitular(Map&lt;String, String&gt; datosCrudos) {
-<span class="nc" id="L75">        return Optional.ofNullable(datosCrudos.get(&quot;idTitular&quot;))</span>
-<span class="nc" id="L76">            .map(Long::parseLong);</span>
-    }
-    
-    /**
-     * Obtiene el cliente por ID usando el servicio
-     */
-    private Optional&lt;ClienteDTO&gt; obtenerClientePorId(Long idTitular) {
-<span class="nc" id="L83">        return clienteServicio.obtenerClientePorId(Optional.of(idTitular));</span>
+    private Optional&lt;ClienteDTO&gt; obtenerTitularPorId(Map&lt;String, String&gt; datosCrudos) {
+<span class="nc" id="L74">        return Optional.ofNullable(datosCrudos.get(&quot;idTitular&quot;))</span>
+<span class="nc" id="L75">            .map(Long::parseLong)</span>
+<span class="nc" id="L76">            .flatMap(idTitular -&gt; clienteServicio.obtenerClientePorId(Optional.of(idTitular)));</span>
     }
     
     /**
@@ -88,34 +81,27 @@ public class CuentaDtoProcesadorServicio {
      */
     private Optional&lt;CuentaDTO&gt; construirCuentaDTO(Map&lt;String, String&gt; datosCrudos, ClienteDTO titular) {
         try {
-            // ✅ Supplier para generar ID automáticamente
-<span class="nc" id="L92">            java.util.function.Supplier&lt;Long&gt; idSupplier = () -&gt; </span>
-<span class="nc" id="L93">                System.currentTimeMillis() % 1000000000L;</span>
-
-<span class="nc" id="L95">            CuentaDTO.CuentaDTOBuilder builder = CuentaDTO.builder()</span>
-<span class="nc" id="L96">                .titular(titular);</span>
-
-            // ✅ Generar ID directamente
-<span class="nc" id="L99">            builder.numeroCuenta(idSupplier.get());</span>
+<span class="nc" id="L84">            CuentaDTO.CuentaDTOBuilder builder = CuentaDTO.builder()</span>
+<span class="nc" id="L85">                .titular(titular);</span>
 
             // Aplicar transformaciones funcionales
-<span class="nc" id="L102">            Optional.ofNullable(datosCrudos.get(&quot;tipo&quot;))</span>
-<span class="nc" id="L103">                .map(com.mibanco.modelo.enums.TipoCuenta::valueOf)</span>
-<span class="nc" id="L104">                .ifPresent(builder::tipo);</span>
+<span class="nc" id="L88">            Optional.ofNullable(datosCrudos.get(&quot;tipo&quot;))</span>
+<span class="nc" id="L89">                .map(com.mibanco.modelo.enums.TipoCuenta::valueOf)</span>
+<span class="nc" id="L90">                .ifPresent(builder::tipo);</span>
 
-<span class="nc" id="L106">            Optional.ofNullable(datosCrudos.get(&quot;fechaCreacion&quot;))</span>
-<span class="nc" id="L107">                .map(java.time.LocalDateTime::parse)</span>
-<span class="nc" id="L108">                .ifPresent(builder::fechaCreacion);</span>
+<span class="nc" id="L92">            Optional.ofNullable(datosCrudos.get(&quot;fechaCreacion&quot;))</span>
+<span class="nc" id="L93">                .map(java.time.LocalDateTime::parse)</span>
+<span class="nc" id="L94">                .ifPresent(builder::fechaCreacion);</span>
 
             // Estado activo por defecto
-<span class="nc" id="L111">            Optional.ofNullable(datosCrudos.get(&quot;activa&quot;))</span>
-<span class="nc" id="L112">                .map(Boolean::parseBoolean)</span>
-<span class="nc" id="L113">                .or(() -&gt; Optional.of(true))</span>
-<span class="nc" id="L114">                .ifPresent(builder::activa);</span>
+<span class="nc" id="L97">            Optional.ofNullable(datosCrudos.get(&quot;activa&quot;))</span>
+<span class="nc" id="L98">                .map(Boolean::parseBoolean)</span>
+<span class="nc" id="L99">                .or(() -&gt; Optional.of(true))</span>
+<span class="nc" id="L100">                .ifPresent(builder::activa);</span>
 
-<span class="nc" id="L116">            return Optional.of(builder.build());</span>
-<span class="nc" id="L117">        } catch (Exception e) {</span>
-<span class="nc" id="L118">            return Optional.empty();</span>
+<span class="nc" id="L102">            return Optional.of(builder.build());</span>
+<span class="nc" id="L103">        } catch (Exception e) {</span>
+<span class="nc" id="L104">            return Optional.empty();</span>
         }
     }
 } 

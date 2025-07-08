@@ -75,7 +75,7 @@ class AuditoriaRepositorioImpl implements AuditoriaRepositorio {
 <span class="nc bnc" id="L75" title="All 4 branches missed.">                    .filter(r -&gt; !r.getFechaHora().isBefore(desde) &amp;&amp; !r.getFechaHora().isAfter(hasta))</span>
 <span class="nc" id="L76">                    .map(r -&gt; (RegistroAuditoria&lt;T, E&gt;) r)</span>
 <span class="nc" id="L77">                    .collect(Collectors.toList())</span>
-<span class="nc" id="L78">            )</span>
+            )
 <span class="nc" id="L79">        ).map(Optional::of).orElse(Optional.of(new ArrayList&lt;&gt;()));</span>
     }
     
@@ -102,7 +102,7 @@ class AuditoriaRepositorioImpl implements AuditoriaRepositorio {
 <span class="nc" id="L102">                    .filter(r -&gt; r.getTipoOperacion().equals(tipo))</span>
 <span class="nc" id="L103">                    .map(r -&gt; (RegistroAuditoria&lt;T, E&gt;) r)</span>
 <span class="nc" id="L104">                    .collect(Collectors.toList())</span>
-<span class="nc" id="L105">            )</span>
+            )
         );
     }
 } 

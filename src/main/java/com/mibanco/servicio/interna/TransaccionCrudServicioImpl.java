@@ -26,7 +26,6 @@ class TransaccionCrudServicioImpl extends BaseServicioImpl<TransaccionDTO, Trans
     
     private static final TransaccionRepositorio repositorioTransaccion;
     private static final TransaccionMapeador mapeador;
-    private static final AtomicLong idContador = new AtomicLong(0);
    
     static {
         repositorioTransaccion = RepositorioFactoria.obtenerInstancia().obtenerRepositorioTransaccion();
@@ -40,51 +39,11 @@ class TransaccionCrudServicioImpl extends BaseServicioImpl<TransaccionDTO, Trans
     
     @Override
     public Optional<TransaccionDTO> crearTransaccion(Map<String, String> datosTransaccion) {
-        return Optional.ofNullable(datosTransaccion)
-                .flatMap(datos -> {
-                    try {
-                        // ✅ Supplier para generar ID secuencial automáticamente
-                        Supplier<Long> idSupplier = () -> 
-                            idContador.incrementAndGet();
-                        
-                        // Extraer y validar datos del Map
-                        Long numeroCuenta = Optional.ofNullable(datos.get("numeroCuenta"))
-                                .map(Long::parseLong)
-                                .orElse(null);
-                        
-                        Long numeroCuentaDestino = Optional.ofNullable(datos.get("numeroCuentaDestino"))
-                                .map(Long::parseLong)
-                                .orElse(null);
-                        
-                        TipoTransaccion tipo = Optional.ofNullable(datos.get("tipo"))
-                                .map(TipoTransaccion::valueOf)
-                                .orElse(null);
-                        
-                        BigDecimal monto = Optional.ofNullable(datos.get("monto"))
-                                .map(BigDecimal::new)
-                                .orElse(null);
-                        
-                        String descripcion = datos.getOrDefault("descripcion", "");
-                        
-                        // Crear DTO con datos validados y ID generado automáticamente
-                        TransaccionDTO transaccionDTO = TransaccionDTO.builder()
-                                .id(idSupplier.get()) // ✅ Generar ID secuencial automáticamente
-                                .numeroCuenta(numeroCuenta)
-                                .numeroCuentaDestino(numeroCuentaDestino)
-                                .tipo(tipo)
-                                .monto(monto)
-                                .fecha(LocalDateTime.now())
-                                .descripcion(descripcion)
-                                .build();
-                        
-                        // Guardar usando el método heredado
-                        return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
-                        
-                    } catch (IllegalArgumentException e) {
-                        // Manejo funcional de errores de parsing
-                        return Optional.empty();
-                    }
-                });
+        // Usar el procesador especializado para crear el DTO con validaciones
+        TransaccionDtoProcesadorServicio procesador = new TransaccionDtoProcesadorServicio();
+        
+        return procesador.procesarTransaccionDto(datosTransaccion)
+            .flatMap(transaccionDto -> guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDto)));
     }
     
     @Override

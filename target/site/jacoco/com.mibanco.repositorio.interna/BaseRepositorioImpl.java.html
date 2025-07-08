@@ -59,32 +59,31 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     @Override
     public Optional&lt;T&gt; crear(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
 <span class="nc" id="L61">        return entityOpt.map(entity -&gt; {</span>
-            // T nuevaEntidad = crearConNuevoId(entity);
-<span class="nc" id="L63">            entidades.add(entity);</span>
-<span class="nc" id="L64">            registrarAuditoria(entity, tipoOperacion);</span>
-<span class="nc" id="L65">            return Optional.of(entity);</span>
-<span class="nc" id="L66">        }).orElse(Optional.empty());</span>
+<span class="nc" id="L62">            entidades.add(entity);</span>
+<span class="nc" id="L63">            registrarAuditoria(entity, tipoOperacion);</span>
+<span class="nc" id="L64">            return Optional.of(entity);</span>
+<span class="nc" id="L65">        }).orElse(Optional.empty());</span>
     }
     
     @Override
     public Optional&lt;T&gt; actualizar(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
-<span class="nc" id="L71">        return entityOpt.flatMap(entidad -&gt; </span>
-<span class="nc" id="L72">            Optional.ofNullable(entidad.getId())</span>
-<span class="nc" id="L73">                .map(id -&gt; {</span>
-<span class="nc" id="L74">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
-<span class="nc" id="L75">                    entidades.add(entidad);</span>
-<span class="nc" id="L76">                    registrarAuditoria(entidad, tipoOperacion);</span>
-<span class="nc" id="L77">                    return entidad;</span>
-<span class="nc" id="L78">                })</span>
+<span class="nc" id="L70">        return entityOpt.flatMap(entidad -&gt; </span>
+<span class="nc" id="L71">            Optional.ofNullable(entidad.getId())</span>
+<span class="nc" id="L72">                .map(id -&gt; {</span>
+<span class="nc" id="L73">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="nc" id="L74">                    entidades.add(entidad);</span>
+<span class="nc" id="L75">                    registrarAuditoria(entidad, tipoOperacion);</span>
+<span class="nc" id="L76">                    return entidad;</span>
+                })
         );
     }
     
     @Override
     public Optional&lt;T&gt; buscarPorId(Optional&lt;ID&gt; idOpt) {
-<span class="nc" id="L84">        return idOpt.flatMap(id -&gt; </span>
-<span class="nc" id="L85">            entidades.stream()</span>
-<span class="nc" id="L86">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
-<span class="nc" id="L87">                .findFirst()</span>
+<span class="nc" id="L83">        return idOpt.flatMap(id -&gt; </span>
+<span class="nc" id="L84">            entidades.stream()</span>
+<span class="nc" id="L85">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="nc" id="L86">                .findFirst()</span>
         );
     }
     
@@ -92,61 +91,61 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Método protegido para búsquedas por predicado
      */
     protected Optional&lt;T&gt; buscarPorPredicado(Predicate&lt;T&gt; predicado) {
-<span class="nc" id="L95">        return entidades.stream()</span>
-<span class="nc" id="L96">                .filter(predicado)</span>
-<span class="nc" id="L97">                .findFirst();</span>
+<span class="nc" id="L94">        return entidades.stream()</span>
+<span class="nc" id="L95">                .filter(predicado)</span>
+<span class="nc" id="L96">                .findFirst();</span>
     }
     
     /**
      * Método protegido para búsquedas de lista por predicado
      */
     protected Optional&lt;List&lt;T&gt;&gt; buscarTodosPorPredicado(Predicate&lt;T&gt; predicado) {
-<span class="nc" id="L104">        return Optional.of(</span>
-<span class="nc" id="L105">            entidades.stream()</span>
-<span class="nc" id="L106">                .filter(predicado)</span>
-<span class="nc" id="L107">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="nc" id="L103">        return Optional.of(</span>
+<span class="nc" id="L104">            entidades.stream()</span>
+<span class="nc" id="L105">                .filter(predicado)</span>
+<span class="nc" id="L106">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;T&gt;&gt; buscarTodos() {
-<span class="nc" id="L113">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
+<span class="nc" id="L112">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
     }
     
     @Override
     public Optional&lt;T&gt; eliminarPorId(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
-<span class="nc" id="L118">        return idOpt.flatMap(id -&gt; {</span>
-<span class="nc" id="L119">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
+<span class="nc" id="L117">        return idOpt.flatMap(id -&gt; {</span>
+<span class="nc" id="L118">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
             
-<span class="nc" id="L121">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
-<span class="nc" id="L122">                entidades.remove(entity);</span>
-<span class="nc" id="L123">                entidadesEliminadas.add(entity);</span>
-<span class="nc" id="L124">                registrarAuditoria(entity, tipoOperacion);</span>
-<span class="nc" id="L125">            });</span>
+<span class="nc" id="L120">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
+<span class="nc" id="L121">                entidades.remove(entity);</span>
+<span class="nc" id="L122">                entidadesEliminadas.add(entity);</span>
+<span class="nc" id="L123">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="nc" id="L124">            });</span>
             
-<span class="nc" id="L127">            return entidadAEliminarOpt;</span>
+<span class="nc" id="L126">            return entidadAEliminarOpt;</span>
         });
     }
     
     @Override
     public long contarRegistros() {
-<span class="nc" id="L133">        return entidades.size();</span>
+<span class="nc" id="L132">        return entidades.size();</span>
     }
     
     @Override
     public Optional&lt;T&gt; restaurar(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
-<span class="nc" id="L138">        return idOpt.flatMap(id -&gt; {</span>
-<span class="nc" id="L139">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
-<span class="nc" id="L140">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
-<span class="nc" id="L141">                    .findFirst();</span>
+<span class="nc" id="L137">        return idOpt.flatMap(id -&gt; {</span>
+<span class="nc" id="L138">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
+<span class="nc" id="L139">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="nc" id="L140">                    .findFirst();</span>
                     
-<span class="nc" id="L143">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
-<span class="nc" id="L144">                entidades.add(entity);</span>
-<span class="nc" id="L145">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
-<span class="nc" id="L146">                registrarAuditoria(entity, tipoOperacion);</span>
-<span class="nc" id="L147">            });</span>
+<span class="nc" id="L142">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
+<span class="nc" id="L143">                entidades.add(entity);</span>
+<span class="nc" id="L144">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="nc" id="L145">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="nc" id="L146">            });</span>
             
-<span class="nc" id="L149">            return entidadAResturarOpt;</span>
+<span class="nc" id="L148">            return entidadAResturarOpt;</span>
         });
     }
     
@@ -155,17 +154,17 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Método privado para registrar auditoría
      */
     private void registrarAuditoria(T entidad, E tipoOperacion) {
-<span class="nc" id="L158">        AuditoriaUtil.registrarOperacion(</span>
-<span class="nc" id="L159">            obtenerAuditoria(),</span>
-<span class="nc" id="L160">            tipoOperacion,</span>
-<span class="nc" id="L161">            entidad,</span>
-<span class="nc" id="L162">            usuarioActual</span>
+<span class="nc" id="L157">        AuditoriaUtil.registrarOperacion(</span>
+<span class="nc" id="L158">            obtenerAuditoria(),</span>
+<span class="nc" id="L159">            Optional.of(tipoOperacion),</span>
+<span class="nc" id="L160">            Optional.of(entidad),</span>
+<span class="nc" id="L161">            Optional.of(usuarioActual)</span>
         );
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L163">    }</span>
 
     @Override
     public List&lt;T&gt; obtenerEliminados() {
-<span class="nc" id="L168">        return entidadesEliminadas;</span>
+<span class="nc" id="L167">        return entidadesEliminadas;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

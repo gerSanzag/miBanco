@@ -23,9 +23,9 @@ public class AuditoriaUtil {
     public static <T extends Identificable, E extends Enum<E>> 
            RegistroAuditoria<T, E> registrarOperacion(
                AuditoriaRepositorio auditoriaRepository,
-               E tipoOperacion, 
-               T entidad, 
-               String usuario) {
+               Optional<E> tipoOperacion, 
+               Optional<T> entidad, 
+               Optional<String> usuario) {
         
         // Crear registro de auditoría
         RegistroAuditoria<T, E> registro = RegistroAuditoria.of(tipoOperacion, entidad, usuario);

@@ -11,9 +11,9 @@ import com.mibanco.servicio.TransaccionOperacionesServicio;
  * Fábrica de servicios que expone las implementaciones
  * Esta es la única clase que tiene acceso a las implementaciones internas
  */
-public final class ServicioFactoria {
+public final class FactoriaServicio {
     
-    private static volatile ServicioFactoria instancia;
+    private static volatile FactoriaServicio instancia;
     private final ClienteServicio clienteServicio;
     private final CuentaServicio cuentaServicio;
     private final TarjetaServicio tarjetaServicio;
@@ -25,7 +25,7 @@ public final class ServicioFactoria {
      * Constructor privado que inicializa todas las implementaciones
      * Al estar en el mismo paquete, tiene acceso a las clases package-private
      */
-    private ServicioFactoria() {
+    private FactoriaServicio() {
         this.clienteServicio = new ClienteServicioImpl();
         this.cuentaServicio = new CuentaServicioImpl();
         this.tarjetaServicio = new TarjetaServicioImpl();
@@ -38,11 +38,11 @@ public final class ServicioFactoria {
      * Obtiene la única instancia de ServicioFactoria
      * Este es el único punto de acceso a las implementaciones de servicios
      */
-    public static ServicioFactoria obtenerInstancia() {
+    public static FactoriaServicio obtenerInstancia() {
         if (instancia == null) {
-            synchronized (ServicioFactoria.class) {
+            synchronized (FactoriaServicio.class) {
                 if (instancia == null) {
-                    instancia = new ServicioFactoria();
+                    instancia = new FactoriaServicio();
                 }
             }
         }

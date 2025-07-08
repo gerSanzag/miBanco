@@ -46,7 +46,7 @@ public class ClienteVistaImpl extends BaseVistaImpl&lt;ClienteDTO&gt; implements
     @Override
     public Optional&lt;Long&gt; solicitarIdCliente() {
 <span class="nc" id="L48">        return leerNumero(&quot;Introduzca el ID del cliente&quot;, </span>
-<span class="nc" id="L49">        &quot;El ID debe ser un número válido.&quot;);</span>
+        &quot;El ID debe ser un número válido.&quot;);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ClienteVistaImpl extends BaseVistaImpl&lt;ClienteDTO&gt; implements
     @Override
     public void mostrarEntidad(Optional&lt;ClienteDTO&gt; cliente) {
 <span class="nc" id="L96">        cliente.ifPresentOrElse(</span>
-<span class="nc" id="L97">            c -&gt; {</span>
+            c -&gt; {
 <span class="nc" id="L98">                consola.mostrar(&quot;\n--- DATOS DEL CLIENTE ---\n&quot;);</span>
 <span class="nc" id="L99">                consola.mostrar(&quot;ID: &quot; + c.getId() + &quot;\n&quot;);</span>
 <span class="nc" id="L100">                consola.mostrar(&quot;Nombre: &quot; + c.getNombre() + &quot;\n&quot;);</span>

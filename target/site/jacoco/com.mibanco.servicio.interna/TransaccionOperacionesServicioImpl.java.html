@@ -45,7 +45,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
 <span class="nc" id="L45">        entry(TipoTransaccion.RETIRO, TipoTransaccion.DEPOSITO),</span>
 <span class="nc" id="L46">        entry(TipoTransaccion.TRANSFERENCIA_ENVIADA, TipoTransaccion.TRANSFERENCIA_RECIBIDA),</span>
 <span class="nc" id="L47">        entry(TipoTransaccion.TRANSFERENCIA_RECIBIDA, TipoTransaccion.TRANSFERENCIA_ENVIADA)</span>
-<span class="nc" id="L48">    );</span>
+    );
  
 
     private boolean bloquearCuenta(Optional&lt;Long&gt; numeroCuenta) {
@@ -64,7 +64,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
 <span class="nc" id="L64">        numeroCuenta.ifPresent(numero -&gt; {</span>
 <span class="nc" id="L65">            synchronized (lock) {</span>
 <span class="nc" id="L66">                cuentasBloqueadas.remove(numero);</span>
-            }
+<span class="nc" id="L67">            }</span>
 <span class="nc" id="L68">        });</span>
 <span class="nc" id="L69">    }</span>
 
@@ -189,7 +189,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
 <span class="nc" id="L189">                        liberarCuenta(Optional.of(numeroOrigen));</span>
 <span class="nc" id="L190">                        liberarCuenta(Optional.of(numeroDestino));</span>
                     }
-<span class="nc" id="L192">                })</span>
+                })
             );
     }
     @Override
@@ -213,7 +213,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
                     // Convertir a DTO y guardar usando el servicio base
 <span class="nc" id="L214">                    return mapeador.aDto(Optional.of(transaccionAnulacion))</span>
 <span class="nc" id="L215">                            .flatMap(dto -&gt; guardar(TipoOperacionTransaccion.ANULAR, Optional.of(dto)));</span>
-<span class="nc" id="L216">                })</span>
+                })
         );
     }
 }

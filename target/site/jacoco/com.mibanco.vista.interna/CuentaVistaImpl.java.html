@@ -86,7 +86,7 @@ class CuentaVistaImpl extends BaseVistaImpl&lt;CuentaDTO&gt; implements CuentaVi
 <span class="nc" id="L86">                    mostrarMensaje(&quot;Opción no válida.&quot;);</span>
 <span class="nc" id="L87">                    yield Map.of();</span>
                 }
-            };
+<span class="nc" id="L89">            };</span>
 <span class="nc" id="L90">            return datos;</span>
 <span class="nc" id="L91">        }).orElse(Map.of());</span>
     }
@@ -94,7 +94,7 @@ class CuentaVistaImpl extends BaseVistaImpl&lt;CuentaDTO&gt; implements CuentaVi
     @Override
     public void mostrarCuenta(Optional&lt;CuentaDTO&gt; cuentaOpt) {
 <span class="nc" id="L96">        cuentaOpt.ifPresentOrElse(</span>
-<span class="nc" id="L97">            cuenta -&gt; {</span>
+            cuenta -&gt; {
 <span class="nc" id="L98">                consola.mostrar(&quot;\n--- Detalles de la Cuenta ---\n&quot;);</span>
 <span class="nc" id="L99">                consola.mostrar(&quot;Número: &quot; + cuenta.getNumeroCuenta() + &quot;\n&quot;);</span>
 <span class="nc" id="L100">                consola.mostrar(&quot;Titular: &quot; + cuenta.getTitular().getNombre() + &quot; &quot; + cuenta.getTitular().getApellido() + &quot;\n&quot;);</span>
@@ -115,7 +115,7 @@ class CuentaVistaImpl extends BaseVistaImpl&lt;CuentaDTO&gt; implements CuentaVi
 <span class="nc" id="L115">        Optional.of(cuentas)</span>
 <span class="nc bnc" id="L116" title="All 2 branches missed.">            .filter(lista -&gt; !lista.isEmpty())</span>
 <span class="nc" id="L117">            .ifPresentOrElse(</span>
-<span class="nc" id="L118">                lista -&gt; {</span>
+                lista -&gt; {
 <span class="nc" id="L119">                    lista.forEach(cuenta -&gt; mostrarCuenta(Optional.of(cuenta)));</span>
 <span class="nc" id="L120">                    consola.mostrar(&quot;---------------------------\n&quot;);</span>
 <span class="nc" id="L121">                },</span>
@@ -161,10 +161,10 @@ class CuentaVistaImpl extends BaseVistaImpl&lt;CuentaDTO&gt; implements CuentaVi
 <span class="nc" id="L161">            .forEach(i -&gt; consola.mostrar((i + 1) + &quot;. &quot; + tipos[i].name() + &quot;\n&quot;));</span>
         
 <span class="nc" id="L163">        return leerNumeroConRango(</span>
-<span class="nc" id="L164">            &quot;Seleccione el tipo de cuenta (1-&quot; + tipos.length + &quot;)&quot;, </span>
-<span class="nc" id="L165">            1, </span>
-<span class="nc" id="L166">            tipos.length, </span>
-<span class="nc" id="L167">            &quot;Selección fuera de rango.&quot;</span>
+            &quot;Seleccione el tipo de cuenta (1-&quot; + tipos.length + &quot;)&quot;, 
+            1, 
+            tipos.length, 
+            &quot;Selección fuera de rango.&quot;
 <span class="nc" id="L168">        ).map(seleccion -&gt; tipos[seleccion - 1].name());</span>
     }
 
@@ -197,10 +197,10 @@ class CuentaVistaImpl extends BaseVistaImpl&lt;CuentaDTO&gt; implements CuentaVi
 <span class="nc" id="L197">            .forEach(i -&gt; consola.mostrar((i + 1) + &quot;. &quot; + tipos[i].name() + &quot;\n&quot;));</span>
         
 <span class="nc" id="L199">        return leerNumeroConRango(</span>
-<span class="nc" id="L200">            &quot;Seleccione el tipo de cuenta para buscar (1-&quot; + tipos.length + &quot;)&quot;, </span>
-<span class="nc" id="L201">            1, </span>
-<span class="nc" id="L202">            tipos.length, </span>
-<span class="nc" id="L203">            &quot;Selección fuera de rango.&quot;</span>
+            &quot;Seleccione el tipo de cuenta para buscar (1-&quot; + tipos.length + &quot;)&quot;, 
+            1, 
+            tipos.length, 
+            &quot;Selección fuera de rango.&quot;
 <span class="nc" id="L204">        ).map(seleccion -&gt; tipos[seleccion - 1].name());</span>
     }
 
@@ -224,7 +224,7 @@ class CuentaVistaImpl extends BaseVistaImpl&lt;CuentaDTO&gt; implements CuentaVi
 <span class="nc" id="L224">        Optional.of(cuentas)</span>
 <span class="nc bnc" id="L225" title="All 2 branches missed.">            .filter(lista -&gt; !lista.isEmpty())</span>
 <span class="nc" id="L226">            .ifPresentOrElse(</span>
-<span class="nc" id="L227">                lista -&gt; {</span>
+                lista -&gt; {
 <span class="nc" id="L228">                    lista.forEach(cuenta -&gt; mostrarCuenta(Optional.of(cuenta)));</span>
 <span class="nc" id="L229">                    consola.mostrar(&quot;---------------------------\n&quot;);</span>
 <span class="nc" id="L230">                },</span>

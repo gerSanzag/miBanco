@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
  * Implementación de Mapper para Cliente utilizando enfoque funcional
  */
 <span class="nc" id="L13">public class ClienteMapeador implements Mapeador&lt;Cliente, ClienteDTO&gt; {</span>
+    
+    // ✅ Supplier para generar ID secuencial automáticamente
+<span class="nc" id="L16">    private final java.util.function.Supplier&lt;Long&gt; idSupplier = () -&gt; </span>
+<span class="nc" id="L17">        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();</span>
 
     /**
      * Convierte un Cliente a ClienteDTO
@@ -18,16 +22,16 @@ import java.util.stream.Collectors;
      */
     @Override
     public Optional&lt;ClienteDTO&gt; aDto(Optional&lt;Cliente&gt; clienteOpt) {
-<span class="nc" id="L21">        return clienteOpt.map(cliente -&gt; ClienteDTO.builder()</span>
-<span class="nc" id="L22">                .id(cliente.getId())</span>
-<span class="nc" id="L23">                .nombre(cliente.getNombre())</span>
-<span class="nc" id="L24">                .apellido(cliente.getApellido())</span>
-<span class="nc" id="L25">                .dni(cliente.getDni())</span>
-<span class="nc" id="L26">                .email(cliente.getEmail())</span>
-<span class="nc" id="L27">                .telefono(cliente.getTelefono())</span>
-<span class="nc" id="L28">                .fechaNacimiento(cliente.getFechaNacimiento())</span>
-<span class="nc" id="L29">                .direccion(cliente.getDireccion())</span>
-<span class="nc" id="L30">                .build());</span>
+<span class="nc" id="L25">        return clienteOpt.map(cliente -&gt; ClienteDTO.builder()</span>
+<span class="nc" id="L26">                .id(cliente.getId())</span>
+<span class="nc" id="L27">                .nombre(cliente.getNombre())</span>
+<span class="nc" id="L28">                .apellido(cliente.getApellido())</span>
+<span class="nc" id="L29">                .dni(cliente.getDni())</span>
+<span class="nc" id="L30">                .email(cliente.getEmail())</span>
+<span class="nc" id="L31">                .telefono(cliente.getTelefono())</span>
+<span class="nc" id="L32">                .fechaNacimiento(cliente.getFechaNacimiento())</span>
+<span class="nc" id="L33">                .direccion(cliente.getDireccion())</span>
+<span class="nc" id="L34">                .build());</span>
     }
 
     /**
@@ -36,16 +40,16 @@ import java.util.stream.Collectors;
      */
     @Override
     public Optional&lt;Cliente&gt; aEntidad(Optional&lt;ClienteDTO&gt; dtoOpt) {
-<span class="nc" id="L39">        return dtoOpt.map(dto -&gt; Cliente.builder()</span>
-<span class="nc" id="L40">                .id(dto.getId())</span>
-<span class="nc" id="L41">                .nombre(dto.getNombre())</span>
-<span class="nc" id="L42">                .apellido(dto.getApellido())</span>
-<span class="nc" id="L43">                .dni(dto.getDni())</span>
-<span class="nc" id="L44">                .email(dto.getEmail())</span>
-<span class="nc" id="L45">                .telefono(dto.getTelefono())</span>
-<span class="nc" id="L46">                .fechaNacimiento(dto.getFechaNacimiento())</span>
-<span class="nc" id="L47">                .direccion(dto.getDireccion())</span>
-<span class="nc" id="L48">                .build());</span>
+<span class="nc" id="L43">        return dtoOpt.map(dto -&gt; Cliente.builder()</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                .id(dto.getId() != null ? dto.getId() : idSupplier.get()) // ✅ Generar ID automáticamente si es null</span>
+<span class="nc" id="L45">                .nombre(dto.getNombre())</span>
+<span class="nc" id="L46">                .apellido(dto.getApellido())</span>
+<span class="nc" id="L47">                .dni(dto.getDni())</span>
+<span class="nc" id="L48">                .email(dto.getEmail())</span>
+<span class="nc" id="L49">                .telefono(dto.getTelefono())</span>
+<span class="nc" id="L50">                .fechaNacimiento(dto.getFechaNacimiento())</span>
+<span class="nc" id="L51">                .direccion(dto.getDireccion())</span>
+<span class="nc" id="L52">                .build());</span>
     }
    
     /**
@@ -53,7 +57,7 @@ import java.util.stream.Collectors;
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;ClienteDTO&gt; aDtoDirecto(Cliente cliente) {
-<span class="nc" id="L56">        return aDto(Optional.ofNullable(cliente));</span>
+<span class="nc" id="L60">        return aDto(Optional.ofNullable(cliente));</span>
     }
     
     /**
@@ -61,7 +65,7 @@ import java.util.stream.Collectors;
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;Cliente&gt; aEntidadDirecta(ClienteDTO dto) {
-<span class="nc" id="L64">        return aEntidad(Optional.ofNullable(dto));</span>
+<span class="nc" id="L68">        return aEntidad(Optional.ofNullable(dto));</span>
     }
     
     /**
@@ -70,17 +74,17 @@ import java.util.stream.Collectors;
      * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;ClienteDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Cliente&gt;&gt; clientes) {
-<span class="nc" id="L73">        return clientes.map(list -&gt; list.stream()</span>
-<span class="nc" id="L74">                        .map(cliente -&gt; aDto(Optional.of(cliente)).orElse(null))</span>
-<span class="nc" id="L75">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L76">                .collect(Collectors.toList()));</span>
+<span class="nc" id="L77">        return clientes.map(list -&gt; list.stream()</span>
+<span class="nc" id="L78">                        .map(cliente -&gt; aDto(Optional.of(cliente)).orElse(null))</span>
+<span class="nc" id="L79">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L80">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;Cliente&gt; directamente
      */
     public Optional&lt;List&lt;ClienteDTO&gt;&gt; aListaDto(List&lt;Cliente&gt; clientes) {
-<span class="nc" id="L83">        return aListaDto(Optional.ofNullable(clientes));</span>
+<span class="nc" id="L87">        return aListaDto(Optional.ofNullable(clientes));</span>
     }
     
     /**
@@ -89,17 +93,17 @@ import java.util.stream.Collectors;
      * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;Cliente&gt;&gt; aListaEntidad(Optional&lt;List&lt;ClienteDTO&gt;&gt; dtos) {
-<span class="nc" id="L92">        return dtos.map(list -&gt; list.stream()</span>
-<span class="nc" id="L93">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
-<span class="nc" id="L94">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L95">                .collect(Collectors.toList()));</span>
+<span class="nc" id="L96">        return dtos.map(list -&gt; list.stream()</span>
+<span class="nc" id="L97">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="nc" id="L98">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L99">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;ClienteDTO&gt; directamente
      */
     public Optional&lt;List&lt;Cliente&gt;&gt; aListaEntidad(List&lt;ClienteDTO&gt; dtos) {
-<span class="nc" id="L102">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+<span class="nc" id="L106">        return aListaEntidad(Optional.ofNullable(dtos));</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

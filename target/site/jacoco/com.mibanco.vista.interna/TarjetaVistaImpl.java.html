@@ -111,7 +111,7 @@ class TarjetaVistaImpl extends BaseVistaImpl&lt;TarjetaDTO&gt; implements Tarjet
 <span class="nc" id="L111">                    mostrarMensaje(&quot;Opción no válida.&quot;);</span>
 <span class="nc" id="L112">                    yield Map.of();</span>
                 }
-            };
+<span class="nc" id="L114">            };</span>
 <span class="nc" id="L115">            return datos;</span>
 <span class="nc" id="L116">        }).orElse(Map.of());</span>
     }
@@ -119,7 +119,7 @@ class TarjetaVistaImpl extends BaseVistaImpl&lt;TarjetaDTO&gt; implements Tarjet
     @Override
     public void mostrarTarjeta(Optional&lt;TarjetaDTO&gt; tarjetaOpt) {
 <span class="nc" id="L121">        tarjetaOpt.ifPresentOrElse(</span>
-<span class="nc" id="L122">            tarjeta -&gt; {</span>
+            tarjeta -&gt; {
 <span class="nc" id="L123">                consola.mostrar(&quot;\n--- Detalles de la Tarjeta ---\n&quot;);</span>
 <span class="nc" id="L124">                consola.mostrar(&quot;Número: &quot; + tarjeta.getNumero() + &quot;\n&quot;);</span>
 <span class="nc" id="L125">                consola.mostrar(&quot;Titular: &quot; + tarjeta.getTitular().getNombre() + &quot; &quot; + tarjeta.getTitular().getApellido() + &quot;\n&quot;);</span>
@@ -140,7 +140,7 @@ class TarjetaVistaImpl extends BaseVistaImpl&lt;TarjetaDTO&gt; implements Tarjet
 <span class="nc" id="L140">        Optional.of(tarjetas)</span>
 <span class="nc bnc" id="L141" title="All 2 branches missed.">            .filter(lista -&gt; !lista.isEmpty())</span>
 <span class="nc" id="L142">            .ifPresentOrElse(</span>
-<span class="nc" id="L143">                lista -&gt; {</span>
+                lista -&gt; {
 <span class="nc" id="L144">                    lista.forEach(tarjeta -&gt; mostrarTarjeta(Optional.of(tarjeta)));</span>
 <span class="nc" id="L145">                    consola.mostrar(&quot;---------------------------\n&quot;);</span>
 <span class="nc" id="L146">                },</span>
@@ -258,7 +258,7 @@ class TarjetaVistaImpl extends BaseVistaImpl&lt;TarjetaDTO&gt; implements Tarjet
 <span class="nc" id="L258">        Optional.of(tarjetas)</span>
 <span class="nc bnc" id="L259" title="All 2 branches missed.">            .filter(lista -&gt; !lista.isEmpty())</span>
 <span class="nc" id="L260">            .ifPresentOrElse(</span>
-<span class="nc" id="L261">                lista -&gt; {</span>
+                lista -&gt; {
 <span class="nc" id="L262">                    lista.forEach(tarjeta -&gt; mostrarTarjeta(Optional.of(tarjeta)));</span>
 <span class="nc" id="L263">                    consola.mostrar(&quot;---------------------------\n&quot;);</span>
 <span class="nc" id="L264">                },</span>

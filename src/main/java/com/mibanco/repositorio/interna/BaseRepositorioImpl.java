@@ -59,7 +59,6 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     @Override
     public Optional<T> crear(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.map(entity -> {
-            // T nuevaEntidad = crearConNuevoId(entity);
             entidades.add(entity);
             registrarAuditoria(entity, tipoOperacion);
             return Optional.of(entity);
@@ -157,9 +156,9 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     private void registrarAuditoria(T entidad, E tipoOperacion) {
         AuditoriaUtil.registrarOperacion(
             obtenerAuditoria(),
-            tipoOperacion,
-            entidad,
-            usuarioActual
+            Optional.of(tipoOperacion),
+            Optional.of(entidad),
+            Optional.of(usuarioActual)
         );
     }
 

@@ -10,10 +10,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Implementación de Mapper para Cliente utilizando enfoque funcional
+ * Implementación de Mapper para Cuenta utilizando enfoque funcional
  */
 public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     private final Mapeador<Cliente, ClienteDTO> clienteMapeador;
+    
+    // ✅ Supplier para generar ID secuencial automáticamente
+    private final java.util.function.Supplier<Long> idSupplier = () -> 
+        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();
 
     public CuentaMapeador(Mapeador<Cliente, ClienteDTO> clienteMapeador) {
         this.clienteMapeador = clienteMapeador;
@@ -42,7 +46,7 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     @Override
     public Optional<Cuenta> aEntidad(Optional<CuentaDTO> dtoOpt) {
         return dtoOpt.map(dto -> Cuenta.builder()
-            .numeroCuenta(dto.getNumeroCuenta())
+            .numeroCuenta(dto.getNumeroCuenta() != null ? dto.getNumeroCuenta() : idSupplier.get()) // ✅ Generar ID automáticamente si es null
             .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))
             .tipo(dto.getTipo())
             .saldo(dto.getSaldo())

@@ -25,187 +25,178 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
     private static final TarjetaRepositorio repositorioTarjeta;
     private static final TarjetaMapeador mapeador;
     private static final ClienteMapeador clienteMapeador;
-<span class="nc" id="L28">    private static final java.util.concurrent.atomic.AtomicLong idContador = new java.util.concurrent.atomic.AtomicLong(0);</span>
-<span class="nc" id="L29">    private final TipoOperacionTarjeta tipoActualizar = TipoOperacionTarjeta.ACTUALIZAR;</span>
+<span class="nc" id="L28">    private final TipoOperacionTarjeta tipoActualizar = TipoOperacionTarjeta.ACTUALIZAR;</span>
     
     static {
-<span class="nc" id="L32">        repositorioTarjeta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioTarjeta();</span>
-<span class="nc" id="L33">        clienteMapeador = new ClienteMapeador();</span>
-<span class="nc" id="L34">        mapeador = new TarjetaMapeador(clienteMapeador);</span>
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L31">        repositorioTarjeta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioTarjeta();</span>
+<span class="nc" id="L32">        clienteMapeador = new ClienteMapeador();</span>
+<span class="nc" id="L33">        mapeador = new TarjetaMapeador(clienteMapeador);</span>
+<span class="nc" id="L34">    }</span>
     
     public TarjetaServicioImpl() {
-<span class="nc" id="L38">        super(repositorioTarjeta, mapeador);</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L37">        super(repositorioTarjeta, mapeador);</span>
+<span class="nc" id="L38">    }</span>
     
     @Override
     public Optional&lt;TarjetaDTO&gt; crearTarjetaDto(Map&lt;String, String&gt; datosTarjeta) {
-        // ✅ Supplier para generar número de tarjeta automáticamente
-<span class="nc" id="L44">        java.util.function.Supplier&lt;String&gt; numeroSupplier = () -&gt; </span>
-<span class="nc" id="L45">            String.format(&quot;%016d&quot;, idContador.incrementAndGet());</span>
+        // Usar el procesador especializado para crear el DTO con validaciones
+<span class="nc" id="L43">        TarjetaDtoProcesadorServicio procesador = new TarjetaDtoProcesadorServicio(</span>
+            new ClienteServicioImpl()
+        );
         
-        // El servicio crea el DTO internamente
-<span class="nc" id="L48">        TarjetaDTO nuevaTarjeta = TarjetaDTO.builder()</span>
-<span class="nc" id="L49">            .numero(numeroSupplier.get()) // ✅ Generar número automáticamente</span>
-<span class="nc" id="L50">            .numeroCuentaAsociada(datosTarjeta.get(&quot;numeroCuentaAsociada&quot;))</span>
-<span class="nc" id="L51">            .tipo(com.mibanco.modelo.enums.TipoTarjeta.valueOf(datosTarjeta.get(&quot;tipo&quot;)))</span>
-<span class="nc" id="L52">            .fechaExpiracion(LocalDate.parse(datosTarjeta.get(&quot;fechaExpiracion&quot;), DateTimeFormatter.ISO_LOCAL_DATE))</span>
-<span class="nc" id="L53">            .activa(Boolean.parseBoolean(datosTarjeta.get(&quot;activa&quot;)))</span>
-<span class="nc" id="L54">            .build();</span>
-        
-        // Luego lo guarda usando el método existente
-<span class="nc" id="L57">        return guardar(TipoOperacionTarjeta.CREAR, Optional.of(nuevaTarjeta));</span>
+<span class="nc" id="L47">        return procesador.procesarTarjetaDto(datosTarjeta)</span>
+<span class="nc" id="L48">            .flatMap(tarjetaDto -&gt; guardar(TipoOperacionTarjeta.CREAR, Optional.of(tarjetaDto)));</span>
     }
     
     
     
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarVariosCampos(String numeroTarjeta, Optional&lt;TarjetaDTO&gt; tarjetaDTO) {
-<span class="nc" id="L64">        Optional&lt;TarjetaDTO&gt; actualizaVariosCampos = actualizar(</span>
-<span class="nc" id="L65">            numeroTarjeta,</span>
-<span class="nc" id="L66">            tarjetaDTO,</span>
-<span class="nc" id="L67">            tipoActualizar,</span>
-<span class="nc" id="L68">            (tarjetaExistente, tarjetaNueva) -&gt; tarjetaExistente.conActualizaciones(</span>
-<span class="nc" id="L69">                Optional.ofNullable(tarjetaNueva.getFechaExpiracion()),</span>
-<span class="nc" id="L70">                Optional.ofNullable(tarjetaNueva.isActiva())</span>
-<span class="nc" id="L71">            )</span>
+<span class="nc" id="L55">        Optional&lt;TarjetaDTO&gt; actualizaVariosCampos = actualizar(</span>
+            numeroTarjeta,
+            tarjetaDTO,
+            tipoActualizar,
+<span class="nc" id="L59">            (tarjetaExistente, tarjetaNueva) -&gt; tarjetaExistente.conActualizaciones(</span>
+<span class="nc" id="L60">                Optional.ofNullable(tarjetaNueva.getFechaExpiracion()),</span>
+<span class="nc" id="L61">                Optional.ofNullable(tarjetaNueva.isActiva())</span>
+            )
         );
-<span class="nc" id="L73">        guardar(tipoActualizar, actualizaVariosCampos);</span>
-<span class="nc" id="L74">        return actualizaVariosCampos;</span>
+<span class="nc" id="L64">        guardar(tipoActualizar, actualizaVariosCampos);</span>
+<span class="nc" id="L65">        return actualizaVariosCampos;</span>
     }
     
     @Override
     public Optional&lt;TarjetaDTO&gt; obtenerTarjetaPorNumero(Optional&lt;String&gt; numeroTarjeta) {
-<span class="nc" id="L79">        return numeroTarjeta.flatMap(numero -&gt; </span>
-<span class="nc" id="L80">            repositorioTarjeta.buscarPorNumero(Optional.of(numero))</span>
-<span class="nc" id="L81">                .flatMap(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)))</span>
+<span class="nc" id="L70">        return numeroTarjeta.flatMap(numero -&gt; </span>
+<span class="nc" id="L71">            repositorioTarjeta.buscarPorNumero(Optional.of(numero))</span>
+<span class="nc" id="L72">                .flatMap(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; obtenerTodasLasTarjetas() {
-<span class="nc" id="L87">        return obtenerTodos();</span>
+<span class="nc" id="L78">        return obtenerTodos();</span>
     }
     
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarFechaExpiracion(String numeroTarjeta, Optional&lt;LocalDate&gt; nuevaFecha) {
-<span class="nc" id="L92">        Optional&lt;TarjetaDTO&gt; actualizaFecha = actualizarCampo(</span>
-<span class="nc" id="L93">            numeroTarjeta,</span>
-<span class="nc" id="L94">            nuevaFecha,</span>
-<span class="nc" id="L95">            TarjetaDTO::getFechaExpiracion,</span>
-<span class="nc" id="L96">            TarjetaDTO::conFechaExpiracion</span>
+<span class="nc" id="L83">        Optional&lt;TarjetaDTO&gt; actualizaFecha = actualizarCampo(</span>
+            numeroTarjeta,
+            nuevaFecha,
+            TarjetaDTO::getFechaExpiracion,
+            TarjetaDTO::conFechaExpiracion
         );
-<span class="nc" id="L98">        guardar(tipoActualizar, actualizaFecha);</span>
-<span class="nc" id="L99">        return actualizaFecha;</span>
+<span class="nc" id="L89">        guardar(tipoActualizar, actualizaFecha);</span>
+<span class="nc" id="L90">        return actualizaFecha;</span>
     }
     
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarEstadoTarjeta(String numeroTarjeta, Optional&lt;Boolean&gt; nuevaActiva) {
-<span class="nc" id="L104">        Optional&lt;TarjetaDTO&gt; actualizaEstado = actualizarCampo(</span>
-<span class="nc" id="L105">            numeroTarjeta,</span>
-<span class="nc" id="L106">            nuevaActiva,</span>
-<span class="nc" id="L107">            TarjetaDTO::isActiva,</span>
-<span class="nc" id="L108">            TarjetaDTO::conActiva </span>
+<span class="nc" id="L95">        Optional&lt;TarjetaDTO&gt; actualizaEstado = actualizarCampo(</span>
+            numeroTarjeta,
+            nuevaActiva,
+            TarjetaDTO::isActiva,
+            TarjetaDTO::conActiva 
         );
-<span class="nc" id="L110">        guardar(tipoActualizar, actualizaEstado);</span>
-<span class="nc" id="L111">        return actualizaEstado;</span>
+<span class="nc" id="L101">        guardar(tipoActualizar, actualizaEstado);</span>
+<span class="nc" id="L102">        return actualizaEstado;</span>
     }
     
     @Override
     public Optional&lt;TarjetaDTO&gt; actualizarTitularTarjeta(String numeroTarjeta, Optional&lt;TarjetaDTO&gt; nuevoTitular) {
-<span class="nc" id="L116">        Optional&lt;TarjetaDTO&gt; actualizaTitular = nuevoTitular.flatMap(dto -&gt; </span>
-<span class="nc" id="L117">                Optional.of(dto.getTitular())   </span>
-<span class="nc" id="L118">                .flatMap(titular -&gt; actualizarCampo(</span>
-<span class="nc" id="L119">                    numeroTarjeta,</span>
-<span class="nc" id="L120">                    Optional.of(titular),</span>
-<span class="nc" id="L121">                    TarjetaDTO::getTitular,</span>
-<span class="nc" id="L122">                    (tarjeta, nvoTitular) -&gt; tarjeta.toBuilder().titular(titular).build()</span>
-<span class="nc" id="L123">                ))</span>
+<span class="nc" id="L107">        Optional&lt;TarjetaDTO&gt; actualizaTitular = nuevoTitular.flatMap(dto -&gt; </span>
+<span class="nc" id="L108">                Optional.of(dto.getTitular())   </span>
+<span class="nc" id="L109">                .flatMap(titular -&gt; actualizarCampo(</span>
+                    numeroTarjeta,
+<span class="nc" id="L111">                    Optional.of(titular),</span>
+                    TarjetaDTO::getTitular,
+<span class="nc" id="L113">                    (tarjeta, nvoTitular) -&gt; tarjeta.toBuilder().titular(titular).build()</span>
+                ))
         );
-<span class="nc" id="L125">        guardar(tipoActualizar, actualizaTitular);</span>
-<span class="nc" id="L126">        return actualizaTitular;</span>
+<span class="nc" id="L116">        guardar(tipoActualizar, actualizaTitular);</span>
+<span class="nc" id="L117">        return actualizaTitular;</span>
     }
     
     @Override
     public boolean eliminarTarjeta(Optional&lt;String&gt; numeroTarjeta) {
-<span class="nc" id="L131">        return eliminarPorId(numeroTarjeta, TipoOperacionTarjeta.ELIMINAR);</span>
+<span class="nc" id="L122">        return eliminarPorId(numeroTarjeta, TipoOperacionTarjeta.ELIMINAR);</span>
     }
     
     @Override
     public Optional&lt;TarjetaDTO&gt; eliminarPorNumero(Optional&lt;String&gt; numeroTarjeta) {
-<span class="nc" id="L136">        return numeroTarjeta.flatMap(numero -&gt; </span>
-<span class="nc" id="L137">            repositorioTarjeta.eliminarPorId(Optional.of(numero), TipoOperacionTarjeta.ELIMINAR)</span>
-<span class="nc" id="L138">                .flatMap(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)))</span>
+<span class="nc" id="L127">        return numeroTarjeta.flatMap(numero -&gt; </span>
+<span class="nc" id="L128">            repositorioTarjeta.eliminarPorId(Optional.of(numero), TipoOperacionTarjeta.ELIMINAR)</span>
+<span class="nc" id="L129">                .flatMap(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)))</span>
         );
     }
     
     @Override
     public Optional&lt;TarjetaDTO&gt; restaurarTarjeta(Optional&lt;String&gt; numeroTarjeta) {
-<span class="nc" id="L144">        return restaurar(numeroTarjeta, TipoOperacionTarjeta.MODIFICAR);</span>
+<span class="nc" id="L135">        return restaurar(numeroTarjeta, TipoOperacionTarjeta.MODIFICAR);</span>
     }
     
     @Override
     public List&lt;TarjetaDTO&gt; obtenerTarjetasEliminadas() {
-<span class="nc" id="L149">        return obtenerEliminados();</span>
+<span class="nc" id="L140">        return obtenerEliminados();</span>
     }
     
     @Override
     public long contarTarjetas() {
-<span class="nc" id="L154">        return contarRegistros();</span>
+<span class="nc" id="L145">        return contarRegistros();</span>
     }
     
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L159">        super.establecerUsuarioActual(usuario);</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L150">        super.establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L151">    }</span>
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idCliente) {
-<span class="nc" id="L164">        return idCliente.flatMap(id -&gt; </span>
-<span class="nc" id="L165">            repositorioTarjeta.buscarPorTitularId(Optional.of(id))</span>
-<span class="nc" id="L166">                .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L167">                    tarjetas.stream()</span>
-<span class="nc" id="L168">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L169">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L170">                        .toList()</span>
-<span class="nc" id="L171">                ))</span>
+<span class="nc" id="L155">        return idCliente.flatMap(id -&gt; </span>
+<span class="nc" id="L156">            repositorioTarjeta.buscarPorTitularId(Optional.of(id))</span>
+<span class="nc" id="L157">                .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L158">                    tarjetas.stream()</span>
+<span class="nc" id="L159">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L160">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L161">                        .toList()</span>
+                ))
         );
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarPorTipo(Optional&lt;TipoTarjeta&gt; tipo) {
-<span class="nc" id="L177">        return tipo.flatMap(t -&gt; </span>
-<span class="nc" id="L178">            repositorioTarjeta.buscarPorTipo(Optional.of(t))</span>
-<span class="nc" id="L179">                .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L180">                    tarjetas.stream()</span>
-<span class="nc" id="L181">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L182">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L183">                        .toList()</span>
-<span class="nc" id="L184">                ))</span>
+<span class="nc" id="L168">        return tipo.flatMap(t -&gt; </span>
+<span class="nc" id="L169">            repositorioTarjeta.buscarPorTipo(Optional.of(t))</span>
+<span class="nc" id="L170">                .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L171">                    tarjetas.stream()</span>
+<span class="nc" id="L172">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L173">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L174">                        .toList()</span>
+                ))
         );
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarActivas() {
-<span class="nc" id="L190">        return repositorioTarjeta.buscarActivas()</span>
-<span class="nc" id="L191">            .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L192">                tarjetas.stream()</span>
-<span class="nc" id="L193">                    .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L194">                    .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L195">                    .toList()</span>
-<span class="nc" id="L196">            ));</span>
+<span class="nc" id="L181">        return repositorioTarjeta.buscarActivas()</span>
+<span class="nc" id="L182">            .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L183">                tarjetas.stream()</span>
+<span class="nc" id="L184">                    .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L185">                    .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L186">                    .toList()</span>
+            ));
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarPorCuentaAsociada(Optional&lt;String&gt; numeroCuenta) {
-<span class="nc" id="L201">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L202">            repositorioTarjeta.buscarPorCuentaAsociada(Optional.of(numero))</span>
-<span class="nc" id="L203">                .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L204">                    tarjetas.stream()</span>
-<span class="nc" id="L205">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L206">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L207">                        .toList()</span>
-<span class="nc" id="L208">                ))</span>
+<span class="nc" id="L192">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L193">            repositorioTarjeta.buscarPorCuentaAsociada(Optional.of(numero))</span>
+<span class="nc" id="L194">                .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L195">                    tarjetas.stream()</span>
+<span class="nc" id="L196">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L197">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L198">                        .toList()</span>
+                ))
         );
     }
 } 

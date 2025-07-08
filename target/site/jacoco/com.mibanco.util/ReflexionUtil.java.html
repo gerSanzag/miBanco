@@ -31,11 +31,11 @@ import java.util.stream.Collectors;
      * @return Lista con los nombres de los campos requeridos
      */
     public static List&lt;String&gt; obtenerCamposRequeridos(Class&lt;?&gt; clase) {
-<span class="nc" id="L34">        return Arrays.stream(clase.getDeclaredFields())</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">                .filter(field -&gt; !field.getType().equals(java.util.Optional.class))</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">                .filter(field -&gt; !field.isAnnotationPresent(NoSolicitar.class))</span>
-<span class="nc" id="L37">                .map(Field::getName)</span>
-<span class="nc" id="L38">                .collect(Collectors.toList());</span>
+<span class="fc" id="L34">        return Arrays.stream(clase.getDeclaredFields())</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                .filter(field -&gt; !field.getType().equals(java.util.Optional.class))</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                .filter(field -&gt; !field.isAnnotationPresent(NoSolicitar.class))</span>
+<span class="fc" id="L37">                .map(Field::getName)</span>
+<span class="fc" id="L38">                .collect(Collectors.toList());</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

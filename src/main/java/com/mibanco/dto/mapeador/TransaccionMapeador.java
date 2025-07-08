@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
  * Implementación de Mapper para Transaccion utilizando enfoque funcional
  */
 public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO> {
+    
+    // ✅ Supplier para generar ID secuencial automáticamente
+    private final java.util.function.Supplier<Long> idSupplier = () -> 
+        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();
 
     /**
      * Convierte una transacción a TransaccionDTO
@@ -36,7 +40,7 @@ public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO
     @Override
     public Optional<Transaccion> aEntidad(Optional<TransaccionDTO> dtoOpt) {
         return dtoOpt.map(dto -> Transaccion.builder()
-            .id(dto.getId())
+            .id(dto.getId() != null ? dto.getId() : idSupplier.get()) // ✅ Generar ID automáticamente si es null
             .numeroCuenta(dto.getNumeroCuenta())
             .numeroCuentaDestino(dto.getNumeroCuentaDestino())
             .tipo(dto.getTipo())
