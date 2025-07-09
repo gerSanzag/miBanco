@@ -5,8 +5,11 @@ import com.mibanco.modelo.enums.TipoOperacionTarjeta;
 import com.mibanco.modelo.enums.TipoTarjeta;
 import com.mibanco.repositorio.TarjetaRepositorio;
 
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Tarjetas
@@ -18,41 +21,72 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, Tip
      * Constructor con visibilidad de paquete
      */
     TarjetaRepositorioImpl() {
-<span class="nc" id="L21">        super();</span>
-<span class="nc" id="L22">    }</span>
+<span class="nc" id="L24">        super();</span>
+<span class="nc" id="L25">    }</span>
     
     @Override
     public Optional&lt;Tarjeta&gt; buscarPorNumero(Optional&lt;String&gt; numeroTarjeta) {
-<span class="nc" id="L26">        return numeroTarjeta.flatMap(numero -&gt; </span>
-<span class="nc" id="L27">            buscarPorPredicado(tarjeta -&gt; tarjeta.getNumero().equals(numero))</span>
+<span class="nc" id="L29">        return numeroTarjeta.flatMap(numero -&gt; </span>
+<span class="nc" id="L30">            buscarPorPredicado(tarjeta -&gt; tarjeta.getNumero().equals(numero))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idCliente) {
-<span class="nc" id="L33">        return idCliente.flatMap(id -&gt; </span>
-<span class="nc" id="L34">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTitular().getId().equals(id))</span>
+<span class="nc" id="L36">        return idCliente.flatMap(id -&gt; </span>
+<span class="nc" id="L37">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTitular().getId().equals(id))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorCuentaAsociada(Optional&lt;String&gt; numeroCuenta) {
-<span class="nc" id="L40">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L41">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getNumeroCuentaAsociada().equals(numero))</span>
+<span class="nc" id="L43">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L44">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getNumeroCuentaAsociada().equals(numero))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorTipo(Optional&lt;TipoTarjeta&gt; tipo) {
-<span class="nc" id="L47">        return tipo.flatMap(t -&gt; </span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTipo() == t)</span>
+<span class="nc" id="L50">        return tipo.flatMap(t -&gt; </span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTipo() == t)</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarActivas() {
-<span class="nc" id="L54">        return buscarTodosPorPredicado(Tarjeta::isActiva);</span>
+<span class="nc" id="L57">        return buscarTodosPorPredicado(Tarjeta::isActiva);</span>
     }
     
+    /**
+     * Implementación específica para asignar nuevo ID a Tarjeta
+     * @param tarjeta Tarjeta sin ID asignado
+     * @return Tarjeta con nuevo ID asignado
+     */
+    @Override
+    protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
+        // Generar número aleatorio de 16 dígitos
+<span class="nc" id="L68">        String numero = String.format(&quot;%016d&quot;, (long) (Math.random() * 10000000000000000L));</span>
+        
+        // Generar CVV aleatorio de 3 dígitos
+<span class="nc" id="L71">        String cvv = String.format(&quot;%03d&quot;, (int) (Math.random() * 1000));</span>
+        
+<span class="nc" id="L73">        return Tarjeta.builder()</span>
+<span class="nc" id="L74">            .numero(numero)</span>
+<span class="nc" id="L75">            .cvv(cvv)</span>
+<span class="nc" id="L76">            .build();</span>
+    }
+    
+    /**
+     * Implementación específica para obtener la configuración del repositorio
+     * @return Map con la configuración necesaria
+     */
+    @Override
+    protected Map&lt;String, Object&gt; obtenerConfiguracion() {
+<span class="nc" id="L85">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L86">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/tarjeta.json&quot;);</span>
+<span class="nc" id="L87">        config.put(&quot;tipoClase&quot;, Tarjeta.class);</span>
+<span class="nc" id="L88">        config.put(&quot;extractorId&quot;, (Function&lt;Tarjeta, Long&gt;) Tarjeta::getId);</span>
+<span class="nc" id="L89">        return config;</span>
+    }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

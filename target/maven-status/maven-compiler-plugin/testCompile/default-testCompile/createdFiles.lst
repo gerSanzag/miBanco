@@ -1,6 +1,7 @@
 com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$NombresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoTarjetaTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$FuncionalidadEnumTest.class
+com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$ValoresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$FuncionalidadEnumTest.class
 com/mibanco/modeloTest/RegistroAuditoriaTest.class
@@ -11,12 +12,15 @@ com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$CasosEdgeTest.class
 com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$NombresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$1.class
 com/mibanco/modeloTest/enumsTest/TipoCuentaTest$FuncionalidadEnumTest.class
+com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest.class
 com/mibanco/modeloTest/TransaccionTest.class
+com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$ListasTests.class
 com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$ValoresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoTransaccionTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$ValoresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$ValoresEnumTest.class
+com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$DtoToEntityTests.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$1.class
 com/mibanco/modeloTest/TarjetaTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest.class
@@ -28,10 +32,12 @@ com/mibanco/modeloTest/enumsTest/TipoCuentaTest$NombresEnumTest.class
 com/mibanco/dtoTest/TarjetaDtoTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$ValoresEnumTest.class
 com/mibanco/dtoTest/CuentaDtoTest.class
+com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$ListasTests.class
 com/mibanco/utilTest/ReflexionUtilTest.class
 com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$CasosEdgeTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$CasosEdgeTest.class
 com/mibanco/dtoTest/RespuestaDtoTest$CasosEdgeTest.class
+com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$DtoToEntityTests.class
 com/mibanco/utilTest/ReflexionUtilTest$SoloSimples.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$NombresEnumTest.class
 com/mibanco/utilTest/AuditoriaUtilTest.class
@@ -44,8 +50,11 @@ com/mibanco/modeloTest/enumsTest/TipoCuentaTest$CasosEdgeTest.class
 com/mibanco/utilTest/ReflexionUtilTest$Mixta.class
 com/mibanco/modeloTest/enumsTest/TipoCuentaTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$FuncionalidadEnumTest.class
+com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$EntityToDtoTests.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$CasosEdgeTest.class
+com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$MetodosDirectosTests.class
 com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$1.class
+com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$MetodosDirectosTests.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$1.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest.class
 com/mibanco/dtoTest/RespuestaDtoTest$RespuestasExitosasTest.class
@@ -53,6 +62,7 @@ com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$NombresEnumTest.class
 com/mibanco/utilTest/ReflexionUtilTest$ConNoSolicitar.class
 com/mibanco/utilTest/ReflexionUtilTest$Vacia.class
 com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$NombresEnumTest.class
+com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$EntityToDtoTests.class
 com/mibanco/dtoTest/RespuestaDtoTest$RespuestasErrorTest.class
 com/mibanco/dtoTest/RespuestaDtoTest$InmutabilidadTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$1.class

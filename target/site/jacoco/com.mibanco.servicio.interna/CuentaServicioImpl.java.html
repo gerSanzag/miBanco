@@ -51,13 +51,13 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
     @Override
     public Optional&lt;CuentaDTO&gt; actualizarVariosCampos(Long numeroCuenta, Optional&lt;CuentaDTO&gt; cuentaDTO) {
 <span class="nc" id="L53">        Optional&lt;CuentaDTO&gt; actualizaVariosCampos = actualizar(</span>
-            numeroCuenta,
-            cuentaDTO,
-            tipoActualizar,
+<span class="nc" id="L54">            numeroCuenta,</span>
+<span class="nc" id="L55">            cuentaDTO,</span>
+<span class="nc" id="L56">            tipoActualizar,</span>
 <span class="nc" id="L57">            (cuentaExistente, cuentaNueva) -&gt; cuentaExistente.conActualizaciones(</span>
 <span class="nc" id="L58">                Optional.ofNullable(cuentaNueva.getSaldo()),</span>
 <span class="nc" id="L59">                Optional.ofNullable(cuentaNueva.isActiva())</span>
-            )
+<span class="nc" id="L60">            )</span>
         );
 <span class="nc" id="L62">        guardar(tipoActualizar, actualizaVariosCampos);</span>
 <span class="nc" id="L63">        return actualizaVariosCampos;</span>
@@ -79,10 +79,10 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
     @Override
     public Optional&lt;CuentaDTO&gt; actualizarSaldoCuenta(Long numeroCuenta, Optional&lt;BigDecimal&gt; nuevoSaldo) {
 <span class="nc" id="L81">        Optional&lt;CuentaDTO&gt; actualizaSaldo = actualizarCampo(</span>
-            numeroCuenta,
-            nuevoSaldo,
-            CuentaDTO::getSaldo,
-            CuentaDTO::conSaldo
+<span class="nc" id="L82">            numeroCuenta,</span>
+<span class="nc" id="L83">            nuevoSaldo,</span>
+<span class="nc" id="L84">            CuentaDTO::getSaldo,</span>
+<span class="nc" id="L85">            CuentaDTO::conSaldo</span>
         );
 <span class="nc" id="L87">        guardar(tipoActualizar, actualizaSaldo);</span>
 <span class="nc" id="L88">        return actualizaSaldo;</span>
@@ -91,10 +91,10 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
     @Override
     public Optional&lt;CuentaDTO&gt; actualizarEstadoCuenta(Long numeroCuenta, Optional&lt;Boolean&gt; nuevaActiva) {
 <span class="nc" id="L93">        Optional&lt;CuentaDTO&gt; actualizaEstado = actualizarCampo(</span>
-            numeroCuenta,
-            nuevaActiva,
-            CuentaDTO::isActiva,
-            CuentaDTO::conActiva
+<span class="nc" id="L94">            numeroCuenta,</span>
+<span class="nc" id="L95">            nuevaActiva,</span>
+<span class="nc" id="L96">            CuentaDTO::isActiva,</span>
+<span class="nc" id="L97">            CuentaDTO::conActiva</span>
         );
 <span class="nc" id="L99">        guardar(tipoActualizar, actualizaEstado);</span>
 <span class="nc" id="L100">        return actualizaEstado;</span>
@@ -105,11 +105,11 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
 <span class="nc" id="L105">        Optional&lt;CuentaDTO&gt; actualizaTitular = nuevoTitular.flatMap(titularDTO -&gt; </span>
 <span class="nc" id="L106">            clienteMapeador.aEntidad(Optional.of(titularDTO.getTitular()))</span>
 <span class="nc" id="L107">                .flatMap(titular -&gt; actualizarCampo(</span>
-                    numeroCuenta,
+<span class="nc" id="L108">                    numeroCuenta,</span>
 <span class="nc" id="L109">                    Optional.of(titular),</span>
-                    CuentaDTO::getTitular,
+<span class="nc" id="L110">                    CuentaDTO::getTitular,</span>
 <span class="nc" id="L111">                    (cuenta, nvoTitular) -&gt; cuenta.toBuilder().titular(titularDTO.getTitular() ).build()</span>
-                ))
+<span class="nc" id="L112">                ))</span>
         );
 <span class="nc" id="L114">        guardar(tipoActualizar, actualizaTitular);</span>
 <span class="nc" id="L115">        return actualizaTitular;</span>

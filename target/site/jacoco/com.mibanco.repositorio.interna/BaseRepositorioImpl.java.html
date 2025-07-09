@@ -6,10 +6,11 @@ import com.mibanco.repositorio.util.BaseRepositorio;
 import com.mibanco.util.AuditoriaUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Implementación base abstracta para repositorios con acceso restringido
@@ -20,70 +21,119 @@ import java.util.function.Function;
 abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enum&lt;E&gt;&gt; implements BaseRepositorio&lt;T, ID, E&gt; {
     
     // Lista para almacenar entidades en memoria
-<span class="nc" id="L23">    protected final List&lt;T&gt; entidades = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L24">    protected final List&lt;T&gt; entidades = new ArrayList&lt;&gt;();</span>
     
     // Cache para restauración de entidades eliminadas
-<span class="nc" id="L26">    protected final List&lt;T&gt; entidadesEliminadas = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L27">    protected final List&lt;T&gt; entidadesEliminadas = new ArrayList&lt;&gt;();</span>
     
     // Contador para generar IDs automáticamente
-<span class="nc" id="L29">    protected final AtomicLong idContador = new AtomicLong(1);</span>
+<span class="nc" id="L30">    protected final AtomicLong idContador = new AtomicLong(1);</span>
     
     // Repositorio de auditoría - ahora con lazy loading
     private AuditoriaRepositorio auditoriaRepository;
     
     // Usuario actual
-<span class="nc" id="L35">    protected String usuarioActual = &quot;sistema&quot;;</span>
+<span class="nc" id="L36">    protected String usuarioActual = &quot;sistema&quot;;</span>
+    
+    // Contador para operaciones CRUD (guardado por lotes)
+<span class="nc" id="L39">    private int contadorOperaciones = 0;</span>
+    
+    // Procesador JSON genérico
+    private final BaseProcesadorJson&lt;T&gt; jsonProcesador;
     
     /**
-     * Constructor protegido sin dependencias circulares
+     * Constructor protegido con carga automática desde JSON
      */
-<span class="nc" id="L40">    protected BaseRepositorioImpl() {</span>
-        // Constructor vacío - sin dependencias
-<span class="nc" id="L42">    }</span>
+<span class="nc" id="L47">    protected BaseRepositorioImpl() {</span>
+        // Inicializar procesador JSON
+<span class="nc" id="L49">        this.jsonProcesador = new BaseProcesadorJson&lt;&gt;();</span>
+        
+        // ✅ CARGAR DATOS AUTOMÁTICAMENTE
+<span class="nc" id="L52">        cargarDatosDesdeJson();</span>
+<span class="nc" id="L53">    }</span>
     
     /**
      * Método lazy para obtener el repositorio de auditoría
      */
     private AuditoriaRepositorio obtenerAuditoria() {
-<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (auditoriaRepository == null) {</span>
-<span class="nc" id="L49">            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (auditoriaRepository == null) {</span>
+<span class="nc" id="L60">            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();</span>
         }
-<span class="nc" id="L51">        return auditoriaRepository;</span>
+<span class="nc" id="L62">        return auditoriaRepository;</span>
     }
+    
+    /**
+     * Carga datos desde JSON automáticamente al crear el repositorio
+     * Los datos se cargan en la lista entidades
+     */
+    private void cargarDatosDesdeJson() {
+<span class="nc" id="L70">        Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
+<span class="nc" id="L71">        String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
+<span class="nc" id="L72">        Class&lt;T&gt; tipoClase = (Class&lt;T&gt;) config.get(&quot;tipoClase&quot;);</span>
+<span class="nc" id="L73">        java.util.function.Function&lt;T, Long&gt; extractorId = (Function&lt;T, Long&gt;) config.get(&quot;extractorId&quot;);</span>
+        
+        // Cargar datos desde JSON
+<span class="nc" id="L76">        List&lt;T&gt; datosCargados = jsonProcesador.cargarDatosCondicionalmente(ruta, tipoClase);</span>
+        
+        // Agregar datos cargados a la lista entidades
+<span class="nc" id="L79">        entidades.addAll(datosCargados);</span>
+        
+        // Calcular contador desde datos reales
+<span class="nc" id="L82">        Long ultimoId = jsonProcesador.calcularMaximoId(entidades, extractorId);</span>
+<span class="nc" id="L83">        idContador.set(ultimoId);</span>
+<span class="nc" id="L84">    }</span>
     
     @Override
     public void setUsuarioActual(String usuario) {
-<span class="nc" id="L56">        this.usuarioActual = usuario;</span>
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L88">        this.usuarioActual = usuario;</span>
+<span class="nc" id="L89">    }</span>
     
     @Override
     public Optional&lt;T&gt; crear(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
-<span class="nc" id="L61">        return entityOpt.map(entity -&gt; {</span>
-<span class="nc" id="L62">            entidades.add(entity);</span>
-<span class="nc" id="L63">            registrarAuditoria(entity, tipoOperacion);</span>
-<span class="nc" id="L64">            return Optional.of(entity);</span>
-<span class="nc" id="L65">        }).orElse(Optional.empty());</span>
+<span class="nc" id="L93">        return entityOpt.map(entity -&gt; {</span>
+            // ✅ Llamar al método abstracto para asignar ID
+<span class="nc" id="L95">            T entidadConId = crearConNuevoId(entity);</span>
+<span class="nc" id="L96">            entidades.add(entidadConId);</span>
+<span class="nc" id="L97">            registrarAuditoria(entidadConId, tipoOperacion);</span>
+<span class="nc" id="L98">            incrementarContadorYGuardar();</span>
+<span class="nc" id="L99">            return Optional.of(entidadConId);</span>
+<span class="nc" id="L100">        }).orElse(Optional.empty());</span>
     }
+    
+    /**
+     * Método abstracto para asignar nuevo ID a la entidad
+     * Cada repositorio implementa su lógica específica
+     * @param entidad Entidad sin ID asignado
+     * @return Entidad con nuevo ID asignado
+     */
+    protected abstract T crearConNuevoId(T entidad);
+    
+    /**
+     * Método abstracto que devuelve toda la configuración necesaria
+     * @return Map con la configuración del repositorio
+     */
+    protected abstract Map&lt;String, Object&gt; obtenerConfiguracion();
     
     @Override
     public Optional&lt;T&gt; actualizar(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
-<span class="nc" id="L70">        return entityOpt.flatMap(entidad -&gt; </span>
-<span class="nc" id="L71">            Optional.ofNullable(entidad.getId())</span>
-<span class="nc" id="L72">                .map(id -&gt; {</span>
-<span class="nc" id="L73">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
-<span class="nc" id="L74">                    entidades.add(entidad);</span>
-<span class="nc" id="L75">                    registrarAuditoria(entidad, tipoOperacion);</span>
-<span class="nc" id="L76">                    return entidad;</span>
-                })
+<span class="nc" id="L119">        return entityOpt.flatMap(entidad -&gt; </span>
+<span class="nc" id="L120">            Optional.ofNullable(entidad.getId())</span>
+<span class="nc" id="L121">                .map(id -&gt; {</span>
+<span class="nc" id="L122">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="nc" id="L123">                    entidades.add(entidad);</span>
+<span class="nc" id="L124">                    registrarAuditoria(entidad, tipoOperacion);</span>
+<span class="nc" id="L125">                    incrementarContadorYGuardar();</span>
+<span class="nc" id="L126">                    return entidad;</span>
+<span class="nc" id="L127">                })</span>
         );
     }
     
     @Override
     public Optional&lt;T&gt; buscarPorId(Optional&lt;ID&gt; idOpt) {
-<span class="nc" id="L83">        return idOpt.flatMap(id -&gt; </span>
-<span class="nc" id="L84">            entidades.stream()</span>
-<span class="nc" id="L85">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
-<span class="nc" id="L86">                .findFirst()</span>
+<span class="nc" id="L133">        return idOpt.flatMap(id -&gt; </span>
+<span class="nc" id="L134">            entidades.stream()</span>
+<span class="nc" id="L135">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="nc" id="L136">                .findFirst()</span>
         );
     }
     
@@ -91,61 +141,62 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Método protegido para búsquedas por predicado
      */
     protected Optional&lt;T&gt; buscarPorPredicado(Predicate&lt;T&gt; predicado) {
-<span class="nc" id="L94">        return entidades.stream()</span>
-<span class="nc" id="L95">                .filter(predicado)</span>
-<span class="nc" id="L96">                .findFirst();</span>
+<span class="nc" id="L144">        return entidades.stream()</span>
+<span class="nc" id="L145">                .filter(predicado)</span>
+<span class="nc" id="L146">                .findFirst();</span>
     }
     
     /**
      * Método protegido para búsquedas de lista por predicado
      */
     protected Optional&lt;List&lt;T&gt;&gt; buscarTodosPorPredicado(Predicate&lt;T&gt; predicado) {
-<span class="nc" id="L103">        return Optional.of(</span>
-<span class="nc" id="L104">            entidades.stream()</span>
-<span class="nc" id="L105">                .filter(predicado)</span>
-<span class="nc" id="L106">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="nc" id="L153">        return Optional.of(</span>
+<span class="nc" id="L154">            entidades.stream()</span>
+<span class="nc" id="L155">                .filter(predicado)</span>
+<span class="nc" id="L156">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;T&gt;&gt; buscarTodos() {
-<span class="nc" id="L112">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
+<span class="nc" id="L162">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
     }
     
     @Override
     public Optional&lt;T&gt; eliminarPorId(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
-<span class="nc" id="L117">        return idOpt.flatMap(id -&gt; {</span>
-<span class="nc" id="L118">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
+<span class="nc" id="L167">        return idOpt.flatMap(id -&gt; {</span>
+<span class="nc" id="L168">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
             
-<span class="nc" id="L120">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
-<span class="nc" id="L121">                entidades.remove(entity);</span>
-<span class="nc" id="L122">                entidadesEliminadas.add(entity);</span>
-<span class="nc" id="L123">                registrarAuditoria(entity, tipoOperacion);</span>
-<span class="nc" id="L124">            });</span>
+<span class="nc" id="L170">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
+<span class="nc" id="L171">                entidades.remove(entity);</span>
+<span class="nc" id="L172">                entidadesEliminadas.add(entity);</span>
+<span class="nc" id="L173">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="nc" id="L174">                incrementarContadorYGuardar();</span>
+<span class="nc" id="L175">            });</span>
             
-<span class="nc" id="L126">            return entidadAEliminarOpt;</span>
+<span class="nc" id="L177">            return entidadAEliminarOpt;</span>
         });
     }
     
     @Override
     public long contarRegistros() {
-<span class="nc" id="L132">        return entidades.size();</span>
+<span class="nc" id="L183">        return entidades.size();</span>
     }
     
     @Override
     public Optional&lt;T&gt; restaurar(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
-<span class="nc" id="L137">        return idOpt.flatMap(id -&gt; {</span>
-<span class="nc" id="L138">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
-<span class="nc" id="L139">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
-<span class="nc" id="L140">                    .findFirst();</span>
+<span class="nc" id="L188">        return idOpt.flatMap(id -&gt; {</span>
+<span class="nc" id="L189">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
+<span class="nc" id="L190">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="nc" id="L191">                    .findFirst();</span>
                     
-<span class="nc" id="L142">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
-<span class="nc" id="L143">                entidades.add(entity);</span>
-<span class="nc" id="L144">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
-<span class="nc" id="L145">                registrarAuditoria(entity, tipoOperacion);</span>
-<span class="nc" id="L146">            });</span>
+<span class="nc" id="L193">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
+<span class="nc" id="L194">                entidades.add(entity);</span>
+<span class="nc" id="L195">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="nc" id="L196">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="nc" id="L197">            });</span>
             
-<span class="nc" id="L148">            return entidadAResturarOpt;</span>
+<span class="nc" id="L199">            return entidadAResturarOpt;</span>
         });
     }
     
@@ -154,17 +205,30 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Método privado para registrar auditoría
      */
     private void registrarAuditoria(T entidad, E tipoOperacion) {
-<span class="nc" id="L157">        AuditoriaUtil.registrarOperacion(</span>
-<span class="nc" id="L158">            obtenerAuditoria(),</span>
-<span class="nc" id="L159">            Optional.of(tipoOperacion),</span>
-<span class="nc" id="L160">            Optional.of(entidad),</span>
-<span class="nc" id="L161">            Optional.of(usuarioActual)</span>
+<span class="nc" id="L208">        AuditoriaUtil.registrarOperacion(</span>
+<span class="nc" id="L209">            obtenerAuditoria(),</span>
+<span class="nc" id="L210">            Optional.of(tipoOperacion),</span>
+<span class="nc" id="L211">            Optional.of(entidad),</span>
+<span class="nc" id="L212">            Optional.of(usuarioActual)</span>
         );
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L214">    }</span>
 
     @Override
     public List&lt;T&gt; obtenerEliminados() {
-<span class="nc" id="L167">        return entidadesEliminadas;</span>
+<span class="nc" id="L218">        return entidadesEliminadas;</span>
     }
+    
+    /**
+     * Incrementa el contador de operaciones y guarda datos cada 10 operaciones
+     */
+    private void incrementarContadorYGuardar() {
+<span class="nc" id="L225">        contadorOperaciones++;</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (contadorOperaciones == 10) {</span>
+<span class="nc" id="L227">            Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
+<span class="nc" id="L228">            String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
+<span class="nc" id="L229">            jsonProcesador.guardarJson(ruta, entidades);</span>
+<span class="nc" id="L230">            contadorOperaciones = 0;</span>
+        }
+<span class="nc" id="L232">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

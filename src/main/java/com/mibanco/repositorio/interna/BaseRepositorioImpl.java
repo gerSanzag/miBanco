@@ -6,10 +6,11 @@ import com.mibanco.repositorio.util.BaseRepositorio;
 import com.mibanco.util.AuditoriaUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Implementación base abstracta para repositorios con acceso restringido
@@ -34,11 +35,21 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     // Usuario actual
     protected String usuarioActual = "sistema";
     
+    // Contador para operaciones CRUD (guardado por lotes)
+    private int contadorOperaciones = 0;
+    
+    // Procesador JSON genérico
+    private final BaseProcesadorJson<T> jsonProcesador;
+    
     /**
-     * Constructor protegido sin dependencias circulares
+     * Constructor protegido con carga automática desde JSON
      */
     protected BaseRepositorioImpl() {
-        // Constructor vacío - sin dependencias
+        // Inicializar procesador JSON
+        this.jsonProcesador = new BaseProcesadorJson<>();
+        
+        // ✅ CARGAR DATOS AUTOMÁTICAMENTE
+        cargarDatosDesdeJson();
     }
     
     /**
@@ -51,6 +62,27 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
         return auditoriaRepository;
     }
     
+    /**
+     * Carga datos desde JSON automáticamente al crear el repositorio
+     * Los datos se cargan en la lista entidades
+     */
+    private void cargarDatosDesdeJson() {
+        Map<String, Object> config = obtenerConfiguracion();
+        String ruta = (String) config.get("rutaArchivo");
+        Class<T> tipoClase = (Class<T>) config.get("tipoClase");
+        java.util.function.Function<T, Long> extractorId = (Function<T, Long>) config.get("extractorId");
+        
+        // Cargar datos desde JSON
+        List<T> datosCargados = jsonProcesador.cargarDatosCondicionalmente(ruta, tipoClase);
+        
+        // Agregar datos cargados a la lista entidades
+        entidades.addAll(datosCargados);
+        
+        // Calcular contador desde datos reales
+        Long ultimoId = jsonProcesador.calcularMaximoId(entidades, extractorId);
+        idContador.set(ultimoId);
+    }
+    
     @Override
     public void setUsuarioActual(String usuario) {
         this.usuarioActual = usuario;
@@ -59,11 +91,28 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     @Override
     public Optional<T> crear(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.map(entity -> {
-            entidades.add(entity);
-            registrarAuditoria(entity, tipoOperacion);
-            return Optional.of(entity);
+            // ✅ Llamar al método abstracto para asignar ID
+            T entidadConId = crearConNuevoId(entity);
+            entidades.add(entidadConId);
+            registrarAuditoria(entidadConId, tipoOperacion);
+            incrementarContadorYGuardar();
+            return Optional.of(entidadConId);
         }).orElse(Optional.empty());
     }
+    
+    /**
+     * Método abstracto para asignar nuevo ID a la entidad
+     * Cada repositorio implementa su lógica específica
+     * @param entidad Entidad sin ID asignado
+     * @return Entidad con nuevo ID asignado
+     */
+    protected abstract T crearConNuevoId(T entidad);
+    
+    /**
+     * Método abstracto que devuelve toda la configuración necesaria
+     * @return Map con la configuración del repositorio
+     */
+    protected abstract Map<String, Object> obtenerConfiguracion();
     
     @Override
     public Optional<T> actualizar(Optional<T> entityOpt, E tipoOperacion) {
@@ -73,6 +122,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
                     entidades.removeIf(e -> e.getId().equals(id));
                     entidades.add(entidad);
                     registrarAuditoria(entidad, tipoOperacion);
+                    incrementarContadorYGuardar();
                     return entidad;
                 })
         );
@@ -121,6 +171,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
                 entidades.remove(entity);
                 entidadesEliminadas.add(entity);
                 registrarAuditoria(entity, tipoOperacion);
+                incrementarContadorYGuardar();
             });
             
             return entidadAEliminarOpt;
@@ -165,5 +216,18 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     @Override
     public List<T> obtenerEliminados() {
         return entidadesEliminadas;
+    }
+    
+    /**
+     * Incrementa el contador de operaciones y guarda datos cada 10 operaciones
+     */
+    private void incrementarContadorYGuardar() {
+        contadorOperaciones++;
+        if (contadorOperaciones == 10) {
+            Map<String, Object> config = obtenerConfiguracion();
+            String ruta = (String) config.get("rutaArchivo");
+            jsonProcesador.guardarJson(ruta, entidades);
+            contadorOperaciones = 0;
+        }
     }
 } 

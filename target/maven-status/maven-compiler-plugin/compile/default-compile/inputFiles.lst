@@ -62,6 +62,7 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/mapeador/TarjetaMapeador.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/TransaccionRepositorio.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseProcesadorJson.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/Cuenta.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/TarjetaVista.java

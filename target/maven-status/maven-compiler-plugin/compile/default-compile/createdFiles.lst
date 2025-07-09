@@ -34,6 +34,7 @@ com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class
 com/mibanco/modelo/enums/TipoOperacionTransaccion.class
 com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class
 com/mibanco/modelo/enums/TipoCuenta.class
+com/mibanco/servicio/interna/TransaccionDtoProcesadorServicio.class
 com/mibanco/dto/mapeador/CuentaMapeador.class
 com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class
 com/mibanco/servicio/util/BaseServicio.class
@@ -42,6 +43,7 @@ com/mibanco/modelo/Cliente$ClienteBuilder.class
 com/mibanco/vista/ClienteVista.class
 com/mibanco/dto/CuentaDTO.class
 com/mibanco/dto/TransaccionDTO$TransaccionDTOBuilder.class
+com/mibanco/servicio/interna/ClienteDtoProcesadorServicio.class
 com/mibanco/repositorio/util/BaseRepositorio.class
 com/mibanco/util/AuditoriaUtil.class
 com/mibanco/servicio/TarjetaServicio.class

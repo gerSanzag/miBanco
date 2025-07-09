@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaRepositorioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">CuentaRepositorioImpl.java</span></div><h1>CuentaRepositorioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
 
-import com.mibanco.dto.CuentaDTO;
 import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
 import com.mibanco.repositorio.CuentaRepositorio;
 
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Cuentas
@@ -19,43 +21,68 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
      * Constructor con visibilidad de paquete
      */
     CuentaRepositorioImpl() {
-<span class="nc" id="L22">        super();</span>
-<span class="nc" id="L23">    }</span>
+<span class="nc" id="L24">        super();</span>
+<span class="nc" id="L25">    }</span>
     
     @Override
     public Optional&lt;Cuenta&gt; buscarPorNumero(Optional&lt;Long&gt; numeroCuenta) {
-<span class="nc" id="L27">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L28">            buscarPorPredicado(cuenta -&gt; cuenta.getNumeroCuenta().equals(numero))</span>
+<span class="nc" id="L29">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L30">            buscarPorPredicado(cuenta -&gt; cuenta.getNumeroCuenta().equals(numero))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Cuenta&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idTitular) {
-<span class="nc" id="L34">        return idTitular.flatMap(id -&gt; </span>
-<span class="nc" id="L35">            buscarTodosPorPredicado(cuenta -&gt; cuenta.getTitular().getId().equals(id))</span>
+<span class="nc" id="L36">        return idTitular.flatMap(id -&gt; </span>
+<span class="nc" id="L37">            buscarTodosPorPredicado(cuenta -&gt; cuenta.getTitular().getId().equals(id))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Cuenta&gt;&gt; buscarPorTipo(Optional&lt;TipoCuenta&gt; tipo) {
-<span class="nc" id="L41">        return tipo.flatMap(t -&gt; </span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">            buscarTodosPorPredicado(cuenta -&gt; cuenta.getTipo() == t)</span>
+<span class="nc" id="L43">        return tipo.flatMap(t -&gt; </span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            buscarTodosPorPredicado(cuenta -&gt; cuenta.getTipo() == t)</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Cuenta&gt;&gt; buscarActivas() {
-<span class="nc" id="L48">        return buscarTodosPorPredicado(Cuenta::isActiva);</span>
+<span class="nc" id="L50">        return buscarTodosPorPredicado(Cuenta::isActiva);</span>
     }
     
     @Override
     public Optional&lt;Cuenta&gt; eliminarPorNumero(Optional&lt;Long&gt; numeroCuenta) {
-<span class="nc" id="L53">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L54">            buscarPorNumero(Optional.of(numero))</span>
-<span class="nc" id="L55">                .flatMap(cuenta -&gt; eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))</span>
+<span class="nc" id="L55">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L56">            buscarPorNumero(Optional.of(numero))</span>
+<span class="nc" id="L57">                .flatMap(cuenta -&gt; eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))</span>
         );
     }
     
-   
+    /**
+     * Implementación específica para asignar nuevo ID a Cuenta
+     * @param cuenta Cuenta sin ID asignado
+     * @return Cuenta con nuevo ID asignado
+     */
+    @Override
+    protected Cuenta crearConNuevoId(Cuenta cuenta) {
+        // Generar número aleatorio de 9 dígitos con String.format
+<span class="nc" id="L69">        String numero = String.format(&quot;%09d&quot;, (int) (Math.random() * 1000000000));</span>
+<span class="nc" id="L70">        return Cuenta.builder()</span>
+<span class="nc" id="L71">            .numeroCuenta(Long.parseLong(numero))</span>
+<span class="nc" id="L72">            .build();</span>
+    }
+    
+    /**
+     * Implementación específica para obtener la configuración del repositorio
+     * @return Map con la configuración necesaria
+     */
+    @Override
+    protected Map&lt;String, Object&gt; obtenerConfiguracion() {
+<span class="nc" id="L81">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L82">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/cuenta.json&quot;);</span>
+<span class="nc" id="L83">        config.put(&quot;tipoClase&quot;, Cuenta.class);</span>
+<span class="nc" id="L84">        config.put(&quot;extractorId&quot;, (Function&lt;Cuenta, Long&gt;) Cuenta::getId);</span>
+<span class="nc" id="L85">        return config;</span>
+    }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -7,8 +7,11 @@ import com.mibanco.repositorio.TransaccionRepositorio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Transacciones
@@ -67,6 +70,30 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
     public Optional<Transaccion> eliminarPorId(Optional<Long> id) {
         return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);
     }
-
-  
+    
+    /**
+     * ✅ Obtiene la configuración para este repositorio
+     * @return Map con la configuración (ruta, clase, extractor de ID)
+     */
+    @Override
+    protected Map<String, Object> obtenerConfiguracion() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("ruta", "src/main/resources/data/transaccion.json");
+        config.put("clase", Transaccion.class);
+        config.put("extractorId", (Function<Transaccion, Long>) Transaccion::getId);
+        return config;
+    }
+    
+    /**
+     * ✅ Crea una nueva transacción con ID automático
+     * @param transaccion Transacción a crear
+     * @return Transacción creada con nuevo ID
+     */
+    @Override
+    protected Transaccion crearConNuevoId(Transaccion transaccion) {
+        Long nuevoId = idContador.incrementAndGet();
+        return Transaccion.builder()
+            .id(nuevoId)
+            .build();
+    }
 } 

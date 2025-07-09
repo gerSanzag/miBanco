@@ -7,8 +7,11 @@ import com.mibanco.repositorio.TransaccionRepositorio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Transacciones
@@ -20,54 +23,78 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl&lt;Transaccion, Lon
      * Constructor con visibilidad de paquete
      */
     TransaccionRepositorioImpl() {
-<span class="nc" id="L23">        super();</span>
-<span class="nc" id="L24">    }</span>
+<span class="nc" id="L26">        super();</span>
+<span class="nc" id="L27">    }</span>
    
     @Override
     public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorCuenta(Optional&lt;String&gt; numeroCuenta) {
-<span class="nc" id="L28">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L29">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getNumeroCuenta().equals(numero))</span>
+<span class="nc" id="L31">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L32">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getNumeroCuenta().equals(numero))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorTipo(Optional&lt;TipoTransaccion&gt; tipo) {
-<span class="nc" id="L35">        return tipo.flatMap(t -&gt; </span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getTipo() == t)</span>
+<span class="nc" id="L38">        return tipo.flatMap(t -&gt; </span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getTipo() == t)</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorFecha(Optional&lt;LocalDate&gt; fecha) {
-<span class="nc" id="L42">        return fecha.flatMap(f -&gt; </span>
-<span class="nc" id="L43">            buscarTodosPorPredicado(transaccion -&gt; </span>
-<span class="nc" id="L44">                transaccion.getFecha().toLocalDate().equals(f))</span>
+<span class="nc" id="L45">        return fecha.flatMap(f -&gt; </span>
+<span class="nc" id="L46">            buscarTodosPorPredicado(transaccion -&gt; </span>
+<span class="nc" id="L47">                transaccion.getFecha().toLocalDate().equals(f))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorRangoFechas(Optional&lt;LocalDate&gt; fechaInicio, Optional&lt;LocalDate&gt; fechaFin) {
-<span class="nc" id="L50">        return fechaInicio.flatMap(inicio -&gt; </span>
-<span class="nc" id="L51">            fechaFin.flatMap(fin -&gt; </span>
-<span class="nc" id="L52">                buscarTodosPorPredicado(transaccion -&gt; {</span>
-<span class="nc" id="L53">                    LocalDateTime fechaTransaccion = transaccion.getFecha();</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">                    return !fechaTransaccion.toLocalDate().isBefore(inicio) &amp;&amp; </span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">                           !fechaTransaccion.toLocalDate().isAfter(fin);</span>
-                })
-            )
+<span class="nc" id="L53">        return fechaInicio.flatMap(inicio -&gt; </span>
+<span class="nc" id="L54">            fechaFin.flatMap(fin -&gt; </span>
+<span class="nc" id="L55">                buscarTodosPorPredicado(transaccion -&gt; {</span>
+<span class="nc" id="L56">                    LocalDateTime fechaTransaccion = transaccion.getFecha();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">                    return !fechaTransaccion.toLocalDate().isBefore(inicio) &amp;&amp; </span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                           !fechaTransaccion.toLocalDate().isAfter(fin);</span>
+<span class="nc" id="L59">                })</span>
+<span class="nc" id="L60">            )</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;Transaccion&gt;&gt; buscarTodas() {
-<span class="nc" id="L63">        return buscarTodos();</span>
+<span class="nc" id="L66">        return buscarTodos();</span>
     }
     
     @Override
     public Optional&lt;Transaccion&gt; eliminarPorId(Optional&lt;Long&gt; id) {
-<span class="nc" id="L68">        return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);</span>
+<span class="nc" id="L71">        return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);</span>
     }
-
-  
+    
+    /**
+     * ✅ Obtiene la configuración para este repositorio
+     * @return Map con la configuración (ruta, clase, extractor de ID)
+     */
+    @Override
+    protected Map&lt;String, Object&gt; obtenerConfiguracion() {
+<span class="nc" id="L80">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L81">        config.put(&quot;ruta&quot;, &quot;src/main/resources/data/transaccion.json&quot;);</span>
+<span class="nc" id="L82">        config.put(&quot;clase&quot;, Transaccion.class);</span>
+<span class="nc" id="L83">        config.put(&quot;extractorId&quot;, (Function&lt;Transaccion, Long&gt;) Transaccion::getId);</span>
+<span class="nc" id="L84">        return config;</span>
+    }
+    
+    /**
+     * ✅ Crea una nueva transacción con ID automático
+     * @param transaccion Transacción a crear
+     * @return Transacción creada con nuevo ID
+     */
+    @Override
+    protected Transaccion crearConNuevoId(Transaccion transaccion) {
+<span class="nc" id="L94">        Long nuevoId = idContador.incrementAndGet();</span>
+<span class="nc" id="L95">        return Transaccion.builder()</span>
+<span class="nc" id="L96">            .id(nuevoId)</span>
+<span class="nc" id="L97">            .build();</span>
+    }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

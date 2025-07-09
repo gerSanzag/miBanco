@@ -5,7 +5,10 @@ import com.mibanco.modelo.enums.TipoOperacionCliente;
 import com.mibanco.repositorio.ClienteRepositorio;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Clientes con acceso restringido
@@ -17,25 +20,54 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
      * Constructor package-private
      */
     ClienteRepositorioImpl() {
-<span class="nc" id="L20">        super();</span>
-<span class="nc" id="L21">    }</span>
+<span class="nc" id="L23">        super();</span>
+<span class="nc" id="L24">    }</span>
     
     @Override
     public Optional&lt;Cliente&gt; buscarPorDni(Optional&lt;String&gt; dniOpt) {
-<span class="nc" id="L25">        return dniOpt.flatMap(dni -&gt; </span>
-<span class="nc" id="L26">            buscarPorPredicado(cliente -&gt; cliente.getDni().equals(dni))</span>
+<span class="nc" id="L28">        return dniOpt.flatMap(dni -&gt; </span>
+<span class="nc" id="L29">            buscarPorPredicado(cliente -&gt; cliente.getDni().equals(dni))</span>
         );
     }
     
     @Override
     public Optional&lt;Cliente&gt; restaurarClienteEliminado(Optional&lt;Long&gt; id) {
-<span class="nc" id="L32">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
+<span class="nc" id="L35">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
     }
     
   
     @Override
     public ArrayList&lt;Cliente&gt; obtenerClientesEliminados() {
-<span class="nc" id="L38">        return new ArrayList&lt;&gt;(entidadesEliminadas);</span>
+<span class="nc" id="L41">        return new ArrayList&lt;&gt;(entidadesEliminadas);</span>
+    }
+    
+    /**
+     * Implementación específica para asignar nuevo ID a Cliente
+     * Usa el contador de la base
+     * @param cliente Cliente sin ID asignado
+     * @return Cliente con nuevo ID asignado
+     */
+    @Override
+    protected Cliente crearConNuevoId(Cliente cliente) {
+        // ✅ Usar el contador de la base
+<span class="nc" id="L53">        Long nuevoId = idContador.incrementAndGet();</span>
+        // ✅ Asignar nuevo ID al Cliente
+<span class="nc" id="L55">        return Cliente.builder()</span>
+<span class="nc" id="L56">            .id(nuevoId)</span>
+<span class="nc" id="L57">            .build();</span>
+    }
+    
+    /**
+     * Implementación específica para obtener la configuración del repositorio
+     * @return Map con la configuración necesaria
+     */
+    @Override
+    protected Map&lt;String, Object&gt; obtenerConfiguracion() {
+<span class="nc" id="L66">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L67">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
+<span class="nc" id="L68">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
+<span class="nc" id="L69">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
+<span class="nc" id="L70">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

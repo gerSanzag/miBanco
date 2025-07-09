@@ -9,12 +9,9 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación de Mapper para Cliente utilizando enfoque funcional
+ * Sin generación automática de IDs (manejada por el repositorio)
  */
 public class ClienteMapeador implements Mapeador<Cliente, ClienteDTO> {
-    
-    // ✅ Supplier para generar ID secuencial automáticamente
-    private final java.util.function.Supplier<Long> idSupplier = () -> 
-        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();
 
     /**
      * Convierte un Cliente a ClienteDTO
@@ -37,11 +34,12 @@ public class ClienteMapeador implements Mapeador<Cliente, ClienteDTO> {
     /**
      * Convierte un ClienteDTO a Cliente
      * Implementación estrictamente funcional con Optional
+     * Copia todos los campos del DTO, incluyendo el ID si existe
      */
     @Override
     public Optional<Cliente> aEntidad(Optional<ClienteDTO> dtoOpt) {
         return dtoOpt.map(dto -> Cliente.builder()
-                .id(dto.getId() != null ? dto.getId() : idSupplier.get()) // ✅ Generar ID automáticamente si es null
+                .id(dto.getId())
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
                 .dni(dto.getDni())

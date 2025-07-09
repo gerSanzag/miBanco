@@ -9,12 +9,9 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación de Mapper para Transaccion utilizando enfoque funcional
+ * Sin generación automática de IDs (manejada por el repositorio)
  */
 public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO> {
-    
-    // ✅ Supplier para generar ID secuencial automáticamente
-    private final java.util.function.Supplier<Long> idSupplier = () -> 
-        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();
 
     /**
      * Convierte una transacción a TransaccionDTO
@@ -23,7 +20,7 @@ public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO
     @Override
     public Optional<TransaccionDTO> aDto(Optional<Transaccion> transaccionOpt) {
         return transaccionOpt.map(transaccion -> TransaccionDTO.builder()
-            .id(transaccion.getId())
+            
             .numeroCuenta(transaccion.getNumeroCuenta())
             .numeroCuentaDestino(transaccion.getNumeroCuentaDestino())
             .tipo(transaccion.getTipo())
@@ -36,11 +33,11 @@ public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO
     /**
      * Convierte un TransaccionDTO a Transaccion
      * Implementación estrictamente funcional con Optional
+     * Sin generación automática de IDs (manejada por el repositorio)
      */
     @Override
     public Optional<Transaccion> aEntidad(Optional<TransaccionDTO> dtoOpt) {
         return dtoOpt.map(dto -> Transaccion.builder()
-            .id(dto.getId() != null ? dto.getId() : idSupplier.get()) // ✅ Generar ID automáticamente si es null
             .numeroCuenta(dto.getNumeroCuenta())
             .numeroCuentaDestino(dto.getNumeroCuentaDestino())
             .tipo(dto.getTipo())

@@ -15,10 +15,6 @@ import java.util.stream.Collectors;
 public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     private final Mapeador<Cliente, ClienteDTO> clienteMapeador;
     
-    // ✅ Supplier para generar ID secuencial automáticamente
-    private final java.util.function.Supplier<Long> idSupplier = () -> 
-        new java.util.concurrent.atomic.AtomicLong(0).incrementAndGet();
-
     public CuentaMapeador(Mapeador<Cliente, ClienteDTO> clienteMapeador) {
         this.clienteMapeador = clienteMapeador;
     }
@@ -30,7 +26,6 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     @Override
     public Optional<CuentaDTO> aDto(Optional<Cuenta> cuentaOpt) {
         return cuentaOpt.map(cuenta -> CuentaDTO.builder()
-            .numeroCuenta(cuenta.getNumeroCuenta())
             .titular(clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null))
             .tipo(cuenta.getTipo())
             .saldo(cuenta.getSaldo())
@@ -46,7 +41,7 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     @Override
     public Optional<Cuenta> aEntidad(Optional<CuentaDTO> dtoOpt) {
         return dtoOpt.map(dto -> Cuenta.builder()
-            .numeroCuenta(dto.getNumeroCuenta() != null ? dto.getNumeroCuenta() : idSupplier.get()) // ✅ Generar ID automáticamente si es null
+            .numeroCuenta(dto.getNumeroCuenta())
             .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))
             .tipo(dto.getTipo())
             .saldo(dto.getSaldo())
