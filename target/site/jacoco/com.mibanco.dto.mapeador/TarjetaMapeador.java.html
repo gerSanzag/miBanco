@@ -26,12 +26,13 @@ public class TarjetaMapeador implements Mapeador&lt;Tarjeta, TarjetaDTO&gt; {
     public Optional&lt;TarjetaDTO&gt; aDto(Optional&lt;Tarjeta&gt; tarjetaOpt) {
 <span class="fc" id="L27">        return tarjetaOpt.map(tarjeta -&gt; TarjetaDTO.builder()</span>
 <span class="fc" id="L28">            .numero(tarjeta.getNumero())</span>
-<span class="fc" id="L29">            .titular(clienteMapeador.aDto(Optional.of(tarjeta.getTitular())).orElse(null))</span>
-<span class="fc" id="L30">            .numeroCuentaAsociada(tarjeta.getNumeroCuentaAsociada())</span>
-<span class="fc" id="L31">            .tipo(tarjeta.getTipo())</span>
-<span class="fc" id="L32">            .fechaExpiracion(tarjeta.getFechaExpiracion())</span>
-<span class="fc" id="L33">            .activa(tarjeta.isActiva())</span>
-<span class="fc" id="L34">            .build());</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            .titular(tarjeta.getTitular() != null ? </span>
+<span class="fc" id="L30">                clienteMapeador.aDto(Optional.of(tarjeta.getTitular())).orElse(null) : null)</span>
+<span class="fc" id="L31">            .numeroCuentaAsociada(tarjeta.getNumeroCuentaAsociada())</span>
+<span class="fc" id="L32">            .tipo(tarjeta.getTipo())</span>
+<span class="fc" id="L33">            .fechaExpiracion(tarjeta.getFechaExpiracion())</span>
+<span class="fc" id="L34">            .activa(tarjeta.isActiva())</span>
+<span class="fc" id="L35">            .build());</span>
     }
 
     /**
@@ -41,14 +42,15 @@ public class TarjetaMapeador implements Mapeador&lt;Tarjeta, TarjetaDTO&gt; {
      */
     @Override
     public Optional&lt;Tarjeta&gt; aEntidad(Optional&lt;TarjetaDTO&gt; dtoOpt) {
-<span class="fc" id="L44">        return dtoOpt.map(dto -&gt; Tarjeta.builder()</span>
-<span class="fc" id="L45">            .numero(dto.getNumero())</span>
-<span class="fc" id="L46">            .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))</span>
-<span class="fc" id="L47">            .numeroCuentaAsociada(dto.getNumeroCuentaAsociada())</span>
-<span class="fc" id="L48">            .tipo(dto.getTipo())</span>
-<span class="fc" id="L49">            .fechaExpiracion(dto.getFechaExpiracion())</span>
-<span class="fc" id="L50">            .activa(dto.isActiva())</span>
-<span class="fc" id="L51">            .build());</span>
+<span class="fc" id="L45">        return dtoOpt.map(dto -&gt; Tarjeta.builder()</span>
+<span class="fc" id="L46">            .numero(dto.getNumero())</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            .titular(dto.getTitular() != null ? </span>
+<span class="fc" id="L48">                clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null) : null)</span>
+<span class="fc" id="L49">            .numeroCuentaAsociada(dto.getNumeroCuentaAsociada())</span>
+<span class="fc" id="L50">            .tipo(dto.getTipo())</span>
+<span class="fc" id="L51">            .fechaExpiracion(dto.getFechaExpiracion())</span>
+<span class="fc" id="L52">            .activa(dto.isActiva())</span>
+<span class="fc" id="L53">            .build());</span>
     }
    
     /**
@@ -56,7 +58,7 @@ public class TarjetaMapeador implements Mapeador&lt;Tarjeta, TarjetaDTO&gt; {
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;TarjetaDTO&gt; aDtoDirecto(Tarjeta tarjeta) {
-<span class="fc" id="L59">        return aDto(Optional.ofNullable(tarjeta));</span>
+<span class="fc" id="L61">        return aDto(Optional.ofNullable(tarjeta));</span>
     }
     
     /**
@@ -64,7 +66,7 @@ public class TarjetaMapeador implements Mapeador&lt;Tarjeta, TarjetaDTO&gt; {
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;Tarjeta&gt; aEntidadDirecta(TarjetaDTO dto) {
-<span class="fc" id="L67">        return aEntidad(Optional.ofNullable(dto));</span>
+<span class="fc" id="L69">        return aEntidad(Optional.ofNullable(dto));</span>
     }
     
     /**
@@ -73,17 +75,17 @@ public class TarjetaMapeador implements Mapeador&lt;Tarjeta, TarjetaDTO&gt; {
      * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Tarjeta&gt;&gt; tarjetas) {
-<span class="fc" id="L76">        return tarjetas.map(list -&gt; list.stream()</span>
-<span class="fc" id="L77">                        .map(tarjeta -&gt; aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="fc" id="L78">                        .filter(java.util.Objects::nonNull)</span>
-<span class="fc" id="L79">                .collect(Collectors.toList()));</span>
+<span class="fc" id="L78">        return tarjetas.map(list -&gt; list.stream()</span>
+<span class="fc" id="L79">                        .map(tarjeta -&gt; aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="fc" id="L80">                        .filter(java.util.Objects::nonNull)</span>
+<span class="fc" id="L81">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;Tarjeta&gt; directamente
      */
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; aListaDto(List&lt;Tarjeta&gt; tarjetas) {
-<span class="fc" id="L86">        return aListaDto(Optional.ofNullable(tarjetas));</span>
+<span class="fc" id="L88">        return aListaDto(Optional.ofNullable(tarjetas));</span>
     }
     
     /**
@@ -92,17 +94,17 @@ public class TarjetaMapeador implements Mapeador&lt;Tarjeta, TarjetaDTO&gt; {
      * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;Tarjeta&gt;&gt; aListaEntidad(Optional&lt;List&lt;TarjetaDTO&gt;&gt; dtos) {
-<span class="fc" id="L95">        return dtos.map(list -&gt; list.stream()</span>
-<span class="fc" id="L96">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
-<span class="fc" id="L97">                        .filter(java.util.Objects::nonNull)</span>
-<span class="fc" id="L98">                .collect(Collectors.toList()));</span>
+<span class="fc" id="L97">        return dtos.map(list -&gt; list.stream()</span>
+<span class="fc" id="L98">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="fc" id="L99">                        .filter(java.util.Objects::nonNull)</span>
+<span class="fc" id="L100">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;TarjetaDTO&gt; directamente
      */
     public Optional&lt;List&lt;Tarjeta&gt;&gt; aListaEntidad(List&lt;TarjetaDTO&gt; dtos) {
-<span class="fc" id="L105">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+<span class="fc" id="L107">        return aListaEntidad(Optional.ofNullable(dtos));</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

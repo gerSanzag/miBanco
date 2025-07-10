@@ -132,47 +132,42 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
     }
 
     @Override
-    public List&lt;CuentaDTO&gt; obtenerCuentasEliminadas() {
-<span class="nc" id="L136">        return obtenerEliminados();</span>
-    }
-
-    @Override
     public long contarCuentas() {
-<span class="nc" id="L141">        return contarRegistros();</span>
+<span class="nc" id="L136">        return contarRegistros();</span>
     }
 
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L146">        super.establecerUsuarioActual(usuario);</span>
-<span class="nc" id="L147">    }</span>
+<span class="nc" id="L141">        super.establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L142">    }</span>
 
     @Override
     public Optional&lt;List&lt;CuentaDTO&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idTitular) {
-<span class="nc" id="L151">        return repositorio.buscarPorTitularId(idTitular)</span>
-<span class="nc" id="L152">            .map(cuentas -&gt; cuentas.stream()</span>
-<span class="nc" id="L153">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
-<span class="nc" id="L154">                .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L155">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="nc" id="L146">        return repositorio.buscarPorTitularId(idTitular)</span>
+<span class="nc" id="L147">            .map(cuentas -&gt; cuentas.stream()</span>
+<span class="nc" id="L148">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L149">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L150">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
             );
     }
 
     @Override
     public Optional&lt;List&lt;CuentaDTO&gt;&gt; buscarPorTipo(Optional&lt;TipoCuenta&gt; tipo) {
-<span class="nc" id="L161">        return repositorio.buscarPorTipo(tipo)</span>
-<span class="nc" id="L162">            .map(cuentas -&gt; cuentas.stream()</span>
-<span class="nc" id="L163">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
-<span class="nc" id="L164">                .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L165">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="nc" id="L156">        return repositorio.buscarPorTipo(tipo)</span>
+<span class="nc" id="L157">            .map(cuentas -&gt; cuentas.stream()</span>
+<span class="nc" id="L158">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L159">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L160">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
             );
     }
 
     @Override
     public Optional&lt;List&lt;CuentaDTO&gt;&gt; buscarActivas() {
-<span class="nc" id="L171">        return repositorio.buscarActivas()</span>
-<span class="nc" id="L172">            .map(cuentas -&gt; cuentas.stream()</span>
-<span class="nc" id="L173">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
-<span class="nc" id="L174">                .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L175">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="nc" id="L166">        return repositorio.buscarActivas()</span>
+<span class="nc" id="L167">            .map(cuentas -&gt; cuentas.stream()</span>
+<span class="nc" id="L168">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L169">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L170">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
             );
     }
 
@@ -183,10 +178,10 @@ class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, Ti
      * Garantiza consistencia transaccional: valida antes de persistir
      */
     public Optional&lt;CuentaDTO&gt; crearCuentaDto(Map&lt;String, String&gt; datosCrudos, BigDecimal montoInicial, TransaccionOperacionesServicio transaccionServicio) {
-<span class="nc" id="L186">        return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)</span>
-<span class="nc" id="L187">            .flatMap(cuentaDTO -&gt; cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))</span>
-<span class="nc" id="L188">            .flatMap(cuentaConSaldo -&gt; guardar(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo)))</span>
-<span class="nc" id="L189">            .or(() -&gt; Optional.empty());</span>
+<span class="nc" id="L181">        return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)</span>
+<span class="nc" id="L182">            .flatMap(cuentaDTO -&gt; cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))</span>
+<span class="nc" id="L183">            .flatMap(cuentaConSaldo -&gt; guardar(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo)))</span>
+<span class="nc" id="L184">            .or(() -&gt; Optional.empty());</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

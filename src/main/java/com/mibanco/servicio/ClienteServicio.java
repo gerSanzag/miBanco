@@ -93,12 +93,6 @@ public interface ClienteServicio {
     Optional<ClienteDTO> restaurarCliente(Optional<Long> id);
 
     /**
-     * Obtiene la lista de clientes eliminados
-     * @return Lista de DTOs de clientes eliminados
-     */
-    List<ClienteDTO> obtenerClientesEliminados();
-
-    /**
      * Obtiene el número total de clientes
      * @return Número de clientes
      */

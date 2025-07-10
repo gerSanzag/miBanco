@@ -26,8 +26,11 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     @Override
     public Optional<CuentaDTO> aDto(Optional<Cuenta> cuentaOpt) {
         return cuentaOpt.map(cuenta -> CuentaDTO.builder()
-            .titular(clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null))
+            .numeroCuenta(cuenta.getNumeroCuenta())
+            .titular(cuenta.getTitular() != null ? 
+                clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null) : null)
             .tipo(cuenta.getTipo())
+            .saldoInicial(cuenta.getSaldoInicial())
             .saldo(cuenta.getSaldo())
             .fechaCreacion(cuenta.getFechaCreacion())
             .activa(cuenta.isActiva())
@@ -42,8 +45,10 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     public Optional<Cuenta> aEntidad(Optional<CuentaDTO> dtoOpt) {
         return dtoOpt.map(dto -> Cuenta.builder()
             .numeroCuenta(dto.getNumeroCuenta())
-            .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))
+            .titular(dto.getTitular() != null ? 
+                clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null) : null)
             .tipo(dto.getTipo())
+            .saldoInicial(dto.getSaldoInicial())
             .saldo(dto.getSaldo())
             .fechaCreacion(dto.getFechaCreacion())
             .activa(dto.isActiva())

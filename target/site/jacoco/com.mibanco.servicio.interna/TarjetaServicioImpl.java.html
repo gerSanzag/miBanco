@@ -135,68 +135,63 @@ class TarjetaServicioImpl extends BaseServicioImpl&lt;TarjetaDTO, Tarjeta, Strin
 <span class="nc" id="L135">        return restaurar(numeroTarjeta, TipoOperacionTarjeta.MODIFICAR);</span>
     }
     
-    @Override
-    public List&lt;TarjetaDTO&gt; obtenerTarjetasEliminadas() {
-<span class="nc" id="L140">        return obtenerEliminados();</span>
-    }
-    
-    @Override
+        @Override
     public long contarTarjetas() {
-<span class="nc" id="L145">        return contarRegistros();</span>
+<span class="nc" id="L140">        return contarRegistros();</span>
     }
     
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L150">        super.establecerUsuarioActual(usuario);</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L145">        super.establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L146">    }</span>
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idCliente) {
-<span class="nc" id="L155">        return idCliente.flatMap(id -&gt; </span>
-<span class="nc" id="L156">            repositorioTarjeta.buscarPorTitularId(Optional.of(id))</span>
-<span class="nc" id="L157">                .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L158">                    tarjetas.stream()</span>
-<span class="nc" id="L159">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L160">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L161">                        .toList()</span>
-<span class="nc" id="L162">                ))</span>
+<span class="nc" id="L150">        return idCliente.flatMap(id -&gt; </span>
+<span class="nc" id="L151">            repositorioTarjeta.buscarPorTitularId(Optional.of(id))</span>
+<span class="nc" id="L152">                .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L153">                    tarjetas.stream()</span>
+<span class="nc" id="L154">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L155">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L156">                        .toList()</span>
+<span class="nc" id="L157">                ))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarPorTipo(Optional&lt;TipoTarjeta&gt; tipo) {
-<span class="nc" id="L168">        return tipo.flatMap(t -&gt; </span>
-<span class="nc" id="L169">            repositorioTarjeta.buscarPorTipo(Optional.of(t))</span>
-<span class="nc" id="L170">                .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L171">                    tarjetas.stream()</span>
-<span class="nc" id="L172">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L173">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L174">                        .toList()</span>
-<span class="nc" id="L175">                ))</span>
+<span class="nc" id="L163">        return tipo.flatMap(t -&gt; </span>
+<span class="nc" id="L164">            repositorioTarjeta.buscarPorTipo(Optional.of(t))</span>
+<span class="nc" id="L165">                .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L166">                    tarjetas.stream()</span>
+<span class="nc" id="L167">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L168">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L169">                        .toList()</span>
+<span class="nc" id="L170">                ))</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarActivas() {
-<span class="nc" id="L181">        return repositorioTarjeta.buscarActivas()</span>
-<span class="nc" id="L182">            .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L183">                tarjetas.stream()</span>
-<span class="nc" id="L184">                    .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L185">                    .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L186">                    .toList()</span>
-<span class="nc" id="L187">            ));</span>
+<span class="nc" id="L176">        return repositorioTarjeta.buscarActivas()</span>
+<span class="nc" id="L177">            .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L178">                tarjetas.stream()</span>
+<span class="nc" id="L179">                    .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L180">                    .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L181">                    .toList()</span>
+<span class="nc" id="L182">            ));</span>
     }
     
     @Override
     public Optional&lt;List&lt;TarjetaDTO&gt;&gt; buscarPorCuentaAsociada(Optional&lt;String&gt; numeroCuenta) {
-<span class="nc" id="L192">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L193">            repositorioTarjeta.buscarPorCuentaAsociada(Optional.of(numero))</span>
-<span class="nc" id="L194">                .flatMap(tarjetas -&gt; Optional.of(</span>
-<span class="nc" id="L195">                    tarjetas.stream()</span>
-<span class="nc" id="L196">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
-<span class="nc" id="L197">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L198">                        .toList()</span>
-<span class="nc" id="L199">                ))</span>
+<span class="nc" id="L187">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L188">            repositorioTarjeta.buscarPorCuentaAsociada(Optional.of(numero))</span>
+<span class="nc" id="L189">                .flatMap(tarjetas -&gt; Optional.of(</span>
+<span class="nc" id="L190">                    tarjetas.stream()</span>
+<span class="nc" id="L191">                        .map(tarjeta -&gt; mapeador.aDto(Optional.of(tarjeta)).orElse(null))</span>
+<span class="nc" id="L192">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L193">                        .toList()</span>
+<span class="nc" id="L194">                ))</span>
         );
     }
 } 

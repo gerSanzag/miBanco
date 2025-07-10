@@ -39,6 +39,12 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
         </dependency>
+        <!-- Jackson para manejar fechas de Java 8 (LocalDate, LocalDateTime, etc.) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.2</version>
+        </dependency>
         <!-- JUnit 5 para testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

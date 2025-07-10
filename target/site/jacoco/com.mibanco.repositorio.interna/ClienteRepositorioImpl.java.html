@@ -36,10 +36,7 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
     }
     
   
-    @Override
-    public ArrayList&lt;Cliente&gt; obtenerClientesEliminados() {
-<span class="nc" id="L41">        return new ArrayList&lt;&gt;(entidadesEliminadas);</span>
-    }
+
     
     /**
      * Implementación específica para asignar nuevo ID a Cliente
@@ -50,11 +47,11 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
     @Override
     protected Cliente crearConNuevoId(Cliente cliente) {
         // ✅ Usar el contador de la base
-<span class="nc" id="L53">        Long nuevoId = idContador.incrementAndGet();</span>
+<span class="nc" id="L50">        Long nuevoId = idContador.incrementAndGet();</span>
         // ✅ Asignar nuevo ID al Cliente
-<span class="nc" id="L55">        return Cliente.builder()</span>
-<span class="nc" id="L56">            .id(nuevoId)</span>
-<span class="nc" id="L57">            .build();</span>
+<span class="nc" id="L52">        return Cliente.builder()</span>
+<span class="nc" id="L53">            .id(nuevoId)</span>
+<span class="nc" id="L54">            .build();</span>
     }
     
     /**
@@ -63,11 +60,11 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="nc" id="L66">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L67">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
-<span class="nc" id="L68">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
-<span class="nc" id="L69">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
-<span class="nc" id="L70">        return config;</span>
+<span class="nc" id="L63">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L64">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
+<span class="nc" id="L65">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
+<span class="nc" id="L66">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
+<span class="nc" id="L67">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

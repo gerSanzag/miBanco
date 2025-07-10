@@ -135,12 +135,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
         return restaurar(numeroTarjeta, TipoOperacionTarjeta.MODIFICAR);
     }
     
-    @Override
-    public List<TarjetaDTO> obtenerTarjetasEliminadas() {
-        return obtenerEliminados();
-    }
-    
-    @Override
+        @Override
     public long contarTarjetas() {
         return contarRegistros();
     }

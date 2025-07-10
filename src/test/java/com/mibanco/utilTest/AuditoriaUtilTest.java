@@ -163,4 +163,5 @@ class AuditoriaUtilTest {
         // Verificar que se llamó el método registrar del repositorio
         verify(mockAuditoriaRepositorio).registrar(any());
     }
+
 }

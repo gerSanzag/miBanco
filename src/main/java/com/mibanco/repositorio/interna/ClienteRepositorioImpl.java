@@ -36,10 +36,7 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl<Cliente, Long, TipoOper
     }
     
   
-    @Override
-    public ArrayList<Cliente> obtenerClientesEliminados() {
-        return new ArrayList<>(entidadesEliminadas);
-    }
+
     
     /**
      * Implementación específica para asignar nuevo ID a Cliente

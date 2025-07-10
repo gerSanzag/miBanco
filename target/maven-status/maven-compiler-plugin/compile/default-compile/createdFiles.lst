@@ -76,4 +76,5 @@ com/mibanco/util/ReflexionUtil.class
 com/mibanco/modelo/enums/TipoOperacionTarjeta.class
 com/mibanco/util/ReflexionUtil$NoSolicitar.class
 com/mibanco/modelo/Identificable.class
+com/mibanco/repositorio/interna/BaseProcesadorJson.class
 com/mibanco/servicio/interna/TarjetaServicioImpl.class

@@ -20,7 +20,7 @@ public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO
     @Override
     public Optional<TransaccionDTO> aDto(Optional<Transaccion> transaccionOpt) {
         return transaccionOpt.map(transaccion -> TransaccionDTO.builder()
-            
+            .id(transaccion.getId())
             .numeroCuenta(transaccion.getNumeroCuenta())
             .numeroCuentaDestino(transaccion.getNumeroCuentaDestino())
             .tipo(transaccion.getTipo())
@@ -38,6 +38,7 @@ public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO
     @Override
     public Optional<Transaccion> aEntidad(Optional<TransaccionDTO> dtoOpt) {
         return dtoOpt.map(dto -> Transaccion.builder()
+            .id(dto.getId())
             .numeroCuenta(dto.getNumeroCuenta())
             .numeroCuentaDestino(dto.getNumeroCuentaDestino())
             .tipo(dto.getTipo())

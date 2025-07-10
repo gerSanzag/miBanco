@@ -27,9 +27,5 @@ public interface ClienteRepositorio extends BaseRepositorio<Cliente, Long, TipoO
      */
     Optional<Cliente> restaurarClienteEliminado(Optional<Long> id);
     
-    /**
-     * Obtiene la lista de clientes recientemente eliminados
-     * @return Lista de clientes eliminados
-     */
-    ArrayList<Cliente> obtenerClientesEliminados();
+
 } 

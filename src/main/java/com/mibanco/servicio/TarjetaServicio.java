@@ -87,12 +87,6 @@ public interface TarjetaServicio {
     Optional<TarjetaDTO> restaurarTarjeta(Optional<String> numeroTarjeta);
 
     /**
-     * Obtiene la lista de tarjetas eliminadas
-     * @return Lista de DTOs de tarjetas eliminadas
-     */
-    List<TarjetaDTO> obtenerTarjetasEliminadas();
-
-    /**
      * Obtiene el número total de tarjetas
      * @return Número de tarjetas
      */

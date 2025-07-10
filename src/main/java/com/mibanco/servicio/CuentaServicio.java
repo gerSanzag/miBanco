@@ -77,12 +77,6 @@ public interface CuentaServicio {
     Optional<CuentaDTO> restaurarCuenta(Optional<Long> numeroCuenta);
 
     /**
-     * Obtiene la lista de cuentas eliminadas
-     * @return Lista de DTOs de cuentas eliminadas
-     */
-    List<CuentaDTO> obtenerCuentasEliminadas();
-
-    /**
      * Obtiene el número total de cuentas
      * @return Número de cuentas
      */

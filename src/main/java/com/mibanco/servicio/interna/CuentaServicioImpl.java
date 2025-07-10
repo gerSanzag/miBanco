@@ -132,11 +132,6 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
     }
 
     @Override
-    public List<CuentaDTO> obtenerCuentasEliminadas() {
-        return obtenerEliminados();
-    }
-
-    @Override
     public long contarCuentas() {
         return contarRegistros();
     }

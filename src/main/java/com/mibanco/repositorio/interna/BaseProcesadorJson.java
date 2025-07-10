@@ -19,6 +19,10 @@ class BaseProcesadorJson<T> {
     
     public BaseProcesadorJson() {
         this.mapper = new ObjectMapper();
+        // Registrar módulo para manejar fechas de Java 8 (LocalDate, LocalDateTime, etc.)
+        this.mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        // Configurar para usar formato ISO (string) en lugar de array
+        this.mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
     
     /**

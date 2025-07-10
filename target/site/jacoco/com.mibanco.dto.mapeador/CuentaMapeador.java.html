@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
     private final Mapeador&lt;Cliente, ClienteDTO&gt; clienteMapeador;
     
-<span class="nc" id="L18">    public CuentaMapeador(Mapeador&lt;Cliente, ClienteDTO&gt; clienteMapeador) {</span>
-<span class="nc" id="L19">        this.clienteMapeador = clienteMapeador;</span>
-<span class="nc" id="L20">    }</span>
+<span class="fc" id="L18">    public CuentaMapeador(Mapeador&lt;Cliente, ClienteDTO&gt; clienteMapeador) {</span>
+<span class="fc" id="L19">        this.clienteMapeador = clienteMapeador;</span>
+<span class="fc" id="L20">    }</span>
 
     /**
      * Convierte una cuenta a CuentaDTO
@@ -25,13 +25,16 @@ public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
      */
     @Override
     public Optional&lt;CuentaDTO&gt; aDto(Optional&lt;Cuenta&gt; cuentaOpt) {
-<span class="nc" id="L28">        return cuentaOpt.map(cuenta -&gt; CuentaDTO.builder()</span>
-<span class="nc" id="L29">            .titular(clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null))</span>
-<span class="nc" id="L30">            .tipo(cuenta.getTipo())</span>
-<span class="nc" id="L31">            .saldo(cuenta.getSaldo())</span>
-<span class="nc" id="L32">            .fechaCreacion(cuenta.getFechaCreacion())</span>
-<span class="nc" id="L33">            .activa(cuenta.isActiva())</span>
-<span class="nc" id="L34">            .build());</span>
+<span class="fc" id="L28">        return cuentaOpt.map(cuenta -&gt; CuentaDTO.builder()</span>
+<span class="fc" id="L29">            .numeroCuenta(cuenta.getNumeroCuenta())</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">            .titular(cuenta.getTitular() != null ? </span>
+<span class="fc" id="L31">                clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null) : null)</span>
+<span class="fc" id="L32">            .tipo(cuenta.getTipo())</span>
+<span class="fc" id="L33">            .saldoInicial(cuenta.getSaldoInicial())</span>
+<span class="fc" id="L34">            .saldo(cuenta.getSaldo())</span>
+<span class="fc" id="L35">            .fechaCreacion(cuenta.getFechaCreacion())</span>
+<span class="fc" id="L36">            .activa(cuenta.isActiva())</span>
+<span class="fc" id="L37">            .build());</span>
     }
 
     /**
@@ -40,14 +43,16 @@ public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
      */
     @Override
     public Optional&lt;Cuenta&gt; aEntidad(Optional&lt;CuentaDTO&gt; dtoOpt) {
-<span class="nc" id="L43">        return dtoOpt.map(dto -&gt; Cuenta.builder()</span>
-<span class="nc" id="L44">            .numeroCuenta(dto.getNumeroCuenta())</span>
-<span class="nc" id="L45">            .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))</span>
-<span class="nc" id="L46">            .tipo(dto.getTipo())</span>
-<span class="nc" id="L47">            .saldo(dto.getSaldo())</span>
-<span class="nc" id="L48">            .fechaCreacion(dto.getFechaCreacion())</span>
-<span class="nc" id="L49">            .activa(dto.isActiva())</span>
-<span class="nc" id="L50">            .build());</span>
+<span class="fc" id="L46">        return dtoOpt.map(dto -&gt; Cuenta.builder()</span>
+<span class="fc" id="L47">            .numeroCuenta(dto.getNumeroCuenta())</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            .titular(dto.getTitular() != null ? </span>
+<span class="fc" id="L49">                clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null) : null)</span>
+<span class="fc" id="L50">            .tipo(dto.getTipo())</span>
+<span class="fc" id="L51">            .saldoInicial(dto.getSaldoInicial())</span>
+<span class="fc" id="L52">            .saldo(dto.getSaldo())</span>
+<span class="fc" id="L53">            .fechaCreacion(dto.getFechaCreacion())</span>
+<span class="fc" id="L54">            .activa(dto.isActiva())</span>
+<span class="fc" id="L55">            .build());</span>
     }
    
     /**
@@ -55,7 +60,7 @@ public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;CuentaDTO&gt; aDtoDirecto(Cuenta cuenta) {
-<span class="nc" id="L58">        return aDto(Optional.ofNullable(cuenta));</span>
+<span class="fc" id="L63">        return aDto(Optional.ofNullable(cuenta));</span>
     }
     
     /**
@@ -63,7 +68,7 @@ public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
      * Para facilitar el uso en contextos donde no se trabaja con Optional
      */
     public Optional&lt;Cuenta&gt; aEntidadDirecta(CuentaDTO dto) {
-<span class="nc" id="L66">        return aEntidad(Optional.ofNullable(dto));</span>
+<span class="fc" id="L71">        return aEntidad(Optional.ofNullable(dto));</span>
     }
     
     /**
@@ -72,17 +77,17 @@ public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
      * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;CuentaDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Cuenta&gt;&gt; cuentas) {
-<span class="nc" id="L75">        return cuentas.map(list -&gt; list.stream()</span>
-<span class="nc" id="L76">                        .map(cuenta -&gt; aDto(Optional.of(cuenta)).orElse(null))</span>
-<span class="nc" id="L77">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L78">                .collect(Collectors.toList()));</span>
+<span class="fc" id="L80">        return cuentas.map(list -&gt; list.stream()</span>
+<span class="fc" id="L81">                        .map(cuenta -&gt; aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="fc" id="L82">                        .filter(java.util.Objects::nonNull)</span>
+<span class="fc" id="L83">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;Cuenta&gt; directamente
      */
     public Optional&lt;List&lt;CuentaDTO&gt;&gt; aListaDto(List&lt;Cuenta&gt; cuentas) {
-<span class="nc" id="L85">        return aListaDto(Optional.ofNullable(cuentas));</span>
+<span class="fc" id="L90">        return aListaDto(Optional.ofNullable(cuentas));</span>
     }
     
     /**
@@ -91,17 +96,17 @@ public class CuentaMapeador implements Mapeador&lt;Cuenta, CuentaDTO&gt; {
      * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
      */
     public Optional&lt;List&lt;Cuenta&gt;&gt; aListaEntidad(Optional&lt;List&lt;CuentaDTO&gt;&gt; dtos) {
-<span class="nc" id="L94">        return dtos.map(list -&gt; list.stream()</span>
-<span class="nc" id="L95">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
-<span class="nc" id="L96">                        .filter(java.util.Objects::nonNull)</span>
-<span class="nc" id="L97">                .collect(Collectors.toList()));</span>
+<span class="fc" id="L99">        return dtos.map(list -&gt; list.stream()</span>
+<span class="fc" id="L100">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="fc" id="L101">                        .filter(java.util.Objects::nonNull)</span>
+<span class="fc" id="L102">                .collect(Collectors.toList()));</span>
     }
     
     /**
      * Sobrecarga que acepta List&lt;CuentaDTO&gt; directamente
      */
     public Optional&lt;List&lt;Cuenta&gt;&gt; aListaEntidad(List&lt;CuentaDTO&gt; dtos) {
-<span class="nc" id="L104">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+<span class="fc" id="L109">        return aListaEntidad(Optional.ofNullable(dtos));</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

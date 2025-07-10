@@ -133,11 +133,6 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
     }
 
     @Override
-    public List<ClienteDTO> obtenerClientesEliminados() {
-        return obtenerEliminados();
-    }
-
-    @Override
     public long contarClientes() {
         return contarRegistros();
     }

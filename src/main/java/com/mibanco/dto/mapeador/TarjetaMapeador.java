@@ -26,7 +26,8 @@ public class TarjetaMapeador implements Mapeador<Tarjeta, TarjetaDTO> {
     public Optional<TarjetaDTO> aDto(Optional<Tarjeta> tarjetaOpt) {
         return tarjetaOpt.map(tarjeta -> TarjetaDTO.builder()
             .numero(tarjeta.getNumero())
-            .titular(clienteMapeador.aDto(Optional.of(tarjeta.getTitular())).orElse(null))
+            .titular(tarjeta.getTitular() != null ? 
+                clienteMapeador.aDto(Optional.of(tarjeta.getTitular())).orElse(null) : null)
             .numeroCuentaAsociada(tarjeta.getNumeroCuentaAsociada())
             .tipo(tarjeta.getTipo())
             .fechaExpiracion(tarjeta.getFechaExpiracion())
@@ -43,7 +44,8 @@ public class TarjetaMapeador implements Mapeador<Tarjeta, TarjetaDTO> {
     public Optional<Tarjeta> aEntidad(Optional<TarjetaDTO> dtoOpt) {
         return dtoOpt.map(dto -> Tarjeta.builder()
             .numero(dto.getNumero())
-            .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))
+            .titular(dto.getTitular() != null ? 
+                clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null) : null)
             .numeroCuentaAsociada(dto.getNumeroCuentaAsociada())
             .tipo(dto.getTipo())
             .fechaExpiracion(dto.getFechaExpiracion())

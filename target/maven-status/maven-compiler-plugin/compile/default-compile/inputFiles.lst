@@ -15,6 +15,7 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/ClienteDTO.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/ClienteRepositorio.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseProcesadorJsonWrapper.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/mapeador/Mapeador.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoCuenta.java
