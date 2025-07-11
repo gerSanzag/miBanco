@@ -1,5 +1,7 @@
 package com.mibanco.modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +20,6 @@ import lombok.Value;
  */
 @Value
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // Constructor privado para forzar uso del Builder
 public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
     // ID único del registro
     UUID id;
@@ -40,6 +41,25 @@ public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
     
     // Información adicional de la operación
     String detalles;
+    
+    @JsonCreator
+    public RegistroAuditoria(
+        @JsonProperty("id") UUID id,
+        @JsonProperty("tipoOperacion") E tipoOperacion,
+        @JsonProperty("fechaHora") LocalDateTime fechaHora,
+        @JsonProperty("entidad") T entidad,
+        @JsonProperty("usuario") String usuario,
+        @JsonProperty("monto") Double monto,
+        @JsonProperty("detalles") String detalles
+    ) {
+        this.id = id;
+        this.tipoOperacion = tipoOperacion;
+        this.fechaHora = fechaHora;
+        this.entidad = entidad;
+        this.usuario = usuario;
+        this.monto = monto;
+        this.detalles = detalles;
+    }
     
     /**
      * Método factory para crear registros básicos

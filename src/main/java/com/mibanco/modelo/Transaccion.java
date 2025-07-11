@@ -1,5 +1,7 @@
 package com.mibanco.modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 import lombok.Builder;
 
@@ -23,6 +25,25 @@ public class Transaccion implements Identificable {
     BigDecimal monto;
     LocalDateTime fecha;
     String descripcion;
+    
+    @JsonCreator
+    public Transaccion(
+        @JsonProperty("id") Long id,
+        @JsonProperty("numeroCuenta") Long numeroCuenta,
+        @JsonProperty("numeroCuentaDestino") Long numeroCuentaDestino,
+        @JsonProperty("tipo") TipoTransaccion tipo,
+        @JsonProperty("monto") BigDecimal monto,
+        @JsonProperty("fecha") LocalDateTime fecha,
+        @JsonProperty("descripcion") String descripcion
+    ) {
+        this.id = id;
+        this.numeroCuenta = numeroCuenta;
+        this.numeroCuentaDestino = numeroCuentaDestino;
+        this.tipo = tipo;
+        this.monto = monto;
+        this.fecha = fecha;
+        this.descripcion = descripcion;
+    }
     
     /**
      * Método factory para crear transacciones

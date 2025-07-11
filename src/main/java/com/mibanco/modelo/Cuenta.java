@@ -1,5 +1,7 @@
 package com.mibanco.modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -23,6 +25,25 @@ public class Cuenta implements Identificable {
     BigDecimal saldoInicial;
     BigDecimal saldo;
     boolean activa;
+    
+    @JsonCreator
+    public Cuenta(
+        @JsonProperty("numeroCuenta") Long numeroCuenta,
+        @JsonProperty("titular") Cliente titular,
+        @JsonProperty("tipo") TipoCuenta tipo,
+        @JsonProperty("fechaCreacion") LocalDateTime fechaCreacion,
+        @JsonProperty("saldoInicial") BigDecimal saldoInicial,
+        @JsonProperty("saldo") BigDecimal saldo,
+        @JsonProperty("activa") boolean activa
+    ) {
+        this.numeroCuenta = numeroCuenta;
+        this.titular = titular;
+        this.tipo = tipo;
+        this.fechaCreacion = fechaCreacion;
+        this.saldoInicial = saldoInicial;
+        this.saldo = saldo;
+        this.activa = activa;
+    }
     
     /**
      * Implementación de getId() para la interfaz Identificable

@@ -1,5 +1,7 @@
 package com.mibanco.modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 import lombok.Builder;
 import java.time.LocalDate;
@@ -22,6 +24,27 @@ public class Cliente implements Identificable {
     String email;
     String telefono;
     String direccion;
+    
+    @JsonCreator
+    public Cliente(
+        @JsonProperty("id") Long id,
+        @JsonProperty("nombre") String nombre,
+        @JsonProperty("apellido") String apellido,
+        @JsonProperty("dni") String dni,
+        @JsonProperty("fechaNacimiento") LocalDate fechaNacimiento,
+        @JsonProperty("email") String email,
+        @JsonProperty("telefono") String telefono,
+        @JsonProperty("direccion") String direccion
+    ) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.dni = dni;
+        this.fechaNacimiento = fechaNacimiento;
+        this.email = email;
+        this.telefono = telefono;
+        this.direccion = direccion;
+    }
     
     /**
      * Define los campos requeridos para crear un nuevo cliente

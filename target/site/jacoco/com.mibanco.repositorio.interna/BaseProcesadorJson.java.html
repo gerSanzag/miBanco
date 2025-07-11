@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseProcesadorJson.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">BaseProcesadorJson.java</span></div><h1>BaseProcesadorJson.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +19,11 @@ class BaseProcesadorJson&lt;T&gt; {
     
     private final ObjectMapper mapper;
     
-<span class="fc" id="L20">    public BaseProcesadorJson() {</span>
-<span class="fc" id="L21">        this.mapper = new ObjectMapper();</span>
-        // Registrar módulo para manejar fechas de Java 8 (LocalDate, LocalDateTime, etc.)
-<span class="fc" id="L23">        this.mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());</span>
-<span class="fc" id="L24">    }</span>
+<span class="fc" id="L22">    public BaseProcesadorJson() {</span>
+<span class="fc" id="L23">        this.mapper = new ObjectMapper();</span>
+<span class="fc" id="L24">        this.mapper.registerModule(new JavaTimeModule());</span>
+<span class="fc" id="L25">        this.mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);</span>
+<span class="fc" id="L26">    }</span>
     
     /**
      * Carga datos desde JSON si existe el archivo, o devuelve lista vacía
@@ -31,10 +33,10 @@ class BaseProcesadorJson&lt;T&gt; {
      * @return Lista de objetos cargados desde JSON o lista vacía
      */
     public List&lt;T&gt; cargarDatosCondicionalmente(String ruta, Class&lt;T&gt; tipoClase) {
-<span class="fc" id="L34">        return Optional.of(ruta)</span>
-<span class="fc" id="L35">            .filter(this::existeArchivo)</span>
-<span class="fc" id="L36">            .map(archivo -&gt; leerJson(archivo, tipoClase))</span>
-<span class="fc" id="L37">            .orElse(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L36">        return Optional.of(ruta)</span>
+<span class="fc" id="L37">            .filter(this::existeArchivo)</span>
+<span class="fc" id="L38">            .map(archivo -&gt; leerJson(archivo, tipoClase))</span>
+<span class="fc" id="L39">            .orElse(new ArrayList&lt;&gt;());</span>
     }
     
     /**
@@ -45,10 +47,10 @@ class BaseProcesadorJson&lt;T&gt; {
      * @return El ID máximo encontrado, o 0 si la lista está vacía
      */
     public Long calcularMaximoId(List&lt;T&gt; entidades, java.util.function.Function&lt;T, Long&gt; extractorId) {
-<span class="fc" id="L48">        return entidades.stream()</span>
-<span class="fc" id="L49">            .mapToLong(extractorId::apply)</span>
-<span class="fc" id="L50">            .max()</span>
-<span class="fc" id="L51">            .orElse(0);</span>
+<span class="fc" id="L50">        return entidades.stream()</span>
+<span class="fc" id="L51">            .mapToLong(extractorId::apply)</span>
+<span class="fc" id="L52">            .max()</span>
+<span class="fc" id="L53">            .orElse(0);</span>
     }
     
     /**
@@ -57,8 +59,8 @@ class BaseProcesadorJson&lt;T&gt; {
      * @return true si existe y es un archivo, false en caso contrario
      */
     private boolean existeArchivo(String ruta) {
-<span class="fc" id="L60">        File archivo = new File(ruta);</span>
-<span class="pc bpc" id="L61" title="1 of 4 branches missed.">        return archivo.exists() &amp;&amp; archivo.isFile();</span>
+<span class="fc" id="L62">        File archivo = new File(ruta);</span>
+<span class="pc bpc" id="L63" title="1 of 4 branches missed.">        return archivo.exists() &amp;&amp; archivo.isFile();</span>
     }
     
     /**
@@ -69,14 +71,16 @@ class BaseProcesadorJson&lt;T&gt; {
      */
     private List&lt;T&gt; leerJson(String ruta, Class&lt;T&gt; tipoClase) {
         try {
-<span class="fc" id="L72">            File archivo = new File(ruta);</span>
+<span class="fc" id="L74">            File archivo = new File(ruta);</span>
             
-<span class="fc" id="L74">            return mapper.readValue(archivo, </span>
-<span class="fc" id="L75">                mapper.getTypeFactory().constructCollectionType(List.class, tipoClase));</span>
+<span class="fc" id="L76">            return mapper.readValue(archivo, </span>
+<span class="fc" id="L77">                mapper.getTypeFactory().constructCollectionType(List.class, tipoClase));</span>
                 
-<span class="fc" id="L77">        } catch (Exception e) {</span>
+<span class="fc" id="L79">        } catch (Exception e) {</span>
             // Si hay error, devolver lista vacía
-<span class="fc" id="L79">            return new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L81">            System.err.println(&quot;Error al leer JSON: &quot; + e.getMessage());</span>
+<span class="fc" id="L82">            e.printStackTrace();</span>
+<span class="fc" id="L83">            return new ArrayList&lt;&gt;();</span>
         }
     }
     
@@ -87,18 +91,18 @@ class BaseProcesadorJson&lt;T&gt; {
      */
     public void guardarJson(String ruta, List&lt;T&gt; datos) {
         try {
-<span class="fc" id="L90">            File archivo = new File(ruta);</span>
+<span class="fc" id="L94">            File archivo = new File(ruta);</span>
             
             // Crear directorio si no existe
-<span class="fc" id="L93">            archivo.getParentFile().mkdirs();</span>
+<span class="fc" id="L97">            archivo.getParentFile().mkdirs();</span>
             
             // Escribir JSON con formato legible
-<span class="fc" id="L96">            mapper.writerWithDefaultPrettyPrinter().writeValue(archivo, datos);</span>
+<span class="fc" id="L100">            mapper.writerWithDefaultPrettyPrinter().writeValue(archivo, datos);</span>
             
-<span class="pc" id="L98">        } catch (Exception e) {</span>
+<span class="pc" id="L102">        } catch (Exception e) {</span>
             // Log del error (por ahora solo imprimir)
-<span class="nc" id="L100">            System.err.println(&quot;Error al guardar JSON: &quot; + e.getMessage());</span>
+<span class="nc" id="L104">            System.err.println(&quot;Error al guardar JSON: &quot; + e.getMessage());</span>
         }
-<span class="fc" id="L102">    }</span>
+<span class="fc" id="L106">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -167,26 +167,22 @@ class BaseProcesadorJsonTest {
             // Guardar datos primero
             procesadorJson.guardarJson(archivoJson.getAbsolutePath(), clientesOriginales);
             
-            // DEBUG: Verificar que el archivo se creó y tiene contenido
-            System.out.println("=== DEBUG: Contenido del archivo JSON ===");
+            // Debug: Verificar que el archivo se creó y tiene contenido
+            System.out.println("=== DEBUG INFO ===");
             System.out.println("Archivo existe: " + archivoJson.exists());
             System.out.println("Tamaño del archivo: " + archivoJson.length() + " bytes");
-            if (archivoJson.exists()) {
-                String contenido = java.nio.file.Files.readString(archivoJson.toPath());
-                System.out.println("Contenido del JSON:");
-                System.out.println(contenido);
-            }
-            System.out.println("=========================================");
+            System.out.println("Contenido del archivo:");
+            String contenido = java.nio.file.Files.readString(archivoJson.toPath());
+            System.out.println(contenido);
+            System.out.println("==================");
             
             // Act
             List<Cliente> clientesCargados = procesadorJson.cargarDatosCondicionalmente(
                 archivoJson.getAbsolutePath(), Cliente.class);
             
-            // DEBUG: Verificar qué se cargó
-            System.out.println("=== DEBUG: Resultado de carga ===");
+            // Debug: Verificar qué se cargó
             System.out.println("Clientes cargados: " + clientesCargados.size());
-            System.out.println("Lista cargada: " + clientesCargados);
-            System.out.println("=================================");
+            System.out.println("==================");
             
             // Assert
             assertNotNull(clientesCargados);

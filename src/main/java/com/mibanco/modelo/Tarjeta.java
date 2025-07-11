@@ -1,5 +1,7 @@
 package com.mibanco.modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 import com.mibanco.modelo.enums.TipoTarjeta;
@@ -23,6 +25,25 @@ public class Tarjeta implements Identificable {
     String cvv;
     LocalDate fechaExpiracion;
     boolean activa;
+    
+    @JsonCreator
+    public Tarjeta(
+        @JsonProperty("numero") String numero,
+        @JsonProperty("titular") Cliente titular,
+        @JsonProperty("numeroCuentaAsociada") String numeroCuentaAsociada,
+        @JsonProperty("tipo") TipoTarjeta tipo,
+        @JsonProperty("cvv") String cvv,
+        @JsonProperty("fechaExpiracion") LocalDate fechaExpiracion,
+        @JsonProperty("activa") boolean activa
+    ) {
+        this.numero = numero;
+        this.titular = titular;
+        this.numeroCuentaAsociada = numeroCuentaAsociada;
+        this.tipo = tipo;
+        this.cvv = cvv;
+        this.fechaExpiracion = fechaExpiracion;
+        this.activa = activa;
+    }
     
     /**
      * Implementación de getId() para la interfaz Identificable

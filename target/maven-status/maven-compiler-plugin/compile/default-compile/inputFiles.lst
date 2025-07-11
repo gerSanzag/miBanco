@@ -5,7 +5,10 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/TransaccionDtoProcesadorServicio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/AuditoriaServicio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/interna/CuentaVistaImpl.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/ClienteRepositorioImplWrapper.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoTransaccion.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/TransaccionRepositorioImplWrapper.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImplWrapper.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/Tarjeta.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoOperacionTarjeta.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/interna/ClienteVistaImpl.java
@@ -31,8 +34,10 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/mapeador/TransaccionMapeador.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/CuentaVista.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/TarjetaRepositorioImplWrapper.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/AuditoriaRepositorio.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/AuditoriaRepositorioImplWrapper.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/vista/interna/ConsolaImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/util/AuditoriaUtil.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/Transaccion.java
@@ -40,6 +45,7 @@
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/RespuestaDTO.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/CuentaRepositorioImpl.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/servicio/interna/FactoriaServicio.java
+/Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/CuentaRepositorioImplWrapper.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/modelo/enums/TipoOperacionCuenta.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/TarjetaRepositorio.java
 /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/dto/TransaccionDTO.java

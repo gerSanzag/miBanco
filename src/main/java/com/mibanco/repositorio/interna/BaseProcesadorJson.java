@@ -1,6 +1,8 @@
 package com.mibanco.repositorio.interna;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +21,8 @@ class BaseProcesadorJson<T> {
     
     public BaseProcesadorJson() {
         this.mapper = new ObjectMapper();
-        // Registrar módulo para manejar fechas de Java 8 (LocalDate, LocalDateTime, etc.)
-        this.mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-        // Configurar para usar formato ISO (string) en lugar de array
-        this.mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.mapper.registerModule(new JavaTimeModule());
+        this.mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
     
     /**
@@ -78,6 +78,8 @@ class BaseProcesadorJson<T> {
                 
         } catch (Exception e) {
             // Si hay error, devolver lista vacía
+            System.err.println("Error al leer JSON: " + e.getMessage());
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }

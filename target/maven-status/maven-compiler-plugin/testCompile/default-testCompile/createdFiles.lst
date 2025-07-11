@@ -24,7 +24,6 @@ com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$ValoresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoTransaccionTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$ValoresEnumTest.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$ValoresEnumTest.class
-com/mibanco/repositorio/interna/BaseProcesadorJsonWrapper.class
 com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$DtoToEntityTests.class
 com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$1.class
 com/mibanco/modeloTest/TarjetaTest.class
