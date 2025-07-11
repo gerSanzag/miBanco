@@ -1,5 +1,8 @@
 package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.CuentaDTO;
+import com.mibanco.dto.mapeador.ClienteMapeador;
+import com.mibanco.dto.mapeador.CuentaMapeador;
 import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
@@ -60,16 +63,25 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
     
     /**
      * Implementación específica para asignar nuevo ID a Cuenta
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
      * @param cuenta Cuenta sin ID asignado
      * @return Cuenta con nuevo ID asignado
      */
     @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
-        // Generar número aleatorio de 9 dígitos con String.format
-        String numero = String.format("%09d", (int) (Math.random() * 1000000000));
-        return Cuenta.builder()
-            .numeroCuenta(Long.parseLong(numero))
-            .build();
+        ClienteMapeador clienteMapeador = new ClienteMapeador();
+        CuentaMapeador mapeador = new CuentaMapeador(clienteMapeador);
+        
+        return mapeador.aDtoDirecto(cuenta)
+            .map(dto -> {
+                String numero = String.format("%09d", (int) (Math.random() * 1000000000));
+                return dto.toBuilder()
+                    .numeroCuenta(Long.parseLong(numero))
+                    .build();
+            })
+            .flatMap(mapeador::aEntidadDirecta)
+            .orElseThrow(() -> new IllegalStateException("No se pudo procesar la entidad Cuenta"));
     }
     
     /**

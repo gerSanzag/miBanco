@@ -43,7 +43,7 @@ public class RegistroAuditoria&lt;T extends Identificable, E extends Enum&lt;E&g
     String detalles;
     
     @JsonCreator
-<span class="nc" id="L46">    public RegistroAuditoria(</span>
+<span class="fc" id="L46">    public RegistroAuditoria(</span>
         @JsonProperty(&quot;id&quot;) UUID id,
         @JsonProperty(&quot;tipoOperacion&quot;) E tipoOperacion,
         @JsonProperty(&quot;fechaHora&quot;) LocalDateTime fechaHora,
@@ -52,14 +52,14 @@ public class RegistroAuditoria&lt;T extends Identificable, E extends Enum&lt;E&g
         @JsonProperty(&quot;monto&quot;) Double monto,
         @JsonProperty(&quot;detalles&quot;) String detalles
     ) {
-<span class="nc" id="L55">        this.id = id;</span>
-<span class="nc" id="L56">        this.tipoOperacion = tipoOperacion;</span>
-<span class="nc" id="L57">        this.fechaHora = fechaHora;</span>
-<span class="nc" id="L58">        this.entidad = entidad;</span>
-<span class="nc" id="L59">        this.usuario = usuario;</span>
-<span class="nc" id="L60">        this.monto = monto;</span>
-<span class="nc" id="L61">        this.detalles = detalles;</span>
-<span class="nc" id="L62">    }</span>
+<span class="fc" id="L55">        this.id = id;</span>
+<span class="fc" id="L56">        this.tipoOperacion = tipoOperacion;</span>
+<span class="fc" id="L57">        this.fechaHora = fechaHora;</span>
+<span class="fc" id="L58">        this.entidad = entidad;</span>
+<span class="fc" id="L59">        this.usuario = usuario;</span>
+<span class="fc" id="L60">        this.monto = monto;</span>
+<span class="fc" id="L61">        this.detalles = detalles;</span>
+<span class="fc" id="L62">    }</span>
     
     /**
      * Método factory para crear registros básicos
@@ -73,13 +73,13 @@ public class RegistroAuditoria&lt;T extends Identificable, E extends Enum&lt;E&g
             Optional&lt;T&gt; entidad, 
             Optional&lt;String&gt; usuario) {
         
-<span class="nc" id="L76">        return RegistroAuditoria.&lt;T, E&gt;builder()</span>
-<span class="nc" id="L77">                .id(UUID.randomUUID())</span>
-<span class="nc" id="L78">                .tipoOperacion(tipoOperacion.orElse(null))</span>
-<span class="nc" id="L79">                .fechaHora(LocalDateTime.now())</span>
-<span class="nc" id="L80">                .entidad(entidad.orElse(null))</span>
-<span class="nc" id="L81">                .usuario(usuario.orElse(null))</span>
-<span class="nc" id="L82">                .build();</span>
+<span class="fc" id="L76">        return RegistroAuditoria.&lt;T, E&gt;builder()</span>
+<span class="fc" id="L77">                .id(UUID.randomUUID())</span>
+<span class="fc" id="L78">                .tipoOperacion(tipoOperacion.orElse(null))</span>
+<span class="fc" id="L79">                .fechaHora(LocalDateTime.now())</span>
+<span class="fc" id="L80">                .entidad(entidad.orElse(null))</span>
+<span class="fc" id="L81">                .usuario(usuario.orElse(null))</span>
+<span class="fc" id="L82">                .build();</span>
     }
     
     /**
@@ -98,15 +98,15 @@ public class RegistroAuditoria&lt;T extends Identificable, E extends Enum&lt;E&g
             Optional&lt;Double&gt; monto,
             Optional&lt;String&gt; detalles) {
         
-<span class="nc" id="L101">        return RegistroAuditoria.&lt;T, E&gt;builder()</span>
-<span class="nc" id="L102">                .id(UUID.randomUUID())</span>
-<span class="nc" id="L103">                .tipoOperacion(tipoOperacion.orElse(null))       </span>
-<span class="nc" id="L104">                .fechaHora(LocalDateTime.now())</span>
-<span class="nc" id="L105">                .entidad(entidad.orElse(null))</span>
-<span class="nc" id="L106">                .usuario(usuario.orElse(null))</span>
-<span class="nc" id="L107">                .monto(monto.orElse(null))</span>
-<span class="nc" id="L108">                .detalles(detalles.orElse(null))</span>
-<span class="nc" id="L109">                .build();</span>
+<span class="fc" id="L101">        return RegistroAuditoria.&lt;T, E&gt;builder()</span>
+<span class="fc" id="L102">                .id(UUID.randomUUID())</span>
+<span class="fc" id="L103">                .tipoOperacion(tipoOperacion.orElse(null))       </span>
+<span class="fc" id="L104">                .fechaHora(LocalDateTime.now())</span>
+<span class="fc" id="L105">                .entidad(entidad.orElse(null))</span>
+<span class="fc" id="L106">                .usuario(usuario.orElse(null))</span>
+<span class="fc" id="L107">                .monto(monto.orElse(null))</span>
+<span class="fc" id="L108">                .detalles(detalles.orElse(null))</span>
+<span class="fc" id="L109">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

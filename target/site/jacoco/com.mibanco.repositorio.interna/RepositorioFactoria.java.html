@@ -24,27 +24,27 @@ public final class RepositorioFactoria {
      * Constructor privado que inicializa todas las implementaciones
      * Al estar en el mismo paquete, tiene acceso a las clases package-private
      */
-<span class="nc" id="L27">    private RepositorioFactoria() {</span>
-<span class="nc" id="L28">        this.auditoriaRepository = new AuditoriaRepositorioImpl();</span>
-<span class="nc" id="L29">        this.clienteRepository = new ClienteRepositorioImpl();</span>
-<span class="nc" id="L30">        this.cuentaRepository = new CuentaRepositorioImpl();</span>
-<span class="nc" id="L31">        this.tarjetaRepository = new TarjetaRepositorioImpl();</span>
-<span class="nc" id="L32">        this.transaccionRepository = new TransaccionRepositorioImpl();</span>
-<span class="nc" id="L33">    }</span>
+<span class="fc" id="L27">    private RepositorioFactoria() {</span>
+<span class="fc" id="L28">        this.auditoriaRepository = new AuditoriaRepositorioImpl();</span>
+<span class="fc" id="L29">        this.clienteRepository = new ClienteRepositorioImpl();</span>
+<span class="fc" id="L30">        this.cuentaRepository = new CuentaRepositorioImpl();</span>
+<span class="fc" id="L31">        this.tarjetaRepository = new TarjetaRepositorioImpl();</span>
+<span class="fc" id="L32">        this.transaccionRepository = new TransaccionRepositorioImpl();</span>
+<span class="fc" id="L33">    }</span>
     
     /**
      * Obtiene la única instancia de RepositoryFactory
      * Este es el único punto de acceso a las implementaciones de repositorios
      */
     public static RepositorioFactoria obtenerInstancia() {
-<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (instancia == null) {</span>
-<span class="nc" id="L41">            synchronized (RepositorioFactoria.class) {</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">                if (instancia == null) {</span>
-<span class="nc" id="L43">                    instancia = new RepositorioFactoria();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (instancia == null) {</span>
+<span class="fc" id="L41">            synchronized (RepositorioFactoria.class) {</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">                if (instancia == null) {</span>
+<span class="fc" id="L43">                    instancia = new RepositorioFactoria();</span>
                 }
             }
         }
-<span class="nc" id="L47">        return instancia;</span>
+<span class="fc" id="L47">        return instancia;</span>
     }
     
     /**
@@ -52,7 +52,7 @@ public final class RepositorioFactoria {
      * @return Interfaz pública del repositorio de auditoría
      */
     public AuditoriaRepositorio obtenerRepositorioAuditoria() {
-<span class="nc" id="L55">        return auditoriaRepository;</span>
+<span class="fc" id="L55">        return auditoriaRepository;</span>
     }
     
     /**

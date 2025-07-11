@@ -33,7 +33,7 @@ class BaseProcesadorJson<T> {
      * @return Lista de objetos cargados desde JSON o lista vacía
      */
     public List<T> cargarDatosCondicionalmente(String ruta, Class<T> tipoClase) {
-        return Optional.of(ruta)
+        return Optional.ofNullable(ruta)
             .filter(this::existeArchivo)
             .map(archivo -> leerJson(archivo, tipoClase))
             .orElse(new ArrayList<>());

@@ -51,14 +51,14 @@ public class Cliente implements Identificable {
      * @return Lista de nombres de campos que son obligatorios
      */
     public static List&lt;String&gt; obtenerCamposRequeridos() {
-<span class="nc" id="L54">        return Arrays.asList(</span>
-<span class="nc" id="L55">            &quot;nombre&quot;,</span>
-<span class="nc" id="L56">            &quot;apellido&quot;,</span>
-<span class="nc" id="L57">            &quot;dni&quot;,</span>
-<span class="nc" id="L58">            &quot;email&quot;,</span>
-<span class="nc" id="L59">            &quot;telefono&quot;,</span>
-<span class="nc" id="L60">            &quot;direccion&quot;,</span>
-<span class="nc" id="L61">            &quot;fechaNacimiento&quot;</span>
+<span class="fc" id="L54">        return Arrays.asList(</span>
+<span class="fc" id="L55">            &quot;nombre&quot;,</span>
+<span class="fc" id="L56">            &quot;apellido&quot;,</span>
+<span class="fc" id="L57">            &quot;dni&quot;,</span>
+<span class="fc" id="L58">            &quot;email&quot;,</span>
+<span class="fc" id="L59">            &quot;telefono&quot;,</span>
+<span class="fc" id="L60">            &quot;direccion&quot;,</span>
+<span class="fc" id="L61">            &quot;fechaNacimiento&quot;</span>
         );
     }
     
@@ -67,16 +67,16 @@ public class Cliente implements Identificable {
      */
     public static Cliente of(Long id, String nombre, String apellido, String dni,
                             LocalDate fechaNacimiento, String email, String telefono, String direccion) {
-<span class="nc" id="L70">        return Cliente.builder()</span>
-<span class="nc" id="L71">                .id(id)</span>
-<span class="nc" id="L72">                .nombre(nombre)</span>
-<span class="nc" id="L73">                .apellido(apellido)</span>
-<span class="nc" id="L74">                .dni(dni)</span>
-<span class="nc" id="L75">                .fechaNacimiento(fechaNacimiento)</span>
-<span class="nc" id="L76">                .email(email)</span>
-<span class="nc" id="L77">                .telefono(telefono)</span>
-<span class="nc" id="L78">                .direccion(direccion)</span>
-<span class="nc" id="L79">                .build();</span>
+<span class="fc" id="L70">        return Cliente.builder()</span>
+<span class="fc" id="L71">                .id(id)</span>
+<span class="fc" id="L72">                .nombre(nombre)</span>
+<span class="fc" id="L73">                .apellido(apellido)</span>
+<span class="fc" id="L74">                .dni(dni)</span>
+<span class="fc" id="L75">                .fechaNacimiento(fechaNacimiento)</span>
+<span class="fc" id="L76">                .email(email)</span>
+<span class="fc" id="L77">                .telefono(telefono)</span>
+<span class="fc" id="L78">                .direccion(direccion)</span>
+<span class="fc" id="L79">                .build();</span>
     }
 
 } 

@@ -1,5 +1,7 @@
 package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.TransaccionDTO;
+import com.mibanco.dto.mapeador.TransaccionMapeador;
 import com.mibanco.modelo.Transaccion;
 import com.mibanco.modelo.enums.TipoOperacionTransaccion;
 import com.mibanco.modelo.enums.TipoTransaccion;
@@ -86,14 +88,20 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
     
     /**
      * ✅ Crea una nueva transacción con ID automático
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
      * @param transaccion Transacción a crear
      * @return Transacción creada con nuevo ID
      */
     @Override
     protected Transaccion crearConNuevoId(Transaccion transaccion) {
-        Long nuevoId = idContador.incrementAndGet();
-        return Transaccion.builder()
-            .id(nuevoId)
-            .build();
+        TransaccionMapeador mapeador = new TransaccionMapeador();
+        
+        return mapeador.aDtoDirecto(transaccion)
+            .map(dto -> dto.toBuilder()
+                .id(idContador.incrementAndGet())
+                .build())
+            .flatMap(mapeador::aEntidadDirecta)
+            .orElseThrow(() -> new IllegalStateException("No se pudo procesar la entidad Transaccion"));
     }
 } 

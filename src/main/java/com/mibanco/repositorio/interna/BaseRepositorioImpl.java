@@ -72,6 +72,12 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
         Class<T> tipoClase = (Class<T>) config.get("tipoClase");
         java.util.function.Function<T, Long> extractorId = (Function<T, Long>) config.get("extractorId");
         
+        // Validar configuración antes de usar
+        if (ruta == null || tipoClase == null || extractorId == null) {
+            System.err.println("Error: Configuración incompleta en BaseRepositorioImpl");
+            return;
+        }
+        
         // Cargar datos desde JSON
         List<T> datosCargados = jsonProcesador.cargarDatosCondicionalmente(ruta, tipoClase);
         
@@ -226,7 +232,9 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
         if (contadorOperaciones == 10) {
             Map<String, Object> config = obtenerConfiguracion();
             String ruta = (String) config.get("rutaArchivo");
-            jsonProcesador.guardarJson(ruta, entidades);
+            if (ruta != null) {
+                jsonProcesador.guardarJson(ruta, entidades);
+            }
             contadorOperaciones = 0;
         }
     }

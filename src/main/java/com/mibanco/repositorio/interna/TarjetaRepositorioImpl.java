@@ -1,5 +1,8 @@
 package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.TarjetaDTO;
+import com.mibanco.dto.mapeador.ClienteMapeador;
+import com.mibanco.dto.mapeador.TarjetaMapeador;
 import com.mibanco.modelo.Tarjeta;
 import com.mibanco.modelo.enums.TipoOperacionTarjeta;
 import com.mibanco.modelo.enums.TipoTarjeta;
@@ -59,21 +62,25 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOp
     
     /**
      * Implementación específica para asignar nuevo ID a Tarjeta
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
      * @param tarjeta Tarjeta sin ID asignado
      * @return Tarjeta con nuevo ID asignado
      */
     @Override
     protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
-        // Generar número aleatorio de 16 dígitos
-        String numero = String.format("%016d", (long) (Math.random() * 10000000000000000L));
+        ClienteMapeador clienteMapeador = new ClienteMapeador();
+        TarjetaMapeador mapeador = new TarjetaMapeador(clienteMapeador);
         
-        // Generar CVV aleatorio de 3 dígitos
-        String cvv = String.format("%03d", (int) (Math.random() * 1000));
-        
-        return Tarjeta.builder()
-            .numero(numero)
-            .cvv(cvv)
-            .build();
+        return mapeador.aDtoDirecto(tarjeta)
+            .map(dto -> {
+                String numero = String.format("%016d", (long) (Math.random() * 10000000000000000L));
+                return dto.toBuilder()
+                    .numero(numero)
+                    .build();
+            })
+            .flatMap(mapeador::aEntidadDirecta)
+            .orElseThrow(() -> new IllegalStateException("No se pudo procesar la entidad Tarjeta"));
     }
     
     /**

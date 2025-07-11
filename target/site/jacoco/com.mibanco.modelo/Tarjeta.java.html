@@ -27,7 +27,7 @@ public class Tarjeta implements Identificable {
     boolean activa;
     
     @JsonCreator
-<span class="nc" id="L30">    public Tarjeta(</span>
+<span class="fc" id="L30">    public Tarjeta(</span>
         @JsonProperty(&quot;numero&quot;) String numero,
         @JsonProperty(&quot;titular&quot;) Cliente titular,
         @JsonProperty(&quot;numeroCuentaAsociada&quot;) String numeroCuentaAsociada,
@@ -36,14 +36,14 @@ public class Tarjeta implements Identificable {
         @JsonProperty(&quot;fechaExpiracion&quot;) LocalDate fechaExpiracion,
         @JsonProperty(&quot;activa&quot;) boolean activa
     ) {
-<span class="nc" id="L39">        this.numero = numero;</span>
-<span class="nc" id="L40">        this.titular = titular;</span>
-<span class="nc" id="L41">        this.numeroCuentaAsociada = numeroCuentaAsociada;</span>
-<span class="nc" id="L42">        this.tipo = tipo;</span>
-<span class="nc" id="L43">        this.cvv = cvv;</span>
-<span class="nc" id="L44">        this.fechaExpiracion = fechaExpiracion;</span>
-<span class="nc" id="L45">        this.activa = activa;</span>
-<span class="nc" id="L46">    }</span>
+<span class="fc" id="L39">        this.numero = numero;</span>
+<span class="fc" id="L40">        this.titular = titular;</span>
+<span class="fc" id="L41">        this.numeroCuentaAsociada = numeroCuentaAsociada;</span>
+<span class="fc" id="L42">        this.tipo = tipo;</span>
+<span class="fc" id="L43">        this.cvv = cvv;</span>
+<span class="fc" id="L44">        this.fechaExpiracion = fechaExpiracion;</span>
+<span class="fc" id="L45">        this.activa = activa;</span>
+<span class="fc" id="L46">    }</span>
     
     /**
      * Implementación de getId() para la interfaz Identificable
@@ -52,7 +52,7 @@ public class Tarjeta implements Identificable {
      */
     @Override
     public Long getId() {
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        return numero != null ? (long) numero.hashCode() : null;</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        return numero != null ? (long) numero.hashCode() : null;</span>
     }
     
     /**
@@ -60,15 +60,15 @@ public class Tarjeta implements Identificable {
      */
     public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
                             TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
-<span class="nc" id="L63">        return Tarjeta.builder()</span>
-<span class="nc" id="L64">                .numero(numero)</span>
-<span class="nc" id="L65">                .titular(titular)</span>
-<span class="nc" id="L66">                .numeroCuentaAsociada(numeroCuentaAsociada)</span>
-<span class="nc" id="L67">                .tipo(tipo)</span>
-<span class="nc" id="L68">                .fechaExpiracion(fechaExpiracion)</span>
-<span class="nc" id="L69">                .cvv(cvv)</span>
-<span class="nc" id="L70">                .activa(activa)</span>
-<span class="nc" id="L71">                .build();</span>
+<span class="fc" id="L63">        return Tarjeta.builder()</span>
+<span class="fc" id="L64">                .numero(numero)</span>
+<span class="fc" id="L65">                .titular(titular)</span>
+<span class="fc" id="L66">                .numeroCuentaAsociada(numeroCuentaAsociada)</span>
+<span class="fc" id="L67">                .tipo(tipo)</span>
+<span class="fc" id="L68">                .fechaExpiracion(fechaExpiracion)</span>
+<span class="fc" id="L69">                .cvv(cvv)</span>
+<span class="fc" id="L70">                .activa(activa)</span>
+<span class="fc" id="L71">                .build();</span>
     }
     
 } 

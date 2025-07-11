@@ -33,7 +33,7 @@ class BaseProcesadorJson&lt;T&gt; {
      * @return Lista de objetos cargados desde JSON o lista vacía
      */
     public List&lt;T&gt; cargarDatosCondicionalmente(String ruta, Class&lt;T&gt; tipoClase) {
-<span class="fc" id="L36">        return Optional.of(ruta)</span>
+<span class="fc" id="L36">        return Optional.ofNullable(ruta)</span>
 <span class="fc" id="L37">            .filter(this::existeArchivo)</span>
 <span class="fc" id="L38">            .map(archivo -&gt; leerJson(archivo, tipoClase))</span>
 <span class="fc" id="L39">            .orElse(new ArrayList&lt;&gt;());</span>

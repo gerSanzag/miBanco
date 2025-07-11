@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteRepositorioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">ClienteRepositorioImpl.java</span></div><h1>ClienteRepositorioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.Cliente;
 import com.mibanco.modelo.enums.TipoOperacionCliente;
 import com.mibanco.repositorio.ClienteRepositorio;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,8 +20,8 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
      * Constructor package-private
      */
     ClienteRepositorioImpl() {
-<span class="nc" id="L23">        super();</span>
-<span class="nc" id="L24">    }</span>
+<span class="fc" id="L23">        super();</span>
+<span class="fc" id="L24">    }</span>
     
     @Override
     public Optional&lt;Cliente&gt; buscarPorDni(Optional&lt;String&gt; dniOpt) {
@@ -40,18 +40,21 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
     
     /**
      * Implementación específica para asignar nuevo ID a Cliente
-     * Usa el contador de la base
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
      * @param cliente Cliente sin ID asignado
      * @return Cliente con nuevo ID asignado
      */
     @Override
     protected Cliente crearConNuevoId(Cliente cliente) {
-        // ✅ Usar el contador de la base
-<span class="nc" id="L50">        Long nuevoId = idContador.incrementAndGet();</span>
-        // ✅ Asignar nuevo ID al Cliente
-<span class="nc" id="L52">        return Cliente.builder()</span>
-<span class="nc" id="L53">            .id(nuevoId)</span>
-<span class="nc" id="L54">            .build();</span>
+<span class="nc" id="L50">        ClienteMapeador mapeador = new ClienteMapeador();</span>
+        
+<span class="nc" id="L52">        return mapeador.aDtoDirecto(cliente)</span>
+<span class="nc" id="L53">            .map(dto -&gt; dto.toBuilder()</span>
+<span class="nc" id="L54">                .id(idContador.incrementAndGet())</span>
+<span class="nc" id="L55">                .build())</span>
+<span class="nc" id="L56">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="nc" id="L57">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cliente&quot;));</span>
     }
     
     /**
@@ -60,11 +63,11 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="nc" id="L63">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L64">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
-<span class="nc" id="L65">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
-<span class="nc" id="L66">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
-<span class="nc" id="L67">        return config;</span>
+<span class="fc" id="L66">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L67">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
+<span class="fc" id="L68">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
+<span class="fc" id="L69">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
+<span class="fc" id="L70">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

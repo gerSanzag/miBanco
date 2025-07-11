@@ -18,21 +18,21 @@ import java.util.stream.Collectors;
 class AuditoriaRepositorioImpl implements AuditoriaRepositorio {
     
     // Lista para almacenar los registros
-<span class="nc" id="L21">    private final List&lt;RegistroAuditoria&lt;?, ?&gt;&gt; registros = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L21">    private final List&lt;RegistroAuditoria&lt;?, ?&gt;&gt; registros = new ArrayList&lt;&gt;();</span>
     
     /**
      * Constructor con visibilidad de paquete
      */
-<span class="nc" id="L26">    AuditoriaRepositorioImpl() {</span>
+<span class="fc" id="L26">    AuditoriaRepositorioImpl() {</span>
         // Constructor vacío con visibilidad de paquete
-<span class="nc" id="L28">    }</span>
+<span class="fc" id="L28">    }</span>
     
     @Override
     public &lt;T extends Identificable, E extends Enum&lt;E&gt;&gt; Optional&lt;RegistroAuditoria&lt;T, E&gt;&gt; registrar(
             Optional&lt;RegistroAuditoria&lt;T, E&gt;&gt; registroOpt) {
-<span class="nc" id="L33">        return registroOpt.map(registro -&gt; {</span>
-<span class="nc" id="L34">            registros.add(registro);</span>
-<span class="nc" id="L35">            return registro;</span>
+<span class="fc" id="L33">        return registroOpt.map(registro -&gt; {</span>
+<span class="fc" id="L34">            registros.add(registro);</span>
+<span class="fc" id="L35">            return registro;</span>
         });
     }
     

@@ -16,7 +16,7 @@ import com.mibanco.util.ReflexionUtil.NoSolicitar;
  * Utilizamos enfoque inmutable con @Value para promover la programación funcional
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class TransaccionDTO {
     @NoSolicitar(razon = &quot;Se establece automáticamente en el repositorio&quot;)
