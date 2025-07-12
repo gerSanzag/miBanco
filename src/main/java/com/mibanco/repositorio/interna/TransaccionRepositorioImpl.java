@@ -80,8 +80,8 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
     @Override
     protected Map<String, Object> obtenerConfiguracion() {
         Map<String, Object> config = new HashMap<>();
-        config.put("ruta", "src/main/resources/data/transaccion.json");
-        config.put("clase", Transaccion.class);
+        config.put("rutaArchivo", "src/main/resources/data/transaccion.json");
+        config.put("tipoClase", Transaccion.class);
         config.put("extractorId", (Function<Transaccion, Long>) Transaccion::getId);
         return config;
     }

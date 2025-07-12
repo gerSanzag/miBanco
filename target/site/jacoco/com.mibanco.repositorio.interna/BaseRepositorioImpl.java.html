@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.Objects;
 
 /**
  * Implementación base abstracta para repositorios con acceso restringido
@@ -21,22 +22,22 @@ import java.util.function.Predicate;
 abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enum&lt;E&gt;&gt; implements BaseRepositorio&lt;T, ID, E&gt; {
     
     // Lista para almacenar entidades en memoria
-<span class="fc" id="L24">    protected final List&lt;T&gt; entidades = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">    protected final List&lt;T&gt; entidades = new ArrayList&lt;&gt;();</span>
     
     // Cache para restauración de entidades eliminadas
-<span class="fc" id="L27">    protected final List&lt;T&gt; entidadesEliminadas = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">    protected final List&lt;T&gt; entidadesEliminadas = new ArrayList&lt;&gt;();</span>
     
     // Contador para generar IDs automáticamente
-<span class="fc" id="L30">    protected final AtomicLong idContador = new AtomicLong(1);</span>
+<span class="fc" id="L31">    protected final AtomicLong idContador = new AtomicLong(1);</span>
     
     // Repositorio de auditoría - ahora con lazy loading
     private AuditoriaRepositorio auditoriaRepository;
     
     // Usuario actual
-<span class="fc" id="L36">    protected String usuarioActual = &quot;sistema&quot;;</span>
+<span class="fc" id="L37">    protected String usuarioActual = &quot;sistema&quot;;</span>
     
     // Contador para operaciones CRUD (guardado por lotes)
-<span class="fc" id="L39">    private int contadorOperaciones = 0;</span>
+<span class="fc" id="L40">    private int contadorOperaciones = 0;</span>
     
     // Procesador JSON genérico
     private final BaseProcesadorJson&lt;T&gt; jsonProcesador;
@@ -44,22 +45,22 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     /**
      * Constructor protegido con carga automática desde JSON
      */
-<span class="fc" id="L47">    protected BaseRepositorioImpl() {</span>
+<span class="fc" id="L48">    protected BaseRepositorioImpl() {</span>
         // Inicializar procesador JSON
-<span class="fc" id="L49">        this.jsonProcesador = new BaseProcesadorJson&lt;&gt;();</span>
+<span class="fc" id="L50">        this.jsonProcesador = new BaseProcesadorJson&lt;&gt;();</span>
         
         // ✅ CARGAR DATOS AUTOMÁTICAMENTE
-<span class="fc" id="L52">        cargarDatosDesdeJson();</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L53">        cargarDatosDesdeJson();</span>
+<span class="fc" id="L54">    }</span>
     
     /**
      * Método lazy para obtener el repositorio de auditoría
      */
     private AuditoriaRepositorio obtenerAuditoria() {
-<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (auditoriaRepository == null) {</span>
-<span class="fc" id="L60">            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (auditoriaRepository == null) {</span>
+<span class="fc" id="L61">            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();</span>
         }
-<span class="fc" id="L62">        return auditoriaRepository;</span>
+<span class="fc" id="L63">        return auditoriaRepository;</span>
     }
     
     /**
@@ -67,43 +68,52 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Los datos se cargan en la lista entidades
      */
     private void cargarDatosDesdeJson() {
-<span class="fc" id="L70">        Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
-<span class="fc" id="L71">        String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
-<span class="fc" id="L72">        Class&lt;T&gt; tipoClase = (Class&lt;T&gt;) config.get(&quot;tipoClase&quot;);</span>
-<span class="fc" id="L73">        java.util.function.Function&lt;T, Long&gt; extractorId = (Function&lt;T, Long&gt;) config.get(&quot;extractorId&quot;);</span>
+<span class="fc" id="L71">        Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
         
-        // Validar configuración antes de usar
-<span class="pc bpc" id="L76" title="2 of 6 branches missed.">        if (ruta == null || tipoClase == null || extractorId == null) {</span>
-<span class="fc" id="L77">            System.err.println(&quot;Error: Configuración incompleta en BaseRepositorioImpl&quot;);</span>
-<span class="fc" id="L78">            return;</span>
+        // Validación defensiva para campos críticos
+<span class="fc" id="L74">        Class&lt;T&gt; tipoClase = Objects.requireNonNull(</span>
+<span class="fc" id="L75">            (Class&lt;T&gt;) config.get(&quot;tipoClase&quot;), </span>
+<span class="fc" id="L76">            &quot;ERROR CRÍTICO: Tipo de clase no configurado&quot;</span>
+        );
+        
+<span class="fc" id="L79">        Function&lt;T, Long&gt; extractorId = Objects.requireNonNull(</span>
+<span class="fc" id="L80">            (Function&lt;T, Long&gt;) config.get(&quot;extractorId&quot;), </span>
+<span class="fc" id="L81">            &quot;ERROR CRÍTICO: Extractor de ID no configurado&quot;</span>
+        );
+        
+        // Campo opcional: si es null, no cargar datos
+<span class="fc" id="L85">        String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (ruta == null) {</span>
+<span class="fc" id="L87">            System.err.println(&quot;ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos&quot;);</span>
+<span class="fc" id="L88">            return;</span>
         }
         
         // Cargar datos desde JSON
-<span class="fc" id="L82">        List&lt;T&gt; datosCargados = jsonProcesador.cargarDatosCondicionalmente(ruta, tipoClase);</span>
+<span class="fc" id="L92">        List&lt;T&gt; datosCargados = jsonProcesador.cargarDatosCondicionalmente(ruta, tipoClase);</span>
         
         // Agregar datos cargados a la lista entidades
-<span class="fc" id="L85">        entidades.addAll(datosCargados);</span>
+<span class="fc" id="L95">        entidades.addAll(datosCargados);</span>
         
         // Calcular contador desde datos reales
-<span class="fc" id="L88">        Long ultimoId = jsonProcesador.calcularMaximoId(entidades, extractorId);</span>
-<span class="fc" id="L89">        idContador.set(ultimoId);</span>
-<span class="fc" id="L90">    }</span>
+<span class="fc" id="L98">        Long ultimoId = jsonProcesador.calcularMaximoId(entidades, extractorId);</span>
+<span class="fc" id="L99">        idContador.set(ultimoId);</span>
+<span class="fc" id="L100">    }</span>
     
     @Override
     public void setUsuarioActual(String usuario) {
-<span class="fc" id="L94">        this.usuarioActual = usuario;</span>
-<span class="fc" id="L95">    }</span>
+<span class="fc" id="L104">        this.usuarioActual = usuario;</span>
+<span class="fc" id="L105">    }</span>
     
     @Override
     public Optional&lt;T&gt; crear(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
-<span class="fc" id="L99">        return entityOpt.map(entity -&gt; {</span>
+<span class="fc" id="L109">        return entityOpt.map(entity -&gt; {</span>
             // ✅ Llamar al método abstracto para asignar ID
-<span class="fc" id="L101">            T entidadConId = crearConNuevoId(entity);</span>
-<span class="fc" id="L102">            entidades.add(entidadConId);</span>
-<span class="fc" id="L103">            registrarAuditoria(entidadConId, tipoOperacion);</span>
-<span class="fc" id="L104">            incrementarContadorYGuardar();</span>
-<span class="fc" id="L105">            return Optional.of(entidadConId);</span>
-<span class="fc" id="L106">        }).orElse(Optional.empty());</span>
+<span class="fc" id="L111">            T entidadConId = crearConNuevoId(entity);</span>
+<span class="fc" id="L112">            entidades.add(entidadConId);</span>
+<span class="fc" id="L113">            registrarAuditoria(entidadConId, tipoOperacion);</span>
+<span class="fc" id="L114">            incrementarContadorYGuardar();</span>
+<span class="fc" id="L115">            return Optional.of(entidadConId);</span>
+<span class="fc" id="L116">        }).orElse(Optional.empty());</span>
     }
     
     /**
@@ -122,24 +132,24 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     
     @Override
     public Optional&lt;T&gt; actualizar(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
-<span class="fc" id="L125">        return entityOpt.flatMap(entidad -&gt; </span>
-<span class="fc" id="L126">            Optional.ofNullable(entidad.getId())</span>
-<span class="fc" id="L127">                .map(id -&gt; {</span>
-<span class="fc" id="L128">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
-<span class="fc" id="L129">                    entidades.add(entidad);</span>
-<span class="fc" id="L130">                    registrarAuditoria(entidad, tipoOperacion);</span>
-<span class="fc" id="L131">                    incrementarContadorYGuardar();</span>
-<span class="fc" id="L132">                    return entidad;</span>
-<span class="fc" id="L133">                })</span>
+<span class="fc" id="L135">        return entityOpt.flatMap(entidad -&gt; </span>
+<span class="fc" id="L136">            Optional.ofNullable(entidad.getId())</span>
+<span class="fc" id="L137">                .map(id -&gt; {</span>
+<span class="pc" id="L138">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="fc" id="L139">                    entidades.add(entidad);</span>
+<span class="fc" id="L140">                    registrarAuditoria(entidad, tipoOperacion);</span>
+<span class="fc" id="L141">                    incrementarContadorYGuardar();</span>
+<span class="fc" id="L142">                    return entidad;</span>
+<span class="fc" id="L143">                })</span>
         );
     }
     
     @Override
     public Optional&lt;T&gt; buscarPorId(Optional&lt;ID&gt; idOpt) {
-<span class="fc" id="L139">        return idOpt.flatMap(id -&gt; </span>
-<span class="fc" id="L140">            entidades.stream()</span>
-<span class="fc" id="L141">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
-<span class="fc" id="L142">                .findFirst()</span>
+<span class="fc" id="L149">        return idOpt.flatMap(id -&gt; </span>
+<span class="fc" id="L150">            entidades.stream()</span>
+<span class="fc" id="L151">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="fc" id="L152">                .findFirst()</span>
         );
     }
     
@@ -147,62 +157,62 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Método protegido para búsquedas por predicado
      */
     protected Optional&lt;T&gt; buscarPorPredicado(Predicate&lt;T&gt; predicado) {
-<span class="nc" id="L150">        return entidades.stream()</span>
-<span class="nc" id="L151">                .filter(predicado)</span>
-<span class="nc" id="L152">                .findFirst();</span>
+<span class="fc" id="L160">        return entidades.stream()</span>
+<span class="fc" id="L161">                .filter(predicado)</span>
+<span class="fc" id="L162">                .findFirst();</span>
     }
     
     /**
      * Método protegido para búsquedas de lista por predicado
      */
     protected Optional&lt;List&lt;T&gt;&gt; buscarTodosPorPredicado(Predicate&lt;T&gt; predicado) {
-<span class="nc" id="L159">        return Optional.of(</span>
-<span class="nc" id="L160">            entidades.stream()</span>
-<span class="nc" id="L161">                .filter(predicado)</span>
-<span class="nc" id="L162">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+<span class="fc" id="L169">        return Optional.of(</span>
+<span class="fc" id="L170">            entidades.stream()</span>
+<span class="fc" id="L171">                .filter(predicado)</span>
+<span class="fc" id="L172">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
         );
     }
     
     @Override
     public Optional&lt;List&lt;T&gt;&gt; buscarTodos() {
-<span class="fc" id="L168">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
+<span class="fc" id="L178">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
     }
     
     @Override
     public Optional&lt;T&gt; eliminarPorId(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
-<span class="fc" id="L173">        return idOpt.flatMap(id -&gt; {</span>
-<span class="fc" id="L174">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
+<span class="fc" id="L183">        return idOpt.flatMap(id -&gt; {</span>
+<span class="fc" id="L184">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
             
-<span class="fc" id="L176">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
-<span class="fc" id="L177">                entidades.remove(entity);</span>
-<span class="fc" id="L178">                entidadesEliminadas.add(entity);</span>
-<span class="fc" id="L179">                registrarAuditoria(entity, tipoOperacion);</span>
-<span class="fc" id="L180">                incrementarContadorYGuardar();</span>
-<span class="fc" id="L181">            });</span>
+<span class="fc" id="L186">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
+<span class="fc" id="L187">                entidades.remove(entity);</span>
+<span class="fc" id="L188">                entidadesEliminadas.add(entity);</span>
+<span class="fc" id="L189">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="fc" id="L190">                incrementarContadorYGuardar();</span>
+<span class="fc" id="L191">            });</span>
             
-<span class="fc" id="L183">            return entidadAEliminarOpt;</span>
+<span class="fc" id="L193">            return entidadAEliminarOpt;</span>
         });
     }
     
     @Override
     public long contarRegistros() {
-<span class="fc" id="L189">        return entidades.size();</span>
+<span class="fc" id="L199">        return entidades.size();</span>
     }
     
     @Override
     public Optional&lt;T&gt; restaurar(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
-<span class="fc" id="L194">        return idOpt.flatMap(id -&gt; {</span>
-<span class="fc" id="L195">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
-<span class="fc" id="L196">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
-<span class="fc" id="L197">                    .findFirst();</span>
+<span class="fc" id="L204">        return idOpt.flatMap(id -&gt; {</span>
+<span class="fc" id="L205">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
+<span class="fc" id="L206">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="fc" id="L207">                    .findFirst();</span>
                     
-<span class="fc" id="L199">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
-<span class="fc" id="L200">                entidades.add(entity);</span>
-<span class="fc" id="L201">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
-<span class="fc" id="L202">                registrarAuditoria(entity, tipoOperacion);</span>
-<span class="fc" id="L203">            });</span>
+<span class="fc" id="L209">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
+<span class="fc" id="L210">                entidades.add(entity);</span>
+<span class="fc" id="L211">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="fc" id="L212">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="fc" id="L213">            });</span>
             
-<span class="fc" id="L205">            return entidadAResturarOpt;</span>
+<span class="fc" id="L215">            return entidadAResturarOpt;</span>
         });
     }
     
@@ -211,32 +221,32 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
      * Método privado para registrar auditoría
      */
     private void registrarAuditoria(T entidad, E tipoOperacion) {
-<span class="fc" id="L214">        AuditoriaUtil.registrarOperacion(</span>
-<span class="fc" id="L215">            obtenerAuditoria(),</span>
-<span class="fc" id="L216">            Optional.of(tipoOperacion),</span>
-<span class="fc" id="L217">            Optional.of(entidad),</span>
-<span class="fc" id="L218">            Optional.of(usuarioActual)</span>
+<span class="fc" id="L224">        AuditoriaUtil.registrarOperacion(</span>
+<span class="fc" id="L225">            obtenerAuditoria(),</span>
+<span class="fc" id="L226">            Optional.of(tipoOperacion),</span>
+<span class="fc" id="L227">            Optional.of(entidad),</span>
+<span class="fc" id="L228">            Optional.of(usuarioActual)</span>
         );
-<span class="fc" id="L220">    }</span>
+<span class="fc" id="L230">    }</span>
 
     @Override
     public List&lt;T&gt; obtenerEliminados() {
-<span class="fc" id="L224">        return entidadesEliminadas;</span>
+<span class="fc" id="L234">        return entidadesEliminadas;</span>
     }
     
     /**
      * Incrementa el contador de operaciones y guarda datos cada 10 operaciones
      */
-    private void incrementarContadorYGuardar() {
-<span class="fc" id="L231">        contadorOperaciones++;</span>
-<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (contadorOperaciones == 10) {</span>
-<span class="nc" id="L233">            Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
-<span class="nc" id="L234">            String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">            if (ruta != null) {</span>
-<span class="nc" id="L236">                jsonProcesador.guardarJson(ruta, entidades);</span>
+    protected void incrementarContadorYGuardar() {
+<span class="fc" id="L241">        contadorOperaciones++;</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        if (contadorOperaciones == 10) {</span>
+<span class="fc" id="L243">            Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
+<span class="fc" id="L244">            String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">            if (ruta != null) {</span>
+<span class="fc" id="L246">                jsonProcesador.guardarJson(ruta, entidades);</span>
             }
-<span class="nc" id="L238">            contadorOperaciones = 0;</span>
+<span class="fc" id="L248">            contadorOperaciones = 0;</span>
         }
-<span class="fc" id="L240">    }</span>
+<span class="fc" id="L250">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

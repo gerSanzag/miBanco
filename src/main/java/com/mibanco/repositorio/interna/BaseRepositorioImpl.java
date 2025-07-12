@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.Objects;
 
 /**
  * Implementación base abstracta para repositorios con acceso restringido
@@ -68,13 +69,22 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
      */
     private void cargarDatosDesdeJson() {
         Map<String, Object> config = obtenerConfiguracion();
-        String ruta = (String) config.get("rutaArchivo");
-        Class<T> tipoClase = (Class<T>) config.get("tipoClase");
-        java.util.function.Function<T, Long> extractorId = (Function<T, Long>) config.get("extractorId");
         
-        // Validar configuración antes de usar
-        if (ruta == null || tipoClase == null || extractorId == null) {
-            System.err.println("Error: Configuración incompleta en BaseRepositorioImpl");
+        // Validación defensiva para campos críticos
+        Class<T> tipoClase = Objects.requireNonNull(
+            (Class<T>) config.get("tipoClase"), 
+            "ERROR CRÍTICO: Tipo de clase no configurado"
+        );
+        
+        Function<T, Long> extractorId = Objects.requireNonNull(
+            (Function<T, Long>) config.get("extractorId"), 
+            "ERROR CRÍTICO: Extractor de ID no configurado"
+        );
+        
+        // Campo opcional: si es null, no cargar datos
+        String ruta = (String) config.get("rutaArchivo");
+        if (ruta == null) {
+            System.err.println("ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos");
             return;
         }
         
@@ -227,7 +237,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     /**
      * Incrementa el contador de operaciones y guarda datos cada 10 operaciones
      */
-    private void incrementarContadorYGuardar() {
+    protected void incrementarContadorYGuardar() {
         contadorOperaciones++;
         if (contadorOperaciones == 10) {
             Map<String, Object> config = obtenerConfiguracion();

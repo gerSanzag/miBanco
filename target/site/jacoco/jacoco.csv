@@ -26,7 +26,7 @@ miBanco,com.mibanco.vista.interna,BaseVistaImpl,574,0,62,0,127,0,73,0,42,0
 miBanco,com.mibanco.vista.interna,factoriaVista,44,0,4,0,13,0,7,0,5,0
 miBanco,com.mibanco.util,AuditoriaUtil,3,15,0,0,1,3,1,1,1,1
 miBanco,com.mibanco.util,ReflexionUtil,3,30,0,4,1,5,1,5,1,3
-miBanco,com.mibanco.repositorio.interna,BaseRepositorioImpl,38,303,5,7,12,77,6,28,2,26
+miBanco,com.mibanco.repositorio.interna,BaseRepositorioImpl,5,338,1,7,0,93,2,30,1,27
 miBanco,com.mibanco.repositorio.interna,ClienteRepositorioImpl,54,24,0,0,10,7,7,2,7,2
 miBanco,com.mibanco.repositorio.interna,CuentaRepositorioImplWrapper,3,0,0,0,1,0,1,0,1,0
 miBanco,com.mibanco.repositorio.interna,ClienteRepositorioImplWrapper,3,0,0,0,1,0,1,0,1,0
