@@ -2124,7 +2124,2031 @@ Hay métodos duplicados en la implementación también. Vamos a corregirlos:
 
 ---
 
+Cancelled
 
+---
+
+
+
+---
+
+_**User**_
+
+continua
+
+---
+
+_**Assistant**_
+
+Perfecto, German. Continuemos con la ejecución de tests y el merge.
+
+## 3. Ejecución de tests
+
+
+---
+
+```bash
+mvn test
+```
+
+```
+
+                              
+trator.java:55)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.withInterceptedStreams(EngineExecution
+Orchestrator.java:102)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:54)
+                                      at org.junit.platform.launcher.core.Defaul
+tLauncher.execute(DefaultLauncher.java:114)
+        at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLaunc
+her.java:86)
+        at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLau
+ncher.execute(DefaultLauncherS
+ession.java:86)
+                                      at org.apache.maven.surefire.junitplatform
+.LazyLauncher.execute(LazyLauncher.java:50)
+        at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute
+(JUnitPlatformProvider.java:18
+4)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.
+java:148)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122
+)
+                                      at org.apache.maven.surefire.booter.Forked
+Booter.runSuitesInProcess(ForkedBooter.java:385)
+        at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.ja
+va:162)
+        at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:5
+07)
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:
+495)
+Error al leer JSON: No content to map due to end-of-input
+ at [Source: (File); line: 1, column: 0]
+com.fasterxml.jackson.databind.exc.MismatchedInputException: No content to map d
+ue to end-of-input
+ at [Source: (File); line: 1, column: 0]
+        at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(Mism
+atchedInputException.java:59)
+        at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMap
+per.java:4916)
+        at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMa
+pper.java:4818)
+        at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.ja
+va:3677)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.leerJson(BaseProce
+sadorJson.java:76)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.lambda$1(BaseProce
+sadorJson.java:38)
+        at java.base/java.util.Optional.map(Optional.java:260)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.cargarDatosCondici
+onalmente(BaseProcesadorJson.j
+ava:38)
+                                      at com.mibanco.repositorio.interna.BaseRep
+ositorioImpl.cargarDatosDesdeJson(BaseRepositorioImpl.java:9
+2)
+                                      at com.mibanco.repositorio.interna.BaseRep
+ositorioImpl.<init>(BaseRepositorioImpl.java:53)
+        at com.mibanco.repositorio.interna.TarjetaRepositorioImpl.<init>(Tarjeta
+RepositorioImpl.java:27)
+        at com.mibanco.repositorio.interna.RepositorioFactoria.<init>(Repositori
+oFactoria.java:31)
+        at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia(
+RepositorioFactoria.java:43)
+        at com.mibanco.repositorio.interna.BaseRepositorioImpl.obtenerAuditoria(
+BaseRepositorioImpl.java:61)
+        at com.mibanco.repositorio.interna.BaseRepositorioImpl.registrarAuditori
+a(BaseRepositorioImpl.java:225
+)
+                                      at com.mibanco.repositorio.interna.BaseRep
+ositorioImpl.lambda$0(BaseRepositorioImpl.java:113)
+        at java.base/java.util.Optional.map(Optional.java:260)
+        at com.mibanco.repositorio.interna.BaseRepositorioImpl.crearRegistro(Bas
+eRepositorioImpl.java:109)
+        at com.mibanco.repositorio.interna.BaseRepositorioImplWrapper.crearRegis
+tro(BaseRepositorioImplWrapper
+.java:1)
+                                      at com.mibanco.repositorioTest.internaTest
+.BaseRepositorioImplTest$ValidacionDefensivaTests.lambda$deb
+eriaManejarRutaNullCorrectamente$0(BaseRepositorioImplTest.java:495)
+                                      at org.junit.jupiter.api.AssertDoesNotThro
+w.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+        at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoe
+sNotThrow.java:36)
+        at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3
+136)
+        at com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Valid
+acionDefensivaTests.deberiaMan
+ejarRutaNullCorrectamente(BaseRepositorioImplTest.java:483)
+                                      at java.base/jdk.internal.reflect.DirectMe
+thodHandleAccessor.invoke(DirectMethodHandleAccessor.java:10
+3)
+                                      at java.base/java.lang.reflect.Method.invo
+ke(Method.java:580)
+        at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(Reflecti
+onUtils.java:727)
+        at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInv
+ocation.java:60)
+        at org.junit.jupiter.engine.execution.InvocationInterceptorChain$Validat
+ingInvocation.proceed(Invocati
+onInterceptorChain.java:131)
+                                      at org.junit.jupiter.engine.extension.Time
+outExtension.intercept(TimeoutExtension.java:156)
+        at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestable
+Method(TimeoutExtension.java:1
+47)
+                                      at org.junit.jupiter.engine.extension.Time
+outExtension.interceptTestMethod(TimeoutExtension.java:86)
+        at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$Refl
+ectiveInterceptorCall.lambda$o
+fVoidMethod$0(InterceptingExecutableInvoker.java:103)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.lambda$invoke$0(InterceptingExecut
+ableInvoker.java:93)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain$InterceptedInvocation.proceed(Invocat
+ionInterceptorChain.java:106)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.proceed(InvocationInterceptorChain.ja
+va:64)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.chainAndInvoke(InvocationInterceptorC
+hain.java:45)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.invoke(InvocationInterceptorChain.jav
+a:37)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.invoke(InterceptingExecutableInvok
+er.java:92)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.invoke(InterceptingExecutableInvok
+er.java:86)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTe
+stDescriptor.java:217)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.invokeTestMethod(TestMethodTestDescrip
+tor.java:213)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+138)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+68)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:151)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.submit(Sam
+eThreadHierarchicalTestExecutorService.java:35)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestExecutor.execute(HierarchicalTestExe
+cutor.java:57)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestEngine.execute(HierarchicalTestEngin
+e.java:54)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:147)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:127)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:90)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.lambda$execute$0(EngineExecutionOrches
+trator.java:55)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.withInterceptedStreams(EngineExecution
+Orchestrator.java:102)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:54)
+                                      at org.junit.platform.launcher.core.Defaul
+tLauncher.execute(DefaultLauncher.java:114)
+        at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLaunc
+her.java:86)
+        at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLau
+ncher.execute(DefaultLauncherS
+ession.java:86)
+                                      at org.apache.maven.surefire.junitplatform
+.LazyLauncher.execute(LazyLauncher.java:50)
+        at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute
+(JUnitPlatformProvider.java:18
+4)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.
+java:148)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122
+)
+                                      at org.apache.maven.surefire.booter.Forked
+Booter.runSuitesInProcess(ForkedBooter.java:385)
+        at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.ja
+va:162)
+        at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:5
+07)
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:
+495)
+Error al leer JSON: No content to map due to end-of-input
+ at [Source: (File); line: 1, column: 0]
+com.fasterxml.jackson.databind.exc.MismatchedInputException: No content to map d
+ue to end-of-input
+ at [Source: (File); line: 1, column: 0]
+        at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(Mism
+atchedInputException.java:59)
+        at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMap
+per.java:4916)
+        at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMa
+pper.java:4818)
+        at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.ja
+va:3677)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.leerJson(BaseProce
+sadorJson.java:76)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.lambda$1(BaseProce
+sadorJson.java:38)
+        at java.base/java.util.Optional.map(Optional.java:260)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.cargarDatosCondici
+onalmente(BaseProcesadorJson.j
+ava:38)
+                                      at com.mibanco.repositorio.interna.BaseRep
+ositorioImpl.cargarDatosDesdeJson(BaseRepositorioImpl.java:9
+2)
+                                      at com.mibanco.repositorio.interna.BaseRep
+ositorioImpl.<init>(BaseRepositorioImpl.java:53)
+        at com.mibanco.repositorio.interna.TransaccionRepositorioImpl.<init>(Tra
+nsaccionRepositorioImpl.java:2
+8)
+                                      at com.mibanco.repositorio.interna.Reposit
+orioFactoria.<init>(RepositorioFactoria.java:32)
+        at com.mibanco.repositorio.interna.RepositorioFactoria.obtenerInstancia(
+RepositorioFactoria.java:43)
+        at com.mibanco.repositorio.interna.BaseRepositorioImpl.obtenerAuditoria(
+BaseRepositorioImpl.java:61)
+        at com.mibanco.repositorio.interna.BaseRepositorioImpl.registrarAuditori
+a(BaseRepositorioImpl.java:225
+)
+                                      at com.mibanco.repositorio.interna.BaseRep
+ositorioImpl.lambda$0(BaseRepositorioImpl.java:113)
+        at java.base/java.util.Optional.map(Optional.java:260)
+        at com.mibanco.repositorio.interna.BaseRepositorioImpl.crearRegistro(Bas
+eRepositorioImpl.java:109)
+        at com.mibanco.repositorio.interna.BaseRepositorioImplWrapper.crearRegis
+tro(BaseRepositorioImplWrapper
+.java:1)
+                                      at com.mibanco.repositorioTest.internaTest
+.BaseRepositorioImplTest$ValidacionDefensivaTests.lambda$deb
+eriaManejarRutaNullCorrectamente$0(BaseRepositorioImplTest.java:495)
+                                      at org.junit.jupiter.api.AssertDoesNotThro
+w.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+        at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoe
+sNotThrow.java:36)
+        at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3
+136)
+        at com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Valid
+acionDefensivaTests.deberiaMan
+ejarRutaNullCorrectamente(BaseRepositorioImplTest.java:483)
+                                      at java.base/jdk.internal.reflect.DirectMe
+thodHandleAccessor.invoke(DirectMethodHandleAccessor.java:10
+3)
+                                      at java.base/java.lang.reflect.Method.invo
+ke(Method.java:580)
+        at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(Reflecti
+onUtils.java:727)
+        at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInv
+ocation.java:60)
+        at org.junit.jupiter.engine.execution.InvocationInterceptorChain$Validat
+ingInvocation.proceed(Invocati
+onInterceptorChain.java:131)
+                                      at org.junit.jupiter.engine.extension.Time
+outExtension.intercept(TimeoutExtension.java:156)
+        at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestable
+Method(TimeoutExtension.java:1
+47)
+                                      at org.junit.jupiter.engine.extension.Time
+outExtension.interceptTestMethod(TimeoutExtension.java:86)
+        at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$Refl
+ectiveInterceptorCall.lambda$o
+fVoidMethod$0(InterceptingExecutableInvoker.java:103)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.lambda$invoke$0(InterceptingExecut
+ableInvoker.java:93)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain$InterceptedInvocation.proceed(Invocat
+ionInterceptorChain.java:106)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.proceed(InvocationInterceptorChain.ja
+va:64)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.chainAndInvoke(InvocationInterceptorC
+hain.java:45)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.invoke(InvocationInterceptorChain.jav
+a:37)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.invoke(InterceptingExecutableInvok
+er.java:92)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.invoke(InterceptingExecutableInvok
+er.java:86)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTe
+stDescriptor.java:217)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.invokeTestMethod(TestMethodTestDescrip
+tor.java:213)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+138)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+68)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:151)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.submit(Sam
+eThreadHierarchicalTestExecutorService.java:35)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestExecutor.execute(HierarchicalTestExe
+cutor.java:57)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestEngine.execute(HierarchicalTestEngin
+e.java:54)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:147)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:127)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:90)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.lambda$execute$0(EngineExecutionOrches
+trator.java:55)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.withInterceptedStreams(EngineExecution
+Orchestrator.java:102)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:54)
+                                      at org.junit.platform.launcher.core.Defaul
+tLauncher.execute(DefaultLauncher.java:114)
+        at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLaunc
+her.java:86)
+        at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLau
+ncher.execute(DefaultLauncherS
+ession.java:86)
+                                      at org.apache.maven.surefire.junitplatform
+.LazyLauncher.execute(LazyLauncher.java:50)
+        at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute
+(JUnitPlatformProvider.java:18
+4)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.
+java:148)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122
+)
+                                      at org.apache.maven.surefire.booter.Forked
+Booter.runSuitesInProcess(ForkedBooter.java:385)
+        at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.ja
+va:162)
+        at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:5
+07)
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:
+495)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.299 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$ContadorYGuardadoTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$UsuarioActualTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$UsuarioActualTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$RestaurarTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$RestaurarTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$EliminarTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$EliminarTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$ActualizarTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$ActualizarTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$BuscarPorPredicadoTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$BuscarPorPredicadoTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$BuscarTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$BuscarTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseRepositorioImplTest$CrearTests
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest$CrearTests
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.362 s - in com.mibanco.repositorioTes
+t.internaTest.BaseRepositorioImplTest
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseProcesadorJsonTest
+[INFO] Running com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$Ca
+rgarDatosCondicionalmenteTests
+=== DEBUG INFO ===
+Archivo existe: true
+Tamaño del archivo: 430 bytes
+Contenido del archivo:
+[ {
+  "id" : 1,
+  "nombre" : "Juan",
+  "apellido" : "Pérez",
+  "dni" : "12345678",
+  "fechaNacimiento" : "1990-01-01",
+  "email" : "juan@test.com",
+  "telefono" : "123456789",
+  "direccion" : "Calle Test 123"
+}, {
+  "id" : 5,
+  "nombre" : "María",
+  "apellido" : "García",
+  "dni" : "87654321",
+  "fechaNacimiento" : "1985-05-15",
+  "email" : "maria@test.com",
+  "telefono" : "987654321",
+  "direccion" : "Avenida Test 456"
+} ]
+==================
+Clientes cargados: 2
+==================
+Error al leer JSON: Unrecognized token 'contenido': was expecting (JSON String,
+Number, Array, Object or token
+ 'null', 'true' or 'false')
+                               at [Source: (File); line: 1, column: 11]
+com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'contenido': w
+as expecting (JSON String, Num
+ber, Array, Object or token 'null', 'true' or 'false')
+                               at [Source: (File); line: 1, column: 11]
+        at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java
+:2477)
+        at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(Parser
+MinimalBase.java:760)
+        at com.fasterxml.jackson.core.json.UTF8StreamJsonParser._reportInvalidTo
+ken(UTF8StreamJsonParser.java:
+3699)
+                                      at com.fasterxml.jackson.core.json.UTF8Str
+eamJsonParser._handleUnexpectedValue(UTF8StreamJsonParser.ja
+va:2787)
+                                      at com.fasterxml.jackson.core.json.UTF8Str
+eamJsonParser._nextTokenNotInObject(UTF8StreamJsonParser.jav
+a:908)
+                                      at com.fasterxml.jackson.core.json.UTF8Str
+eamJsonParser.nextToken(UTF8StreamJsonParser.java:794)
+        at com.fasterxml.jackson.databind.ObjectMapper._initForReading(ObjectMap
+per.java:4912)
+        at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMa
+pper.java:4818)
+        at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.ja
+va:3677)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.leerJson(BaseProce
+sadorJson.java:76)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.lambda$1(BaseProce
+sadorJson.java:38)
+        at java.base/java.util.Optional.map(Optional.java:260)
+        at com.mibanco.repositorio.interna.BaseProcesadorJson.cargarDatosCondici
+onalmente(BaseProcesadorJson.j
+ava:38)
+                                      at com.mibanco.repositorio.interna.BasePro
+cesadorJsonWrapper.cargarDatosCondicionalmente(BaseProcesado
+rJsonWrapper.java:1)
+                                      at com.mibanco.repositorioTest.internaTest
+.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.deb
+eriaManejarArchivoJsonInvalido(BaseProcesadorJsonTest.java:238)
+                                      at java.base/jdk.internal.reflect.DirectMe
+thodHandleAccessor.invoke(DirectMethodHandleAccessor.java:10
+3)
+                                      at java.base/java.lang.reflect.Method.invo
+ke(Method.java:580)
+        at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(Reflecti
+onUtils.java:727)
+        at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInv
+ocation.java:60)
+        at org.junit.jupiter.engine.execution.InvocationInterceptorChain$Validat
+ingInvocation.proceed(Invocati
+onInterceptorChain.java:131)
+                                      at org.junit.jupiter.engine.extension.Time
+outExtension.intercept(TimeoutExtension.java:156)
+        at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestable
+Method(TimeoutExtension.java:1
+47)
+                                      at org.junit.jupiter.engine.extension.Time
+outExtension.interceptTestMethod(TimeoutExtension.java:86)
+        at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$Refl
+ectiveInterceptorCall.lambda$o
+fVoidMethod$0(InterceptingExecutableInvoker.java:103)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.lambda$invoke$0(InterceptingExecut
+ableInvoker.java:93)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain$InterceptedInvocation.proceed(Invocat
+ionInterceptorChain.java:106)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.proceed(InvocationInterceptorChain.ja
+va:64)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.chainAndInvoke(InvocationInterceptorC
+hain.java:45)
+                                      at org.junit.jupiter.engine.execution.Invo
+cationInterceptorChain.invoke(InvocationInterceptorChain.jav
+a:37)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.invoke(InterceptingExecutableInvok
+er.java:92)
+                                      at org.junit.jupiter.engine.execution.Inte
+rceptingExecutableInvoker.invoke(InterceptingExecutableInvok
+er.java:86)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTe
+stDescriptor.java:217)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.invokeTestMethod(TestMethodTestDescrip
+tor.java:213)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+138)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+68)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:151)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.submit(Sam
+eThreadHierarchicalTestExecutorService.java:35)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestExecutor.execute(HierarchicalTestExe
+cutor.java:57)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestEngine.execute(HierarchicalTestEngin
+e.java:54)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:147)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:127)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:90)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.lambda$execute$0(EngineExecutionOrches
+trator.java:55)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.withInterceptedStreams(EngineExecution
+Orchestrator.java:102)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:54)
+                                      at org.junit.platform.launcher.core.Defaul
+tLauncher.execute(DefaultLauncher.java:114)
+        at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLaunc
+her.java:86)
+        at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLau
+ncher.execute(DefaultLauncherS
+ession.java:86)
+                                      at org.apache.maven.surefire.junitplatform
+.LazyLauncher.execute(LazyLauncher.java:50)
+        at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute
+(JUnitPlatformProvider.java:18
+4)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.
+java:148)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122
+)
+                                      at org.apache.maven.surefire.booter.Forked
+Booter.runSuitesInProcess(ForkedBooter.java:385)
+        at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.ja
+va:162)
+        at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:5
+07)
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:
+495)
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.069 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseProcesadorJsonTest$GuardarJsonTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseProcesadorJsonTest$GuardarJsonTests
+                              [INFO] Running com.mibanco.repositorioTest.interna
+Test.BaseProcesadorJsonTest$CalcularMaximoIdTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.repositorioTes
+t.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTests
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.085 s - in com.mibanco.repositorioTes
+t.internaTest.BaseProcesadorJsonTest
+                              [INFO] Running com.mibanco.dtoTest.TransaccionDtoT
+est
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s -
+ in com.mibanco.dtoTest.Transa
+ccionDtoTest
+                              [INFO] Running com.mibanco.dtoTest.ClienteDtoTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s
+- in com.mibanco.dtoTest.Clien
+teDtoTest
+                              [INFO] Running com.mibanco.dtoTest.CuentaDtoTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s
+- in com.mibanco.dtoTest.Cuent
+aDtoTest
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cl
+ienteMapeadorTest
+[INFO] Running com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -
+ in com.mibanco.dtoTest.mapead
+orTest.ClienteMapeadorTest$ListasTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cl
+ienteMapeadorTest$MetodosDirectosTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.dtoTest.mapead
+orTest.ClienteMapeadorTest$MetodosDirectosTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cl
+ienteMapeadorTest$EntityToDtoTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.dtoTest.mapead
+orTest.ClienteMapeadorTest$EntityToDtoTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cl
+ienteMapeadorTest$DtoToEntityTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.dtoTest.mapead
+orTest.ClienteMapeadorTest$DtoToEntityTests
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.011 s - in com.mibanco.dtoTest.mapead
+orTest.ClienteMapeadorTest
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cu
+entaMapeadorTest
+[INFO] Running com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodT
+ests
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting com/
+sun/tools/attach/VirtualMachin
+e with JaCoCo 0.8.10.202304240956/8ea9668.
+                                      at org.jacoco.agent.rt.internal_4a7f17c.Co
+verageTransformer.transform(CoverageTransformer.java:94)
+        at java.instrument/java.lang.instrument.ClassFileTransformer.transform(C
+lassFileTransformer.java:242)
+        at java.instrument/sun.instrument.TransformerManager.transform(Transform
+erManager.java:188)
+        at java.instrument/sun.instrument.InstrumentationImpl.transform(Instrume
+ntationImpl.java:610)
+        at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+        at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1116)
+        at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoad
+er.java:182)
+        at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinC
+lassLoader.java:821)
+        at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrN
+ull(BuiltinClassLoader.java:74
+1)
+                                      at java.base/jdk.internal.loader.BuiltinCl
+assLoader.loadClassOrNull(BuiltinClassLoader.java:665)
+        at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinCla
+ssLoader.java:639)
+        at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(C
+lassLoaders.java:188)
+        at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:528)
+        at java.base/java.lang.Class.forName0(Native Method)
+        at java.base/java.lang.Class.forName(Class.java:578)
+        at java.base/java.lang.Class.forName(Class.java:557)
+        at net.bytebuddy.agent.ByteBuddyAgent$AttachmentProvider$Accessor$Simple
+.of(ByteBuddyAgent.java:960)
+        at net.bytebuddy.agent.ByteBuddyAgent$AttachmentProvider$ForModularizedV
+m.attempt(ByteBuddyAgent.java:
+1084)
+                                      at net.bytebuddy.agent.ByteBuddyAgent$Atta
+chmentProvider$Compound.attempt(ByteBuddyAgent.java:1264)
+        at net.bytebuddy.agent.ByteBuddyAgent.install(ByteBuddyAgent.java:625)
+        at net.bytebuddy.agent.ByteBuddyAgent.install(ByteBuddyAgent.java:611)
+        at net.bytebuddy.agent.ByteBuddyAgent.install(ByteBuddyAgent.java:563)
+        at net.bytebuddy.agent.ByteBuddyAgent.install(ByteBuddyAgent.java:540)
+        at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMa
+ker.<clinit>(InlineDelegateByt
+eBuddyMockMaker.java:115)
+                                      at org.mockito.internal.creation.bytebuddy
+.InlineByteBuddyMockMaker.<init>(InlineByteBuddyMockMaker.ja
+va:23)
+                                      at java.base/jdk.internal.reflect.DirectCo
+nstructorHandleAccessor.newInstance(DirectConstructorHandleA
+ccessor.java:62)
+                                      at java.base/java.lang.reflect.Constructor
+.newInstanceWithCaller(Constructor.java:501)
+        at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:
+485)
+        at org.mockito.internal.configuration.plugins.DefaultMockitoPlugins.crea
+te(DefaultMockitoPlugins.java:
+102)
+                                      at org.mockito.internal.configuration.plug
+ins.DefaultMockitoPlugins.getDefaultPlugin(DefaultMockitoPlu
+gins.java:78)
+                                      at org.mockito.internal.configuration.plug
+ins.PluginLoader.loadPlugin(PluginLoader.java:75)
+        at org.mockito.internal.configuration.plugins.PluginLoader.loadPlugin(Pl
+uginLoader.java:50)
+        at org.mockito.internal.configuration.plugins.PluginRegistry.<init>(Plug
+inRegistry.java:27)
+        at org.mockito.internal.configuration.plugins.Plugins.<clinit>(Plugins.j
+ava:22)
+        at org.mockito.internal.MockitoCore.<clinit>(MockitoCore.java:73)
+        at org.mockito.Mockito.<clinit>(Mockito.java:1683)
+        at org.mockito.junit.jupiter.MockitoExtension.beforeEach(MockitoExtensio
+n.java:149)
+        at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$i
+nvokeBeforeEachCallbacks$2(Tes
+tMethodTestDescriptor.java:166)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.lambda$invokeBeforeMethodsOrCallbacksU
+ntilExceptionOccurs$6(TestMethodTestDescriptor.java:202)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.invokeBeforeMethodsOrCallbacksUntilExc
+eptionOccurs(TestMethodTestDescriptor.java:202)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.invokeBeforeEachCallbacks(TestMethodTe
+stDescriptor.java:165)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+132)
+                                      at org.junit.jupiter.engine.descriptor.Tes
+tMethodTestDescriptor.execute(TestMethodTestDescriptor.java:
+68)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:151)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.invokeAll(
+SameThreadHierarchicalTestExecutorService.java:41)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTas
+k.java:155)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTas
+k.java:141)
+                                      at org.junit.platform.engine.support.hiera
+rchical.Node.around(Node.java:137)
+        at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$ex
+ecuteRecursively$9(NodeTestTas
+k.java:139)
+                                      at org.junit.platform.engine.support.hiera
+rchical.ThrowableCollector.execute(ThrowableCollector.java:7
+3)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.executeRecursively(NodeTestTask.java:13
+8)
+                                      at org.junit.platform.engine.support.hiera
+rchical.NodeTestTask.execute(NodeTestTask.java:95)
+        at org.junit.platform.engine.support.hierarchical.SameThreadHierarchical
+TestExecutorService.submit(Sam
+eThreadHierarchicalTestExecutorService.java:35)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestExecutor.execute(HierarchicalTestExe
+cutor.java:57)
+                                      at org.junit.platform.engine.support.hiera
+rchical.HierarchicalTestEngine.execute(HierarchicalTestEngin
+e.java:54)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:147)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:127)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:90)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.lambda$execute$0(EngineExecutionOrches
+trator.java:55)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.withInterceptedStreams(EngineExecution
+Orchestrator.java:102)
+                                      at org.junit.platform.launcher.core.Engine
+ExecutionOrchestrator.execute(EngineExecutionOrchestrator.ja
+va:54)
+                                      at org.junit.platform.launcher.core.Defaul
+tLauncher.execute(DefaultLauncher.java:114)
+        at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLaunc
+her.java:86)
+        at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLau
+ncher.execute(DefaultLauncherS
+ession.java:86)
+                                      at org.apache.maven.surefire.junitplatform
+.LazyLauncher.execute(LazyLauncher.java:50)
+        at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute
+(JUnitPlatformProvider.java:18
+4)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.
+java:148)
+                                      at org.apache.maven.surefire.junitplatform
+.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122
+)
+                                      at org.apache.maven.surefire.booter.Forked
+Booter.runSuitesInProcess(ForkedBooter.java:385)
+        at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.ja
+va:162)
+        at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:5
+07)
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:
+495)
+Caused by: java.io.IOException: Error while instrumenting com/sun/tools/attach/V
+irtualMachine with JaCoCo 0.8.
+10.202304240956/8ea9668.
+                                      at org.jacoco.agent.rt.internal_4a7f17c.co
+re.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+        at org.jacoco.agent.rt.internal_4a7f17c.core.instr.Instrumenter.instrume
+nt(Instrumenter.java:111)
+        at org.jacoco.agent.rt.internal_4a7f17c.CoverageTransformer.transform(Co
+verageTransformer.java:92)
+        ... 101 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major vers
+ion 67
+        at org.jacoco.agent.rt.internal_4a7f17c.asm.ClassReader.<init>(ClassRead
+er.java:199)
+        at org.jacoco.agent.rt.internal_4a7f17c.asm.ClassReader.<init>(ClassRead
+er.java:180)
+        at org.jacoco.agent.rt.internal_4a7f17c.asm.ClassReader.<init>(ClassRead
+er.java:166)
+        at org.jacoco.agent.rt.internal_4a7f17c.core.internal.instr.InstrSupport
+.classReaderFor(InstrSupport.j
+ava:280)
+                                      at org.jacoco.agent.rt.internal_4a7f17c.co
+re.instr.Instrumenter.instrument(Instrumenter.java:77)
+        at org.jacoco.agent.rt.internal_4a7f17c.core.instr.Instrumenter.instrume
+nt(Instrumenter.java:109)
+        ... 102 more
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
+ses because bootstrap classpat
+h has been appended
+                              WARNING: A Java agent has been loaded dynamically
+(/Users/german/.m2/repository/net/bytebuddy/byte-buddy-agent
+/1.14.4/byte-buddy-agent-1.14.4.jar)
+                              WARNING: If a serviceability tool is in use, pleas
+e run with -XX:+EnableDynamicAgentLoading to hide this warni
+ng
+                              WARNING: If a serviceability tool is not in use, p
+lease run with -Djdk.instrument.traceUsage for more informat
+ion
+                              WARNING: Dynamic loading of agents will be disallo
+wed by default in a future release
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.617 s -
+ in com.mibanco.dtoTest.mapead
+orTest.CuentaMapeadorTest$DirectMethodTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cu
+entaMapeadorTest$DtoToEntityTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -
+ in com.mibanco.dtoTest.mapead
+orTest.CuentaMapeadorTest$DtoToEntityTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Cu
+entaMapeadorTest$EntityToDtoTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.dtoTest.mapead
+orTest.CuentaMapeadorTest$EntityToDtoTests
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.642 s - in com.mibanco.dtoTest.mapead
+orTest.CuentaMapeadorTest
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Tr
+ansaccionMapeadorTest
+[INFO] Running com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCase
+sTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TransaccionMapeadorTest$EdgeCasesTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Tr
+ansaccionMapeadorTest$DirectMethodTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TransaccionMapeadorTest$DirectMethodTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Tr
+ansaccionMapeadorTest$DtoToEntityTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TransaccionMapeadorTest$DtoToEntityTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Tr
+ansaccionMapeadorTest$EntityToDtoTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TransaccionMapeadorTest$EntityToDtoTests
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.016 s - in com.mibanco.dtoTest.mapead
+orTest.TransaccionMapeadorTest
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Ta
+rjetaMapeadorTest
+[INFO] Running com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TarjetaMapeadorTest$ListasTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Ta
+rjetaMapeadorTest$MetodosDirectosTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TarjetaMapeadorTest$MetodosDirectosTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Ta
+rjetaMapeadorTest$EntityToDtoTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TarjetaMapeadorTest$EntityToDtoTests
+                              [INFO] Running com.mibanco.dtoTest.mapeadorTest.Ta
+rjetaMapeadorTest$DtoToEntityTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -
+ in com.mibanco.dtoTest.mapead
+orTest.TarjetaMapeadorTest$DtoToEntityTests
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.022 s - in com.mibanco.dtoTest.mapead
+orTest.TarjetaMapeadorTest
+                              [INFO] Running com.mibanco.dtoTest.TarjetaDtoTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s
+- in com.mibanco.dtoTest.Tarje
+taDtoTest
+                              [INFO] Running com.mibanco.dtoTest.RespuestaDtoTes
+t
+[INFO] Running com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -
+ in com.mibanco.dtoTest.Respue
+staDtoTest$FuncionalidadGenericaTest
+                              [INFO] Running com.mibanco.dtoTest.RespuestaDtoTes
+t$CasosEdgeTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.dtoTest.Respue
+staDtoTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.dtoTest.RespuestaDtoTes
+t$InmutabilidadTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.dtoTest.Respue
+staDtoTest$InmutabilidadTest
+                              [INFO] Running com.mibanco.dtoTest.RespuestaDtoTes
+t$RespuestasErrorTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.dtoTest.Respue
+staDtoTest$RespuestasErrorTest
+                              [INFO] Running com.mibanco.dtoTest.RespuestaDtoTes
+t$RespuestasExitosasTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.dtoTest.Respue
+staDtoTest$RespuestasExitosasTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.019 s - in com.mibanco.dtoTest.Respue
+staDtoTest
+                              [INFO] Running com.mibanco.modeloTest.RegistroAudi
+toriaTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s
+- in com.mibanco.modeloTest.Re
+gistroAuditoriaTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTarjetaTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEd
+geTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTarjetaTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTarjetaTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTarjetaTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in
+com.mibanco.modeloTest.enumsTe
+st.TipoOperacionTarjetaTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTarjetaTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTarjetaTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.012 s - in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTarjetaTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionClienteTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEd
+geTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionClienteTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionClienteTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionClienteTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionClienteTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionClienteTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionClienteTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionClienteTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.009 s - in com.mibanco.modeloTest.enu
+msTest.TipoOperacionClienteTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTransaccionTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$Cas
+osEdgeTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTransaccionTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTransaccionTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTransaccionTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTransaccionTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTransaccionTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionTransaccionTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTransaccionTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.007 s - in com.mibanco.modeloTest.enu
+msTest.TipoOperacionTransaccionTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTarjetaTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTarjetaTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTarjetaTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTarjetaTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTarjetaTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTarjetaTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTarjetaTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTarjetaTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.008 s - in com.mibanco.modeloTest.enu
+msTest.TipoTarjetaTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTransaccionTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTes
+t
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTransaccionTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTransaccionTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTransaccionTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTransaccionTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in
+com.mibanco.modeloTest.enumsTe
+st.TipoTransaccionTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poTransaccionTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoTransaccionTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.005 s - in com.mibanco.modeloTest.enu
+msTest.TipoTransaccionTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poCuentaTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoCuentaTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poCuentaTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoCuentaTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poCuentaTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in
+com.mibanco.modeloTest.enumsTe
+st.TipoCuentaTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poCuentaTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoCuentaTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.008 s - in com.mibanco.modeloTest.enu
+msTest.TipoCuentaTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionCuentaTest
+[INFO] Running com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdg
+eTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionCuentaTest$CasosEdgeTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionCuentaTest$FuncionalidadEnumTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionCuentaTest$FuncionalidadEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionCuentaTest$NombresEnumTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionCuentaTest$NombresEnumTest
+                              [INFO] Running com.mibanco.modeloTest.enumsTest.Ti
+poOperacionCuentaTest$ValoresEnumTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -
+ in com.mibanco.modeloTest.enu
+msTest.TipoOperacionCuentaTest$ValoresEnumTest
+                              [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipp
+ed: 0, Time elapsed: 0.01 s - in com.mibanco.modeloTest.enum
+sTest.TipoOperacionCuentaTest
+                              [INFO] Running com.mibanco.modeloTest.TransaccionT
+est
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s
+- in com.mibanco.modeloTest.Tr
+ansaccionTest
+                              [INFO] Running com.mibanco.modeloTest.TarjetaTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.Tar
+jetaTest
+                              [INFO] Running com.mibanco.modeloTest.CuentaTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -
+ in com.mibanco.modeloTest.Cue
+ntaTest
+                              [INFO] Running com.mibanco.modeloTest.ClienteTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -
+ in com.mibanco.modeloTest.Cli
+enteTest
+                              [INFO] Running com.mibanco.utilTest.ReflexionUtilT
+est
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -
+ in com.mibanco.utilTest.Refle
+xionUtilTest
+                              [INFO] Running com.mibanco.utilTest.AuditoriaUtilT
+est
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 s -
+ in com.mibanco.utilTest.Audit
+oriaUtilTest
+                              [INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 283, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.10:report (report) @ miBanco ---
+[INFO] Loading execution data file /Users/german/ejerciciosJava/miBanco/target/j
+acoco.exec
+[INFO] Analyzed bundle 'miBanco' with 56 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.788 s
+[INFO] Finished at: 2025-07-13T13:29:35+02:00
+[INFO] ------------------------------------------------------------------------
+
+```
+
+---
+
+¡Excelente! Todos los tests pasan correctamente. Ahora vamos a hacer el merge con la rama "ejercicios de aprendizaje".
+
+## 4. Merge con la rama "ejercicios de aprendizaje"
+
+
+---
+
+```bash
+git status
+```
+
+```
+On branch feature/modificacion-repositorios
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   .specstory/history/2025-07-11_21-10Z-ejercicio-de-aprendizaje-test-en-java-015.md
+        modified:   src/main/java/com/mibanco/repositorio/ClienteRepositorio.java
+        modified:   src/main/java/com/mibanco/repositorio/CuentaRepositorio.java
+        modified:   src/main/java/com/mibanco/repositorio/TarjetaRepositorio.java
+        modified:   src/main/java/com/mibanco/repositorio/TransaccionRepositorio.java
+        modified:   src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java
+        modified:   src/main/java/com/mibanco/repositorio/interna/ClienteRepositorioImpl.java
+        modified:   src/main/java/com/mibanco/repositorio/interna/CuentaRepositorioImpl.java
+        modified:   src/main/java/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.java
+        modified:   src/main/java/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.java
+        modified:   src/main/java/com/mibanco/repositorio/util/BaseRepositorio.java
+        modified:   src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java
+        modified:   src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java
+        modified:   src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java
+        modified:   src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java
+        modified:   src/main/java/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.java
+        modified:   src/main/java/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java
+        modified:   src/main/java/com/mibanco/servicio/util/BaseServicio.java
+        modified:   src/test/java/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest.java
+        modified:   target/classes/com/mibanco/repositorio/ClienteRepositorio.class
+        modified:   target/classes/com/mibanco/repositorio/CuentaRepositorio.class
+        modified:   target/classes/com/mibanco/repositorio/TarjetaRepositorio.class
+        modified:   target/classes/com/mibanco/repositorio/TransaccionRepositorio.class
+        modified:   target/classes/com/mibanco/repositorio/interna/BaseRepositorioImpl.class
+        modified:   target/classes/com/mibanco/repositorio/interna/BaseRepositorioImplWrapper.class
+        modified:   target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImpl.class
+        modified:   target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImplWrapper.class
+        modified:   target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImpl.class
+        modified:   target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImplWrapper.class
+        modified:   target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class
+        modified:   target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImplWrapper.class
+        modified:   target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class
+        modified:   target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImplWrapper.class
+        modified:   target/classes/com/mibanco/repositorio/util/BaseRepositorio.class
+        modified:   target/classes/com/mibanco/servicio/interna/BaseServicioImpl.class
+        modified:   target/classes/com/mibanco/servicio/interna/ClienteServicioImpl.class
+        modified:   target/classes/com/mibanco/servicio/interna/CuentaServicioImpl.class
+        modified:   target/classes/com/mibanco/servicio/interna/TarjetaServicioImpl.class
+        modified:   target/classes/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class
+        modified:   target/classes/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class
+        modified:   target/classes/com/mibanco/servicio/util/BaseServicio.class
+        modified:   target/jacoco.exec
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/index.html
+        modified:   target/site/jacoco/com.mibanco.repositorio.interna/index.source.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.java.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.java.ht
+ml
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/index.html
+        modified:   target/site/jacoco/com.mibanco.servicio.interna/index.source.html
+        modified:   target/site/jacoco/index.html
+        modified:   target/site/jacoco/jacoco-sessions.html
+        modified:   target/site/jacoco/jacoco.csv
+        modified:   target/site/jacoco/jacoco.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTes
+t.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.x
+ml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.TransaccionDtoTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEnt
+ityTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityTo
+DtoTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTe
+sts.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosD
+irectosTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMet
+hodTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEnti
+tyTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToD
+toTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEnt
+ityTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityTo
+DtoTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTe
+sts.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosD
+irectosTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$Dire
+ctMethodTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoT
+oEntityTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$Edge
+CasesTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$Enti
+tyToDtoTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.RegistroAuditoriaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.TransaccionTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest
+.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$Funcionalidad
+EnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTe
+st.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTe
+st.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$Cas
+osEdgeTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$Fun
+cionalidadEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$Nom
+bresEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$Val
+oresEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$Caso
+sEdgeTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$Func
+ionalidadEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$Nomb
+resEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$Valo
+resEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$Cas
+osEdgeTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$Fun
+cionalidadEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$Nom
+bresEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$Val
+oresEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest
+$CasosEdgeTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest
+$FuncionalidadEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest
+$NombresEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest
+$ValoresEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest
+.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTes
+t.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$Funcionalida
+dEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumT
+est.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumT
+est.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdg
+eTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$Funciona
+lidadEnumTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresE
+numTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresE
+numTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTes
+t$CalcularMaximoIdTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTes
+t$CargarDatosCondicionalmenteTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTes
+t$GuardarJsonTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTes
+t.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$ActualizarTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$BuscarPorPredicadoTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$BuscarTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$BuscarTodosPorPredicadoTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$ContadorYGuardadoTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$CrearTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$EliminarTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$RestaurarTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$UsuarioActualTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st$ValidacionDefensivaTests.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTe
+st.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.utilTest.AuditoriaUtilTest.xml
+        modified:   target/surefire-reports/TEST-com.mibanco.utilTest.ReflexionUtilTest.xml
+        modified:   target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTe
+sts.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTe
+sts.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTes
+ts.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTes
+ts.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTe
+sts.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTe
+sts.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.t
+xt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirect
+osTests.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMet
+hodTests.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEnti
+tyTests.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCases
+Tests.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToD
+toTests.txt
+        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.CuentaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.RegistroAuditoriaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.TransaccionTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumT
+est.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.tx
+t
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.tx
+t
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$Funciona
+lidadEnumTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresE
+numTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresE
+numTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdge
+Test.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$Funcional
+idadEnumTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEn
+umTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEn
+umTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdg
+eTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$Funciona
+lidadEnumTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresE
+numTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresE
+numTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$Caso
+sEdgeTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$Func
+ionalidadEnumTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnum
+Test.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$Funcionalidad
+EnumTest.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTe
+st.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTe
+st.txt
+        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$Car
+garDatosCondicionalmenteTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$Gua
+rdarJsonTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Bu
+scarTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Co
+ntadorYGuardadoTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Cr
+earTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$El
+iminarTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Re
+staurarTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$Va
+lidacionDefensivaTests.txt
+        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.tx
+t
+        modified:   target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTest.txt
+        modified:   target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTest.txt
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Actual
+izarTests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Buscar
+PorPredicadoTests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Buscar
+Tests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Buscar
+TodosPorPredicadoTests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$CrearT
+ests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Elimin
+arTests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Restau
+rarTests.class
+        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$Valida
+cionDefensivaTests.class
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        ".specstory/history/2025-07-13_10-24Z-c\303\263mo-crear-una-nueva-rama.md"
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+
+---
+
+Primero vamos a hacer commit de los cambios y luego hacer el merge:
+
+
+---
+
+```bash
+git add .
+```
+
+---
+
+```bash
+git commit -m "Refactorización completa de repositorios: eliminación de métodos duplicados y corrección de inconsistencias"
+```
+
+```
+[feature/modificacion-repositorios 6dd0f0a] Refactorización completa de repositorios: eliminación de métodos d
+uplicados y corrección de inconsistencias
+ 234 files changed, 2877 insertions(+), 4205 deletions(-)
+ create mode 100644 ".specstory/history/2025-07-13_10-24Z-c\303\263mo-crear-una-nueva-rama.md"
+
+```
+
+---
+
+Ahora vamos a verificar qué ramas existen y hacer el merge:
+
+
+---
+
+```bash
+git branch -a
+```
 
 ---
 
