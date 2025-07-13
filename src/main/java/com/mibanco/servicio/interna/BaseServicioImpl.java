@@ -30,14 +30,14 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
     }
 
     @Override
-    public Optional<T> guardar(O tipoOperacion, Optional<T> dto) {
+    public Optional<T> guardarEntidad(O tipoOperacion, Optional<T> dto) {
      return dto
             .flatMap(d -> mapeador.aEntidad(Optional.of(d)))
             .flatMap(entidad -> {
                 if (entidad.getId() == null) {
-                    return repositorio.crear(Optional.of(entidad), tipoOperacion);
+                    return repositorio.crearRegistro(Optional.of(entidad), tipoOperacion);
                 } else {
-                    return repositorio.actualizar(Optional.of(entidad), tipoOperacion);
+                    return repositorio.actualizarRegistro(Optional.of(entidad), tipoOperacion);
                 }
             })
             .flatMap(e -> mapeador.aDto(Optional.of(e)));
@@ -66,7 +66,7 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
         return Optional.ofNullable(id)
             .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
             .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
-            .flatMap(dtoActualizado -> guardar(tipoOperacion, Optional.of(dtoActualizado)));
+            .flatMap(dtoActualizado -> guardarEntidad(tipoOperacion, Optional.of(dtoActualizado)));
     }
 
     @Override

@@ -26,40 +26,7 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOp
     TarjetaRepositorioImpl() {
         super();
     }
-    
-    @Override
-    public Optional<Tarjeta> buscarPorNumero(Optional<String> numeroTarjeta) {
-        return numeroTarjeta.flatMap(numero -> 
-            buscarPorPredicado(tarjeta -> tarjeta.getNumero().equals(numero))
-        );
-    }
-    
-    @Override
-    public Optional<List<Tarjeta>> buscarPorTitularId(Optional<Long> idCliente) {
-        return idCliente.flatMap(id -> 
-            buscarTodosPorPredicado(tarjeta -> tarjeta.getTitular().getId().equals(id))
-        );
-    }
-    
-    @Override
-    public Optional<List<Tarjeta>> buscarPorCuentaAsociada(Optional<String> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> 
-            buscarTodosPorPredicado(tarjeta -> tarjeta.getNumeroCuentaAsociada().equals(numero))
-        );
-    }
-    
-    @Override
-    public Optional<List<Tarjeta>> buscarPorTipo(Optional<TipoTarjeta> tipo) {
-        return tipo.flatMap(t -> 
-            buscarTodosPorPredicado(tarjeta -> tarjeta.getTipo() == t)
-        );
-    }
-    
-    @Override
-    public Optional<List<Tarjeta>> buscarActivas() {
-        return buscarTodosPorPredicado(Tarjeta::isActiva);
-    }
-    
+   
     /**
      * Implementación específica para asignar nuevo ID a Tarjeta
      * Usa DTOs para mantener la inmutabilidad de la entidad

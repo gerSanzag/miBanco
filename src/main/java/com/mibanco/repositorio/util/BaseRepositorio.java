@@ -3,6 +3,8 @@ package com.mibanco.repositorio.util;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+
 import com.mibanco.modelo.Identificable;
 
 /**
@@ -21,7 +23,7 @@ public interface BaseRepositorio<T extends Identificable, ID, E extends Enum<E>>
      * @param tipoOperacion Tipo de operación para auditoría
      * @return Optional con la entidad creada
      */
-    Optional<T> crear(Optional<T> entity, E tipoOperacion);
+    Optional<T> crearRegistro(Optional<T> entity, E tipoOperacion);
     
     /**
      * Actualiza una entidad existente
@@ -29,7 +31,7 @@ public interface BaseRepositorio<T extends Identificable, ID, E extends Enum<E>>
      * @param tipoOperacion Tipo de operación para auditoría
      * @return Optional con la entidad actualizada
      */
-    Optional<T> actualizar(Optional<T> entity, E tipoOperacion);
+    Optional<T> actualizarRegistro(Optional<T> entity, E tipoOperacion);
     
     /**
      * Busca una entidad por su ID
@@ -37,7 +39,21 @@ public interface BaseRepositorio<T extends Identificable, ID, E extends Enum<E>>
      * @return Optional con la entidad si existe
      */
     Optional<T> buscarPorId(Optional<ID> id);
-    
+   
+
+    /**
+     * Busca una entidad por un predicado
+     * @param predicado Predicado para buscar la entidad
+     * @return Optional con la entidad si existe
+     */
+    Optional<T> buscarPorPredicado(Predicate<T> predicado);
+   
+    /**
+     * Busca todas las entidades por un predicado
+    Optional<List<T>> buscarTodosPorPredicado(Predicate<T> predicado);
+     * @return Optional con la lista de entidades si existe
+     */
+    Optional<List<T>> buscarTodosPorPredicado(Predicate<T> predicado);
     /**
      * Obtiene todas las entidades
      * @return Optional con la lista de entidades

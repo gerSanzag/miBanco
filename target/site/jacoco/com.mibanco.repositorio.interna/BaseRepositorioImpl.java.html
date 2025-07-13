@@ -105,7 +105,7 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
 <span class="fc" id="L105">    }</span>
     
     @Override
-    public Optional&lt;T&gt; crear(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
+    public Optional&lt;T&gt; crearRegistro(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
 <span class="fc" id="L109">        return entityOpt.map(entity -&gt; {</span>
             // ✅ Llamar al método abstracto para asignar ID
 <span class="fc" id="L111">            T entidadConId = crearConNuevoId(entity);</span>
@@ -131,7 +131,7 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     protected abstract Map&lt;String, Object&gt; obtenerConfiguracion();
     
     @Override
-    public Optional&lt;T&gt; actualizar(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
+    public Optional&lt;T&gt; actualizarRegistro(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
 <span class="fc" id="L135">        return entityOpt.flatMap(entidad -&gt; </span>
 <span class="fc" id="L136">            Optional.ofNullable(entidad.getId())</span>
 <span class="fc" id="L137">                .map(id -&gt; {</span>
@@ -156,7 +156,7 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     /**
      * Método protegido para búsquedas por predicado
      */
-    protected Optional&lt;T&gt; buscarPorPredicado(Predicate&lt;T&gt; predicado) {
+    public Optional&lt;T&gt; buscarPorPredicado(Predicate&lt;T&gt; predicado) {
 <span class="fc" id="L160">        return entidades.stream()</span>
 <span class="fc" id="L161">                .filter(predicado)</span>
 <span class="fc" id="L162">                .findFirst();</span>
@@ -165,7 +165,7 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
     /**
      * Método protegido para búsquedas de lista por predicado
      */
-    protected Optional&lt;List&lt;T&gt;&gt; buscarTodosPorPredicado(Predicate&lt;T&gt; predicado) {
+    public Optional&lt;List&lt;T&gt;&gt; buscarTodosPorPredicado(Predicate&lt;T&gt; predicado) {
 <span class="fc" id="L169">        return Optional.of(</span>
 <span class="fc" id="L170">            entidades.stream()</span>
 <span class="fc" id="L171">                .filter(predicado)</span>
@@ -243,7 +243,7 @@ abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enu
 <span class="fc" id="L243">            Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
 <span class="fc" id="L244">            String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
 <span class="pc bpc" id="L245" title="1 of 2 branches missed.">            if (ruta != null) {</span>
-<span class="fc" id="L246">                jsonProcesador.guardarJson(ruta, entidades);</span>
+<span class="fc" id="L246">            jsonProcesador.guardarJson(ruta, entidades);</span>
             }
 <span class="fc" id="L248">            contadorOperaciones = 0;</span>
         }

@@ -63,15 +63,7 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
         );
     }
     
-    @Override
-    public Optional<List<Transaccion>> buscarTodas() {
-        return buscarTodos();
-    }
-    
-    @Override
-    public Optional<Transaccion> eliminarPorId(Optional<Long> id) {
-        return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);
-    }
+
     
     /**
      * ✅ Obtiene la configuración para este repositorio

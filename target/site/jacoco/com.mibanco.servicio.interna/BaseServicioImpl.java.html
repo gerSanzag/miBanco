@@ -30,14 +30,14 @@ abstract class BaseServicioImpl&lt;T, E extends Identificable, ID, O extends Enu
 <span class="nc" id="L30">    }</span>
 
     @Override
-    public Optional&lt;T&gt; guardar(O tipoOperacion, Optional&lt;T&gt; dto) {
+    public Optional&lt;T&gt; guardarEntidad(O tipoOperacion, Optional&lt;T&gt; dto) {
 <span class="nc" id="L34">     return dto</span>
 <span class="nc" id="L35">            .flatMap(d -&gt; mapeador.aEntidad(Optional.of(d)))</span>
 <span class="nc" id="L36">            .flatMap(entidad -&gt; {</span>
 <span class="nc bnc" id="L37" title="All 2 branches missed.">                if (entidad.getId() == null) {</span>
-<span class="nc" id="L38">                    return repositorio.crear(Optional.of(entidad), tipoOperacion);</span>
+<span class="nc" id="L38">                    return repositorio.crearRegistro(Optional.of(entidad), tipoOperacion);</span>
                 } else {
-<span class="nc" id="L40">                    return repositorio.actualizar(Optional.of(entidad), tipoOperacion);</span>
+<span class="nc" id="L40">                    return repositorio.actualizarRegistro(Optional.of(entidad), tipoOperacion);</span>
                 }
             })
 <span class="nc" id="L43">            .flatMap(e -&gt; mapeador.aDto(Optional.of(e)));</span>
@@ -66,7 +66,7 @@ abstract class BaseServicioImpl&lt;T, E extends Identificable, ID, O extends Enu
 <span class="nc" id="L66">        return Optional.ofNullable(id)</span>
 <span class="nc" id="L67">            .flatMap(idValue -&gt; repositorio.buscarPorId(Optional.of(idValue)))</span>
 <span class="nc" id="L68">            .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
-<span class="nc" id="L69">            .flatMap(dtoActualizado -&gt; guardar(tipoOperacion, Optional.of(dtoActualizado)));</span>
+<span class="nc" id="L69">            .flatMap(dtoActualizado -&gt; guardarEntidad(tipoOperacion, Optional.of(dtoActualizado)));</span>
     }
 
     @Override

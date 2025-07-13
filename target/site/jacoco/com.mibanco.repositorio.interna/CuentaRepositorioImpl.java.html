@@ -27,40 +27,6 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
 <span class="fc" id="L27">        super();</span>
 <span class="fc" id="L28">    }</span>
     
-    @Override
-    public Optional&lt;Cuenta&gt; buscarPorNumero(Optional&lt;Long&gt; numeroCuenta) {
-<span class="nc" id="L32">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L33">            buscarPorPredicado(cuenta -&gt; cuenta.getNumeroCuenta().equals(numero))</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Cuenta&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idTitular) {
-<span class="nc" id="L39">        return idTitular.flatMap(id -&gt; </span>
-<span class="nc" id="L40">            buscarTodosPorPredicado(cuenta -&gt; cuenta.getTitular().getId().equals(id))</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Cuenta&gt;&gt; buscarPorTipo(Optional&lt;TipoCuenta&gt; tipo) {
-<span class="nc" id="L46">        return tipo.flatMap(t -&gt; </span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">            buscarTodosPorPredicado(cuenta -&gt; cuenta.getTipo() == t)</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Cuenta&gt;&gt; buscarActivas() {
-<span class="nc" id="L53">        return buscarTodosPorPredicado(Cuenta::isActiva);</span>
-    }
-    
-    @Override
-    public Optional&lt;Cuenta&gt; eliminarPorNumero(Optional&lt;Long&gt; numeroCuenta) {
-<span class="nc" id="L58">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L59">            buscarPorNumero(Optional.of(numero))</span>
-<span class="nc" id="L60">                .flatMap(cuenta -&gt; eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))</span>
-        );
-    }
-    
     /**
      * Implementación específica para asignar nuevo ID a Cuenta
      * Usa DTOs para mantener la inmutabilidad de la entidad
@@ -70,18 +36,18 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
      */
     @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
-<span class="nc" id="L73">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
-<span class="nc" id="L74">        CuentaMapeador mapeador = new CuentaMapeador(clienteMapeador);</span>
+<span class="nc" id="L39">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
+<span class="nc" id="L40">        CuentaMapeador mapeador = new CuentaMapeador(clienteMapeador);</span>
         
-<span class="nc" id="L76">        return mapeador.aDtoDirecto(cuenta)</span>
-<span class="nc" id="L77">            .map(dto -&gt; {</span>
-<span class="nc" id="L78">                String numero = String.format(&quot;%09d&quot;, (int) (Math.random() * 1000000000));</span>
-<span class="nc" id="L79">                return dto.toBuilder()</span>
-<span class="nc" id="L80">                    .numeroCuenta(Long.parseLong(numero))</span>
-<span class="nc" id="L81">                    .build();</span>
+<span class="nc" id="L42">        return mapeador.aDtoDirecto(cuenta)</span>
+<span class="nc" id="L43">            .map(dto -&gt; {</span>
+<span class="nc" id="L44">                String numero = String.format(&quot;%09d&quot;, (int) (Math.random() * 1000000000));</span>
+<span class="nc" id="L45">                return dto.toBuilder()</span>
+<span class="nc" id="L46">                    .numeroCuenta(Long.parseLong(numero))</span>
+<span class="nc" id="L47">                    .build();</span>
             })
-<span class="nc" id="L83">            .flatMap(mapeador::aEntidadDirecta)</span>
-<span class="nc" id="L84">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cuenta&quot;));</span>
+<span class="nc" id="L49">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="nc" id="L50">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cuenta&quot;));</span>
     }
     
     /**
@@ -90,11 +56,11 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="fc" id="L93">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L94">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/cuenta.json&quot;);</span>
-<span class="fc" id="L95">        config.put(&quot;tipoClase&quot;, Cuenta.class);</span>
-<span class="fc" id="L96">        config.put(&quot;extractorId&quot;, (Function&lt;Cuenta, Long&gt;) Cuenta::getId);</span>
-<span class="fc" id="L97">        return config;</span>
+<span class="fc" id="L59">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/cuenta.json&quot;);</span>
+<span class="fc" id="L61">        config.put(&quot;tipoClase&quot;, Cuenta.class);</span>
+<span class="fc" id="L62">        config.put(&quot;extractorId&quot;, (Function&lt;Cuenta, Long&gt;) Cuenta::getId);</span>
+<span class="fc" id="L63">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

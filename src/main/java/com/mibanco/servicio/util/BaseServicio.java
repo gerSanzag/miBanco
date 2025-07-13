@@ -21,7 +21,7 @@ public interface BaseServicio<T, E extends Identificable, ID, O extends Enum<O>>
      * @param dto Optional con los datos a guardar
      * @return Optional con el DTO guardado
      */
-    Optional<T> guardar(O tipoOperacion, Optional<T> dto);
+    Optional<T> guardarEntidad(O tipoOperacion, Optional<T> dto);
 
     /**
      * Método genérico para actualizar un campo específico de una entidad

@@ -105,7 +105,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     }
     
     @Override
-    public Optional<T> crear(Optional<T> entityOpt, E tipoOperacion) {
+    public Optional<T> crearRegistro(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.map(entity -> {
             // ✅ Llamar al método abstracto para asignar ID
             T entidadConId = crearConNuevoId(entity);
@@ -131,7 +131,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     protected abstract Map<String, Object> obtenerConfiguracion();
     
     @Override
-    public Optional<T> actualizar(Optional<T> entityOpt, E tipoOperacion) {
+    public Optional<T> actualizarRegistro(Optional<T> entityOpt, E tipoOperacion) {
         return entityOpt.flatMap(entidad -> 
             Optional.ofNullable(entidad.getId())
                 .map(id -> {
@@ -156,7 +156,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     /**
      * Método protegido para búsquedas por predicado
      */
-    protected Optional<T> buscarPorPredicado(Predicate<T> predicado) {
+    public Optional<T> buscarPorPredicado(Predicate<T> predicado) {
         return entidades.stream()
                 .filter(predicado)
                 .findFirst();
@@ -165,7 +165,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     /**
      * Método protegido para búsquedas de lista por predicado
      */
-    protected Optional<List<T>> buscarTodosPorPredicado(Predicate<T> predicado) {
+    public Optional<List<T>> buscarTodosPorPredicado(Predicate<T> predicado) {
         return Optional.of(
             entidades.stream()
                 .filter(predicado)
@@ -243,7 +243,7 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
             Map<String, Object> config = obtenerConfiguracion();
             String ruta = (String) config.get("rutaArchivo");
             if (ruta != null) {
-                jsonProcesador.guardarJson(ruta, entidades);
+            jsonProcesador.guardarJson(ruta, entidades);
             }
             contadorOperaciones = 0;
         }

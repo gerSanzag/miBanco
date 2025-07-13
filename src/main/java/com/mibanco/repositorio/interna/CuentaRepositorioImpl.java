@@ -27,40 +27,6 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
         super();
     }
     
-    @Override
-    public Optional<Cuenta> buscarPorNumero(Optional<Long> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> 
-            buscarPorPredicado(cuenta -> cuenta.getNumeroCuenta().equals(numero))
-        );
-    }
-    
-    @Override
-    public Optional<List<Cuenta>> buscarPorTitularId(Optional<Long> idTitular) {
-        return idTitular.flatMap(id -> 
-            buscarTodosPorPredicado(cuenta -> cuenta.getTitular().getId().equals(id))
-        );
-    }
-    
-    @Override
-    public Optional<List<Cuenta>> buscarPorTipo(Optional<TipoCuenta> tipo) {
-        return tipo.flatMap(t -> 
-            buscarTodosPorPredicado(cuenta -> cuenta.getTipo() == t)
-        );
-    }
-    
-    @Override
-    public Optional<List<Cuenta>> buscarActivas() {
-        return buscarTodosPorPredicado(Cuenta::isActiva);
-    }
-    
-    @Override
-    public Optional<Cuenta> eliminarPorNumero(Optional<Long> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> 
-            buscarPorNumero(Optional.of(numero))
-                .flatMap(cuenta -> eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))
-        );
-    }
-    
     /**
      * Implementación específica para asignar nuevo ID a Cuenta
      * Usa DTOs para mantener la inmutabilidad de la entidad

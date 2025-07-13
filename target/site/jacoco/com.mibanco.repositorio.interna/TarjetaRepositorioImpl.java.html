@@ -26,40 +26,7 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, Tip
     TarjetaRepositorioImpl() {
 <span class="fc" id="L27">        super();</span>
 <span class="fc" id="L28">    }</span>
-    
-    @Override
-    public Optional&lt;Tarjeta&gt; buscarPorNumero(Optional&lt;String&gt; numeroTarjeta) {
-<span class="nc" id="L32">        return numeroTarjeta.flatMap(numero -&gt; </span>
-<span class="nc" id="L33">            buscarPorPredicado(tarjeta -&gt; tarjeta.getNumero().equals(numero))</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idCliente) {
-<span class="nc" id="L39">        return idCliente.flatMap(id -&gt; </span>
-<span class="nc" id="L40">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTitular().getId().equals(id))</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorCuentaAsociada(Optional&lt;String&gt; numeroCuenta) {
-<span class="nc" id="L46">        return numeroCuenta.flatMap(numero -&gt; </span>
-<span class="nc" id="L47">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getNumeroCuentaAsociada().equals(numero))</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarPorTipo(Optional&lt;TipoTarjeta&gt; tipo) {
-<span class="nc" id="L53">        return tipo.flatMap(t -&gt; </span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">            buscarTodosPorPredicado(tarjeta -&gt; tarjeta.getTipo() == t)</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;List&lt;Tarjeta&gt;&gt; buscarActivas() {
-<span class="nc" id="L60">        return buscarTodosPorPredicado(Tarjeta::isActiva);</span>
-    }
-    
+   
     /**
      * Implementación específica para asignar nuevo ID a Tarjeta
      * Usa DTOs para mantener la inmutabilidad de la entidad
@@ -69,18 +36,18 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, Tip
      */
     @Override
     protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
-<span class="nc" id="L72">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
-<span class="nc" id="L73">        TarjetaMapeador mapeador = new TarjetaMapeador(clienteMapeador);</span>
+<span class="nc" id="L39">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
+<span class="nc" id="L40">        TarjetaMapeador mapeador = new TarjetaMapeador(clienteMapeador);</span>
         
-<span class="nc" id="L75">        return mapeador.aDtoDirecto(tarjeta)</span>
-<span class="nc" id="L76">            .map(dto -&gt; {</span>
-<span class="nc" id="L77">                String numero = String.format(&quot;%016d&quot;, (long) (Math.random() * 10000000000000000L));</span>
-<span class="nc" id="L78">                return dto.toBuilder()</span>
-<span class="nc" id="L79">                    .numero(numero)</span>
-<span class="nc" id="L80">                    .build();</span>
+<span class="nc" id="L42">        return mapeador.aDtoDirecto(tarjeta)</span>
+<span class="nc" id="L43">            .map(dto -&gt; {</span>
+<span class="nc" id="L44">                String numero = String.format(&quot;%016d&quot;, (long) (Math.random() * 10000000000000000L));</span>
+<span class="nc" id="L45">                return dto.toBuilder()</span>
+<span class="nc" id="L46">                    .numero(numero)</span>
+<span class="nc" id="L47">                    .build();</span>
             })
-<span class="nc" id="L82">            .flatMap(mapeador::aEntidadDirecta)</span>
-<span class="nc" id="L83">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Tarjeta&quot;));</span>
+<span class="nc" id="L49">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="nc" id="L50">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Tarjeta&quot;));</span>
     }
     
     /**
@@ -89,11 +56,11 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, Tip
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="fc" id="L92">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L93">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/tarjeta.json&quot;);</span>
-<span class="fc" id="L94">        config.put(&quot;tipoClase&quot;, Tarjeta.class);</span>
-<span class="fc" id="L95">        config.put(&quot;extractorId&quot;, (Function&lt;Tarjeta, Long&gt;) Tarjeta::getId);</span>
-<span class="fc" id="L96">        return config;</span>
+<span class="fc" id="L59">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/tarjeta.json&quot;);</span>
+<span class="fc" id="L61">        config.put(&quot;tipoClase&quot;, Tarjeta.class);</span>
+<span class="fc" id="L62">        config.put(&quot;extractorId&quot;, (Function&lt;Tarjeta, Long&gt;) Tarjeta::getId);</span>
+<span class="fc" id="L63">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

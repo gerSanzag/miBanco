@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Implementación del servicio de cuentas
@@ -59,14 +61,14 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
                 Optional.ofNullable(cuentaNueva.isActiva())
             )
         );
-        guardar(tipoActualizar, actualizaVariosCampos);
+        guardarEntidad(tipoActualizar, actualizaVariosCampos);
         return actualizaVariosCampos;
     }
 
     @Override
     public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<Long> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
-            repositorio.buscarPorNumero(Optional.of(numero))
+            repositorio.buscarPorId(Optional.of(numero))
                 .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)))
         );
     }
@@ -84,7 +86,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
             CuentaDTO::getSaldo,
             CuentaDTO::conSaldo
         );
-        guardar(tipoActualizar, actualizaSaldo);
+        guardarEntidad(tipoActualizar, actualizaSaldo);
         return actualizaSaldo;
     }
 
@@ -96,7 +98,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
             CuentaDTO::isActiva,
             CuentaDTO::conActiva
         );
-        guardar(tipoActualizar, actualizaEstado);
+        guardarEntidad(tipoActualizar, actualizaEstado);
         return actualizaEstado;
     }
 
@@ -111,7 +113,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
                     (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titularDTO.getTitular() ).build()
                 ))
         );
-        guardar(tipoActualizar, actualizaTitular);
+        guardarEntidad(tipoActualizar, actualizaTitular);
         return actualizaTitular;
     }
 
@@ -122,7 +124,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
 
     @Override
     public Optional<CuentaDTO> eliminarPorNumero(Optional<Long> numeroCuenta) {
-        return repositorio.eliminarPorNumero(numeroCuenta)
+        return repositorio.eliminarPorId(numeroCuenta, TipoOperacionCuenta.ELIMINAR)
             .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)));
     }
 
@@ -143,17 +145,17 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
 
     @Override
     public Optional<List<CuentaDTO>> buscarPorTitularId(Optional<Long> idTitular) {
-        return repositorio.buscarPorTitularId(idTitular)
+        return repositorio.buscarTodosPorPredicado(cuenta -> cuenta.getTitular().getId().equals(idTitular.get()))        
             .map(cuentas -> cuentas.stream()
                 .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
-                .filter(java.util.Objects::nonNull)
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
             );
     }
 
     @Override
     public Optional<List<CuentaDTO>> buscarPorTipo(Optional<TipoCuenta> tipo) {
-        return repositorio.buscarPorTipo(tipo)
+        return repositorio.buscarTodosPorPredicado(cuenta -> cuenta.getTipo().equals(tipo.get()))
             .map(cuentas -> cuentas.stream()
                 .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
                 .filter(java.util.Objects::nonNull)
@@ -163,7 +165,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
 
     @Override
     public Optional<List<CuentaDTO>> buscarActivas() {
-        return repositorio.buscarActivas()
+            return repositorio.buscarTodosPorPredicado(cuenta -> cuenta.isActiva())
             .map(cuentas -> cuentas.stream()
                 .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
                 .filter(java.util.Objects::nonNull)
@@ -180,7 +182,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
     public Optional<CuentaDTO> crearCuentaDto(Map<String, String> datosCrudos, BigDecimal montoInicial, TransaccionOperacionesServicio transaccionServicio) {
         return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)
             .flatMap(cuentaDTO -> cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))
-            .flatMap(cuentaConSaldo -> guardar(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo)))
+            .flatMap(cuentaConSaldo -> guardarEntidad(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo)))
             .or(() -> Optional.empty());
     }
 } 

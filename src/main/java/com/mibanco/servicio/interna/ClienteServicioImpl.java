@@ -35,12 +35,12 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
     public Optional<ClienteDTO> crearClienteDto(Map<String, String> datosCliente) {
         // Usar el procesador especializado para crear el DTO con validaciones
         return clienteDtoProcesador.procesarClienteDto(datosCliente)
-            .flatMap(clienteDto -> guardar(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));
+            .flatMap(clienteDto -> guardarEntidad(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));
     }
 
     @Override
     public Optional<ClienteDTO> guardarCliente(Optional<ClienteDTO> clienteDTO) {
-        return guardar(TipoOperacionCliente.CREAR,clienteDTO);
+        return guardarEntidad(TipoOperacionCliente.CREAR,clienteDTO);
     }
 
     @Override
@@ -58,7 +58,7 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
                 );
                 
                 // Guardar y retornar
-                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
             });
         });
     }
@@ -70,7 +70,7 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
             
             return clienteExistenteOpt.map(clienteExistente -> {
                 ClienteDTO clienteActualizado = clienteExistente.conEmail(email);
-                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
             });
         });
     }
@@ -82,7 +82,7 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
             
             return clienteExistenteOpt.map(clienteExistente -> {
                 ClienteDTO clienteActualizado = clienteExistente.conTelefono(telefono);
-                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
             });
         });
     }
@@ -94,7 +94,7 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
             
             return clienteExistenteOpt.map(clienteExistente -> {
                 ClienteDTO clienteActualizado = clienteExistente.conDireccion(direccion);
-                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
+                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);
             });
         });
     }
@@ -106,10 +106,8 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
 
     @Override
     public Optional<ClienteDTO> obtenerClientePorDni(Optional<String> dni) {
-        return dni.flatMap(dniValue ->
-            ((ClienteRepositorio)repositorio).buscarPorDni(Optional.of(dniValue))
-                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
-        );
+        return dni.flatMap(dniValue -> repositorioCliente.buscarPorId(Optional.of(Long.parseLong(dniValue)))
+                .flatMap(entidad -> mapeador.aDto(Optional.of(entidad))));
     }
 
     @Override

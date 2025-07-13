@@ -103,7 +103,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
                                 .build();
                             
                             // Guardamos la transacción
-                            return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
+                            return guardarEntidad(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
                         });
                 } finally {
                     // Siempre liberamos el bloqueo
@@ -149,7 +149,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
                                 .build();
                             
                             // Guardamos la transacción
-                            return guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
+                            return guardarEntidad(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDTO));
                         });
                 } finally {
                     // Siempre liberamos el bloqueo
@@ -212,7 +212,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl<TransaccionDTO
                     
                     // Convertir a DTO y guardar usando el servicio base
                     return mapeador.aDto(Optional.of(transaccionAnulacion))
-                            .flatMap(dto -> guardar(TipoOperacionTransaccion.ANULAR, Optional.of(dto)));
+                            .flatMap(dto -> guardarEntidad(TipoOperacionTransaccion.ANULAR, Optional.of(dto)));
                 })
         );
     }

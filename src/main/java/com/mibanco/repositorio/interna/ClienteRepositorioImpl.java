@@ -23,21 +23,6 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl<Cliente, Long, TipoOper
         super();
     }
     
-    @Override
-    public Optional<Cliente> buscarPorDni(Optional<String> dniOpt) {
-        return dniOpt.flatMap(dni -> 
-            buscarPorPredicado(cliente -> cliente.getDni().equals(dni))
-        );
-    }
-    
-    @Override
-    public Optional<Cliente> restaurarClienteEliminado(Optional<Long> id) {
-        return restaurar(id, TipoOperacionCliente.RESTAURAR);
-    }
-    
-  
-
-    
     /**
      * Implementación específica para asignar nuevo ID a Cliente
      * Usa DTOs para mantener la inmutabilidad de la entidad

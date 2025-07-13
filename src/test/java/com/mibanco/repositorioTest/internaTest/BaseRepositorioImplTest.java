@@ -132,7 +132,7 @@ class BaseRepositorioImplTest {
                 .build();
             
             // Act
-            Optional<Cliente> resultado = repositorio.crear(Optional.of(clienteNuevo), TipoOperacionCliente.CREAR);
+            Optional<Cliente> resultado = repositorio.crearRegistro(Optional.of(clienteNuevo), TipoOperacionCliente.CREAR);
             
             // Assert
             assertTrue(resultado.isPresent());
@@ -146,7 +146,7 @@ class BaseRepositorioImplTest {
         @DisplayName("Debería devolver empty para entidad null")
         void deberiaDevolverEmptyParaEntidadNull() {
             // Act
-            Optional<Cliente> resultado = repositorio.crear(Optional.empty(), TipoOperacionCliente.CREAR);
+            Optional<Cliente> resultado = repositorio.crearRegistro(Optional.empty(), TipoOperacionCliente.CREAR);
             
             // Assert
             assertFalse(resultado.isPresent());
@@ -161,8 +161,8 @@ class BaseRepositorioImplTest {
         @BeforeEach
         void setUp() {
             // Crear entidades de prueba
-            repositorio.crear(Optional.of(cliente1), TipoOperacionCliente.CREAR);
-            repositorio.crear(Optional.of(cliente2), TipoOperacionCliente.CREAR);
+            repositorio.crearRegistro(Optional.of(cliente1), TipoOperacionCliente.CREAR);
+            repositorio.crearRegistro(Optional.of(cliente2), TipoOperacionCliente.CREAR);
         }
         
         @Test
@@ -227,8 +227,8 @@ class BaseRepositorioImplTest {
 
         @BeforeEach
         void setUp() {
-            repositorio.crear(Optional.of(cliente1), TipoOperacionCliente.CREAR);
-            repositorio.crear(Optional.of(cliente2), TipoOperacionCliente.CREAR);
+            repositorio.crearRegistro(Optional.of(cliente1), TipoOperacionCliente.CREAR);
+            repositorio.crearRegistro(Optional.of(cliente2), TipoOperacionCliente.CREAR);
         }
 
         @Test
@@ -259,8 +259,8 @@ class BaseRepositorioImplTest {
 
         @BeforeEach
         void setUp() {
-            repositorio.crear(Optional.of(cliente1), TipoOperacionCliente.CREAR);
-            repositorio.crear(Optional.of(cliente2), TipoOperacionCliente.CREAR);
+            repositorio.crearRegistro(Optional.of(cliente1), TipoOperacionCliente.CREAR);
+            repositorio.crearRegistro(Optional.of(cliente2), TipoOperacionCliente.CREAR);
         }
 
         @Test
@@ -316,7 +316,7 @@ class BaseRepositorioImplTest {
             Cliente clienteActualizado = mapeador.aEntidadDirecta(dtoActualizado).orElseThrow();
             
             // Act
-            Optional<Cliente> resultado = repositorio.actualizar(Optional.of(clienteActualizado), TipoOperacionCliente.ACTUALIZAR);
+            Optional<Cliente> resultado = repositorio.actualizarRegistro(Optional.of(clienteActualizado), TipoOperacionCliente.ACTUALIZAR);
             
             // Assert
             assertTrue(resultado.isPresent());
@@ -351,7 +351,7 @@ class BaseRepositorioImplTest {
         @BeforeEach
         void setUp() {
             // Crear entidad de prueba
-            Optional<Cliente> resultado = repositorio.crear(Optional.of(cliente1), TipoOperacionCliente.CREAR);
+            Optional<Cliente> resultado = repositorio.crearRegistro(Optional.of(cliente1), TipoOperacionCliente.CREAR);
             clienteCreado = resultado.get();
         }
         
@@ -389,7 +389,7 @@ class BaseRepositorioImplTest {
         @BeforeEach
         void setUp() {
             // Crear y eliminar entidad de prueba
-            Optional<Cliente> resultado = repositorio.crear(Optional.of(cliente1), TipoOperacionCliente.CREAR);
+            Optional<Cliente> resultado = repositorio.crearRegistro(Optional.of(cliente1), TipoOperacionCliente.CREAR);
             Cliente clienteCreado = resultado.get();
             clienteEliminado = repositorio.eliminarPorId(Optional.of(clienteCreado.getId()), TipoOperacionCliente.ELIMINAR).get();
             // clienteEliminado = clienteCreado;
@@ -492,7 +492,7 @@ class BaseRepositorioImplTest {
                     .fechaNacimiento(LocalDate.of(1990, 1, 1))
                     .build();
                 
-                Optional<Cliente> resultado = repositorioConRutaNull.crear(Optional.of(clienteNuevo), TipoOperacionCliente.CREAR);
+                Optional<Cliente> resultado = repositorioConRutaNull.crearRegistro(Optional.of(clienteNuevo), TipoOperacionCliente.CREAR);
                 
                 // Verificar que la operación fue exitosa a pesar de la ruta null
                 assertTrue(resultado.isPresent());

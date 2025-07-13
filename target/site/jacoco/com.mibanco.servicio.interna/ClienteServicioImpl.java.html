@@ -35,12 +35,12 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
     public Optional&lt;ClienteDTO&gt; crearClienteDto(Map&lt;String, String&gt; datosCliente) {
         // Usar el procesador especializado para crear el DTO con validaciones
 <span class="nc" id="L37">        return clienteDtoProcesador.procesarClienteDto(datosCliente)</span>
-<span class="nc" id="L38">            .flatMap(clienteDto -&gt; guardar(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));</span>
+<span class="nc" id="L38">            .flatMap(clienteDto -&gt; guardarEntidad(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));</span>
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; guardarCliente(Optional&lt;ClienteDTO&gt; clienteDTO) {
-<span class="nc" id="L43">        return guardar(TipoOperacionCliente.CREAR,clienteDTO);</span>
+<span class="nc" id="L43">        return guardarEntidad(TipoOperacionCliente.CREAR,clienteDTO);</span>
     }
 
     @Override
@@ -58,7 +58,7 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
                 );
                 
                 // Guardar y retornar
-<span class="nc" id="L61">                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L61">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
@@ -70,7 +70,7 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
             
 <span class="nc" id="L71">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
 <span class="nc" id="L72">                ClienteDTO clienteActualizado = clienteExistente.conEmail(email);</span>
-<span class="nc" id="L73">                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L73">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
@@ -82,7 +82,7 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
             
 <span class="nc" id="L83">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
 <span class="nc" id="L84">                ClienteDTO clienteActualizado = clienteExistente.conTelefono(telefono);</span>
-<span class="nc" id="L85">                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L85">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
@@ -94,7 +94,7 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
             
 <span class="nc" id="L95">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
 <span class="nc" id="L96">                ClienteDTO clienteActualizado = clienteExistente.conDireccion(direccion);</span>
-<span class="nc" id="L97">                return guardar(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L97">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
@@ -106,35 +106,33 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
 
     @Override
     public Optional&lt;ClienteDTO&gt; obtenerClientePorDni(Optional&lt;String&gt; dni) {
-<span class="nc" id="L109">        return dni.flatMap(dniValue -&gt;</span>
-<span class="nc" id="L110">            ((ClienteRepositorio)repositorio).buscarPorDni(Optional.of(dniValue))</span>
-<span class="nc" id="L111">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad)))</span>
-        );
+<span class="nc" id="L109">        return dni.flatMap(dniValue -&gt; repositorioCliente.buscarPorId(Optional.of(Long.parseLong(dniValue)))</span>
+<span class="nc" id="L110">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad))));</span>
     }
 
     @Override
     public Optional&lt;List&lt;ClienteDTO&gt;&gt; obtenerTodosLosClientes() {
-<span class="nc" id="L117">        return obtenerTodos();</span>
+<span class="nc" id="L115">        return obtenerTodos();</span>
     }
 
     @Override
     public boolean eliminarCliente(Optional&lt;Long&gt; id) {
-<span class="nc" id="L122">        return eliminarPorId(id, TipoOperacionCliente.ELIMINAR);</span>
+<span class="nc" id="L120">        return eliminarPorId(id, TipoOperacionCliente.ELIMINAR);</span>
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; restaurarCliente(Optional&lt;Long&gt; id) {
-<span class="nc" id="L127">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
+<span class="nc" id="L125">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
     }
 
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L132">        establecerUsuarioActual(usuario);</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L130">        establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L131">    }</span>
 
     @Override
     public long contarClientes() {
-<span class="nc" id="L137">        return contarRegistros();</span>
+<span class="nc" id="L135">        return contarRegistros();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

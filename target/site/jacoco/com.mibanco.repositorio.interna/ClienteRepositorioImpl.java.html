@@ -23,21 +23,6 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
 <span class="fc" id="L23">        super();</span>
 <span class="fc" id="L24">    }</span>
     
-    @Override
-    public Optional&lt;Cliente&gt; buscarPorDni(Optional&lt;String&gt; dniOpt) {
-<span class="nc" id="L28">        return dniOpt.flatMap(dni -&gt; </span>
-<span class="nc" id="L29">            buscarPorPredicado(cliente -&gt; cliente.getDni().equals(dni))</span>
-        );
-    }
-    
-    @Override
-    public Optional&lt;Cliente&gt; restaurarClienteEliminado(Optional&lt;Long&gt; id) {
-<span class="nc" id="L35">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
-    }
-    
-  
-
-    
     /**
      * Implementación específica para asignar nuevo ID a Cliente
      * Usa DTOs para mantener la inmutabilidad de la entidad
@@ -47,14 +32,14 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
      */
     @Override
     protected Cliente crearConNuevoId(Cliente cliente) {
-<span class="nc" id="L50">        ClienteMapeador mapeador = new ClienteMapeador();</span>
+<span class="nc" id="L35">        ClienteMapeador mapeador = new ClienteMapeador();</span>
         
-<span class="nc" id="L52">        return mapeador.aDtoDirecto(cliente)</span>
-<span class="nc" id="L53">            .map(dto -&gt; dto.toBuilder()</span>
-<span class="nc" id="L54">                .id(idContador.incrementAndGet())</span>
-<span class="nc" id="L55">                .build())</span>
-<span class="nc" id="L56">            .flatMap(mapeador::aEntidadDirecta)</span>
-<span class="nc" id="L57">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cliente&quot;));</span>
+<span class="nc" id="L37">        return mapeador.aDtoDirecto(cliente)</span>
+<span class="nc" id="L38">            .map(dto -&gt; dto.toBuilder()</span>
+<span class="nc" id="L39">                .id(idContador.incrementAndGet())</span>
+<span class="nc" id="L40">                .build())</span>
+<span class="nc" id="L41">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="nc" id="L42">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cliente&quot;));</span>
     }
     
     /**
@@ -63,11 +48,11 @@ class ClienteRepositorioImpl extends BaseRepositorioImpl&lt;Cliente, Long, TipoO
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="fc" id="L66">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L67">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
-<span class="fc" id="L68">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
-<span class="fc" id="L69">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
-<span class="fc" id="L70">        return config;</span>
+<span class="fc" id="L51">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L52">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
+<span class="fc" id="L53">        config.put(&quot;tipoClase&quot;, Cliente.class);</span>
+<span class="fc" id="L54">        config.put(&quot;extractorId&quot;, (Function&lt;Cliente, Long&gt;) Cliente::getId);</span>
+<span class="fc" id="L55">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

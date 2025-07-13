@@ -45,7 +45,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
         );
         
         return procesador.procesarTarjetaDto(datosTarjeta)
-            .flatMap(tarjetaDto -> guardar(TipoOperacionTarjeta.CREAR, Optional.of(tarjetaDto)));
+            .flatMap(tarjetaDto -> guardarEntidad(TipoOperacionTarjeta.CREAR, Optional.of(tarjetaDto)));
     }
     
     
@@ -61,14 +61,14 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
                 Optional.ofNullable(tarjetaNueva.isActiva())
             )
         );
-        guardar(tipoActualizar, actualizaVariosCampos);
+        guardarEntidad(tipoActualizar, actualizaVariosCampos);
         return actualizaVariosCampos;
     }
     
     @Override
     public Optional<TarjetaDTO> obtenerTarjetaPorNumero(Optional<String> numeroTarjeta) {
         return numeroTarjeta.flatMap(numero -> 
-            repositorioTarjeta.buscarPorNumero(Optional.of(numero))
+            repositorioTarjeta.buscarPorId(Optional.of(numero))
                 .flatMap(tarjeta -> mapeador.aDto(Optional.of(tarjeta)))
         );
     }
@@ -86,7 +86,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
             TarjetaDTO::getFechaExpiracion,
             TarjetaDTO::conFechaExpiracion
         );
-        guardar(tipoActualizar, actualizaFecha);
+        guardarEntidad(tipoActualizar, actualizaFecha);
         return actualizaFecha;
     }
     
@@ -98,7 +98,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
             TarjetaDTO::isActiva,
             TarjetaDTO::conActiva 
         );
-        guardar(tipoActualizar, actualizaEstado);
+        guardarEntidad(tipoActualizar, actualizaEstado);
         return actualizaEstado;
     }
     
@@ -113,7 +113,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
                     (tarjeta, nvoTitular) -> tarjeta.toBuilder().titular(titular).build()
                 ))
         );
-        guardar(tipoActualizar, actualizaTitular);
+        guardarEntidad(tipoActualizar, actualizaTitular);
         return actualizaTitular;
     }
     
@@ -148,7 +148,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     @Override
     public Optional<List<TarjetaDTO>> buscarPorTitularId(Optional<Long> idCliente) {
         return idCliente.flatMap(id -> 
-            repositorioTarjeta.buscarPorTitularId(Optional.of(id))
+            repositorioTarjeta.buscarTodosPorPredicado(tarjeta -> tarjeta.getTitular().getId().equals(id))
                 .flatMap(tarjetas -> Optional.of(
                     tarjetas.stream()
                         .map(tarjeta -> mapeador.aDto(Optional.of(tarjeta)).orElse(null))
@@ -161,7 +161,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     @Override
     public Optional<List<TarjetaDTO>> buscarPorTipo(Optional<TipoTarjeta> tipo) {
         return tipo.flatMap(t -> 
-            repositorioTarjeta.buscarPorTipo(Optional.of(t))
+            repositorioTarjeta.buscarTodosPorPredicado(tarjeta -> tarjeta.getTipo().equals(t))
                 .flatMap(tarjetas -> Optional.of(
                     tarjetas.stream()
                         .map(tarjeta -> mapeador.aDto(Optional.of(tarjeta)).orElse(null))
@@ -173,7 +173,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     
     @Override
     public Optional<List<TarjetaDTO>> buscarActivas() {
-        return repositorioTarjeta.buscarActivas()
+        return repositorioTarjeta.buscarTodosPorPredicado(tarjeta -> tarjeta.isActiva())
             .flatMap(tarjetas -> Optional.of(
                 tarjetas.stream()
                     .map(tarjeta -> mapeador.aDto(Optional.of(tarjeta)).orElse(null))
@@ -185,7 +185,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     @Override
     public Optional<List<TarjetaDTO>> buscarPorCuentaAsociada(Optional<String> numeroCuenta) {
         return numeroCuenta.flatMap(numero -> 
-            repositorioTarjeta.buscarPorCuentaAsociada(Optional.of(numero))
+            repositorioTarjeta.buscarTodosPorPredicado(tarjeta -> tarjeta.getNumeroCuentaAsociada().equals(numero))
                 .flatMap(tarjetas -> Optional.of(
                     tarjetas.stream()
                         .map(tarjeta -> mapeador.aDto(Optional.of(tarjeta)).orElse(null))

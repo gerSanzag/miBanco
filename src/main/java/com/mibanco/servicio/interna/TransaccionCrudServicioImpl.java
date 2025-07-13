@@ -43,9 +43,9 @@ class TransaccionCrudServicioImpl extends BaseServicioImpl<TransaccionDTO, Trans
         TransaccionDtoProcesadorServicio procesador = new TransaccionDtoProcesadorServicio();
         
         return procesador.procesarTransaccionDto(datosTransaccion)
-            .flatMap(transaccionDto -> guardar(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDto)));
+            .flatMap(transaccionDto -> guardarEntidad(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDto)));
     }
-    
+ 
     @Override
     public Optional<TransaccionDTO> obtenerTransaccionPorId(Optional<Long> id) {
         return obtenerPorId(id);
