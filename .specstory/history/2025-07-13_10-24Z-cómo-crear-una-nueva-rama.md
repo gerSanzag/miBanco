@@ -4150,9 +4150,492 @@ Ahora vamos a verificar qué ramas existen y hacer el merge:
 git branch -a
 ```
 
+```
+  feature/ejercicios-tests-java
+* feature/modificacion-repositorios
+  main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/feature/ejercicios-tests-java
+  remotes/origin/main
+
+```
+
+---
+
+Veo que la rama se llama `feature/ejercicios-tests-java`. Vamos a hacer el merge:
+
+
+---
+
+```bash
+git checkout feature/ejercicios-tests-java
+```
+
+```
+error: Your local changes to the following files would be overwritten by checkout:
+        .specstory/history/2025-07-13_10-24Z-cómo-crear-una-nueva-rama.md
+Please commit your changes or stash them before you switch branches.
+Aborting
+
+```
+
+---
+
+Hay un archivo sin commitear. Vamos a agregarlo y hacer commit:
+
+
+---
+
+```bash
+git add .specstory/history/2025-07-13_10-24Z-cómo-crear-una-nueva-rama.md
+```
+
+---
+
+```bash
+git commit -m "Agregar documentación sobre creación de ramas"
+```
+
+```
+[feature/modificacion-repositorios 0ffa015] Agregar documentación sobre creación de ramas
+ 1 file changed, 2024 insertions(+)
+
+```
+
+---
+
+Ahora sí podemos cambiar de rama:
+
+
+---
+
+```bash
+git checkout feature/ejercicios-tests-java
+```
+
+```
+Switched to branch 'feature/ejercicios-tests-java'
+Your branch is up to date with 'origin/feature/ejercicios-tests-java'.
+
+```
+
 ---
 
 
+
+
+---
+
+```bash
+git merge feature/modificacion-repositorios
+```
+
+```
+Updating eec8bbb..0ffa015
+error: Your local changes to the following files would be overwritten by merge:
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ActualizarTests.cl
+ass
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarPorPredicado
+Tests.class
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTests.class
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTodosPorPred
+icadoTests.class
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$CrearTests.class
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$EliminarTests.clas
+s
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$RestaurarTests.cla
+ss
+        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensiv
+aTests.class
+Please commit your changes or stash them before you merge.
+Aborting
+
+```
+
+---
+
+German, el merge no se puede completar porque tienes archivos compilados (en `target/test-classes/`) que han cambiado y no están versionados, pero Git los detecta como cambios locales.
+
+**Solución recomendada:**
+1. Elimina los archivos de la carpeta `target/` (no son necesarios para el control de versiones).
+2. Vuelve a intentar el merge.
+
+¿Quieres que limpie la carpeta `target/` y continúe automáticamente?
+
+---
+
+_**User**_
+
+Si
+
+---
+
+_**Assistant**_
+
+```bash
+rm -rf target/
+```
+
+---
+
+```bash
+git merge feature/modificacion-repositorios
+```
+
+```
+Updating eec8bbb..0ffa015
+error: The following untracked working tree files would be overwritten by merge:
+        .specstory/history/2025-07-13_10-24Z-cómo-crear-una-nueva-rama.md
+Please move or remove them before you merge.
+Aborting
+
+```
+
+---
+
+Ahora el conflicto es por el archivo `.specstory/history/2025-07-13_10-24Z-cómo-crear-una-nueva-rama.md`, que está en ambas ramas pero no está trackeado en la rama actual.
+
+Voy a mover temporalmente ese archivo fuera del proyecto, hacer el merge y luego lo restauro si es necesario. ¿Te parece bien?
+
+---
+
+_**User**_
+
+Si
+
+---
+
+_**Assistant**_
+
+```bash
+mv .specstory/history/2025-07-13_10-24Z-cómo-crear-una-nueva-rama.md /tmp/2025-07-13_10-24Z-cómo-crear-una-nueva-rama.md
+```
+
+---
+
+```bash
+git merge feature/modificacion-repositorios
+```
+
+```
+Updating eec8bbb..0ffa015
+Fast-forward
+ .../2025-07-11_21-10Z-ejercicio-de-aprendizaje-test-en-java-015.md    | 3195 +-----------------------
+ .../history/2025-07-13_10-24Z-c\303\263mo-crear-una-nueva-rama.md"    | 4158 +++++++++++++++++++++++++++++++
+ src/main/java/com/mibanco/repositorio/ClienteRepositorio.java         |   16 +-
+ src/main/java/com/mibanco/repositorio/CuentaRepositorio.java          |   50 -
+ src/main/java/com/mibanco/repositorio/TarjetaRepositorio.java         |   32 -
+ src/main/java/com/mibanco/repositorio/TransaccionRepositorio.java     |   31 +-
+ .../java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java     |   10 +-
+ .../java/com/mibanco/repositorio/interna/ClienteRepositorioImpl.java  |   15 -
+ .../java/com/mibanco/repositorio/interna/CuentaRepositorioImpl.java   |   34 -
+ .../java/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.java  |   35 +-
+ .../com/mibanco/repositorio/interna/TransaccionRepositorioImpl.java   |   10 +-
+ src/main/java/com/mibanco/repositorio/util/BaseRepositorio.java       |   22 +-
+ src/main/java/com/mibanco/servicio/interna/BaseServicioImpl.java      |    8 +-
+ src/main/java/com/mibanco/servicio/interna/ClienteServicioImpl.java   |   18 +-
+ src/main/java/com/mibanco/servicio/interna/CuentaServicioImpl.java    |   26 +-
+ src/main/java/com/mibanco/servicio/interna/TarjetaServicioImpl.java   |   20 +-
+ .../com/mibanco/servicio/interna/TransaccionCrudServicioImpl.java     |    4 +-
+ .../mibanco/servicio/interna/TransaccionOperacionesServicioImpl.java  |    6 +-
+ src/main/java/com/mibanco/servicio/util/BaseServicio.java             |    2 +-
+ .../mibanco/repositorioTest/internaTest/BaseRepositorioImplTest.java  |   24 +-
+ target/classes/com/mibanco/repositorio/ClienteRepositorio.class       |  Bin 681 -> 373 bytes
+ target/classes/com/mibanco/repositorio/CuentaRepositorio.class        |  Bin 1077 -> 369 bytes
+ target/classes/com/mibanco/repositorio/TarjetaRepositorio.class       |  Bin 1147 -> 375 bytes
+ target/classes/com/mibanco/repositorio/TransaccionRepositorio.class   |  Bin 1501 -> 1178 bytes
+ .../classes/com/mibanco/repositorio/interna/BaseRepositorioImpl.class |  Bin 12197 -> 12213 bytes
+ .../com/mibanco/repositorio/interna/BaseRepositorioImplWrapper.class  |  Bin 1566 -> 1808 bytes
+ .../com/mibanco/repositorio/interna/ClienteRepositorioImpl.class      |  Bin 5545 -> 4095 bytes
+ .../mibanco/repositorio/interna/ClienteRepositorioImplWrapper.class   |  Bin 1456 -> 1531 bytes
+ .../com/mibanco/repositorio/interna/CuentaRepositorioImpl.class       |  Bin 7811 -> 4343 bytes
+ .../mibanco/repositorio/interna/CuentaRepositorioImplWrapper.class    |  Bin 1685 -> 1527 bytes
+ .../com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class      |  Bin 7842 -> 4255 bytes
+ .../mibanco/repositorio/interna/TarjetaRepositorioImplWrapper.class   |  Bin 1695 -> 1531 bytes
+ .../com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class  |  Bin 9219 -> 8556 bytes
+ .../repositorio/interna/TransaccionRepositorioImplWrapper.class       |  Bin 1830 -> 1935 bytes
+ target/classes/com/mibanco/repositorio/util/BaseRepositorio.class     |  Bin 955 -> 1253 bytes
+ target/classes/com/mibanco/servicio/interna/BaseServicioImpl.class    |  Bin 9544 -> 9580 bytes
+ target/classes/com/mibanco/servicio/interna/ClienteServicioImpl.class |  Bin 9094 -> 9126 bytes
+ target/classes/com/mibanco/servicio/interna/CuentaServicioImpl.class  |  Bin 14397 -> 15371 bytes
+ target/classes/com/mibanco/servicio/interna/TarjetaServicioImpl.class |  Bin 13606 -> 14867 bytes
+ .../com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class    |  Bin 8903 -> 8910 bytes
+ .../mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class |  Bin 15625 -> 15632 bytes
+ target/classes/com/mibanco/servicio/util/BaseServicio.class           |  Bin 1646 -> 1653 bytes
+ target/jacoco.exec                                                    |  Bin 2100119 -> 2375573 bytes
+ .../jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.html   |    2 +-
+ .../com.mibanco.repositorio.interna/BaseRepositorioImpl.java.html     |   10 +-
+ .../com.mibanco.repositorio.interna/ClienteRepositorioImpl.html       |    2 +-
+ .../com.mibanco.repositorio.interna/ClienteRepositorioImpl.java.html  |   39 +-
+ .../jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.html |    2 +-
+ .../com.mibanco.repositorio.interna/CuentaRepositorioImpl.java.html   |   64 +-
+ .../com.mibanco.repositorio.interna/TarjetaRepositorioImpl.html       |    2 +-
+ .../com.mibanco.repositorio.interna/TarjetaRepositorioImpl.java.html  |   65 +-
+ .../com.mibanco.repositorio.interna/TransaccionRepositorioImpl.html   |    2 +-
+ .../TransaccionRepositorioImpl.java.html                              |   34 +-
+ target/site/jacoco/com.mibanco.repositorio.interna/index.html         |    2 +-
+ target/site/jacoco/com.mibanco.repositorio.interna/index.source.html  |    2 +-
+ target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.html |    2 +-
+ .../jacoco/com.mibanco.servicio.interna/BaseServicioImpl.java.html    |    8 +-
+ .../site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.html |    2 +-
+ .../jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.java.html |   30 +-
+ .../site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.html  |    2 +-
+ .../jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.java.html  |  148 +-
+ .../site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.html |    2 +-
+ .../jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.java.html |   20 +-
+ .../TransaccionCrudServicioImpl.java.html                             |    4 +-
+ .../TransaccionOperacionesServicioImpl.java.html                      |    6 +-
+ target/site/jacoco/com.mibanco.servicio.interna/index.html            |    2 +-
+ target/site/jacoco/com.mibanco.servicio.interna/index.source.html     |    2 +-
+ target/site/jacoco/index.html                                         |    2 +-
+ target/site/jacoco/jacoco-sessions.html                               |    2 +-
+ target/site/jacoco/jacoco.csv                                         |   14 +-
+ target/site/jacoco/jacoco.xml                                         |    2 +-
+ target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoTest.xml   |   12 +-
+ target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTest.xml    |    8 +-
+ .../TEST-com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.xml       |    6 +-
+ ...com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.xml |   12 +-
+ .../TEST-com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.xml   |   10 +-
+ .../TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.xml |   10 +-
+ ...ST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.xml |   12 +-
+ target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest.xml |    6 +-
+ target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoTest.xml   |   18 +-
+ .../surefire-reports/TEST-com.mibanco.dtoTest.TransaccionDtoTest.xml  |   12 +-
+ ...anco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.xml |    8 +-
+ ...anco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.xml |    6 +-
+ ...m.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.xml |   14 +-
+ ....dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.xml |    4 +-
+ .../TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.xml     |    6 +-
+ ...anco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.xml |   10 +-
+ ...banco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.xml |   10 +-
+ ...banco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.xml |   12 +-
+ .../TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.xml      |    6 +-
+ ...anco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.xml |   10 +-
+ ...anco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.xml |   12 +-
+ ...m.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.xml |   18 +-
+ ....dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.xml |   14 +-
+ .../TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.xml     |    6 +-
+ ...dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.xml |   10 +-
+ ....dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.xml |    8 +-
+ ...co.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.xml |   16 +-
+ ....dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.xml |   12 +-
+ .../TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.xml |    6 +-
+ target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteTest.xml   |    6 +-
+ target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTest.xml    |   16 +-
+ .../TEST-com.mibanco.modeloTest.RegistroAuditoriaTest.xml             |   14 +-
+ target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaTest.xml   |   10 +-
+ .../surefire-reports/TEST-com.mibanco.modeloTest.TransaccionTest.xml  |   14 +-
+ ...-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.xml |    6 +-
+ ...anco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.xml |   12 +-
+ ...om.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.xml |    6 +-
+ ...om.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.xml |   10 +-
+ .../TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest.xml          |    6 +-
+ ...co.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.xml |    8 +-
+ ...oTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.xml |    8 +-
+ ....modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.xml |    6 +-
+ ....modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.xml |    8 +-
+ ...TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.xml |    6 +-
+ ...nco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.xml |   10 +-
+ ...loTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.xml |   12 +-
+ ...o.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.xml |    6 +-
+ ...o.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.xml |    8 +-
+ .../TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.xml |    6 +-
+ ...co.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.xml |    8 +-
+ ...oTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.xml |   10 +-
+ ....modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.xml |    8 +-
+ ....modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.xml |   12 +-
+ ...TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.xml |    6 +-
+ ...odeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.xml |    8 +-
+ ...t.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTest.xml |    8 +-
+ ...eloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.xml |    6 +-
+ ...eloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest.xml |    6 +-
+ ...-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.xml |    6 +-
+ ...com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.xml |    6 +-
+ ...nco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.xml |    8 +-
+ ...m.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.xml |    4 +-
+ ...m.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.xml |    8 +-
+ .../TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.xml         |    6 +-
+ ...mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.xml |    6 +-
+ ...modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.xml |   12 +-
+ ...banco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.xml |    8 +-
+ ...banco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.xml |    6 +-
+ .../TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.xml     |    6 +-
+ ...oTest.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTests.xml |    8 +-
+ ...naTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.xml |   10 +-
+ ...itorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.xml |   12 +-
+ ...com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.xml |    6 +-
+ ...itorioTest.internaTest.BaseRepositorioImplTest$ActualizarTests.xml |    4 +-
+ ...st.internaTest.BaseRepositorioImplTest$BuscarPorPredicadoTests.xml |    4 +-
+ ...epositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.xml |   12 +-
+ ...ternaTest.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.xml |    4 +-
+ ...est.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests.xml |   10 +-
+ ...repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.xml |    8 +-
+ ...ositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.xml |   10 +-
+ ...sitorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.xml |    8 +-
+ ...rioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests.xml |    4 +-
+ ...t.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.xml |   26 +-
+ ...om.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.xml |    6 +-
+ .../surefire-reports/TEST-com.mibanco.utilTest.AuditoriaUtilTest.xml  |   14 +-
+ .../surefire-reports/TEST-com.mibanco.utilTest.ReflexionUtilTest.xml  |   12 +-
+ target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.txt        |    2 +-
+ .../com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.txt            |    2 +-
+ ...com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.txt |    2 +-
+ .../com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.txt        |    2 +-
+ .../com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.txt      |    2 +-
+ .../com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.txt   |    2 +-
+ target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest.txt      |    2 +-
+ target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.txt        |    2 +-
+ target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTest.txt    |    2 +-
+ ...anco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.txt |    2 +-
+ .../com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.txt          |    2 +-
+ ...anco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.txt |    2 +-
+ ...banco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.txt |    2 +-
+ ...banco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.txt |    2 +-
+ .../com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.txt           |    2 +-
+ ...anco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.txt |    2 +-
+ ...anco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.txt |    2 +-
+ ...m.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.txt |    2 +-
+ ....dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.txt |    2 +-
+ .../com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.txt          |    2 +-
+ ...dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.txt |    2 +-
+ ....dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.txt |    2 +-
+ ...co.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.txt |    2 +-
+ ....dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.txt |    2 +-
+ .../com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.txt      |    2 +-
+ target/surefire-reports/com.mibanco.modeloTest.CuentaTest.txt         |    2 +-
+ .../surefire-reports/com.mibanco.modeloTest.RegistroAuditoriaTest.txt |    2 +-
+ target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.txt        |    2 +-
+ target/surefire-reports/com.mibanco.modeloTest.TransaccionTest.txt    |    2 +-
+ ...anco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.txt |    2 +-
+ ...om.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.txt |    2 +-
+ ...om.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoCuentaTest.txt               |    2 +-
+ ...oTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.txt |    2 +-
+ ....modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.txt |    2 +-
+ ....modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.txt     |    2 +-
+ ...nco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.txt |    2 +-
+ ...loTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.txt |    2 +-
+ ...o.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.txt |    2 +-
+ ...o.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.txt      |    2 +-
+ ...co.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.txt |    2 +-
+ ...oTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.txt |    2 +-
+ ....modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.txt |    2 +-
+ ....modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.txt     |    2 +-
+ ...odeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.txt |    2 +-
+ ...t.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.txt |    2 +-
+ ...com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.txt |    2 +-
+ ...nco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.txt              |    2 +-
+ ...modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.txt |    2 +-
+ ...banco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.txt |    2 +-
+ ...banco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.txt |    2 +-
+ .../com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.txt          |    2 +-
+ ...naTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.txt |    2 +-
+ ...itorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.txt |    2 +-
+ ...com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.txt |    2 +-
+ ...epositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.txt |    2 +-
+ ...est.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests.txt |    2 +-
+ ...repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.txt |    2 +-
+ ...ositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.txt |    2 +-
+ ...sitorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.txt |    2 +-
+ ...t.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.txt |    2 +-
+ ...om.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.txt |    2 +-
+ target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTest.txt    |    2 +-
+ target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTest.txt    |    2 +-
+ .../internaTest/BaseRepositorioImplTest$ActualizarTests.class         |  Bin 3659 -> 3667 bytes
+ .../internaTest/BaseRepositorioImplTest$BuscarPorPredicadoTests.class |  Bin 3635 -> 3643 bytes
+ .../internaTest/BaseRepositorioImplTest$BuscarTests.class             |  Bin 4724 -> 4732 bytes
+ .../BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.class        |  Bin 4207 -> 4215 bytes
+ .../internaTest/BaseRepositorioImplTest$CrearTests.class              |  Bin 3346 -> 3354 bytes
+ .../internaTest/BaseRepositorioImplTest$EliminarTests.class           |  Bin 2969 -> 2977 bytes
+ .../internaTest/BaseRepositorioImplTest$RestaurarTests.class          |  Bin 3142 -> 3150 bytes
+ .../BaseRepositorioImplTest$ValidacionDefensivaTests.class            |  Bin 4817 -> 4825 bytes
+ 234 files changed, 4901 insertions(+), 4205 deletions(-)
+ create mode 100644 ".specstory/history/2025-07-13_10-24Z-c\303\263mo-crear-una-nueva-rama.md"
+
+```
+
+---
+
+¡Listo, German!  
+El merge se realizó correctamente y tu rama `feature/ejercicios-tests-java` ahora contiene todos los cambios de la refactorización, sin inconsistencias en los repositorios ni métodos duplicados.
+
+**Resumen de lo realizado:**
+- Revisé y corregí inconsistencias en las interfaces de repositorio.
+- Revisé la documentación y la arquitectura.
+- Ejecuté todos los tests (¡todos pasan!).
+- Hice commit de los cambios y realicé el merge exitosamente.
+
+¿Quieres que restaure el archivo de documentación que moví temporalmente, o necesitas alguna otra acción o revisión?
+
+---
+
+_**User**_
+
+Hay que eliminar la rama que no va
+
+---
+
+_**Assistant**_
+
+Perfecto, German. Para mantener el repositorio limpio, eliminaremos la rama que ya no es necesaria.
+
+### ¿Cuál eliminar?
+- La rama que ya no va es `feature/modificacion-repositorios`, porque ya hicimos merge de sus cambios en `feature/ejercicios-tests-java`.
+
+Voy a eliminar la rama local y, si lo deseas, también la remota. ¿Quieres eliminar solo la local o ambas? Por defecto, haré solo la local (puedes pedirme la remota después si lo deseas).
+
+Procedo a eliminar la rama local `feature/modificacion-repositorios`.
+
+---
+
+```bash
+git branch -d feature/modificacion-repositorios
+```
+
+```
+Deleted branch feature/modificacion-repositorios (was 0ffa015).
+
+```
+
+---
+
+¡Listo!  
+La rama local `feature/modificacion-repositorios` ha sido eliminada correctamente.
+
+Si también quieres eliminar la rama remota (en GitHub/origin), solo dímelo.  
+¿Necesitas alguna otra limpieza, revisión o ayuda con el flujo de trabajo?
+
+---
+
+_**User**_
+
+si
+
+---
+
+_**Assistant**_
+
+```bash
+git push origin --delete feature/modificacion-repositorios
+```
+
+```
+error: unable to delete 'feature/modificacion-repositorios': remote ref does not exist
+error: failed to push some refs to 'https://github.com/gerSanzag/miBanco.git'
+
+```
+
+---
+
+La rama remota `feature/modificacion-repositorios` ya no existe en el repositorio remoto, por lo que no hay nada más que eliminar allí.  
+¡El entorno ha quedado completamente limpio y actualizado!
+
+¿Te gustaría hacer alguna otra revisión, limpieza o necesitas ayuda con otro flujo de trabajo?
 
 ---
 
