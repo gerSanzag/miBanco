@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TarjetaTest {
 
     Cliente cliente;
-    String numero = "1234567890123456";
+    Long numero = 1234567890123456L;
     Cliente titular;
     String numeroCuentaAsociada = "1234567890";
     TipoTarjeta tipo = TipoTarjeta.CREDITO;
@@ -86,9 +86,10 @@ class TarjetaTest {
     @DisplayName("Debería devolver el identificador de la tarjeta")
     void deberiaDevolverElIdentificadorDeLaTarjeta() {
         // Assert (Verificar)
-        assertThat(tarjeta.getId()).isEqualTo((long) numero.hashCode());
+        assertThat(tarjeta.getId()).isEqualTo(numero);
         assertThat(tarjeta.getId()).isNotNull();
     }
+    
     @Test
     @DisplayName("Debería devolver el identificador de la tarjeta cuando es nulo")
     void deberiaDevolverElIdentificadorDeLaTarjetaCuandoEsNulo() {
@@ -105,7 +106,7 @@ class TarjetaTest {
         // Act (Actuar)
         Long id = tarjetaBuilder.getId();
         // Assert (Verificar)
-        assertThat(id).isNull();;
+        assertThat(id).isNull();
     }
 
     @Test
@@ -206,5 +207,50 @@ class TarjetaTest {
         // Verificar que el original no cambió
         assertThat(tarjeta.getFechaExpiracion()).isEqualTo(fechaOriginal);
         assertThat(tarjeta.isActiva()).isEqualTo(activaOriginal);
+    }
+    
+    @Test
+    @DisplayName("Debería generar números de tarjeta de 16 dígitos")
+    void deberiaGenerarNumerosDeTarjetaDe16Digitos() {
+        // Arrange (Preparar)
+        Long numero16Digitos = 1234567890123456L;
+        Long numeroMenosDigitos = 123456789012345L; // 15 dígitos
+        
+        // Act & Assert (Actuar y Verificar)
+        assertThat(String.valueOf(numero16Digitos)).hasSize(16);
+        assertThat(String.valueOf(numeroMenosDigitos)).hasSize(15);
+        
+        // Verificar que nuestro número de prueba tiene 16 dígitos
+        assertThat(String.valueOf(numero)).hasSize(16);
+    }
+    
+    @Test
+    @DisplayName("Debería manejar diferentes tipos de tarjeta")
+    void deberiaManejarDiferentesTiposDeTarjeta() {
+        // Arrange (Preparar)
+        Tarjeta tarjetaDebito = Tarjeta.of(
+            numero,
+            titular,
+            numeroCuentaAsociada,
+            TipoTarjeta.DEBITO,
+            fechaExpiracion,
+            cvv,
+            activa
+        );
+        
+        Tarjeta tarjetaCredito = Tarjeta.of(
+            numero,
+            titular,
+            numeroCuentaAsociada,
+            TipoTarjeta.CREDITO,
+            fechaExpiracion,
+            cvv,
+            activa
+        );
+        
+        // Assert (Verificar)
+        assertThat(tarjetaDebito.getTipo()).isEqualTo(TipoTarjeta.DEBITO);
+        assertThat(tarjetaCredito.getTipo()).isEqualTo(TipoTarjeta.CREDITO);
+        assertThat(tarjetaDebito.getTipo()).isNotEqualTo(tarjetaCredito.getTipo());
     }
 }

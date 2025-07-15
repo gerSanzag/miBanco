@@ -45,52 +45,52 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
 <span class="nc" id="L45">        entry(TipoTransaccion.RETIRO, TipoTransaccion.DEPOSITO),</span>
 <span class="nc" id="L46">        entry(TipoTransaccion.TRANSFERENCIA_ENVIADA, TipoTransaccion.TRANSFERENCIA_RECIBIDA),</span>
 <span class="nc" id="L47">        entry(TipoTransaccion.TRANSFERENCIA_RECIBIDA, TipoTransaccion.TRANSFERENCIA_ENVIADA)</span>
-<span class="nc" id="L48">    );</span>
+    );
  
 
-    private boolean bloquearCuenta(Optional&lt;Long&gt; numeroCuenta) {
-<span class="nc" id="L52">        return numeroCuenta.map(numero -&gt; {</span>
+    private boolean bloquearCuenta(Optional&lt;Long&gt; idCuenta) {
+<span class="nc" id="L52">        return idCuenta.map(id -&gt; {</span>
 <span class="nc" id="L53">            synchronized (lock) {</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">                if (cuentasBloqueadas.contains(numero)) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">                if (cuentasBloqueadas.contains(id)) {</span>
 <span class="nc" id="L55">                    return false;</span>
                 }
-<span class="nc" id="L57">                cuentasBloqueadas.add(numero);</span>
+<span class="nc" id="L57">                cuentasBloqueadas.add(id);</span>
 <span class="nc" id="L58">                return true;</span>
             }
 <span class="nc" id="L60">        }).orElse(false);</span>
     }
 
-    private void liberarCuenta(Optional&lt;Long&gt; numeroCuenta) {
-<span class="nc" id="L64">        numeroCuenta.ifPresent(numero -&gt; {</span>
+    private void liberarCuenta(Optional&lt;Long&gt; idCuenta) {
+<span class="nc" id="L64">        idCuenta.ifPresent(id -&gt; {</span>
 <span class="nc" id="L65">            synchronized (lock) {</span>
-<span class="nc" id="L66">                cuentasBloqueadas.remove(numero);</span>
-            }
+<span class="nc" id="L66">                cuentasBloqueadas.remove(id);</span>
+<span class="nc" id="L67">            }</span>
 <span class="nc" id="L68">        });</span>
 <span class="nc" id="L69">    }</span>
 
     @Override
-    public Optional&lt;TransaccionDTO&gt; ingresar(Optional&lt;Long&gt; numeroCuenta, Optional&lt;BigDecimal&gt; monto, Optional&lt;String&gt; descripcion) {
-<span class="nc" id="L73">        return numeroCuenta</span>
-<span class="nc" id="L74">            .flatMap(numero -&gt; {</span>
+    public Optional&lt;TransaccionDTO&gt; ingresar(Optional&lt;Long&gt; idCuenta, Optional&lt;BigDecimal&gt; monto, Optional&lt;String&gt; descripcion) {
+<span class="nc" id="L73">        return idCuenta</span>
+<span class="nc" id="L74">            .flatMap(id -&gt; {</span>
                 // Intentamos bloquear la cuenta
-<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (!bloquearCuenta(Optional.of(numero))) {</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (!bloquearCuenta(Optional.of(id))) {</span>
 <span class="nc" id="L77">                    return Optional.empty();</span>
                 }
                 
                 try {
                     // Obtenemos la cuenta
-<span class="nc" id="L82">                    return cuentaServicio.obtenerCuentaPorNumero(Optional.of(numero))</span>
+<span class="nc" id="L82">                    return cuentaServicio.obtenerCuentaPorNumero(Optional.of(id))</span>
 <span class="nc" id="L83">                        .flatMap(cuentaDTO -&gt; {</span>
                             // Si la cuenta no está activa, la activamos
 <span class="nc bnc" id="L85" title="All 2 branches missed.">                            if (!cuentaDTO.isActiva()) {</span>
-<span class="nc" id="L86">                                return cuentaServicio.actualizarEstadoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(true));</span>
+<span class="nc" id="L86">                                return cuentaServicio.actualizarEstadoCuenta(id, Optional.of(true));</span>
                             }
 <span class="nc" id="L88">                            return Optional.of(cuentaDTO);</span>
                         })
 <span class="nc" id="L90">                        .flatMap(cuentaDTO -&gt; {</span>
                             // Actualizamos el saldo
 <span class="nc" id="L92">                            BigDecimal nuevoSaldo = cuentaDTO.getSaldo().add(monto.get());</span>
-<span class="nc" id="L93">                            return cuentaServicio.actualizarSaldoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(nuevoSaldo));</span>
+<span class="nc" id="L93">                            return cuentaServicio.actualizarSaldoCuenta(id, Optional.of(nuevoSaldo));</span>
                         })
 <span class="nc" id="L95">                        .flatMap(cuentaActualizada -&gt; {</span>
                             // Creamos la transacción
@@ -107,28 +107,28 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
                         });
                 } finally {
                     // Siempre liberamos el bloqueo
-<span class="nc" id="L110">                    liberarCuenta(Optional.of(numero));</span>
+<span class="nc" id="L110">                    liberarCuenta(Optional.of(id));</span>
                 }
             });
     }
 
     @Override
-    public Optional&lt;TransaccionDTO&gt; retirar(Optional&lt;Long&gt; numeroCuenta, Optional&lt;BigDecimal&gt; monto, Optional&lt;String&gt; descripcion) {
-<span class="nc" id="L117">        return numeroCuenta</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">            .filter(numero -&gt; monto.map(cantidad -&gt; cantidad.compareTo(BigDecimal.ZERO) &gt; 0).orElse(false))</span>
-<span class="nc" id="L119">            .flatMap(numero -&gt; {</span>
+    public Optional&lt;TransaccionDTO&gt; retirar(Optional&lt;Long&gt; idCuenta, Optional&lt;BigDecimal&gt; monto, Optional&lt;String&gt; descripcion) {
+<span class="nc" id="L117">        return idCuenta</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            .filter(id -&gt; monto.map(cantidad -&gt; cantidad.compareTo(BigDecimal.ZERO) &gt; 0).orElse(false))</span>
+<span class="nc" id="L119">            .flatMap(id -&gt; {</span>
                 // Intentamos bloquear la cuenta
-<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (!bloquearCuenta(Optional.of(numero))) {</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (!bloquearCuenta(Optional.of(id))) {</span>
 <span class="nc" id="L122">                    return Optional.empty();</span>
                 }
                 
                 try {
                     // Obtenemos la cuenta
-<span class="nc" id="L127">                    return cuentaServicio.obtenerCuentaPorNumero(Optional.of(numero))</span>
+<span class="nc" id="L127">                    return cuentaServicio.obtenerCuentaPorNumero(Optional.of(id))</span>
 <span class="nc" id="L128">                        .flatMap(cuentaDTO -&gt; {</span>
                             // Si la cuenta no está activa, la activamos
 <span class="nc bnc" id="L130" title="All 2 branches missed.">                            if (!cuentaDTO.isActiva()) {</span>
-<span class="nc" id="L131">                                return cuentaServicio.actualizarEstadoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(true));</span>
+<span class="nc" id="L131">                                return cuentaServicio.actualizarEstadoCuenta(id, Optional.of(true));</span>
                             }
 <span class="nc" id="L133">                            return Optional.of(cuentaDTO);</span>
                         })
@@ -136,7 +136,7 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
 <span class="nc" id="L136">                        .flatMap(cuentaDTO -&gt; {</span>
                             // Actualizamos el saldo
 <span class="nc" id="L138">                            BigDecimal nuevoSaldo = cuentaDTO.getSaldo().subtract(monto.get());</span>
-<span class="nc" id="L139">                            return cuentaServicio.actualizarSaldoCuenta(cuentaDTO.getNumeroCuenta(), Optional.of(nuevoSaldo));</span>
+<span class="nc" id="L139">                            return cuentaServicio.actualizarSaldoCuenta(id, Optional.of(nuevoSaldo));</span>
                         })
 <span class="nc" id="L141">                        .flatMap(cuentaActualizada -&gt; {</span>
                             // Creamos la transacción
@@ -153,67 +153,68 @@ class TransaccionOperacionesServicioImpl extends BaseServicioImpl&lt;Transaccion
                         });
                 } finally {
                     // Siempre liberamos el bloqueo
-<span class="nc" id="L156">                    liberarCuenta(Optional.of(numero));</span>
+<span class="nc" id="L156">                    liberarCuenta(Optional.of(id));</span>
                 }
             });
     }
     
     @Override
-    public Optional&lt;TransaccionDTO&gt; transferir(Optional&lt;Long&gt; numeroCuentaOrigen, Optional&lt;Long&gt; numeroCuentaDestino, Optional&lt;BigDecimal&gt; monto, Optional&lt;String&gt; descripcion) {
-<span class="nc" id="L163">        return numeroCuentaOrigen</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">            .filter(numero -&gt; monto.map(cantidad -&gt; cantidad.compareTo(BigDecimal.ZERO) &gt; 0).orElse(false))</span>
-<span class="nc" id="L165">            .flatMap(numeroOrigen -&gt; numeroCuentaDestino</span>
-<span class="nc" id="L166">                .flatMap(numeroDestino -&gt; {</span>
+    public Optional&lt;TransaccionDTO&gt; transferir(Optional&lt;Long&gt; idCuentaOrigen, Optional&lt;Long&gt; idCuentaDestino, Optional&lt;BigDecimal&gt; monto, Optional&lt;String&gt; descripcion) {
+<span class="nc" id="L163">        return idCuentaOrigen</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            .filter(id -&gt; monto.map(cantidad -&gt; cantidad.compareTo(BigDecimal.ZERO) &gt; 0).orElse(false))</span>
+<span class="nc" id="L165">            .flatMap(idOrigen -&gt; idCuentaDestino</span>
+<span class="nc" id="L166">                .flatMap(idDestino -&gt; {</span>
                     // Intentamos bloquear ambas cuentas
-<span class="nc bnc" id="L168" title="All 4 branches missed.">                    if (!bloquearCuenta(Optional.of(numeroOrigen)) || !bloquearCuenta(Optional.of(numeroDestino))) {</span>
+<span class="nc bnc" id="L168" title="All 4 branches missed.">                    if (!bloquearCuenta(Optional.of(idOrigen)) || !bloquearCuenta(Optional.of(idDestino))) {</span>
 <span class="nc" id="L169">                        return Optional.empty();</span>
                     }
                     
                     try {
                         // Construimos las descripciones personalizadas
-<span class="nc" id="L174">                        String descripcionRetiro = &quot;Transferencia enviada a cuenta &quot; + numeroDestino + </span>
+<span class="nc" id="L174">                        String descripcionRetiro = &quot;Transferencia enviada a cuenta &quot; + idDestino + </span>
 <span class="nc" id="L175">                            descripcion.map(desc -&gt; &quot;: &quot; + desc).orElse(&quot;&quot;);</span>
                             
-<span class="nc" id="L177">                        String descripcionIngreso = &quot;Transferencia recibida de cuenta &quot; + numeroOrigen + </span>
+<span class="nc" id="L177">                        String descripcionIngreso = &quot;Transferencia recibida de cuenta &quot; + idOrigen + </span>
 <span class="nc" id="L178">                            descripcion.map(desc -&gt; &quot;: &quot; + desc).orElse(&quot;&quot;);</span>
 
                         // Realizamos el retiro de la cuenta origen
-<span class="nc" id="L181">                        return retirar(Optional.of(numeroOrigen), monto, Optional.of(descripcionRetiro))</span>
+<span class="nc" id="L181">                        return retirar(Optional.of(idOrigen), monto, Optional.of(descripcionRetiro))</span>
 <span class="nc" id="L182">                            .flatMap(transaccionRetiro -&gt; </span>
                                 // Si el retiro fue exitoso, realizamos el ingreso en la cuenta destino
-<span class="nc" id="L184">                                ingresar(Optional.of(numeroDestino), monto, Optional.of(descripcionIngreso))</span>
+<span class="nc" id="L184">                                ingresar(Optional.of(idDestino), monto, Optional.of(descripcionIngreso))</span>
 <span class="nc" id="L185">                                    .map(transaccionIngreso -&gt; transaccionRetiro) // Retornamos la transacción de retiro como la principal</span>
                             );
                     } finally {
                         // Siempre liberamos los bloqueos
-<span class="nc" id="L189">                        liberarCuenta(Optional.of(numeroOrigen));</span>
-<span class="nc" id="L190">                        liberarCuenta(Optional.of(numeroDestino));</span>
+<span class="nc" id="L189">                        liberarCuenta(Optional.of(idOrigen));</span>
+<span class="nc" id="L190">                        liberarCuenta(Optional.of(idDestino));</span>
                     }
-<span class="nc" id="L192">                })</span>
+                })
             );
     }
+    
     @Override
     public Optional&lt;TransaccionDTO&gt; anularTransaccion(Optional&lt;Long&gt; idTransaccion) {
-<span class="nc" id="L197">        return idTransaccion.flatMap(id -&gt; </span>
-<span class="nc" id="L198">            repositorioTransaccion.buscarPorId(Optional.of(id))</span>
-<span class="nc" id="L199">                .flatMap(transaccionOriginal -&gt; {</span>
+<span class="nc" id="L198">        return idTransaccion.flatMap(id -&gt; </span>
+<span class="nc" id="L199">            repositorioTransaccion.buscarPorId(Optional.of(id))</span>
+<span class="nc" id="L200">                .flatMap(transaccionOriginal -&gt; {</span>
                     // Obtener el tipo inverso usando el Map
-<span class="nc" id="L201">                    TipoTransaccion nuevoTipo = Optional.ofNullable(INVERSIONES_TIPO.get(transaccionOriginal.getTipo()))</span>
-<span class="nc" id="L202">                            .orElse(transaccionOriginal.getTipo());</span>
+<span class="nc" id="L202">                    TipoTransaccion nuevoTipo = Optional.ofNullable(INVERSIONES_TIPO.get(transaccionOriginal.getTipo()))</span>
+<span class="nc" id="L203">                            .orElse(transaccionOriginal.getTipo());</span>
                     
                     // Crear nueva transacción de anulación
-<span class="nc" id="L205">                    Transaccion transaccionAnulacion = Transaccion.builder()</span>
-<span class="nc" id="L206">                            .id(transaccionOriginal.getId())</span>
-<span class="nc" id="L207">                            .numeroCuenta(transaccionOriginal.getNumeroCuentaDestino())</span>
-<span class="nc" id="L208">                            .numeroCuentaDestino(transaccionOriginal.getNumeroCuenta())</span>
-<span class="nc" id="L209">                            .tipo(nuevoTipo)</span>
-<span class="nc" id="L210">                            .descripcion(&quot;ANULACIÓN: &quot; + transaccionOriginal.getDescripcion())</span>
-<span class="nc" id="L211">                            .build();</span>
+<span class="nc" id="L206">                    Transaccion transaccionAnulacion = Transaccion.builder()</span>
+<span class="nc" id="L207">                            .id(transaccionOriginal.getId())</span>
+<span class="nc" id="L208">                            .numeroCuenta(transaccionOriginal.getNumeroCuentaDestino())</span>
+<span class="nc" id="L209">                            .numeroCuentaDestino(transaccionOriginal.getNumeroCuenta())</span>
+<span class="nc" id="L210">                            .tipo(nuevoTipo)</span>
+<span class="nc" id="L211">                            .descripcion(&quot;ANULACIÓN: &quot; + transaccionOriginal.getDescripcion())</span>
+<span class="nc" id="L212">                            .build();</span>
                     
                     // Convertir a DTO y guardar usando el servicio base
-<span class="nc" id="L214">                    return mapeador.aDto(Optional.of(transaccionAnulacion))</span>
-<span class="nc" id="L215">                            .flatMap(dto -&gt; guardarEntidad(TipoOperacionTransaccion.ANULAR, Optional.of(dto)));</span>
-<span class="nc" id="L216">                })</span>
+<span class="nc" id="L215">                    return mapeador.aDto(Optional.of(transaccionAnulacion))</span>
+<span class="nc" id="L216">                            .flatMap(dto -&gt; guardarEntidad(TipoOperacionTransaccion.ANULAR, Optional.of(dto)));</span>
+                })
         );
     }
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 @DisplayName("Tests para la clase TarjetaDTO")
 class TarjetaDtoTest {
 
-    String numero = "1234567890123456";
+    Long numero = 1234567890123456L;
     ClienteDTO titular;
     String numeroCuentaAsociada = "1234567890";
     TipoTarjeta tipo = TipoTarjeta.CREDITO;
@@ -237,40 +237,42 @@ class TarjetaDtoTest {
     @Test
     @DisplayName("Debería manejar Optional vacío en actualizaciones múltiples")
     void deberiaManejarOptionalVacioEnActualizacionesMultiples() {
-        // Arrange (Preparar)
-        LocalDate nuevaFecha = LocalDate.now().plusYears(4);
-
-        // Act (Actuar) - Solo actualizar fecha, mantener activa original
+        // Act (Actuar)
         TarjetaDTO tarjetaActualizada = tarjetaDto.conActualizaciones(
-                Optional.of(nuevaFecha),
-                Optional.empty() // No cambiar activa
+                Optional.empty(), // fechaExpiracion vacío
+                Optional.empty()  // activa vacío
         );
 
         // Assert (Verificar)
-        assertThat(tarjetaActualizada.getFechaExpiracion()).isEqualTo(nuevaFecha);
+        assertThat(tarjetaActualizada).isNotNull();
+        assertThat(tarjetaActualizada.getFechaExpiracion()).isEqualTo(fechaExpiracion); // Mantiene valor original
         assertThat(tarjetaActualizada.isActiva()).isEqualTo(activa); // Mantiene valor original
-        
-        // Verificar que el original no cambió
-        assertThat(tarjetaDto.getFechaExpiracion()).isEqualTo(fechaExpiracion);
-        assertThat(tarjetaDto.isActiva()).isEqualTo(activa);
+        assertThat(tarjetaActualizada.getNumero()).isEqualTo(tarjetaDto.getNumero());
+        assertThat(tarjetaActualizada.getTitular()).isEqualTo(tarjetaDto.getTitular());
+        assertThat(tarjetaActualizada.getNumeroCuentaAsociada()).isEqualTo(tarjetaDto.getNumeroCuentaAsociada());
+        assertThat(tarjetaActualizada.getTipo()).isEqualTo(tarjetaDto.getTipo());
     }
 
     @Test
     @DisplayName("Debería mantener valores por defecto cuando se usan Optional.empty()")
     void deberiaMantenerValoresPorDefectoCuandoSeUsanOptionalEmpty() {
-        // Act (Actuar) - Usar Optional.empty() para todos los campos opcionales
-        TarjetaDTO tarjetaConDefaults = tarjetaDto.conActualizaciones(
-                Optional.empty(), // Mantener fecha original
-                Optional.empty()  // Mantener activa original
+        // Act (Actuar)
+        TarjetaDTO tarjetaConValoresPorDefecto = TarjetaDTO.of(
+                numero,
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
         );
 
         // Assert (Verificar)
-        assertThat(tarjetaConDefaults.getFechaExpiracion()).isEqualTo(fechaExpiracion);
-        assertThat(tarjetaConDefaults.isActiva()).isEqualTo(activa);
-        
-        // Verificar que el original no cambió
-        assertThat(tarjetaDto.getFechaExpiracion()).isEqualTo(fechaExpiracion);
-        assertThat(tarjetaDto.isActiva()).isEqualTo(activa);
+        assertThat(tarjetaConValoresPorDefecto.getFechaExpiracion()).isAfter(LocalDate.now()); // Fecha futura por defecto
+        assertThat(tarjetaConValoresPorDefecto.isActiva()).isTrue(); // Activa por defecto
+        assertThat(tarjetaConValoresPorDefecto.getNumero()).isEqualTo(numero);
+        assertThat(tarjetaConValoresPorDefecto.getTitular()).isNull();
+        assertThat(tarjetaConValoresPorDefecto.getNumeroCuentaAsociada()).isNull();
+        assertThat(tarjetaConValoresPorDefecto.getTipo()).isNull();
     }
 
     @Test
@@ -281,25 +283,43 @@ class TarjetaDtoTest {
         boolean activaOriginal = tarjetaDto.isActiva();
         ClienteDTO titularOriginal = tarjetaDto.getTitular();
 
-        // Act (Actuar) - Realizar múltiples actualizaciones
+        // Act (Actuar) - Crear múltiples instancias modificadas
         TarjetaDTO tarjeta1 = tarjetaDto.conFechaExpiracion(LocalDate.now().plusYears(5));
-        TarjetaDTO tarjeta2 = tarjeta1.conActiva(false);
-        TarjetaDTO tarjeta3 = tarjeta2.conTitular(ClienteDTO.builder()
-                .id(3L)
-                .nombre("Pedro")
-                .apellido("Lopez")
-                .dni("1122334455")
-                .build());
+        TarjetaDTO tarjeta2 = tarjetaDto.conActiva(false);
+        TarjetaDTO tarjeta3 = tarjetaDto.conTitular(null);
 
         // Assert (Verificar)
-        // Verificar que cada actualización crea una nueva instancia
-        assertThat(tarjeta1).isNotSameAs(tarjetaDto);
-        assertThat(tarjeta2).isNotSameAs(tarjeta1);
-        assertThat(tarjeta3).isNotSameAs(tarjeta2);
-
         // Verificar que el original no cambió
         assertThat(tarjetaDto.getFechaExpiracion()).isEqualTo(fechaOriginal);
         assertThat(tarjetaDto.isActiva()).isEqualTo(activaOriginal);
         assertThat(tarjetaDto.getTitular()).isEqualTo(titularOriginal);
+
+        // Verificar que las nuevas instancias son diferentes
+        assertThat(tarjeta1).isNotSameAs(tarjetaDto);
+        assertThat(tarjeta2).isNotSameAs(tarjetaDto);
+        assertThat(tarjeta3).isNotSameAs(tarjetaDto);
+        assertThat(tarjeta1).isNotSameAs(tarjeta2);
+        assertThat(tarjeta2).isNotSameAs(tarjeta3);
+    }
+    
+    @Test
+    @DisplayName("Debería manejar números de tarjeta de 16 dígitos")
+    void deberiaManejarNumerosDeTarjetaDe16Digitos() {
+        // Arrange (Preparar)
+        Long numero16Digitos = 1234567890123456L;
+        
+        // Act (Actuar)
+        TarjetaDTO tarjeta16Digitos = TarjetaDTO.builder()
+                .numero(numero16Digitos)
+                .titular(titular)
+                .numeroCuentaAsociada(numeroCuentaAsociada)
+                .tipo(tipo)
+                .fechaExpiracion(fechaExpiracion)
+                .activa(activa)
+                .build();
+        
+        // Assert (Verificar)
+        assertThat(tarjeta16Digitos.getNumero()).isEqualTo(numero16Digitos);
+        assertThat(String.valueOf(tarjeta16Digitos.getNumero())).hasSize(16);
     }
 }

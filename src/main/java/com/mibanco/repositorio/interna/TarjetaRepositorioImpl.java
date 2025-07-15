@@ -12,13 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Tarjetas
  * Visibilidad restringida al paquete internal
  */
-class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOperacionTarjeta> implements TarjetaRepositorio {
+class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, Long, TipoOperacionTarjeta> implements TarjetaRepositorio {
     
     /**
      * Constructor con visibilidad de paquete
@@ -31,6 +32,7 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOp
      * Implementación específica para asignar nuevo ID a Tarjeta
      * Usa DTOs para mantener la inmutabilidad de la entidad
      * Enfoque funcional puro con Optional
+     * Genera un número de tarjeta único de 16 dígitos
      * @param tarjeta Tarjeta sin ID asignado
      * @return Tarjeta con nuevo ID asignado
      */
@@ -41,13 +43,25 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl<Tarjeta, String, TipoOp
         
         return mapeador.aDtoDirecto(tarjeta)
             .map(dto -> {
-                String numero = String.format("%016d", (long) (Math.random() * 10000000000000000L));
+                Long numero = generarNumeroTarjetaUnico();
                 return dto.toBuilder()
                     .numero(numero)
                     .build();
             })
             .flatMap(mapeador::aEntidadDirecta)
             .orElseThrow(() -> new IllegalStateException("No se pudo procesar la entidad Tarjeta"));
+    }
+    
+    /**
+     * Genera un número de tarjeta único de 16 dígitos
+     * Usa ThreadLocalRandom para mejor distribución y rendimiento
+     * @return Long con 16 dígitos aleatorios
+     */
+    private Long generarNumeroTarjetaUnico() {
+        // Generar número entre 1000000000000000L y 9999999999999999L (16 dígitos)
+        long min = 1000000000000000L;
+        long max = 9999999999999999L;
+        return ThreadLocalRandom.current().nextLong(min, max + 1);
     }
     
     /**

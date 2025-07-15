@@ -34,11 +34,9 @@ public class TransaccionDtoProcesadorServicio {
 
             // Extraer y validar datos del Map con transformaciones funcionales
             Optional.ofNullable(datosCrudos.get("numeroCuenta"))
-                .map(Long::parseLong)
                 .ifPresent(builder::numeroCuenta);
 
             Optional.ofNullable(datosCrudos.get("numeroCuentaDestino"))
-                .map(Long::parseLong)
                 .ifPresent(builder::numeroCuentaDestino);
 
             Optional.ofNullable(datosCrudos.get("tipo"))

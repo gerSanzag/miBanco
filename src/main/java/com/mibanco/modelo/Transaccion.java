@@ -19,8 +19,8 @@ import com.mibanco.modelo.enums.TipoTransaccion;
 @Builder
 public class Transaccion implements Identificable {
     Long id;
-    Long numeroCuenta;
-    Long numeroCuentaDestino;
+    String numeroCuenta;
+    String numeroCuentaDestino;
     TipoTransaccion tipo;
     BigDecimal monto;
     LocalDateTime fecha;
@@ -29,8 +29,8 @@ public class Transaccion implements Identificable {
     @JsonCreator
     public Transaccion(
         @JsonProperty("id") Long id,
-        @JsonProperty("numeroCuenta") Long numeroCuenta,
-        @JsonProperty("numeroCuentaDestino") Long numeroCuentaDestino,
+        @JsonProperty("numeroCuenta") String numeroCuenta,
+        @JsonProperty("numeroCuentaDestino") String numeroCuentaDestino,
         @JsonProperty("tipo") TipoTransaccion tipo,
         @JsonProperty("monto") BigDecimal monto,
         @JsonProperty("fecha") LocalDateTime fecha,
@@ -48,7 +48,7 @@ public class Transaccion implements Identificable {
     /**
      * Método factory para crear transacciones
      */
-    public static Transaccion of(Long id, Long numeroCuenta, Long numeroCuentaDestino,
+    public static Transaccion of(Long id, String numeroCuenta, String numeroCuentaDestino,
                                TipoTransaccion tipo, BigDecimal monto, 
                                LocalDateTime fecha, String descripcion) {
         return Transaccion.builder()

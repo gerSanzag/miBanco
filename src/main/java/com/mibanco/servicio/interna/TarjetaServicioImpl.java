@@ -9,6 +9,7 @@ import com.mibanco.modelo.enums.TipoTarjeta;
 import com.mibanco.repositorio.TarjetaRepositorio;
 import com.mibanco.servicio.TarjetaServicio;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
+import com.mibanco.util.ValidacionException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Implementación del servicio de Tarjetas
  * Extiende BaseServicioImpl para heredar operaciones CRUD genéricas
  */
-class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, TipoOperacionTarjeta, TarjetaRepositorio> implements TarjetaServicio {
+class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, Long, TipoOperacionTarjeta, TarjetaRepositorio> implements TarjetaServicio {
     
     private static final TarjetaRepositorio repositorioTarjeta;
     private static final TarjetaMapeador mapeador;
@@ -39,19 +40,46 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     
     @Override
     public Optional<TarjetaDTO> crearTarjetaDto(Map<String, String> datosTarjeta) {
-        // Usar el procesador especializado para crear el DTO con validaciones
-        TarjetaDtoProcesadorServicio procesador = new TarjetaDtoProcesadorServicio(
-            new ClienteServicioImpl()
-        );
-        
-        return procesador.procesarTarjetaDto(datosTarjeta)
-            .flatMap(tarjetaDto -> guardarEntidad(TipoOperacionTarjeta.CREAR, Optional.of(tarjetaDto)));
+        try {
+            // Usar el procesador especializado para crear el DTO con validaciones
+            TarjetaDtoProcesadorServicio procesador = new TarjetaDtoProcesadorServicio(
+                new ClienteServicioImpl()
+            );
+            
+            return procesador.procesarTarjetaDto(datosTarjeta)
+                .flatMap(tarjetaDto -> {
+                    // Validar número de tarjeta único antes de guardar
+                    validarNumeroTarjetaUnico(tarjetaDto);
+                    return guardarEntidad(TipoOperacionTarjeta.CREAR, Optional.of(tarjetaDto));
+                });
+        } catch (ValidacionException e) {
+            System.err.println("Error de validación: " + e.getMessage());
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Método auxiliar para validar número de tarjeta único
+     * @param dto DTO de la tarjeta a validar
+     * @throws ValidacionException si el número de tarjeta ya existe
+     */
+    private void validarNumeroTarjetaUnico(TarjetaDTO dto) {
+        // Solo validar si el número no es null (validación básica ya hecha en vista)
+        if (dto.getNumero() != null) {
+            Optional<Tarjeta> tarjetaExistente = repositorioTarjeta.buscarPorPredicado(
+                tarjeta -> dto.getNumero().equals(tarjeta.getNumero())
+            );
+            
+            if (tarjetaExistente.isPresent()) {
+                throw new ValidacionException("Ya existe una tarjeta con el número: " + dto.getNumero());
+            }
+        }
     }
     
     
     
     @Override
-    public Optional<TarjetaDTO> actualizarVariosCampos(String numeroTarjeta, Optional<TarjetaDTO> tarjetaDTO) {
+    public Optional<TarjetaDTO> actualizarVariosCampos(Long numeroTarjeta, Optional<TarjetaDTO> tarjetaDTO) {
         Optional<TarjetaDTO> actualizaVariosCampos = actualizar(
             numeroTarjeta,
             tarjetaDTO,
@@ -66,7 +94,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<TarjetaDTO> obtenerTarjetaPorNumero(Optional<String> numeroTarjeta) {
+    public Optional<TarjetaDTO> obtenerTarjetaPorNumero(Optional<Long> numeroTarjeta) {
         return numeroTarjeta.flatMap(numero -> 
             repositorioTarjeta.buscarPorId(Optional.of(numero))
                 .flatMap(tarjeta -> mapeador.aDto(Optional.of(tarjeta)))
@@ -79,7 +107,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<TarjetaDTO> actualizarFechaExpiracion(String numeroTarjeta, Optional<LocalDate> nuevaFecha) {
+    public Optional<TarjetaDTO> actualizarFechaExpiracion(Long numeroTarjeta, Optional<LocalDate> nuevaFecha) {
         Optional<TarjetaDTO> actualizaFecha = actualizarCampo(
             numeroTarjeta,
             nuevaFecha,
@@ -91,7 +119,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<TarjetaDTO> actualizarEstadoTarjeta(String numeroTarjeta, Optional<Boolean> nuevaActiva) {
+    public Optional<TarjetaDTO> actualizarEstadoTarjeta(Long numeroTarjeta, Optional<Boolean> nuevaActiva) {
         Optional<TarjetaDTO> actualizaEstado = actualizarCampo(
             numeroTarjeta,
             nuevaActiva,
@@ -103,7 +131,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<TarjetaDTO> actualizarTitularTarjeta(String numeroTarjeta, Optional<TarjetaDTO> nuevoTitular) {
+    public Optional<TarjetaDTO> actualizarTitularTarjeta(Long numeroTarjeta, Optional<TarjetaDTO> nuevoTitular) {
         Optional<TarjetaDTO> actualizaTitular = nuevoTitular.flatMap(dto -> 
                 Optional.of(dto.getTitular())   
                 .flatMap(titular -> actualizarCampo(
@@ -118,12 +146,12 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public boolean eliminarTarjeta(Optional<String> numeroTarjeta) {
+    public boolean eliminarTarjeta(Optional<Long> numeroTarjeta) {
         return eliminarPorId(numeroTarjeta, TipoOperacionTarjeta.ELIMINAR);
     }
     
     @Override
-    public Optional<TarjetaDTO> eliminarPorNumero(Optional<String> numeroTarjeta) {
+    public Optional<TarjetaDTO> eliminarPorNumero(Optional<Long> numeroTarjeta) {
         return numeroTarjeta.flatMap(numero -> 
             repositorioTarjeta.eliminarPorId(Optional.of(numero), TipoOperacionTarjeta.ELIMINAR)
                 .flatMap(tarjeta -> mapeador.aDto(Optional.of(tarjeta)))
@@ -131,7 +159,7 @@ class TarjetaServicioImpl extends BaseServicioImpl<TarjetaDTO, Tarjeta, String, 
     }
     
     @Override
-    public Optional<TarjetaDTO> restaurarTarjeta(Optional<String> numeroTarjeta) {
+    public Optional<TarjetaDTO> restaurarTarjeta(Optional<Long> numeroTarjeta) {
         return restaurar(numeroTarjeta, TipoOperacionTarjeta.MODIFICAR);
     }
     

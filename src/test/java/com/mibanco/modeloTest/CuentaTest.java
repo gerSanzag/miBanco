@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CuentaTest {
 
     Cliente cliente;
-    Long numeroCuenta = 167384367890L;
+    String numeroCuenta = "ES3412345678901234567890";
     Cliente titular ;
     TipoCuenta tipo = TipoCuenta.AHORRO;
     LocalDateTime fechaCreacion = LocalDateTime.now();
@@ -52,6 +52,7 @@ class CuentaTest {
          // Act (Actuar)
          Cuenta cuentaBuilder = Cuenta.builder()
                 
+         .numeroCuenta(numeroCuenta)
          .titular(titular)
          .tipo(tipo)
          .fechaCreacion(fechaCreacion)
@@ -62,7 +63,7 @@ class CuentaTest {
 
         // Assert (Verificar)
         assertThat(cuentaBuilder).isNotNull();
-
+        assertThat(cuentaBuilder.getNumeroCuenta()).isEqualTo(numeroCuenta);
         assertThat(cuentaBuilder.getTitular()).isEqualTo(titular);
         assertThat(cuentaBuilder.getTipo()).isEqualTo(tipo);
         assertThat(cuentaBuilder.getFechaCreacion()).isEqualTo(fechaCreacion);
@@ -93,16 +94,18 @@ void deberiaCrearCuentaConDatosValidosFactoryOf() {
 }
 
 @Test
-@DisplayName("Debería devolver el identificador de la cuenta")
-void deberiaDevolverElIdentificadorDeLaCuenta() {
+@DisplayName("Debería validar el formato del número de cuenta IBAN")
+void deberiaValidarFormatoNumeroCuentaIBAN() {
     // Assert (Verificar)
-    assertThat(cuenta.getId()).isEqualTo(numeroCuenta);
-    assertThat(cuenta.getId()).isNotNull();
+    assertThat(cuenta.getNumeroCuenta()).isNotNull();
+    assertThat(cuenta.getNumeroCuenta()).startsWith("ES34");
+    assertThat(cuenta.getNumeroCuenta()).hasSize(24);
+    assertThat(cuenta.getNumeroCuenta()).matches("ES34\\d{20}");
 }
 
 @Test
-@DisplayName("Debería devolver el identificador de la cuenta cuando es nulo")
-void deberiaDevolverElIdentificadorDeLaCuentaCuandoEsNulo() {
+@DisplayName("Debería manejar número de cuenta nulo")
+void deberiaManejarNumeroCuentaNulo() {
     // Arrange (Preparar)
     Cuenta cuentaBuilder = Cuenta.builder()
             .numeroCuenta(null)
@@ -114,11 +117,8 @@ void deberiaDevolverElIdentificadorDeLaCuentaCuandoEsNulo() {
             .activa(activa)
             .build();
     
-    // Act (Actuar)
-    Long id = cuentaBuilder.getId();
-    
     // Assert (Verificar)
-    assertThat(id).isNull();
+    assertThat(cuentaBuilder.getNumeroCuenta()).isNull();
 }
 
 @Test
@@ -130,7 +130,7 @@ void deberiaMantenerInmutabilidadTotal() {
     
     // Act (Actuar) - Crear una nueva cuenta con diferentes valores
     Cuenta cuentaNueva = Cuenta.of(
-        cuenta.getNumeroCuenta() + 1L,
+        cuenta.getNumeroCuenta() + "1",
         cuenta.getTitular(),
         cuenta.getTipo(),
         BigDecimal.valueOf(3000.0),

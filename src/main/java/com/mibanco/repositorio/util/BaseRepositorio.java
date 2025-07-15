@@ -95,4 +95,10 @@ public interface BaseRepositorio<T extends Identificable, ID, E extends Enum<E>>
      * @return Lista de entidades eliminadas
      */
     List<T> obtenerEliminados();
+    
+    /**
+     * Método público para guardado forzado de datos
+     * Útil para cierre de aplicación o guardado manual
+     */
+    void guardarDatos();
 } 

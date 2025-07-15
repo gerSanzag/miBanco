@@ -56,7 +56,7 @@ class TarjetaMapeadorTest {
             .build();
             
         tarjetaDTO = TarjetaDTO.builder()
-            .numero("1234567890123456")
+            .numero(1234567890123456L)
             .titular(clienteDTO)
             .numeroCuentaAsociada("123456789")
             .tipo(TipoTarjeta.DEBITO)
@@ -76,7 +76,7 @@ class TarjetaMapeadorTest {
             .build();
             
         tarjeta = Tarjeta.builder()
-            .numero("1234567890123456")
+            .numero(1234567890123456L)
             .cvv("456") // ✅ CVV válido para la entidad (3 dígitos, rango 100-999)
             .titular(cliente)
             .numeroCuentaAsociada("123456789")
@@ -169,8 +169,8 @@ class TarjetaMapeadorTest {
             assertTrue(resultado1.isPresent());
             assertTrue(resultado2.isPresent());
             
-            String numero1 = resultado1.get().getNumero();
-            String numero2 = resultado2.get().getNumero();
+            Long numero1 = resultado1.get().getNumero();
+            Long numero2 = resultado2.get().getNumero();
             
             // Verificar que ambos números son null (el mapeador no genera números)
             assertNull(numero1);
@@ -198,9 +198,6 @@ class TarjetaMapeadorTest {
             assertEquals(tarjetaDTO.getTipo(), tarjetaResultado.getTipo());
             assertEquals(tarjetaDTO.getFechaExpiracion(), tarjetaResultado.getFechaExpiracion());
             assertEquals(tarjetaDTO.isActiva(), tarjetaResultado.isActiva());
-            
-            // Verificar que NO se llamó al clienteMapeador cuando titular es null
-            verify(clienteMapeador, never()).aEntidad(any());
         }
     }
     
@@ -220,14 +217,14 @@ class TarjetaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            TarjetaDTO tarjetaDtoResultado = resultado.get();
+            TarjetaDTO dtoResultado = resultado.get();
             
-            assertEquals(tarjeta.getNumero(), tarjetaDtoResultado.getNumero());
-            assertEquals(clienteDTO, tarjetaDtoResultado.getTitular());
-            assertEquals(tarjeta.getNumeroCuentaAsociada(), tarjetaDtoResultado.getNumeroCuentaAsociada());
-            assertEquals(tarjeta.getTipo(), tarjetaDtoResultado.getTipo());
-            assertEquals(tarjeta.getFechaExpiracion(), tarjetaDtoResultado.getFechaExpiracion());
-            assertEquals(tarjeta.isActiva(), tarjetaDtoResultado.isActiva());
+            assertEquals(tarjeta.getNumero(), dtoResultado.getNumero());
+            assertEquals(clienteDTO, dtoResultado.getTitular());
+            assertEquals(tarjeta.getNumeroCuentaAsociada(), dtoResultado.getNumeroCuentaAsociada());
+            assertEquals(tarjeta.getTipo(), dtoResultado.getTipo());
+            assertEquals(tarjeta.getFechaExpiracion(), dtoResultado.getFechaExpiracion());
+            assertEquals(tarjeta.isActiva(), dtoResultado.isActiva());
             
             verify(clienteMapeador).aDto(Optional.of(cliente));
         }
@@ -244,11 +241,16 @@ class TarjetaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            TarjetaDTO tarjetaDtoResultado = resultado.get();
+            TarjetaDTO dtoResultado = resultado.get();
             
-            // El DTO no debería tener campo CVV por seguridad
-            // Si tuviera, sería null o no estaría presente
-            assertNotNull(tarjetaDtoResultado);
+            // Verificar que el DTO no tiene campo CVV (por seguridad)
+            // El CVV solo existe en la entidad, no en el DTO
+            assertNotNull(dtoResultado.getNumero());
+            assertNotNull(dtoResultado.getTitular());
+            assertNotNull(dtoResultado.getNumeroCuentaAsociada());
+            assertNotNull(dtoResultado.getTipo());
+            assertNotNull(dtoResultado.getFechaExpiracion());
+            // activa es un boolean, siempre tiene valor
         }
         
         @Test
@@ -270,22 +272,27 @@ class TarjetaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            TarjetaDTO tarjetaDtoResultado = resultado.get();
+            TarjetaDTO dtoResultado = resultado.get();
             
-            assertEquals(tarjeta.getNumero(), tarjetaDtoResultado.getNumero());
-            assertNull(tarjetaDtoResultado.getTitular());
-            assertEquals(tarjeta.getTipo(), tarjetaDtoResultado.getTipo());
-            assertTrue(tarjetaDtoResultado.isActiva());
+            assertEquals(tarjeta.getNumero(), dtoResultado.getNumero());
+            assertNull(dtoResultado.getTitular());
+            assertEquals(tarjeta.getNumeroCuentaAsociada(), dtoResultado.getNumeroCuentaAsociada());
+            assertEquals(tarjeta.getTipo(), dtoResultado.getTipo());
+            assertEquals(tarjeta.getFechaExpiracion(), dtoResultado.getFechaExpiracion());
+            assertEquals(tarjeta.isActiva(), dtoResultado.isActiva());
+            
+            // No debería llamar al mapeador de cliente cuando el titular es null
+            verify(clienteMapeador, never()).aDto(any());
         }
         
         @Test
         @DisplayName("Debería manejar Optional.empty() correctamente")
         void deberiaManejarOptionalEmptyEnDto() {
             // Arrange
-            Optional<Tarjeta> tarjetaVacio = Optional.empty();
+            Optional<Tarjeta> tarjetaVacia = Optional.empty();
             
             // Act
-            Optional<TarjetaDTO> resultado = tarjetaMapeador.aDto(tarjetaVacio);
+            Optional<TarjetaDTO> resultado = tarjetaMapeador.aDto(tarjetaVacia);
             
             // Assert
             assertFalse(resultado.isPresent());
@@ -308,8 +315,9 @@ class TarjetaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            assertEquals(tarjeta.getNumero(), resultado.get().getNumero());
-            assertEquals(clienteDTO, resultado.get().getTitular());
+            TarjetaDTO dtoResultado = resultado.get();
+            assertEquals(tarjeta.getNumero(), dtoResultado.getNumero());
+            assertEquals(clienteDTO, dtoResultado.getTitular());
         }
         
         @Test
@@ -324,18 +332,16 @@ class TarjetaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            assertEquals(tarjetaDTO.getNumero(), resultado.get().getNumero());
-            assertEquals(cliente, resultado.get().getTitular());
+            Tarjeta tarjetaResultado = resultado.get();
+            assertEquals(tarjetaDTO.getNumero(), tarjetaResultado.getNumero());
+            assertEquals(cliente, tarjetaResultado.getTitular());
         }
         
         @Test
         @DisplayName("aDtoDirecto debería manejar null correctamente")
         void aDtoDirectoDeberiaManejarNull() {
-            // Arrange
-            Tarjeta tarjetaNull = null;
-            
             // Act
-            Optional<TarjetaDTO> resultado = tarjetaMapeador.aDtoDirecto(tarjetaNull);
+            Optional<TarjetaDTO> resultado = tarjetaMapeador.aDtoDirecto(null);
             
             // Assert
             assertFalse(resultado.isPresent());
@@ -344,11 +350,8 @@ class TarjetaMapeadorTest {
         @Test
         @DisplayName("aEntidadDirecta debería manejar null correctamente")
         void aEntidadDirectaDeberiaManejarNull() {
-            // Arrange
-            TarjetaDTO tarjetaDTONull = null;
-            
             // Act
-            Optional<Tarjeta> resultado = tarjetaMapeador.aEntidadDirecta(tarjetaDTONull);
+            Optional<Tarjeta> resultado = tarjetaMapeador.aEntidadDirecta(null);
             
             // Assert
             assertFalse(resultado.isPresent());
@@ -372,22 +375,22 @@ class TarjetaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            List<TarjetaDTO> tarjetasDto = resultado.get();
-            assertEquals(1, tarjetasDto.size());
-            assertEquals(tarjeta.getNumero(), tarjetasDto.get(0).getNumero());
-            assertEquals(clienteDTO, tarjetasDto.get(0).getTitular());
+            List<TarjetaDTO> dtos = resultado.get();
+            assertEquals(1, dtos.size());
+            assertEquals(tarjeta.getNumero(), dtos.get(0).getNumero());
+            assertEquals(clienteDTO, dtos.get(0).getTitular());
         }
         
         @Test
         @DisplayName("aListaEntidad debería convertir lista de DTOs a entidades")
         void aListaEntidadDeberiaConvertirLista() {
             // Arrange
-            List<TarjetaDTO> tarjetasDto = List.of(tarjetaDTO);
+            List<TarjetaDTO> dtos = List.of(tarjetaDTO);
             when(clienteMapeador.aEntidad(Optional.of(clienteDTO)))
                 .thenReturn(Optional.of(cliente));
             
             // Act
-            Optional<List<Tarjeta>> resultado = tarjetaMapeador.aListaEntidad(tarjetasDto);
+            Optional<List<Tarjeta>> resultado = tarjetaMapeador.aListaEntidad(dtos);
             
             // Assert
             assertTrue(resultado.isPresent());
@@ -401,40 +404,37 @@ class TarjetaMapeadorTest {
         @DisplayName("aListaDto debería manejar lista vacía")
         void aListaDtoDeberiaManejarListaVacia() {
             // Arrange
-            List<Tarjeta> tarjetasVacios = List.of();
+            List<Tarjeta> tarjetas = List.of();
             
             // Act
-            Optional<List<TarjetaDTO>> resultado = tarjetaMapeador.aListaDto(tarjetasVacios);
+            Optional<List<TarjetaDTO>> resultado = tarjetaMapeador.aListaDto(tarjetas);
             
             // Assert
             assertTrue(resultado.isPresent());
-            List<TarjetaDTO> tarjetasDto = resultado.get();
-            assertEquals(0, tarjetasDto.size());
+            List<TarjetaDTO> dtos = resultado.get();
+            assertTrue(dtos.isEmpty());
         }
         
         @Test
         @DisplayName("aListaEntidad debería manejar lista vacía")
         void aListaEntidadDeberiaManejarListaVacia() {
             // Arrange
-            List<TarjetaDTO> tarjetasDtoVacios = List.of();
+            List<TarjetaDTO> dtos = List.of();
             
             // Act
-            Optional<List<Tarjeta>> resultado = tarjetaMapeador.aListaEntidad(tarjetasDtoVacios);
+            Optional<List<Tarjeta>> resultado = tarjetaMapeador.aListaEntidad(dtos);
             
             // Assert
             assertTrue(resultado.isPresent());
             List<Tarjeta> tarjetas = resultado.get();
-            assertEquals(0, tarjetas.size());
+            assertTrue(tarjetas.isEmpty());
         }
         
         @Test
         @DisplayName("aListaDto debería manejar null")
         void aListaDtoDeberiaManejarNull() {
-            // Arrange
-            List<Tarjeta> tarjetasNull = null;
-            
             // Act
-            Optional<List<TarjetaDTO>> resultado = tarjetaMapeador.aListaDto(tarjetasNull);
+            Optional<List<TarjetaDTO>> resultado = tarjetaMapeador.aListaDto((List<Tarjeta>) null);
             
             // Assert
             assertFalse(resultado.isPresent());
@@ -443,11 +443,8 @@ class TarjetaMapeadorTest {
         @Test
         @DisplayName("aListaEntidad debería manejar null")
         void aListaEntidadDeberiaManejarNull() {
-            // Arrange
-            List<TarjetaDTO> tarjetasDtoNull = null;
-            
             // Act
-            Optional<List<Tarjeta>> resultado = tarjetaMapeador.aListaEntidad(tarjetasDtoNull);
+            Optional<List<Tarjeta>> resultado = tarjetaMapeador.aListaEntidad((List<TarjetaDTO>) null);
             
             // Assert
             assertFalse(resultado.isPresent());

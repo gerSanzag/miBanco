@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TransaccionTest {
 
     Long id = 1L;
-    Long numeroCuenta = 1234567890L;
-    Long numeroCuentaDestino = 9876543210L;
+    String numeroCuenta = "ES3412345678901234567890";
+    String numeroCuentaDestino = "ES3498765432109876543210";
     TipoTransaccion tipo = TipoTransaccion.TRANSFERENCIA_ENVIADA;
     BigDecimal monto = new BigDecimal("1000.50");
     LocalDateTime fecha = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
@@ -176,7 +176,7 @@ class TransaccionTest {
         Transaccion transaccionOriginal = transaccion;
         
         // Act (Actuar) - Crear una nueva transacción con datos diferentes
-        Transaccion transaccionNueva = Transaccion.of(999L, 9999999999L, 8888888888L, 
+        Transaccion transaccionNueva = Transaccion.of(999L, "ES3499999999999999999999", "ES3488888888888888888888", 
                 TipoTransaccion.DEPOSITO, new BigDecimal("9999.99"), LocalDateTime.now(), "Nueva descripción");
         
         // Assert (Verificar) - Original no debe cambiar

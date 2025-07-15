@@ -12,42 +12,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Tarjetas
  * Visibilidad restringida al paquete internal
  */
-class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, TipoOperacionTarjeta&gt; implements TarjetaRepositorio {
+class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, Long, TipoOperacionTarjeta&gt; implements TarjetaRepositorio {
     
     /**
      * Constructor con visibilidad de paquete
      */
     TarjetaRepositorioImpl() {
-<span class="fc" id="L27">        super();</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L28">        super();</span>
+<span class="fc" id="L29">    }</span>
    
     /**
      * Implementación específica para asignar nuevo ID a Tarjeta
      * Usa DTOs para mantener la inmutabilidad de la entidad
      * Enfoque funcional puro con Optional
+     * Genera un número de tarjeta único de 16 dígitos
      * @param tarjeta Tarjeta sin ID asignado
      * @return Tarjeta con nuevo ID asignado
      */
     @Override
     protected Tarjeta crearConNuevoId(Tarjeta tarjeta) {
-<span class="nc" id="L39">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
-<span class="nc" id="L40">        TarjetaMapeador mapeador = new TarjetaMapeador(clienteMapeador);</span>
+<span class="fc" id="L41">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
+<span class="fc" id="L42">        TarjetaMapeador mapeador = new TarjetaMapeador(clienteMapeador);</span>
         
-<span class="nc" id="L42">        return mapeador.aDtoDirecto(tarjeta)</span>
-<span class="nc" id="L43">            .map(dto -&gt; {</span>
-<span class="nc" id="L44">                String numero = String.format(&quot;%016d&quot;, (long) (Math.random() * 10000000000000000L));</span>
-<span class="nc" id="L45">                return dto.toBuilder()</span>
-<span class="nc" id="L46">                    .numero(numero)</span>
-<span class="nc" id="L47">                    .build();</span>
+<span class="fc" id="L44">        return mapeador.aDtoDirecto(tarjeta)</span>
+<span class="fc" id="L45">            .map(dto -&gt; {</span>
+<span class="fc" id="L46">                Long numero = generarNumeroTarjetaUnico();</span>
+<span class="fc" id="L47">                return dto.toBuilder()</span>
+<span class="fc" id="L48">                    .numero(numero)</span>
+<span class="fc" id="L49">                    .build();</span>
             })
-<span class="nc" id="L49">            .flatMap(mapeador::aEntidadDirecta)</span>
-<span class="nc" id="L50">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Tarjeta&quot;));</span>
+<span class="fc" id="L51">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="pc" id="L52">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Tarjeta&quot;));</span>
+    }
+    
+    /**
+     * Genera un número de tarjeta único de 16 dígitos
+     * Usa ThreadLocalRandom para mejor distribución y rendimiento
+     * @return Long con 16 dígitos aleatorios
+     */
+    private Long generarNumeroTarjetaUnico() {
+        // Generar número entre 1000000000000000L y 9999999999999999L (16 dígitos)
+<span class="fc" id="L62">        long min = 1000000000000000L;</span>
+<span class="fc" id="L63">        long max = 9999999999999999L;</span>
+<span class="fc" id="L64">        return ThreadLocalRandom.current().nextLong(min, max + 1);</span>
     }
     
     /**
@@ -56,11 +70,11 @@ class TarjetaRepositorioImpl extends BaseRepositorioImpl&lt;Tarjeta, String, Tip
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="fc" id="L59">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L60">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/tarjeta.json&quot;);</span>
-<span class="fc" id="L61">        config.put(&quot;tipoClase&quot;, Tarjeta.class);</span>
-<span class="fc" id="L62">        config.put(&quot;extractorId&quot;, (Function&lt;Tarjeta, Long&gt;) Tarjeta::getId);</span>
-<span class="fc" id="L63">        return config;</span>
+<span class="nc" id="L73">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L74">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/tarjeta.json&quot;);</span>
+<span class="nc" id="L75">        config.put(&quot;tipoClase&quot;, Tarjeta.class);</span>
+<span class="nc" id="L76">        config.put(&quot;extractorId&quot;, (Function&lt;Tarjeta, Long&gt;) Tarjeta::getId);</span>
+<span class="nc" id="L77">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

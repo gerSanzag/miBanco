@@ -17,7 +17,7 @@ import java.util.Optional;
 @DisplayName("Tests para la clase CuentaDTO")
 class CuentaDtoTest {
 
-    Long numeroCuenta = 167384367890L;
+    String numeroCuenta = "ES3412345678901234567890";
     ClienteDTO titular;
     TipoCuenta tipo = TipoCuenta.AHORRO;
     LocalDateTime fechaCreacion = LocalDateTime.now();

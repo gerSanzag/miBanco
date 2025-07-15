@@ -7,6 +7,7 @@ import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.enums.TipoOperacionCliente;
 import com.mibanco.repositorio.interna.RepositorioFactoria;         
 import com.mibanco.servicio.ClienteServicio;
+import com.mibanco.util.ValidacionException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,14 +34,42 @@ class ClienteServicioImpl extends BaseServicioImpl<ClienteDTO, Cliente, Long, Ti
 
     @Override
     public Optional<ClienteDTO> crearClienteDto(Map<String, String> datosCliente) {
-        // Usar el procesador especializado para crear el DTO con validaciones
-        return clienteDtoProcesador.procesarClienteDto(datosCliente)
-            .flatMap(clienteDto -> guardarEntidad(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));
+        try {
+            // Usar el procesador especializado para crear el DTO con validaciones
+            return clienteDtoProcesador.procesarClienteDto(datosCliente)
+                .flatMap(clienteDto -> {
+                    // Validar DNI único antes de guardar
+                    validarDniUnico(clienteDto);
+                    return guardarEntidad(TipoOperacionCliente.CREAR, Optional.of(clienteDto));
+                });
+        } catch (ValidacionException e) {
+            System.err.println("Error de validación: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<ClienteDTO> guardarCliente(Optional<ClienteDTO> clienteDTO) {
-        return guardarEntidad(TipoOperacionCliente.CREAR,clienteDTO);
+        // NO validar aquí - el DTO ya debería estar validado
+        return guardarEntidad(TipoOperacionCliente.CREAR, clienteDTO);
+    }
+    
+    /**
+     * Método auxiliar para validar DNI único
+     * @param dto DTO del cliente a validar
+     * @throws ValidacionException si el DNI ya existe
+     */
+    private void validarDniUnico(ClienteDTO dto) {
+        // Solo validar si el DNI no es null (validación básica ya hecha en vista)
+        if (dto.getDni() != null) {
+            Optional<Cliente> clienteExistente = repositorioCliente.buscarPorPredicado(
+                cliente -> dto.getDni().equals(cliente.getDni())
+            );
+            
+            if (clienteExistente.isPresent()) {
+                throw new ValidacionException("Ya existe un cliente con el DNI: " + dto.getDni());
+            }
+        }
     }
 
     @Override

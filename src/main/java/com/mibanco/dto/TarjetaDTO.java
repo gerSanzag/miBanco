@@ -18,7 +18,7 @@ import lombok.Value;
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
 public class TarjetaDTO {
     @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
-    String numero;
+    Long numero;
     ClienteDTO titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
@@ -29,7 +29,7 @@ public class TarjetaDTO {
      * Método estático que construye un TarjetaDTO con valores opcionales
      * Aplicando enfoque funcional con Optional para manejar valores nulos
      */
-    public static TarjetaDTO of(String numero, Optional<ClienteDTO> titular, Optional<String> numeroCuentaAsociada,
+    public static TarjetaDTO of(Long numero, Optional<ClienteDTO> titular, Optional<String> numeroCuentaAsociada,
                                Optional<TipoTarjeta> tipo, Optional<LocalDate> fechaExpiracion,
                                Optional<Boolean> activa) {
         

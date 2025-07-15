@@ -12,7 +12,7 @@ import java.util.Optional;
  * Interfaz para el repositorio de Tarjetas
  * Extiende la interfaz base para heredar operaciones CRUD genéricas
  */
-public interface TarjetaRepositorio extends BaseRepositorio<Tarjeta, String, TipoOperacionTarjeta> {
+public interface TarjetaRepositorio extends BaseRepositorio<Tarjeta, Long, TipoOperacionTarjeta> {
     
     
 } 

@@ -58,7 +58,7 @@ class CuentaMapeadorTest {
                 .build();
                 
             Cuenta cuenta = Cuenta.builder()
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .titular(cliente)
                 .tipo(TipoCuenta.CORRIENTE)
                 .saldoInicial(new BigDecimal("1000.00"))
@@ -83,7 +83,7 @@ class CuentaMapeadorTest {
             assertTrue(resultado.isPresent());
             CuentaDTO dto = resultado.get();
             
-            assertEquals(12345L, dto.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", dto.getNumeroCuenta());
             assertEquals(clienteDTO, dto.getTitular());
             assertEquals(TipoCuenta.CORRIENTE, dto.getTipo());
             assertEquals(new BigDecimal("1000.00"), dto.getSaldoInicial());
@@ -99,7 +99,7 @@ class CuentaMapeadorTest {
         void deberiaManejarCuentaConTitularNulo() {
             // Arrange
             Cuenta cuenta = Cuenta.builder()
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .titular(null)
                 .tipo(TipoCuenta.AHORRO)
                 .saldoInicial(new BigDecimal("500.00"))
@@ -115,7 +115,7 @@ class CuentaMapeadorTest {
             assertTrue(resultado.isPresent());
             CuentaDTO dto = resultado.get();
             
-            assertEquals(12345L, dto.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", dto.getNumeroCuenta());
             assertNull(dto.getTitular());
             assertEquals(TipoCuenta.AHORRO, dto.getTipo());
             assertTrue(dto.isActiva());
@@ -139,7 +139,7 @@ class CuentaMapeadorTest {
             Cliente cliente2 = Cliente.builder().id(2L).nombre("Cliente 2").build();
             
             Cuenta cuenta1 = Cuenta.builder()
-                .numeroCuenta(1L)
+                .numeroCuenta("ES3400000000000000000001")
                 .titular(cliente1)
                 .tipo(TipoCuenta.CORRIENTE)
                 .saldoInicial(new BigDecimal("1000.00"))
@@ -149,7 +149,7 @@ class CuentaMapeadorTest {
                 .build();
                 
             Cuenta cuenta2 = Cuenta.builder()
-                .numeroCuenta(2L)
+                .numeroCuenta("ES3400000000000000000002")
                 .titular(cliente2)
                 .tipo(TipoCuenta.AHORRO)
                 .saldoInicial(new BigDecimal("500.00"))
@@ -176,8 +176,8 @@ class CuentaMapeadorTest {
             List<CuentaDTO> dtos = resultado.get();
             
             assertEquals(2, dtos.size());
-            assertEquals(1L, dtos.get(0).getNumeroCuenta());
-            assertEquals(2L, dtos.get(1).getNumeroCuenta());
+            assertEquals("ES3400000000000000000001", dtos.get(0).getNumeroCuenta());
+            assertEquals("ES3400000000000000000002", dtos.get(1).getNumeroCuenta());
         }
     }
 
@@ -196,7 +196,7 @@ class CuentaMapeadorTest {
                 .build();
                 
             CuentaDTO dto = CuentaDTO.builder()
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .titular(clienteDTO)
                 .tipo(TipoCuenta.CORRIENTE)
                 .saldoInicial(new BigDecimal("1000.00"))
@@ -221,7 +221,7 @@ class CuentaMapeadorTest {
             assertTrue(resultado.isPresent());
             Cuenta cuenta = resultado.get();
             
-            assertEquals(12345L, cuenta.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", cuenta.getNumeroCuenta());
             assertEquals(cliente, cuenta.getTitular());
             assertEquals(TipoCuenta.CORRIENTE, cuenta.getTipo());
             assertEquals(new BigDecimal("1000.00"), cuenta.getSaldoInicial());
@@ -237,7 +237,7 @@ class CuentaMapeadorTest {
         void deberiaManejarDtoConTitularNulo() {
             // Arrange
             CuentaDTO dto = CuentaDTO.builder()
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .titular(null)
                 .tipo(TipoCuenta.AHORRO)
                 .saldoInicial(new BigDecimal("500.00"))
@@ -253,7 +253,7 @@ class CuentaMapeadorTest {
             assertTrue(resultado.isPresent());
             Cuenta cuenta = resultado.get();
             
-            assertEquals(12345L, cuenta.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", cuenta.getNumeroCuenta());
             assertNull(cuenta.getTitular());
             assertEquals(TipoCuenta.AHORRO, cuenta.getTipo());
             assertTrue(cuenta.isActiva());
@@ -277,7 +277,7 @@ class CuentaMapeadorTest {
             ClienteDTO clienteDTO2 = ClienteDTO.builder().id(2L).nombre("Cliente 2").build();
             
             CuentaDTO dto1 = CuentaDTO.builder()
-                .numeroCuenta(1L)
+                .numeroCuenta("ES3400000000000000000001")
                 .titular(clienteDTO1)
                 .tipo(TipoCuenta.CORRIENTE)
                 .saldoInicial(new BigDecimal("1000.00"))
@@ -287,7 +287,7 @@ class CuentaMapeadorTest {
                 .build();
                 
             CuentaDTO dto2 = CuentaDTO.builder()
-                .numeroCuenta(2L)
+                .numeroCuenta("ES3400000000000000000002")
                 .titular(clienteDTO2)
                 .tipo(TipoCuenta.AHORRO)
                 .saldoInicial(new BigDecimal("500.00"))
@@ -314,8 +314,8 @@ class CuentaMapeadorTest {
             List<Cuenta> cuentas = resultado.get();
             
             assertEquals(2, cuentas.size());
-            assertEquals(1L, cuentas.get(0).getNumeroCuenta());
-            assertEquals(2L, cuentas.get(1).getNumeroCuenta());
+            assertEquals("ES3400000000000000000001", cuentas.get(0).getNumeroCuenta());
+            assertEquals("ES3400000000000000000002", cuentas.get(1).getNumeroCuenta());
         }
     }
 
@@ -328,7 +328,7 @@ class CuentaMapeadorTest {
         void aDtoDirectoDeberiaFuncionar() {
             // Arrange
             Cuenta cuenta = Cuenta.builder()
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .titular(null)
                 .tipo(TipoCuenta.CORRIENTE)
                 .saldoInicial(new BigDecimal("1000.00"))
@@ -342,7 +342,7 @@ class CuentaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            assertEquals(12345L, resultado.get().getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", resultado.get().getNumeroCuenta());
         }
         
         @Test
@@ -350,7 +350,7 @@ class CuentaMapeadorTest {
         void aEntidadDirectaDeberiaFuncionar() {
             // Arrange
             CuentaDTO dto = CuentaDTO.builder()
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .titular(null)
                 .tipo(TipoCuenta.CORRIENTE)
                 .saldoInicial(new BigDecimal("1000.00"))
@@ -364,7 +364,7 @@ class CuentaMapeadorTest {
             
             // Assert
             assertTrue(resultado.isPresent());
-            assertEquals(12345L, resultado.get().getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", resultado.get().getNumeroCuenta());
         }
         
         @Test

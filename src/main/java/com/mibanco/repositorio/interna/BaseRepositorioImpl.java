@@ -36,21 +36,17 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     // Usuario actual
     protected String usuarioActual = "sistema";
     
-    // Contador para operaciones CRUD (guardado por lotes)
-    private int contadorOperaciones = 0;
-    
     // Procesador JSON genérico
     private final BaseProcesadorJson<T> jsonProcesador;
     
     /**
-     * Constructor protegido con carga automática desde JSON
+     * Constructor protegido sin carga automática
+     * Los datos se cargarán de forma lazy cuando sea necesario
      */
     protected BaseRepositorioImpl() {
         // Inicializar procesador JSON
         this.jsonProcesador = new BaseProcesadorJson<>();
-        
-        // ✅ CARGAR DATOS AUTOMÁTICAMENTE
-        cargarDatosDesdeJson();
+        // ❌ NO cargar datos automáticamente - se hará de forma lazy
     }
     
     /**
@@ -61,6 +57,14 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
             auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();
         }
         return auditoriaRepository;
+    }
+    
+    /**
+     * Método público para cargar datos manualmente
+     * Útil para testing y casos donde se necesita control explícito
+     */
+    public void cargarDatos() {
+        cargarDatosDesdeJson();
     }
     
     /**
@@ -175,6 +179,10 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     
     @Override
     public Optional<List<T>> buscarTodos() {
+        // ✅ Carga lazy: cargar datos si la lista está vacía
+        if (entidades.isEmpty()) {
+            cargarDatosDesdeJson();
+        }
         return Optional.of(new ArrayList<>(entidades));
     }
     
@@ -196,6 +204,10 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     
     @Override
     public long contarRegistros() {
+        // ✅ Carga lazy: cargar datos si la lista está vacía
+        if (entidades.isEmpty()) {
+            cargarDatosDesdeJson();
+        }
         return entidades.size();
     }
     
@@ -235,17 +247,24 @@ abstract class BaseRepositorioImpl<T extends Identificable, ID, E extends Enum<E
     }
     
     /**
-     * Incrementa el contador de operaciones y guarda datos cada 10 operaciones
+     * Guarda datos cuando el tamaño de la lista sea múltiplo de 10
      */
     protected void incrementarContadorYGuardar() {
-        contadorOperaciones++;
-        if (contadorOperaciones == 10) {
-            Map<String, Object> config = obtenerConfiguracion();
-            String ruta = (String) config.get("rutaArchivo");
-            if (ruta != null) {
+        // Guardar cuando el tamaño sea múltiplo de 10
+        if (entidades.size() > 0 && entidades.size() % 10 == 0) {
+            guardarDatos();
+        }
+    }
+    
+    /**
+     * Método público para guardado forzado de datos
+     * Útil para cierre de aplicación o guardado manual
+     */
+    public void guardarDatos() {
+        Map<String, Object> config = obtenerConfiguracion();
+        String ruta = (String) config.get("rutaArchivo");
+        if (ruta != null && !entidades.isEmpty()) {
             jsonProcesador.guardarJson(ruta, entidades);
-            }
-            contadorOperaciones = 0;
         }
     }
 } 

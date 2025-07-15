@@ -58,12 +58,12 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl&lt;Transaccion, Lon
 <span class="nc" id="L58">                    LocalDateTime fechaTransaccion = transaccion.getFecha();</span>
 <span class="nc bnc" id="L59" title="All 2 branches missed.">                    return !fechaTransaccion.toLocalDate().isBefore(inicio) &amp;&amp; </span>
 <span class="nc bnc" id="L60" title="All 2 branches missed.">                           !fechaTransaccion.toLocalDate().isAfter(fin);</span>
-<span class="nc" id="L61">                })</span>
-<span class="nc" id="L62">            )</span>
+                })
+            )
         );
     }
     
-
+    
     
     /**
      * ✅ Obtiene la configuración para este repositorio
@@ -71,11 +71,11 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl&lt;Transaccion, Lon
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="fc" id="L74">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L75">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/transaccion.json&quot;);</span>
-<span class="fc" id="L76">        config.put(&quot;tipoClase&quot;, Transaccion.class);</span>
-<span class="fc" id="L77">        config.put(&quot;extractorId&quot;, (Function&lt;Transaccion, Long&gt;) Transaccion::getId);</span>
-<span class="fc" id="L78">        return config;</span>
+<span class="nc" id="L74">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L75">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/transaccion.json&quot;);</span>
+<span class="nc" id="L76">        config.put(&quot;tipoClase&quot;, Transaccion.class);</span>
+<span class="nc" id="L77">        config.put(&quot;extractorId&quot;, (Function&lt;Transaccion, Long&gt;) Transaccion::getId);</span>
+<span class="nc" id="L78">        return config;</span>
     }
     
     /**

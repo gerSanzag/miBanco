@@ -527,9 +527,11 @@ class BaseRepositorioImplTest {
                 }
             }
             
-            // Act & Assert - Debe lanzar excepción por campo crítico null
+            TestRepositorioConfiguracionInvalida repositorio = new TestRepositorioConfiguracionInvalida();
+            
+            // Act & Assert - Debe lanzar excepción por campo crítico null cuando se accede a los datos
             assertThrows(NullPointerException.class, () -> {
-                new TestRepositorioConfiguracionInvalida();
+                repositorio.buscarTodos(); // Esto activará la carga lazy y lanzará la excepción
             });
         }
     }

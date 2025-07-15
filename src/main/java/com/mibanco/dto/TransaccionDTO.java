@@ -21,8 +21,8 @@ import com.mibanco.util.ReflexionUtil.NoSolicitar;
 public class TransaccionDTO {
     @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
     Long id;
-    Long numeroCuenta;
-    Long numeroCuentaDestino;
+    String numeroCuenta;
+    String numeroCuentaDestino;
     TipoTransaccion tipo;
     BigDecimal monto;
     LocalDateTime fecha;
@@ -32,8 +32,8 @@ public class TransaccionDTO {
      * Método estático que construye un TransaccionDTO con valores opcionales
      * Aplicando enfoque funcional con Optional para manejar valores nulos
      */
-    public static TransaccionDTO of(Long id, Long numeroCuenta, 
-                                   Optional<Long> numeroCuentaDestino,
+    public static TransaccionDTO of(Long id, String numeroCuenta, 
+                                   Optional<String> numeroCuentaDestino,
                                    Optional<TipoTransaccion> tipo, Optional<BigDecimal> monto,
                                    Optional<LocalDateTime> fecha,
                                    Optional<String> descripcion) {

@@ -7,6 +7,7 @@ import com.mibanco.dto.mapeador.ClienteMapeador;
 import com.mibanco.modelo.enums.TipoOperacionCliente;
 import com.mibanco.repositorio.interna.RepositorioFactoria;         
 import com.mibanco.servicio.ClienteServicio;
+import com.mibanco.util.ValidacionException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,120 +20,148 @@ class ClienteServicioImpl extends BaseServicioImpl&lt;ClienteDTO, Cliente, Long,
     private static final ClienteRepositorio repositorioCliente;
     private static final ClienteMapeador mapeador;
     private static final ClienteDtoProcesadorServicio clienteDtoProcesador;
-<span class="nc" id="L22">    private final TipoOperacionCliente tipoActualizar = TipoOperacionCliente.ACTUALIZAR;</span>
+<span class="nc" id="L23">    private final TipoOperacionCliente tipoActualizar = TipoOperacionCliente.ACTUALIZAR;</span>
     
     static {
-<span class="nc" id="L25">        repositorioCliente = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCliente();</span>
-<span class="nc" id="L26">        mapeador = new ClienteMapeador();</span>
-<span class="nc" id="L27">        clienteDtoProcesador = new ClienteDtoProcesadorServicio();</span>
-<span class="nc" id="L28">    }</span>
+<span class="nc" id="L26">        repositorioCliente = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCliente();</span>
+<span class="nc" id="L27">        mapeador = new ClienteMapeador();</span>
+<span class="nc" id="L28">        clienteDtoProcesador = new ClienteDtoProcesadorServicio();</span>
+<span class="nc" id="L29">    }</span>
     
     public ClienteServicioImpl() {
-<span class="nc" id="L31">        super(repositorioCliente, mapeador);</span>
-<span class="nc" id="L32">    }</span>
+<span class="nc" id="L32">        super(repositorioCliente, mapeador);</span>
+<span class="nc" id="L33">    }</span>
 
     @Override
     public Optional&lt;ClienteDTO&gt; crearClienteDto(Map&lt;String, String&gt; datosCliente) {
-        // Usar el procesador especializado para crear el DTO con validaciones
-<span class="nc" id="L37">        return clienteDtoProcesador.procesarClienteDto(datosCliente)</span>
-<span class="nc" id="L38">            .flatMap(clienteDto -&gt; guardarEntidad(TipoOperacionCliente.CREAR, Optional.of(clienteDto)));</span>
+        try {
+            // Usar el procesador especializado para crear el DTO con validaciones
+<span class="nc" id="L39">            return clienteDtoProcesador.procesarClienteDto(datosCliente)</span>
+<span class="nc" id="L40">                .flatMap(clienteDto -&gt; {</span>
+                    // Validar DNI único antes de guardar
+<span class="nc" id="L42">                    validarDniUnico(clienteDto);</span>
+<span class="nc" id="L43">                    return guardarEntidad(TipoOperacionCliente.CREAR, Optional.of(clienteDto));</span>
+                });
+<span class="nc" id="L45">        } catch (ValidacionException e) {</span>
+<span class="nc" id="L46">            System.err.println(&quot;Error de validación: &quot; + e.getMessage());</span>
+<span class="nc" id="L47">            return Optional.empty();</span>
+        }
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; guardarCliente(Optional&lt;ClienteDTO&gt; clienteDTO) {
-<span class="nc" id="L43">        return guardarEntidad(TipoOperacionCliente.CREAR,clienteDTO);</span>
+        // NO validar aquí - el DTO ya debería estar validado
+<span class="nc" id="L54">        return guardarEntidad(TipoOperacionCliente.CREAR, clienteDTO);</span>
     }
+    
+    /**
+     * Método auxiliar para validar DNI único
+     * @param dto DTO del cliente a validar
+     * @throws ValidacionException si el DNI ya existe
+     */
+    private void validarDniUnico(ClienteDTO dto) {
+        // Solo validar si el DNI no es null (validación básica ya hecha en vista)
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (dto.getDni() != null) {</span>
+<span class="nc" id="L65">            Optional&lt;Cliente&gt; clienteExistente = repositorioCliente.buscarPorPredicado(</span>
+<span class="nc" id="L66">                cliente -&gt; dto.getDni().equals(cliente.getDni())</span>
+            );
+            
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (clienteExistente.isPresent()) {</span>
+<span class="nc" id="L70">                throw new ValidacionException(&quot;Ya existe un cliente con el DNI: &quot; + dto.getDni());</span>
+            }
+        }
+<span class="nc" id="L73">    }</span>
 
     @Override
     public Optional&lt;ClienteDTO&gt; actualizarVariosCampos(Long id, Optional&lt;ClienteDTO&gt; clienteDTO) {
-<span class="nc" id="L48">        return clienteDTO.flatMap(nuevoCliente -&gt; {</span>
+<span class="nc" id="L77">        return clienteDTO.flatMap(nuevoCliente -&gt; {</span>
             // Obtener el cliente existente
-<span class="nc" id="L50">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
+<span class="nc" id="L79">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
             
-<span class="nc" id="L52">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
+<span class="nc" id="L81">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
                 // Actualizar usando métodos del DTO
-<span class="nc" id="L54">                ClienteDTO clienteActualizado = clienteExistente.conDatosContacto(</span>
-<span class="nc" id="L55">                    Optional.ofNullable(nuevoCliente.getEmail()),</span>
-<span class="nc" id="L56">                    Optional.ofNullable(nuevoCliente.getTelefono()),</span>
-<span class="nc" id="L57">                    Optional.ofNullable(nuevoCliente.getDireccion())</span>
+<span class="nc" id="L83">                ClienteDTO clienteActualizado = clienteExistente.conDatosContacto(</span>
+<span class="nc" id="L84">                    Optional.ofNullable(nuevoCliente.getEmail()),</span>
+<span class="nc" id="L85">                    Optional.ofNullable(nuevoCliente.getTelefono()),</span>
+<span class="nc" id="L86">                    Optional.ofNullable(nuevoCliente.getDireccion())</span>
                 );
                 
                 // Guardar y retornar
-<span class="nc" id="L61">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L90">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; actualizarEmailCliente(Long id, Optional&lt;String&gt; nuevoEmail) {
-<span class="nc" id="L68">        return nuevoEmail.flatMap(email -&gt; {</span>
-<span class="nc" id="L69">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
+<span class="nc" id="L97">        return nuevoEmail.flatMap(email -&gt; {</span>
+<span class="nc" id="L98">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
             
-<span class="nc" id="L71">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
-<span class="nc" id="L72">                ClienteDTO clienteActualizado = clienteExistente.conEmail(email);</span>
-<span class="nc" id="L73">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L100">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
+<span class="nc" id="L101">                ClienteDTO clienteActualizado = clienteExistente.conEmail(email);</span>
+<span class="nc" id="L102">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; actualizarTelefonoCliente(Long id, Optional&lt;String&gt; nuevoTelefono) {
-<span class="nc" id="L80">        return nuevoTelefono.flatMap(telefono -&gt; {</span>
-<span class="nc" id="L81">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
+<span class="nc" id="L109">        return nuevoTelefono.flatMap(telefono -&gt; {</span>
+<span class="nc" id="L110">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
             
-<span class="nc" id="L83">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
-<span class="nc" id="L84">                ClienteDTO clienteActualizado = clienteExistente.conTelefono(telefono);</span>
-<span class="nc" id="L85">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L112">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
+<span class="nc" id="L113">                ClienteDTO clienteActualizado = clienteExistente.conTelefono(telefono);</span>
+<span class="nc" id="L114">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; actualizarDireccionCliente(Long id, Optional&lt;String&gt; nuevaDireccion) {
-<span class="nc" id="L92">        return nuevaDireccion.flatMap(direccion -&gt; {</span>
-<span class="nc" id="L93">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
+<span class="nc" id="L121">        return nuevaDireccion.flatMap(direccion -&gt; {</span>
+<span class="nc" id="L122">            Optional&lt;ClienteDTO&gt; clienteExistenteOpt = obtenerPorId(Optional.of(id));</span>
             
-<span class="nc" id="L95">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
-<span class="nc" id="L96">                ClienteDTO clienteActualizado = clienteExistente.conDireccion(direccion);</span>
-<span class="nc" id="L97">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
+<span class="nc" id="L124">            return clienteExistenteOpt.map(clienteExistente -&gt; {</span>
+<span class="nc" id="L125">                ClienteDTO clienteActualizado = clienteExistente.conDireccion(direccion);</span>
+<span class="nc" id="L126">                return guardarEntidad(tipoActualizar, Optional.of(clienteActualizado)).orElse(clienteActualizado);</span>
             });
         });
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; obtenerClientePorId(Optional&lt;Long&gt; id) {
-<span class="nc" id="L104">        return obtenerPorId(id);</span>
+<span class="nc" id="L133">        return obtenerPorId(id);</span>
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; obtenerClientePorDni(Optional&lt;String&gt; dni) {
-<span class="nc" id="L109">        return dni.flatMap(dniValue -&gt; repositorioCliente.buscarPorId(Optional.of(Long.parseLong(dniValue)))</span>
-<span class="nc" id="L110">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad))));</span>
+<span class="nc" id="L138">        return dni.flatMap(dniValue -&gt; repositorioCliente.buscarPorId(Optional.of(Long.parseLong(dniValue)))</span>
+<span class="nc" id="L139">                .flatMap(entidad -&gt; mapeador.aDto(Optional.of(entidad))));</span>
     }
 
     @Override
     public Optional&lt;List&lt;ClienteDTO&gt;&gt; obtenerTodosLosClientes() {
-<span class="nc" id="L115">        return obtenerTodos();</span>
+<span class="nc" id="L144">        return obtenerTodos();</span>
     }
 
     @Override
     public boolean eliminarCliente(Optional&lt;Long&gt; id) {
-<span class="nc" id="L120">        return eliminarPorId(id, TipoOperacionCliente.ELIMINAR);</span>
+<span class="nc" id="L149">        return eliminarPorId(id, TipoOperacionCliente.ELIMINAR);</span>
     }
 
     @Override
     public Optional&lt;ClienteDTO&gt; restaurarCliente(Optional&lt;Long&gt; id) {
-<span class="nc" id="L125">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
+<span class="nc" id="L154">        return restaurar(id, TipoOperacionCliente.RESTAURAR);</span>
     }
 
     @Override
     public void establecerUsuarioActual(String usuario) {
-<span class="nc" id="L130">        establecerUsuarioActual(usuario);</span>
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L159">        establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L160">    }</span>
 
     @Override
     public long contarClientes() {
-<span class="nc" id="L135">        return contarRegistros();</span>
+<span class="nc" id="L164">        return contarRegistros();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

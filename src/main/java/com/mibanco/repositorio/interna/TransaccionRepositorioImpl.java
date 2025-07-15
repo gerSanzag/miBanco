@@ -63,7 +63,7 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
         );
     }
     
-
+    
     
     /**
      * ✅ Obtiene la configuración para este repositorio

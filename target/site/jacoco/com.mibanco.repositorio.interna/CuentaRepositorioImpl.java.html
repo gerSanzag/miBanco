@@ -29,6 +29,9 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
     
     /**
      * Implementación específica para asignar nuevo ID a Cuenta
+     * SIEMPRE genera un nuevo número de cuenta aleatorio
+     * Este método solo se llama desde crearRegistro() cuando la entidad no tiene ID
+     * Genera números de cuenta en formato IBAN español: ES34 + 20 dígitos aleatorios
      * Usa DTOs para mantener la inmutabilidad de la entidad
      * Enfoque funcional puro con Optional
      * @param cuenta Cuenta sin ID asignado
@@ -36,18 +39,24 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
      */
     @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
-<span class="nc" id="L39">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
-<span class="nc" id="L40">        CuentaMapeador mapeador = new CuentaMapeador(clienteMapeador);</span>
+<span class="fc" id="L42">        ClienteMapeador clienteMapeador = new ClienteMapeador();</span>
+<span class="fc" id="L43">        CuentaMapeador mapeador = new CuentaMapeador(clienteMapeador);</span>
         
-<span class="nc" id="L42">        return mapeador.aDtoDirecto(cuenta)</span>
-<span class="nc" id="L43">            .map(dto -&gt; {</span>
-<span class="nc" id="L44">                String numero = String.format(&quot;%09d&quot;, (int) (Math.random() * 1000000000));</span>
-<span class="nc" id="L45">                return dto.toBuilder()</span>
-<span class="nc" id="L46">                    .numeroCuenta(Long.parseLong(numero))</span>
-<span class="nc" id="L47">                    .build();</span>
+<span class="fc" id="L45">        return mapeador.aDtoDirecto(cuenta)</span>
+<span class="fc" id="L46">            .map(dto -&gt; {</span>
+                // SIEMPRE generar un nuevo número de cuenta aleatorio
+<span class="fc" id="L48">                StringBuilder numeroAleatorio = new StringBuilder();</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                for (int i = 0; i &lt; 20; i++) {</span>
+<span class="fc" id="L50">                    numeroAleatorio.append((int) (Math.random() * 10));</span>
+                }
+<span class="fc" id="L52">                String numeroCuenta = &quot;ES34&quot; + numeroAleatorio.toString();</span>
+                
+<span class="fc" id="L54">                return dto.toBuilder()</span>
+<span class="fc" id="L55">                    .numeroCuenta(numeroCuenta)</span>
+<span class="fc" id="L56">                    .build();</span>
             })
-<span class="nc" id="L49">            .flatMap(mapeador::aEntidadDirecta)</span>
-<span class="nc" id="L50">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cuenta&quot;));</span>
+<span class="fc" id="L58">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="pc" id="L59">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Cuenta&quot;));</span>
     }
     
     /**
@@ -56,11 +65,11 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl&lt;Cuenta, Long, TipoOpe
      */
     @Override
     protected Map&lt;String, Object&gt; obtenerConfiguracion() {
-<span class="fc" id="L59">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L60">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/cuenta.json&quot;);</span>
-<span class="fc" id="L61">        config.put(&quot;tipoClase&quot;, Cuenta.class);</span>
-<span class="fc" id="L62">        config.put(&quot;extractorId&quot;, (Function&lt;Cuenta, Long&gt;) Cuenta::getId);</span>
-<span class="fc" id="L63">        return config;</span>
+<span class="nc" id="L68">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L69">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/cuenta.json&quot;);</span>
+<span class="nc" id="L70">        config.put(&quot;tipoClase&quot;, Cuenta.class);</span>
+<span class="nc" id="L71">        config.put(&quot;extractorId&quot;, (Function&lt;Cuenta, Long&gt;) Cuenta::getId);</span>
+<span class="nc" id="L72">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

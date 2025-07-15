@@ -46,8 +46,8 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
-                .numeroCuentaDestino(67890L)
+                .numeroCuenta("ES3412345678901234567890")
+                .numeroCuentaDestino("ES3498765432109876543210")
                 .tipo(TipoTransaccion.TRANSFERENCIA_ENVIADA)
                 .monto(new BigDecimal("500.00"))
                 .fecha(LocalDateTime.of(2024, 1, 1, 10, 0))
@@ -62,8 +62,8 @@ class TransaccionMapeadorTest {
             TransaccionDTO dto = resultado.get();
             
             assertEquals(1L, dto.getId());
-            assertEquals(12345L, dto.getNumeroCuenta());
-            assertEquals(67890L, dto.getNumeroCuentaDestino());
+            assertEquals("ES3412345678901234567890", dto.getNumeroCuenta());
+            assertEquals("ES3498765432109876543210", dto.getNumeroCuentaDestino());
             assertEquals(TipoTransaccion.TRANSFERENCIA_ENVIADA, dto.getTipo());
             assertEquals(new BigDecimal("500.00"), dto.getMonto());
             assertEquals(LocalDateTime.of(2024, 1, 1, 10, 0), dto.getFecha());
@@ -76,7 +76,7 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))
@@ -92,7 +92,7 @@ class TransaccionMapeadorTest {
             TransaccionDTO dto = resultado.get();
             
             assertEquals(1L, dto.getId());
-            assertEquals(12345L, dto.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", dto.getNumeroCuenta());
             assertNull(dto.getNumeroCuentaDestino());
             assertEquals(TipoTransaccion.DEPOSITO, dto.getTipo());
             assertEquals(new BigDecimal("1000.00"), dto.getMonto());
@@ -115,8 +115,8 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion1 = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
-                .numeroCuentaDestino(67890L)
+                .numeroCuenta("ES3412345678901234567890")
+                .numeroCuentaDestino("ES3498765432109876543210")
                 .tipo(TipoTransaccion.TRANSFERENCIA_ENVIADA)
                 .monto(new BigDecimal("500.00"))
                 .fecha(LocalDateTime.now())
@@ -125,7 +125,7 @@ class TransaccionMapeadorTest {
                 
             Transaccion transaccion2 = Transaccion.builder()
                 .id(2L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.RETIRO)
                 .monto(new BigDecimal("200.00"))
@@ -155,7 +155,7 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))
@@ -171,7 +171,7 @@ class TransaccionMapeadorTest {
             TransaccionDTO dto = resultado.get();
             
             assertEquals(1L, dto.getId());
-            assertEquals(12345L, dto.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", dto.getNumeroCuenta());
             assertEquals(TipoTransaccion.DEPOSITO, dto.getTipo());
             assertEquals(new BigDecimal("1000.00"), dto.getMonto());
             assertNull(dto.getDescripcion());
@@ -188,8 +188,8 @@ class TransaccionMapeadorTest {
             // Arrange
             TransaccionDTO dto = TransaccionDTO.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
-                .numeroCuentaDestino(67890L)
+                .numeroCuenta("ES3412345678901234567890")
+                .numeroCuentaDestino("ES3498765432109876543210")
                 .tipo(TipoTransaccion.TRANSFERENCIA_ENVIADA)
                 .monto(new BigDecimal("500.00"))
                 .fecha(LocalDateTime.of(2024, 1, 1, 10, 0))
@@ -204,8 +204,8 @@ class TransaccionMapeadorTest {
             Transaccion transaccion = resultado.get();
             
             assertEquals(1L, transaccion.getId());
-            assertEquals(12345L, transaccion.getNumeroCuenta());
-            assertEquals(67890L, transaccion.getNumeroCuentaDestino());
+            assertEquals("ES3412345678901234567890", transaccion.getNumeroCuenta());
+            assertEquals("ES3498765432109876543210", transaccion.getNumeroCuentaDestino());
             assertEquals(TipoTransaccion.TRANSFERENCIA_ENVIADA, transaccion.getTipo());
             assertEquals(new BigDecimal("500.00"), transaccion.getMonto());
             assertEquals(LocalDateTime.of(2024, 1, 1, 10, 0), transaccion.getFecha());
@@ -218,7 +218,7 @@ class TransaccionMapeadorTest {
             // Arrange
             TransaccionDTO dto = TransaccionDTO.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))
@@ -234,7 +234,7 @@ class TransaccionMapeadorTest {
             Transaccion transaccion = resultado.get();
             
             assertEquals(1L, transaccion.getId());
-            assertEquals(12345L, transaccion.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", transaccion.getNumeroCuenta());
             assertNull(transaccion.getNumeroCuentaDestino());
             assertEquals(TipoTransaccion.DEPOSITO, transaccion.getTipo());
             assertEquals(new BigDecimal("1000.00"), transaccion.getMonto());
@@ -257,8 +257,8 @@ class TransaccionMapeadorTest {
             // Arrange
             TransaccionDTO dto1 = TransaccionDTO.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
-                .numeroCuentaDestino(67890L)
+                .numeroCuenta("ES3412345678901234567890")
+                .numeroCuentaDestino("ES3498765432109876543210")
                 .tipo(TipoTransaccion.TRANSFERENCIA_ENVIADA)
                 .monto(new BigDecimal("500.00"))
                 .fecha(LocalDateTime.now())
@@ -267,7 +267,7 @@ class TransaccionMapeadorTest {
                 
             TransaccionDTO dto2 = TransaccionDTO.builder()
                 .id(2L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.RETIRO)
                 .monto(new BigDecimal("200.00"))
@@ -297,7 +297,7 @@ class TransaccionMapeadorTest {
             // Arrange
             TransaccionDTO dto = TransaccionDTO.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))
@@ -313,7 +313,7 @@ class TransaccionMapeadorTest {
             Transaccion transaccion = resultado.get();
             
             assertEquals(1L, transaccion.getId());
-            assertEquals(12345L, transaccion.getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", transaccion.getNumeroCuenta());
             assertEquals(TipoTransaccion.DEPOSITO, transaccion.getTipo());
             assertEquals(new BigDecimal("1000.00"), transaccion.getMonto());
             assertNull(transaccion.getDescripcion());
@@ -330,7 +330,7 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))
@@ -344,7 +344,7 @@ class TransaccionMapeadorTest {
             // Assert
             assertTrue(resultado.isPresent());
             assertEquals(1L, resultado.get().getId());
-            assertEquals(12345L, resultado.get().getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", resultado.get().getNumeroCuenta());
             assertEquals(TipoTransaccion.DEPOSITO, resultado.get().getTipo());
         }
         
@@ -354,7 +354,7 @@ class TransaccionMapeadorTest {
             // Arrange
             TransaccionDTO dto = TransaccionDTO.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))
@@ -368,7 +368,7 @@ class TransaccionMapeadorTest {
             // Assert
             assertTrue(resultado.isPresent());
             assertEquals(1L, resultado.get().getId());
-            assertEquals(12345L, resultado.get().getNumeroCuenta());
+            assertEquals("ES3412345678901234567890", resultado.get().getNumeroCuenta());
             assertEquals(TipoTransaccion.DEPOSITO, resultado.get().getTipo());
         }
         
@@ -403,7 +403,7 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(BigDecimal.ZERO)
@@ -425,7 +425,7 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.RETIRO)
                 .monto(new BigDecimal("-500.00"))
@@ -447,7 +447,7 @@ class TransaccionMapeadorTest {
             // Arrange
             Transaccion transaccion = Transaccion.builder()
                 .id(1L)
-                .numeroCuenta(12345L)
+                .numeroCuenta("ES3412345678901234567890")
                 .numeroCuentaDestino(null)
                 .tipo(TipoTransaccion.DEPOSITO)
                 .monto(new BigDecimal("1000.00"))

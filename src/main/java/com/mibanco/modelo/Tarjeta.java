@@ -18,7 +18,7 @@ import lombok.Value;
 @Builder
 public class Tarjeta implements Identificable {
 
-    String numero;
+    Long numero;
     Cliente titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
@@ -28,7 +28,7 @@ public class Tarjeta implements Identificable {
     
     @JsonCreator
     public Tarjeta(
-        @JsonProperty("numero") String numero,
+        @JsonProperty("numero") Long numero,
         @JsonProperty("titular") Cliente titular,
         @JsonProperty("numeroCuentaAsociada") String numeroCuentaAsociada,
         @JsonProperty("tipo") TipoTarjeta tipo,
@@ -47,18 +47,18 @@ public class Tarjeta implements Identificable {
     
     /**
      * Implementación de getId() para la interfaz Identificable
-     * Utilizamos el número de tarjeta como ID usando un hash del String
-     * @return Un Long que representa el número de tarjeta
+     * El número de tarjeta es directamente el identificador
+     * @return El número de tarjeta como Long
      */
     @Override
     public Long getId() {
-        return numero != null ? (long) numero.hashCode() : null;
+        return numero;
     }
     
     /**
      * Método factory para facilitar la creación de instancias
      */
-    public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
+    public static Tarjeta of(Long numero, Cliente titular, String numeroCuentaAsociada, 
                             TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
         return Tarjeta.builder()
                 .numero(numero)

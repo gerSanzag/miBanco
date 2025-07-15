@@ -16,8 +16,8 @@ import java.util.Optional;
 class TransaccionDtoTest {
 
     Long id = 1L;
-    Long numeroCuenta = 1234567890L;
-    Long numeroCuentaDestino = 9876543210L;
+    String numeroCuenta = "ES3412345678901234567890";
+    String numeroCuentaDestino = "ES3498765432109876543210";
     TipoTransaccion tipo = TipoTransaccion.TRANSFERENCIA_ENVIADA;
     BigDecimal monto = new BigDecimal("1000.50");
     LocalDateTime fecha = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
@@ -133,7 +133,7 @@ class TransaccionDtoTest {
         BigDecimal montoOriginal = transaccionDto.getMonto();
         String descripcionOriginal = transaccionDto.getDescripcion();
         TipoTransaccion tipoOriginal = transaccionDto.getTipo();
-        Long numeroCuentaDestinoOriginal = transaccionDto.getNumeroCuentaDestino();
+        String numeroCuentaDestinoOriginal = transaccionDto.getNumeroCuentaDestino();
 
         // Act (Actuar) - Crear nuevas instancias usando builder estático
         TransaccionDTO transaccion1 = TransaccionDTO.builder()
@@ -169,7 +169,7 @@ class TransaccionDtoTest {
         TransaccionDTO transaccion4 = TransaccionDTO.builder()
                 .id(transaccion3.getId())
                 .numeroCuenta(transaccion3.getNumeroCuenta())
-                .numeroCuentaDestino(1111111111L)
+                .numeroCuentaDestino("ES3411111111111111111111")
                 .tipo(transaccion3.getTipo())
                 .monto(transaccion3.getMonto())
                 .fecha(transaccion3.getFecha())

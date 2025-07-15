@@ -29,6 +29,9 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
     
     /**
      * Implementación específica para asignar nuevo ID a Cuenta
+     * SIEMPRE genera un nuevo número de cuenta aleatorio
+     * Este método solo se llama desde crearRegistro() cuando la entidad no tiene ID
+     * Genera números de cuenta en formato IBAN español: ES34 + 20 dígitos aleatorios
      * Usa DTOs para mantener la inmutabilidad de la entidad
      * Enfoque funcional puro con Optional
      * @param cuenta Cuenta sin ID asignado
@@ -41,9 +44,15 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
         
         return mapeador.aDtoDirecto(cuenta)
             .map(dto -> {
-                String numero = String.format("%09d", (int) (Math.random() * 1000000000));
+                // SIEMPRE generar un nuevo número de cuenta aleatorio
+                StringBuilder numeroAleatorio = new StringBuilder();
+                for (int i = 0; i < 20; i++) {
+                    numeroAleatorio.append((int) (Math.random() * 10));
+                }
+                String numeroCuenta = "ES34" + numeroAleatorio.toString();
+                
                 return dto.toBuilder()
-                    .numeroCuenta(Long.parseLong(numero))
+                    .numeroCuenta(numeroCuenta)
                     .build();
             })
             .flatMap(mapeador::aEntidadDirecta)
