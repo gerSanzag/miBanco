@@ -470,6 +470,40 @@ class BaseRepositorioImplTest {
     }
 
     @Nested
+    @DisplayName("Tests para carga de datos")
+    class CargaDatosTests {
+        
+        @Test
+        @DisplayName("Debería cargar datos manualmente usando cargarDatos()")
+        void deberiaCargarDatosManualmente() {
+            // Arrange - Crear repositorio con archivo JSON válido
+            File archivoJson = new File("src/test/resources/data/test_clientes.json");
+            TestRepositorioImpl repositorioConDatos = new TestRepositorioImpl(archivoJson.getAbsolutePath());
+            
+            // Act - Llamar al método público cargarDatos()
+            repositorioConDatos.cargarDatos();
+            
+            // Assert - Verificar que se cargaron los datos
+            long cantidadRegistros = repositorioConDatos.contarRegistros();
+            assertTrue(cantidadRegistros > 0, "Debería haber cargado datos del archivo JSON");
+        }
+        
+        @Test
+        @DisplayName("Debería manejar carga de datos con ruta null")
+        void deberiaManejarCargaDatosConRutaNull() {
+            // Arrange - Crear repositorio con ruta null
+            TestRepositorioImpl repositorioSinRuta = new TestRepositorioImpl(null);
+            
+            // Act - Llamar al método público cargarDatos()
+            repositorioSinRuta.cargarDatos();
+            
+            // Assert - Verificar que no se cargaron datos (ruta null)
+            long cantidadRegistros = repositorioSinRuta.contarRegistros();
+            assertEquals(0, cantidadRegistros, "No debería cargar datos cuando la ruta es null");
+        }
+    }
+    
+    @Nested
     @DisplayName("Tests para validación defensiva")
     class ValidacionDefensivaTests {
 
