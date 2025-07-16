@@ -1,8 +1,8 @@
 package com.mibanco.modelo;
 
-import com.mibanco.util.ReflexionUtil.NoSolicitar;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoTarjeta;
 
@@ -15,34 +15,50 @@ import lombok.Value;
  * Implementa un enfoque completamente funcional con inmutabilidad total
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 public class Tarjeta implements Identificable {
-    @NoSolicitar(razon = "Se genera automáticamente")
-    String numero;
+
+    Long numero;
     Cliente titular;
     String numeroCuentaAsociada;
     TipoTarjeta tipo;
-    @NoSolicitar(razon = "Se genera automáticamente")
     String cvv;
-    @NoSolicitar(razon = "Se establece automáticamente (+3 años)")
     LocalDate fechaExpiracion;
-    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
+    
+    @JsonCreator
+    public Tarjeta(
+        @JsonProperty("numero") Long numero,
+        @JsonProperty("titular") Cliente titular,
+        @JsonProperty("numeroCuentaAsociada") String numeroCuentaAsociada,
+        @JsonProperty("tipo") TipoTarjeta tipo,
+        @JsonProperty("cvv") String cvv,
+        @JsonProperty("fechaExpiracion") LocalDate fechaExpiracion,
+        @JsonProperty("activa") boolean activa
+    ) {
+        this.numero = numero;
+        this.titular = titular;
+        this.numeroCuentaAsociada = numeroCuentaAsociada;
+        this.tipo = tipo;
+        this.cvv = cvv;
+        this.fechaExpiracion = fechaExpiracion;
+        this.activa = activa;
+    }
     
     /**
      * Implementación de getId() para la interfaz Identificable
-     * Utilizamos el número de tarjeta como ID usando un hash del String
-     * @return Un Long que representa el número de tarjeta
+     * El número de tarjeta es directamente el identificador
+     * @return El número de tarjeta como Long
      */
     @Override
     public Long getId() {
-        return numero != null ? (long) numero.hashCode() : null;
+        return numero;
     }
     
     /**
      * Método factory para facilitar la creación de instancias
      */
-    public static Tarjeta of(String numero, Cliente titular, String numeroCuentaAsociada, 
+    public static Tarjeta of(Long numero, Cliente titular, String numeroCuentaAsociada, 
                             TipoTarjeta tipo, LocalDate fechaExpiracion, String cvv, boolean activa) {
         return Tarjeta.builder()
                 .numero(numero)
@@ -55,34 +71,4 @@ public class Tarjeta implements Identificable {
                 .build();
     }
     
-    /**
-     * Versión inmutable para actualizar la fecha de expiración
-     * @return Una nueva instancia con la fecha actualizada
-     */
-    public Tarjeta conFechaExpiracion(LocalDate nuevaFecha) {
-        return this.toBuilder()
-                .fechaExpiracion(nuevaFecha)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar el estado activo
-     * @return Una nueva instancia con el estado actualizado
-     */
-    public Tarjeta conActiva(boolean nuevaActiva) {
-        return this.toBuilder()
-                .activa(nuevaActiva)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar múltiples campos a la vez
-     * @return Una nueva instancia con los campos actualizados
-     */
-    public Tarjeta conActualizaciones(Optional<LocalDate> nuevaFecha, Optional<Boolean> nuevaActiva) {
-        return this.toBuilder()
-                .fechaExpiracion(nuevaFecha.orElse(this.fechaExpiracion))
-                .activa(nuevaActiva.orElse(this.activa))
-                .build();
-    }
 } 

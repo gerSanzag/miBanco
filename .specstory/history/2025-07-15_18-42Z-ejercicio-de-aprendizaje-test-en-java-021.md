@@ -11317,6 +11317,7 @@ sed as at runtime.
 
 ---
 
+
 ¡Listo, German!  
 La nueva lógica de guardado por tamaño de lista está implementada y probada:
 

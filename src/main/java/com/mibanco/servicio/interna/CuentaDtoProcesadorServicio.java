@@ -2,6 +2,8 @@ package com.mibanco.servicio.interna;
 
 import com.mibanco.dto.ClienteDTO;
 import com.mibanco.dto.CuentaDTO;
+import com.mibanco.dto.mapeador.ClienteMapeador;
+import com.mibanco.dto.mapeador.CuentaMapeador;
 import com.mibanco.servicio.ClienteServicio;
 import com.mibanco.servicio.TransaccionOperacionesServicio;
 import java.math.BigDecimal;
@@ -29,8 +31,7 @@ public class CuentaDtoProcesadorServicio {
      */
     public Optional<CuentaDTO> procesarCuentaDto(Map<String, String> datosCrudos) {
         return Optional.of(datosCrudos)
-            .flatMap(this::extraerIdTitular)
-            .flatMap(this::obtenerClientePorId)
+            .flatMap(this::obtenerTitularPorId)
             .flatMap(titular -> construirCuentaDTO(datosCrudos, titular));
     }
     
@@ -44,14 +45,20 @@ public class CuentaDtoProcesadorServicio {
     public Optional<CuentaDTO> procesarIngresoInicial(CuentaDTO cuentaCreada, 
                                                       BigDecimal montoInicial, 
                                                       TransaccionOperacionesServicio transaccionServicio) {
-        Long numeroCuenta = cuentaCreada.getNumeroCuenta();
+        // Convertir DTO a entidad para obtener el ID
+        ClienteMapeador clienteMapeador = new ClienteMapeador();
+        CuentaMapeador cuentaMapeador = new CuentaMapeador(clienteMapeador);
         
-        return transaccionServicio.ingresar(
-                Optional.of(numeroCuenta),
-                Optional.of(montoInicial),
-                Optional.of("Ingreso inicial de apertura")
-            )
-            .map(transaccion -> actualizarCuentaConSaldo(cuentaCreada, montoInicial))
+        return cuentaMapeador.aEntidadDirecta(cuentaCreada)
+            .flatMap(cuentaEntidad -> {
+                Long idCuenta = cuentaEntidad.getId();
+                return transaccionServicio.ingresar(
+                    Optional.of(idCuenta),
+                    Optional.of(montoInicial),
+                    Optional.of("Ingreso inicial de apertura")
+                )
+                .map(transaccion -> actualizarCuentaConSaldo(cuentaCreada, montoInicial));
+            })
             .or(() -> Optional.empty());
     }
     
@@ -69,18 +76,12 @@ public class CuentaDtoProcesadorServicio {
     }
     
     /**
-     * Extrae el ID del titular desde el mapa de datos
+     * Extrae el ID del titular y obtiene el cliente en un solo método funcional
      */
-    private Optional<Long> extraerIdTitular(Map<String, String> datosCrudos) {
+    private Optional<ClienteDTO> obtenerTitularPorId(Map<String, String> datosCrudos) {
         return Optional.ofNullable(datosCrudos.get("idTitular"))
-            .map(Long::parseLong);
-    }
-    
-    /**
-     * Obtiene el cliente por ID usando el servicio
-     */
-    private Optional<ClienteDTO> obtenerClientePorId(Long idTitular) {
-        return clienteServicio.obtenerClientePorId(Optional.of(idTitular));
+            .map(Long::parseLong)
+            .flatMap(idTitular -> clienteServicio.obtenerClientePorId(Optional.of(idTitular)));
     }
     
     /**
@@ -92,10 +93,6 @@ public class CuentaDtoProcesadorServicio {
                 .titular(titular);
 
             // Aplicar transformaciones funcionales
-            Optional.ofNullable(datosCrudos.get("numeroCuenta"))
-                .map(Long::parseLong)
-                .ifPresent(builder::numeroCuenta);
-
             Optional.ofNullable(datosCrudos.get("tipo"))
                 .map(com.mibanco.modelo.enums.TipoCuenta::valueOf)
                 .ifPresent(builder::tipo);

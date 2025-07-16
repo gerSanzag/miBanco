@@ -1,12 +1,18 @@
 package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.CuentaDTO;
+import com.mibanco.dto.mapeador.ClienteMapeador;
+import com.mibanco.dto.mapeador.CuentaMapeador;
 import com.mibanco.modelo.Cuenta;
 import com.mibanco.modelo.enums.TipoCuenta;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
 import com.mibanco.repositorio.CuentaRepositorio;
 
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Cuentas
@@ -21,45 +27,48 @@ class CuentaRepositorioImpl extends BaseRepositorioImpl<Cuenta, Long, TipoOperac
         super();
     }
     
-    @Override
-    public Optional<Cuenta> buscarPorNumero(Optional<Long> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> 
-            buscarPorPredicado(cuenta -> cuenta.getNumeroCuenta().equals(numero))
-        );
-    }
-    
-    @Override
-    public Optional<List<Cuenta>> buscarPorTitularId(Optional<Long> idTitular) {
-        return idTitular.flatMap(id -> 
-            buscarTodosPorPredicado(cuenta -> cuenta.getTitular().getId().equals(id))
-        );
-    }
-    
-    @Override
-    public Optional<List<Cuenta>> buscarPorTipo(Optional<TipoCuenta> tipo) {
-        return tipo.flatMap(t -> 
-            buscarTodosPorPredicado(cuenta -> cuenta.getTipo() == t)
-        );
-    }
-    
-    @Override
-    public Optional<List<Cuenta>> buscarActivas() {
-        return buscarTodosPorPredicado(Cuenta::isActiva);
-    }
-    
-    @Override
-    public Optional<Cuenta> eliminarPorNumero(Optional<Long> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> 
-            buscarPorNumero(Optional.of(numero))
-                .flatMap(cuenta -> eliminarPorId(Optional.of(cuenta.getNumeroCuenta()), TipoOperacionCuenta.ELIMINAR))
-        );
-    }
-    
+    /**
+     * Implementación específica para asignar nuevo ID a Cuenta
+     * SIEMPRE genera un nuevo número de cuenta aleatorio
+     * Este método solo se llama desde crearRegistro() cuando la entidad no tiene ID
+     * Genera números de cuenta en formato IBAN español: ES34 + 20 dígitos aleatorios
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
+     * @param cuenta Cuenta sin ID asignado
+     * @return Cuenta con nuevo ID asignado
+     */
     @Override
     protected Cuenta crearConNuevoId(Cuenta cuenta) {
-        long numeroAleatorio = System.currentTimeMillis() % 1000000000L;
-        return cuenta.toBuilder()
-                .numeroCuenta(numeroAleatorio)
-                .build();
+        ClienteMapeador clienteMapeador = new ClienteMapeador();
+        CuentaMapeador mapeador = new CuentaMapeador(clienteMapeador);
+        
+        return mapeador.aDtoDirecto(cuenta)
+            .map(dto -> {
+                // SIEMPRE generar un nuevo número de cuenta aleatorio
+                StringBuilder numeroAleatorio = new StringBuilder();
+                for (int i = 0; i < 20; i++) {
+                    numeroAleatorio.append((int) (Math.random() * 10));
+                }
+                String numeroCuenta = "ES34" + numeroAleatorio.toString();
+                
+                return dto.toBuilder()
+                    .numeroCuenta(numeroCuenta)
+                    .build();
+            })
+            .flatMap(mapeador::aEntidadDirecta)
+            .orElseThrow(() -> new IllegalStateException("No se pudo procesar la entidad Cuenta"));
+    }
+    
+    /**
+     * Implementación específica para obtener la configuración del repositorio
+     * @return Map con la configuración necesaria
+     */
+    @Override
+    protected Map<String, Object> obtenerConfiguracion() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("rutaArchivo", "src/main/resources/data/cuenta.json");
+        config.put("tipoClase", Cuenta.class);
+        config.put("extractorId", (Function<Cuenta, Long>) Cuenta::getId);
+        return config;
     }
 } 

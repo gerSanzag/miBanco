@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación de Mapper para Transaccion utilizando enfoque funcional
+ * Sin generación automática de IDs (manejada por el repositorio)
  */
 public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO> {
 
@@ -32,6 +33,7 @@ public class TransaccionMapeador implements Mapeador<Transaccion, TransaccionDTO
     /**
      * Convierte un TransaccionDTO a Transaccion
      * Implementación estrictamente funcional con Optional
+     * Sin generación automática de IDs (manejada por el repositorio)
      */
     @Override
     public Optional<Transaccion> aEntidad(Optional<TransaccionDTO> dtoOpt) {

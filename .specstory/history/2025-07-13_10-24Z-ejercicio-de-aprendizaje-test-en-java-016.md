@@ -9576,6 +9576,7 @@ german@MacBook-Air-de-german miBanco %
 
 ---
 
+
 ¡Listo, German!  
 Ahora todos los tests pasan correctamente, incluyendo la validación de la secuencia de IDs, sin importar en qué número comience el contador.
 

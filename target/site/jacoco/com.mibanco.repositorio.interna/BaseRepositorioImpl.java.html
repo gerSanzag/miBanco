@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseRepositorioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">BaseRepositorioImpl.java</span></div><h1>BaseRepositorioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
+
+import com.mibanco.modelo.Identificable;
+import com.mibanco.repositorio.AuditoriaRepositorio;
+import com.mibanco.repositorio.util.BaseRepositorio;
+import com.mibanco.util.AuditoriaUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.Objects;
+
+/**
+ * Implementación base abstracta para repositorios con acceso restringido
+ * @param &lt;T&gt; Tipo de entidad que debe implementar Identificable
+ * @param &lt;ID&gt; Tipo del identificador
+ * @param &lt;E&gt; Tipo del enum para operaciones
+ */
+abstract class BaseRepositorioImpl&lt;T extends Identificable, ID, E extends Enum&lt;E&gt;&gt; implements BaseRepositorio&lt;T, ID, E&gt; {
+    
+    // Lista para almacenar entidades en memoria
+<span class="fc" id="L25">    protected final List&lt;T&gt; entidades = new ArrayList&lt;&gt;();</span>
+    
+    // Cache para restauración de entidades eliminadas
+<span class="fc" id="L28">    protected final List&lt;T&gt; entidadesEliminadas = new ArrayList&lt;&gt;();</span>
+    
+    // Contador para generar IDs automáticamente
+<span class="fc" id="L31">    protected final AtomicLong idContador = new AtomicLong(1);</span>
+    
+    // Repositorio de auditoría - ahora con lazy loading
+    private AuditoriaRepositorio auditoriaRepository;
+    
+    // Usuario actual
+<span class="fc" id="L37">    protected String usuarioActual = &quot;sistema&quot;;</span>
+    
+    // Procesador JSON genérico
+    private final BaseProcesadorJson&lt;T&gt; jsonProcesador;
+    
+    /**
+     * Constructor protegido sin carga automática
+     * Los datos se cargarán de forma lazy cuando sea necesario
+     */
+<span class="fc" id="L46">    protected BaseRepositorioImpl() {</span>
+        // Inicializar procesador JSON
+<span class="fc" id="L48">        this.jsonProcesador = new BaseProcesadorJson&lt;&gt;();</span>
+        // ❌ NO cargar datos automáticamente - se hará de forma lazy
+<span class="fc" id="L50">    }</span>
+    
+    /**
+     * Método lazy para obtener el repositorio de auditoría
+     */
+    private AuditoriaRepositorio obtenerAuditoria() {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (auditoriaRepository == null) {</span>
+<span class="fc" id="L57">            auditoriaRepository = RepositorioFactoria.obtenerInstancia().obtenerRepositorioAuditoria();</span>
+        }
+<span class="fc" id="L59">        return auditoriaRepository;</span>
+    }
+    
+    /**
+     * Método público para cargar datos manualmente
+     * Útil para testing y casos donde se necesita control explícito
+     */
+    public void cargarDatos() {
+<span class="nc" id="L67">        cargarDatosDesdeJson();</span>
+<span class="nc" id="L68">    }</span>
+    
+    /**
+     * Carga datos desde JSON automáticamente al crear el repositorio
+     * Los datos se cargan en la lista entidades
+     */
+    private void cargarDatosDesdeJson() {
+<span class="fc" id="L75">        Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
+        
+        // Validación defensiva para campos críticos
+<span class="fc" id="L78">        Class&lt;T&gt; tipoClase = Objects.requireNonNull(</span>
+<span class="fc" id="L79">            (Class&lt;T&gt;) config.get(&quot;tipoClase&quot;), </span>
+            &quot;ERROR CRÍTICO: Tipo de clase no configurado&quot;
+        );
+        
+<span class="fc" id="L83">        Function&lt;T, Long&gt; extractorId = Objects.requireNonNull(</span>
+<span class="fc" id="L84">            (Function&lt;T, Long&gt;) config.get(&quot;extractorId&quot;), </span>
+            &quot;ERROR CRÍTICO: Extractor de ID no configurado&quot;
+        );
+        
+        // Campo opcional: si es null, no cargar datos
+<span class="fc" id="L89">        String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (ruta == null) {</span>
+<span class="nc" id="L91">            System.err.println(&quot;ADVERTENCIA: Ruta de archivo no configurada, omitiendo carga de datos&quot;);</span>
+<span class="nc" id="L92">            return;</span>
+        }
+        
+        // Cargar datos desde JSON
+<span class="fc" id="L96">        List&lt;T&gt; datosCargados = jsonProcesador.cargarDatosCondicionalmente(ruta, tipoClase);</span>
+        
+        // Agregar datos cargados a la lista entidades
+<span class="fc" id="L99">        entidades.addAll(datosCargados);</span>
+        
+        // Calcular contador desde datos reales
+<span class="fc" id="L102">        Long ultimoId = jsonProcesador.calcularMaximoId(entidades, extractorId);</span>
+<span class="fc" id="L103">        idContador.set(ultimoId);</span>
+<span class="fc" id="L104">    }</span>
+    
+    @Override
+    public void setUsuarioActual(String usuario) {
+<span class="fc" id="L108">        this.usuarioActual = usuario;</span>
+<span class="fc" id="L109">    }</span>
+    
+    @Override
+    public Optional&lt;T&gt; crearRegistro(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
+<span class="fc" id="L113">        return entityOpt.map(entity -&gt; {</span>
+            // ✅ Llamar al método abstracto para asignar ID
+<span class="fc" id="L115">            T entidadConId = crearConNuevoId(entity);</span>
+<span class="fc" id="L116">            entidades.add(entidadConId);</span>
+<span class="fc" id="L117">            registrarAuditoria(entidadConId, tipoOperacion);</span>
+<span class="fc" id="L118">            incrementarContadorYGuardar();</span>
+<span class="fc" id="L119">            return Optional.of(entidadConId);</span>
+<span class="fc" id="L120">        }).orElse(Optional.empty());</span>
+    }
+    
+    /**
+     * Método abstracto para asignar nuevo ID a la entidad
+     * Cada repositorio implementa su lógica específica
+     * @param entidad Entidad sin ID asignado
+     * @return Entidad con nuevo ID asignado
+     */
+    protected abstract T crearConNuevoId(T entidad);
+    
+    /**
+     * Método abstracto que devuelve toda la configuración necesaria
+     * @return Map con la configuración del repositorio
+     */
+    protected abstract Map&lt;String, Object&gt; obtenerConfiguracion();
+    
+    @Override
+    public Optional&lt;T&gt; actualizarRegistro(Optional&lt;T&gt; entityOpt, E tipoOperacion) {
+<span class="fc" id="L139">        return entityOpt.flatMap(entidad -&gt; </span>
+<span class="fc" id="L140">            Optional.ofNullable(entidad.getId())</span>
+<span class="fc" id="L141">                .map(id -&gt; {</span>
+<span class="fc" id="L142">                    entidades.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="fc" id="L143">                    entidades.add(entidad);</span>
+<span class="fc" id="L144">                    registrarAuditoria(entidad, tipoOperacion);</span>
+<span class="fc" id="L145">                    incrementarContadorYGuardar();</span>
+<span class="fc" id="L146">                    return entidad;</span>
+                })
+        );
+    }
+    
+    @Override
+    public Optional&lt;T&gt; buscarPorId(Optional&lt;ID&gt; idOpt) {
+<span class="fc" id="L153">        return idOpt.flatMap(id -&gt; </span>
+<span class="fc" id="L154">            entidades.stream()</span>
+<span class="fc" id="L155">                .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="fc" id="L156">                .findFirst()</span>
+        );
+    }
+    
+    /**
+     * Método protegido para búsquedas por predicado
+     */
+    public Optional&lt;T&gt; buscarPorPredicado(Predicate&lt;T&gt; predicado) {
+<span class="fc" id="L164">        return entidades.stream()</span>
+<span class="fc" id="L165">                .filter(predicado)</span>
+<span class="fc" id="L166">                .findFirst();</span>
+    }
+    
+    /**
+     * Método protegido para búsquedas de lista por predicado
+     */
+    public Optional&lt;List&lt;T&gt;&gt; buscarTodosPorPredicado(Predicate&lt;T&gt; predicado) {
+<span class="fc" id="L173">        return Optional.of(</span>
+<span class="fc" id="L174">            entidades.stream()</span>
+<span class="fc" id="L175">                .filter(predicado)</span>
+<span class="fc" id="L176">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;T&gt;&gt; buscarTodos() {
+        // ✅ Carga lazy: cargar datos si la lista está vacía
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        if (entidades.isEmpty()) {</span>
+<span class="fc" id="L184">            cargarDatosDesdeJson();</span>
+        }
+<span class="fc" id="L186">        return Optional.of(new ArrayList&lt;&gt;(entidades));</span>
+    }
+    
+    @Override
+    public Optional&lt;T&gt; eliminarPorId(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
+<span class="fc" id="L191">        return idOpt.flatMap(id -&gt; {</span>
+<span class="fc" id="L192">            Optional&lt;T&gt; entidadAEliminarOpt = buscarPorId(Optional.of(id));</span>
+            
+<span class="fc" id="L194">            entidadAEliminarOpt.ifPresent(entity -&gt; {</span>
+<span class="fc" id="L195">                entidades.remove(entity);</span>
+<span class="fc" id="L196">                entidadesEliminadas.add(entity);</span>
+<span class="fc" id="L197">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="fc" id="L198">                incrementarContadorYGuardar();</span>
+<span class="fc" id="L199">            });</span>
+            
+<span class="fc" id="L201">            return entidadAEliminarOpt;</span>
+        });
+    }
+    
+    @Override
+    public long contarRegistros() {
+        // ✅ Carga lazy: cargar datos si la lista está vacía
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (entidades.isEmpty()) {</span>
+<span class="fc" id="L209">            cargarDatosDesdeJson();</span>
+        }
+<span class="fc" id="L211">        return entidades.size();</span>
+    }
+    
+    @Override
+    public Optional&lt;T&gt; restaurar(Optional&lt;ID&gt; idOpt, E tipoOperacion) {
+<span class="fc" id="L216">        return idOpt.flatMap(id -&gt; {</span>
+<span class="fc" id="L217">            Optional&lt;T&gt; entidadAResturarOpt = entidadesEliminadas.stream()</span>
+<span class="fc" id="L218">                    .filter(entidad -&gt; entidad.getId().equals(id))</span>
+<span class="fc" id="L219">                    .findFirst();</span>
+                    
+<span class="fc" id="L221">            entidadAResturarOpt.ifPresent(entity -&gt; {</span>
+<span class="fc" id="L222">                entidades.add(entity);</span>
+<span class="fc" id="L223">                entidadesEliminadas.removeIf(e -&gt; e.getId().equals(id));</span>
+<span class="fc" id="L224">                registrarAuditoria(entity, tipoOperacion);</span>
+<span class="fc" id="L225">            });</span>
+            
+<span class="fc" id="L227">            return entidadAResturarOpt;</span>
+        });
+    }
+    
+    
+    /**
+     * Método privado para registrar auditoría
+     */
+    private void registrarAuditoria(T entidad, E tipoOperacion) {
+<span class="fc" id="L236">        AuditoriaUtil.registrarOperacion(</span>
+<span class="fc" id="L237">            obtenerAuditoria(),</span>
+<span class="fc" id="L238">            Optional.of(tipoOperacion),</span>
+<span class="fc" id="L239">            Optional.of(entidad),</span>
+<span class="fc" id="L240">            Optional.of(usuarioActual)</span>
+        );
+<span class="fc" id="L242">    }</span>
+
+    @Override
+    public List&lt;T&gt; obtenerEliminados() {
+<span class="fc" id="L246">        return entidadesEliminadas;</span>
+    }
+    
+    /**
+     * Guarda datos cuando el tamaño de la lista sea múltiplo de 10
+     */
+    protected void incrementarContadorYGuardar() {
+        // Guardar cuando el tamaño sea múltiplo de 10
+<span class="fc bfc" id="L254" title="All 4 branches covered.">        if (entidades.size() &gt; 0 &amp;&amp; entidades.size() % 10 == 0) {</span>
+<span class="fc" id="L255">            guardarDatos();</span>
+        }
+<span class="fc" id="L257">    }</span>
+    
+    /**
+     * Método público para guardado forzado de datos
+     * Útil para cierre de aplicación o guardado manual
+     */
+    public void guardarDatos() {
+<span class="fc" id="L264">        Map&lt;String, Object&gt; config = obtenerConfiguracion();</span>
+<span class="fc" id="L265">        String ruta = (String) config.get(&quot;rutaArchivo&quot;);</span>
+<span class="pc bpc" id="L266" title="1 of 4 branches missed.">        if (ruta != null &amp;&amp; !entidades.isEmpty()) {</span>
+<span class="fc" id="L267">            jsonProcesador.guardarJson(ruta, entidades);</span>
+        }
+<span class="fc" id="L269">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

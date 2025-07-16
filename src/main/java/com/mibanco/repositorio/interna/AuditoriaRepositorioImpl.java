@@ -72,7 +72,7 @@ class AuditoriaRepositorioImpl implements AuditoriaRepositorio {
         return desdeOpt.flatMap(desde -> 
             hastaOpt.map(hasta -> 
                 registros.stream()
-                    .filter(r -> !r.getFechaHora().isBefore(desde) && !r.getFechaHora().isAfter(hasta))
+                    .filter(r -> r.getFechaHora() != null && !r.getFechaHora().isBefore(desde) && !r.getFechaHora().isAfter(hasta))
                     .map(r -> (RegistroAuditoria<T, E>) r)
                     .collect(Collectors.toList())
             )

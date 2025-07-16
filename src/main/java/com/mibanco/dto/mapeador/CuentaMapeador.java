@@ -10,11 +10,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Implementación de Mapper para Cliente utilizando enfoque funcional
+ * Implementación de Mapper para Cuenta utilizando enfoque funcional
  */
 public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     private final Mapeador<Cliente, ClienteDTO> clienteMapeador;
-
+    
     public CuentaMapeador(Mapeador<Cliente, ClienteDTO> clienteMapeador) {
         this.clienteMapeador = clienteMapeador;
     }
@@ -27,8 +27,10 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     public Optional<CuentaDTO> aDto(Optional<Cuenta> cuentaOpt) {
         return cuentaOpt.map(cuenta -> CuentaDTO.builder()
             .numeroCuenta(cuenta.getNumeroCuenta())
-            .titular(clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null))
+            .titular(cuenta.getTitular() != null ? 
+                clienteMapeador.aDto(Optional.of(cuenta.getTitular())).orElse(null) : null)
             .tipo(cuenta.getTipo())
+            .saldoInicial(cuenta.getSaldoInicial())
             .saldo(cuenta.getSaldo())
             .fechaCreacion(cuenta.getFechaCreacion())
             .activa(cuenta.isActiva())
@@ -43,8 +45,10 @@ public class CuentaMapeador implements Mapeador<Cuenta, CuentaDTO> {
     public Optional<Cuenta> aEntidad(Optional<CuentaDTO> dtoOpt) {
         return dtoOpt.map(dto -> Cuenta.builder()
             .numeroCuenta(dto.getNumeroCuenta())
-            .titular(clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null))
+            .titular(dto.getTitular() != null ? 
+                clienteMapeador.aEntidad(Optional.of(dto.getTitular())).orElse(null) : null)
             .tipo(dto.getTipo())
+            .saldoInicial(dto.getSaldoInicial())
             .saldo(dto.getSaldo())
             .fechaCreacion(dto.getFechaCreacion())
             .activa(dto.isActiva())

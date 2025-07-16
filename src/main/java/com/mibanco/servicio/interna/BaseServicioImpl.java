@@ -30,14 +30,14 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
     }
 
     @Override
-    public Optional<T> guardar(O tipoOperacion, Optional<T> dto) {
+    public Optional<T> guardarEntidad(O tipoOperacion, Optional<T> dto) {
      return dto
             .flatMap(d -> mapeador.aEntidad(Optional.of(d)))
             .flatMap(entidad -> {
                 if (entidad.getId() == null) {
-                    return repositorio.crear(Optional.of(entidad), tipoOperacion);
+                    return repositorio.crearRegistro(Optional.of(entidad), tipoOperacion);
                 } else {
-                    return repositorio.actualizar(Optional.of(entidad), tipoOperacion);
+                    return repositorio.actualizarRegistro(Optional.of(entidad), tipoOperacion);
                 }
             })
             .flatMap(e -> mapeador.aDto(Optional.of(e)));
@@ -47,14 +47,13 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
     public <V> Optional<T> actualizarCampo(
             ID id,
             Optional<V> nuevoValor,
-            Function<E, V> valorActual,
-            BiFunction<E, V, E> actualizador) {
+            Function<T, V> valorActual,
+            BiFunction<T, V, T> actualizador) {
             
         return Optional.ofNullable(id)
             .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
-            .map(entidad -> actualizador.apply(entidad, 
-                nuevoValor.orElse(valorActual.apply(entidad))))
             .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)));
+            
     }
 
     @Override
@@ -62,17 +61,12 @@ abstract class BaseServicioImpl<T, E extends Identificable, ID, O extends Enum<O
             ID id,
             Optional<T> dto,
             O tipoOperacion,
-            BiFunction<E, E, E> actualizador) {
+            BiFunction<T, E, T> actualizador) {
             
         return Optional.ofNullable(id)
             .flatMap(idValue -> repositorio.buscarPorId(Optional.of(idValue)))
-            .map(entidadExistente -> 
-                dto.flatMap(d -> mapeador.aEntidad(Optional.of(d)))
-                    .map(entidadNueva -> actualizador.apply(entidadExistente, entidadNueva))
-                    .orElse(entidadExistente)
-            )
             .flatMap(entidad -> mapeador.aDto(Optional.of(entidad)))
-            .flatMap(dtoActualizado -> guardar(tipoOperacion, Optional.of(dtoActualizado)));
+            .flatMap(dtoActualizado -> guardarEntidad(tipoOperacion, Optional.of(dtoActualizado)));
     }
 
     @Override

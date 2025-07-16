@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoCuenta;
+import com.mibanco.util.ReflexionUtil.NoSolicitar;
 
 import lombok.Builder;
 import lombok.Value;
@@ -16,25 +17,30 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true) // Habilitamos toBuilder para facilitar métodos "with"
 public class CuentaDTO {
-    Long numeroCuenta;
+    @NoSolicitar(razon = "Se establece automáticamente en el repositorio")
+    String numeroCuenta;
     ClienteDTO titular;
     TipoCuenta tipo;
-    BigDecimal saldoInicial;
-    BigDecimal saldo;
+    @NoSolicitar(razon = "Se establece automáticamente al crear")
     LocalDateTime fechaCreacion;
+    @NoSolicitar(razon = "Se establece automáticamente al crear y nunca cambia")
+    BigDecimal saldoInicial;
+    @NoSolicitar(razon = "Se inicializa igual a saldoInicial y solo cambia por transacciones")
+    BigDecimal saldo;
+    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
 
     /**
      * Método estático que construye un CuentaDTO con valores opcionales
      * Ejemplo de uso del enfoque funcional y Optionals
      */
-    public static CuentaDTO of(Long numeroCuenta, ClienteDTO titular, TipoCuenta tipo,
+        public static CuentaDTO of(String numeroCuenta, Optional<ClienteDTO> titular, Optional<TipoCuenta> tipo,
                                BigDecimal saldoInicial, Optional<LocalDateTime> fechaCreacion, 
                                Optional<Boolean> activa) {
         return CuentaDTO.builder()
                 .numeroCuenta(numeroCuenta)
-                .titular(titular)
-                .tipo(tipo)
+                .titular(titular.orElse(null))
+                .tipo(tipo.orElse(null))
                 .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
                 .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
                 .fechaCreacion(fechaCreacion.orElse(LocalDateTime.now()))

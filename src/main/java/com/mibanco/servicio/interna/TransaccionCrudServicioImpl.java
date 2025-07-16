@@ -8,9 +8,15 @@ import com.mibanco.modelo.enums.TipoTransaccion;
 import com.mibanco.repositorio.TransaccionRepositorio;
 import com.mibanco.servicio.TransaccionCrudServicio;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 /**
  * Implementación del servicio de Transacciones
@@ -32,10 +38,14 @@ class TransaccionCrudServicioImpl extends BaseServicioImpl<TransaccionDTO, Trans
     }
     
     @Override
-    public Optional<TransaccionDTO> crearTransaccion(Optional<TransaccionDTO> transaccionDTO) {
-        return guardar(TipoOperacionTransaccion.CREAR, transaccionDTO);
+    public Optional<TransaccionDTO> crearTransaccion(Map<String, String> datosTransaccion) {
+        // Usar el procesador especializado para crear el DTO con validaciones
+        TransaccionDtoProcesadorServicio procesador = new TransaccionDtoProcesadorServicio();
+        
+        return procesador.procesarTransaccionDto(datosTransaccion)
+            .flatMap(transaccionDto -> guardarEntidad(TipoOperacionTransaccion.CREAR, Optional.of(transaccionDto)));
     }
-    
+ 
     @Override
     public Optional<TransaccionDTO> obtenerTransaccionPorId(Optional<Long> id) {
         return obtenerPorId(id);

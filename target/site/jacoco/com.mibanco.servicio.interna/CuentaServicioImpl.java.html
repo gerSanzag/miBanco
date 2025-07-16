@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaServicioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.servicio.interna</a> &gt; <span class="el_source">CuentaServicioImpl.java</span></div><h1>CuentaServicioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.servicio.interna;
+
+import com.mibanco.dto.CuentaDTO;
+import com.mibanco.dto.mapeador.CuentaMapeador;
+import com.mibanco.dto.mapeador.ClienteMapeador;
+import com.mibanco.modelo.Cuenta;
+import com.mibanco.modelo.enums.TipoCuenta;
+import com.mibanco.repositorio.CuentaRepositorio;
+import com.mibanco.servicio.ClienteServicio;
+import com.mibanco.servicio.CuentaServicio;
+import com.mibanco.modelo.enums.TipoOperacionCuenta;
+import com.mibanco.repositorio.interna.RepositorioFactoria;
+import com.mibanco.servicio.TransaccionOperacionesServicio;
+import com.mibanco.util.ValidacionException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Implementación del servicio de cuentas
+ */
+class CuentaServicioImpl extends BaseServicioImpl&lt;CuentaDTO, Cuenta, Long, TipoOperacionCuenta, CuentaRepositorio&gt; 
+        implements CuentaServicio {
+    
+    private static final CuentaRepositorio repositorioCuenta;
+    private static ClienteServicio clienteServicio;
+    private static final CuentaMapeador mapeador;
+    private static final ClienteMapeador clienteMapeador;
+<span class="nc" id="L33">    private final TipoOperacionCuenta tipoActualizar = TipoOperacionCuenta.ACTUALIZAR;</span>
+    private static CuentaDtoProcesadorServicio cuentaDtoProcesador;
+    
+    static {
+<span class="nc" id="L37">        repositorioCuenta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCuenta();</span>
+<span class="nc" id="L38">        clienteMapeador = new ClienteMapeador();</span>
+<span class="nc" id="L39">        mapeador = new CuentaMapeador(clienteMapeador);</span>
+<span class="nc" id="L40">        clienteServicio = FactoriaServicio.obtenerInstancia().obtenerServicioCliente();</span>
+<span class="nc" id="L41">        cuentaDtoProcesador = new CuentaDtoProcesadorServicio(clienteServicio);</span>
+<span class="nc" id="L42">    }</span>
+
+    public CuentaServicioImpl() {
+<span class="nc" id="L45">        super(repositorioCuenta, mapeador);</span>
+        
+<span class="nc" id="L47">    }</span>
+
+    // @Override
+    // public Optional&lt;CuentaDTO&gt; guardarCuenta(Optional&lt;CuentaDTO&gt; cuentaDTO) {
+    //     return guardar(TipoOperacionCuenta.CREAR, cuentaDTO);
+    // }
+
+    @Override
+    public Optional&lt;CuentaDTO&gt; actualizarVariosCampos(Long idCuenta, Optional&lt;CuentaDTO&gt; cuentaDTO) {
+<span class="nc" id="L56">        Optional&lt;CuentaDTO&gt; actualizaVariosCampos = actualizar(</span>
+            idCuenta,
+            cuentaDTO,
+            tipoActualizar,
+<span class="nc" id="L60">            (cuentaExistente, cuentaNueva) -&gt; cuentaExistente.conActualizaciones(</span>
+<span class="nc" id="L61">                Optional.ofNullable(cuentaNueva.getSaldo()),</span>
+<span class="nc" id="L62">                Optional.ofNullable(cuentaNueva.isActiva())</span>
+            )
+        );
+<span class="nc" id="L65">        guardarEntidad(tipoActualizar, actualizaVariosCampos);</span>
+<span class="nc" id="L66">        return actualizaVariosCampos;</span>
+    }
+
+    @Override
+    public Optional&lt;CuentaDTO&gt; obtenerCuentaPorNumero(Optional&lt;Long&gt; idCuenta) {
+<span class="nc" id="L71">        return idCuenta.flatMap(id -&gt; </span>
+<span class="nc" id="L72">            repositorio.buscarPorId(Optional.of(id))</span>
+<span class="nc" id="L73">                .flatMap(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)))</span>
+        );
+    }
+
+    @Override
+    public Optional&lt;List&lt;CuentaDTO&gt;&gt; obtenerTodasLasCuentas() {
+<span class="nc" id="L79">        return obtenerTodos();</span>
+    }
+
+    @Override
+    public Optional&lt;CuentaDTO&gt; actualizarSaldoCuenta(Long idCuenta, Optional&lt;BigDecimal&gt; nuevoSaldo) {
+<span class="nc" id="L84">        Optional&lt;CuentaDTO&gt; actualizaSaldo = actualizarCampo(</span>
+            idCuenta,
+            nuevoSaldo,
+            CuentaDTO::getSaldo,
+            CuentaDTO::conSaldo
+        );
+<span class="nc" id="L90">        guardarEntidad(tipoActualizar, actualizaSaldo);</span>
+<span class="nc" id="L91">        return actualizaSaldo;</span>
+    }
+
+    @Override
+    public Optional&lt;CuentaDTO&gt; actualizarEstadoCuenta(Long idCuenta, Optional&lt;Boolean&gt; nuevaActiva) {
+<span class="nc" id="L96">        Optional&lt;CuentaDTO&gt; actualizaEstado = actualizarCampo(</span>
+            idCuenta,
+            nuevaActiva,
+            CuentaDTO::isActiva,
+            CuentaDTO::conActiva
+        );
+<span class="nc" id="L102">        guardarEntidad(tipoActualizar, actualizaEstado);</span>
+<span class="nc" id="L103">        return actualizaEstado;</span>
+    }
+
+   
+    public Optional&lt;CuentaDTO&gt; actualizarTitularCuenta(Long idCuenta, Optional&lt;CuentaDTO&gt; nuevoTitular) {
+<span class="nc" id="L108">        Optional&lt;CuentaDTO&gt; actualizaTitular = nuevoTitular.flatMap(titularDTO -&gt; </span>
+<span class="nc" id="L109">            clienteMapeador.aEntidad(Optional.of(titularDTO.getTitular()))</span>
+<span class="nc" id="L110">                .flatMap(titular -&gt; actualizarCampo(</span>
+                    idCuenta,
+<span class="nc" id="L112">                    Optional.of(titular),</span>
+                    CuentaDTO::getTitular,
+<span class="nc" id="L114">                    (cuenta, nvoTitular) -&gt; cuenta.toBuilder().titular(titularDTO.getTitular() ).build()</span>
+                ))
+        );
+<span class="nc" id="L117">        guardarEntidad(tipoActualizar, actualizaTitular);</span>
+<span class="nc" id="L118">        return actualizaTitular;</span>
+    }
+
+    @Override
+    public boolean eliminarCuenta(Optional&lt;Long&gt; idCuenta) {
+<span class="nc" id="L123">        return eliminarPorId(idCuenta, TipoOperacionCuenta.ELIMINAR);</span>
+    }
+
+    @Override
+    public Optional&lt;CuentaDTO&gt; eliminarPorNumero(Optional&lt;Long&gt; idCuenta) {
+<span class="nc" id="L128">        return repositorio.eliminarPorId(idCuenta, TipoOperacionCuenta.ELIMINAR)</span>
+<span class="nc" id="L129">            .flatMap(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)));</span>
+    }
+
+    @Override
+    public Optional&lt;CuentaDTO&gt; restaurarCuenta(Optional&lt;Long&gt; idCuenta) {
+<span class="nc" id="L134">        return restaurar(idCuenta, TipoOperacionCuenta.RESTAURAR);</span>
+    }
+
+    @Override
+    public long contarCuentas() {
+<span class="nc" id="L139">        return contarRegistros();</span>
+    }
+
+    @Override
+    public void establecerUsuarioActual(String usuario) {
+<span class="nc" id="L144">        super.establecerUsuarioActual(usuario);</span>
+<span class="nc" id="L145">    }</span>
+
+    @Override
+    public Optional&lt;List&lt;CuentaDTO&gt;&gt; buscarPorTitularId(Optional&lt;Long&gt; idTitular) {
+<span class="nc" id="L149">        return repositorio.buscarTodosPorPredicado(cuenta -&gt; cuenta.getTitular().getId().equals(idTitular.get()))        </span>
+<span class="nc" id="L150">            .map(cuentas -&gt; cuentas.stream()</span>
+<span class="nc" id="L151">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L152">                .filter(Objects::nonNull)</span>
+<span class="nc" id="L153">                .collect(Collectors.toList())</span>
+            );
+    }
+
+    @Override
+    public Optional&lt;List&lt;CuentaDTO&gt;&gt; buscarPorTipo(Optional&lt;TipoCuenta&gt; tipo) {
+<span class="nc" id="L159">        return repositorio.buscarTodosPorPredicado(cuenta -&gt; cuenta.getTipo().equals(tipo.get()))</span>
+<span class="nc" id="L160">            .map(cuentas -&gt; cuentas.stream()</span>
+<span class="nc" id="L161">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L162">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L163">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+            );
+    }
+
+    @Override
+    public Optional&lt;List&lt;CuentaDTO&gt;&gt; buscarActivas() {
+<span class="nc" id="L169">            return repositorio.buscarTodosPorPredicado(cuenta -&gt; cuenta.isActiva())</span>
+<span class="nc" id="L170">            .map(cuentas -&gt; cuentas.stream()</span>
+<span class="nc" id="L171">                .map(cuenta -&gt; mapeador.aDto(Optional.of(cuenta)).orElse(null))</span>
+<span class="nc" id="L172">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L173">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+            );
+    }
+
+    /**
+     * Crea una cuenta DTO con saldo inicial obligatorio usando programación funcional
+     * La cuenta se crea una sola vez con el saldo inicial incluido
+     * Elimina los if anidados usando Optional chaining y early returns
+     * Garantiza consistencia transaccional: valida antes de persistir
+     */
+    public Optional&lt;CuentaDTO&gt; crearCuentaDto(Map&lt;String, String&gt; datosCrudos, BigDecimal montoInicial, TransaccionOperacionesServicio transaccionServicio) {
+        try {
+<span class="nc" id="L185">            return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)</span>
+<span class="nc" id="L186">                .flatMap(cuentaDTO -&gt; cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))</span>
+<span class="nc" id="L187">                .flatMap(cuentaConSaldo -&gt; {</span>
+                    // Validar número de cuenta único antes de guardar
+<span class="nc" id="L189">                    validarNumeroCuentaUnico(cuentaConSaldo);</span>
+<span class="nc" id="L190">                    return guardarEntidad(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo));</span>
+                })
+<span class="nc" id="L192">                .or(() -&gt; Optional.empty());</span>
+<span class="nc" id="L193">        } catch (ValidacionException e) {</span>
+            // Re-lanzar la excepción para que la vista la maneje
+<span class="nc" id="L195">            throw e;</span>
+        }
+    }
+    
+    /**
+     * Método auxiliar para validar número de cuenta único
+     * @param dto DTO de la cuenta a validar
+     * @throws ValidacionException si el número de cuenta ya existe
+     */
+    private void validarNumeroCuentaUnico(CuentaDTO dto) {
+        // Solo validar si el número no es null (validación básica ya hecha en vista)
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (dto.getNumeroCuenta() != null) {</span>
+<span class="nc" id="L207">            Optional&lt;Cuenta&gt; cuentaExistente = repositorioCuenta.buscarPorPredicado(</span>
+<span class="nc" id="L208">                cuenta -&gt; dto.getNumeroCuenta().equals(cuenta.getNumeroCuenta())</span>
+            );
+            
+<span class="nc bnc" id="L211" title="All 2 branches missed.">            if (cuentaExistente.isPresent()) {</span>
+<span class="nc" id="L212">                throw new ValidacionException(&quot;Ya existe una cuenta con el número: &quot; + dto.getNumeroCuenta());</span>
+            }
+        }
+<span class="nc" id="L215">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

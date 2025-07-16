@@ -1,9 +1,10 @@
 package com.mibanco.modelo;
 
-import com.mibanco.util.ReflexionUtil.NoSolicitar;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import com.mibanco.modelo.enums.TipoCuenta;
 
@@ -13,75 +14,76 @@ import lombok.Value;
 /**
  * Clase que representa una cuenta bancaria
  * Implementa un enfoque completamente funcional con inmutabilidad total
+ * Implementa Identificable para ser compatible con el repositorio base
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 public class Cuenta implements Identificable {
-    Long numeroCuenta;
+    
+    String numeroCuenta;
     Cliente titular;
     TipoCuenta tipo;
-    @NoSolicitar(razon = "Se establece automáticamente al crear")
     LocalDateTime fechaCreacion;
-    @NoSolicitar(razon = "Se establece automáticamente al crear y nunca cambia")
     BigDecimal saldoInicial;
-    @NoSolicitar(razon = "Se inicializa igual a saldoInicial y solo cambia por transacciones")
     BigDecimal saldo;
-    @NoSolicitar(razon = "Se establece por defecto como activa")
     boolean activa;
+    
+    @JsonCreator
+    public Cuenta(
+        @JsonProperty("numeroCuenta") String numeroCuenta,
+        @JsonProperty("titular") Cliente titular,
+        @JsonProperty("tipo") TipoCuenta tipo,
+        @JsonProperty("fechaCreacion") LocalDateTime fechaCreacion,
+        @JsonProperty("saldoInicial") BigDecimal saldoInicial,
+        @JsonProperty("saldo") BigDecimal saldo,
+        @JsonProperty("activa") boolean activa
+    ) {
+        this.numeroCuenta = numeroCuenta;
+        this.titular = titular;
+        this.tipo = tipo;
+        this.fechaCreacion = fechaCreacion;
+        this.saldoInicial = saldoInicial;
+        this.saldo = saldo;
+        this.activa = activa;
+    }
     
     /**
      * Implementación de getId() para la interfaz Identificable
-     * @return El número de cuenta como Long
+     * Extrae la parte numérica del IBAN (numeroCuenta) para usarla como ID
+     * Usa solo los primeros 18 dígitos para que quepan en Long
+     * Ejemplo: "ES3400000000000000001002" → 340000000000000000L
+     * @return La parte numérica del numeroCuenta como Long
      */
     @Override
     public Long getId() {
-        return numeroCuenta;
+        // Extraer solo la parte numérica del IBAN
+        String parteNumerica = numeroCuenta.replaceAll("[^0-9]", "");
+        
+        try {
+            // Usar solo los primeros 18 dígitos para que quepan en Long
+            if (parteNumerica.length() > 18) {
+                parteNumerica = parteNumerica.substring(0, 18);
+            }
+            return Long.parseLong(parteNumerica);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Identificador erróneo, no existe.");
+        }
     }
     
     /**
      * Método factory para facilitar la creación de instancias
      */
-    public static Cuenta of(Long numeroCuenta, Cliente titular, TipoCuenta tipo, 
+    public static Cuenta of(String numeroCuenta, Cliente titular, TipoCuenta tipo, 
                            BigDecimal saldoInicial, LocalDateTime fechaCreacion, boolean activa) {
         return Cuenta.builder()
                 .numeroCuenta(numeroCuenta)
                 .titular(titular)
                 .tipo(tipo)
-                .saldoInicial(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
-                .saldo(saldoInicial != null ? saldoInicial : BigDecimal.ZERO)
-                .fechaCreacion(fechaCreacion != null ? fechaCreacion : LocalDateTime.now())
+                .saldoInicial(saldoInicial)
+                .saldo(saldoInicial)
+                .fechaCreacion(fechaCreacion)
                 .activa(activa)
                 .build();
     }
     
-    /**
-     * Versión inmutable para actualizar el saldo
-     * @return Una nueva instancia con el saldo actualizado
-     */
-    public Cuenta conSaldo(BigDecimal nuevoSaldo) {
-        return this.toBuilder()
-                .saldo(nuevoSaldo)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar el estado activo
-     * @return Una nueva instancia con el estado actualizado
-     */
-    public Cuenta conActiva(boolean nuevaActiva) {
-        return this.toBuilder()
-                .activa(nuevaActiva)
-                .build();
-    }
-    
-    /**
-     * Versión inmutable para actualizar múltiples campos a la vez
-     * @return Una nueva instancia con los campos actualizados
-     */
-    public Cuenta conActualizaciones(Optional<BigDecimal> nuevoSaldo, Optional<Boolean> nuevaActiva) {
-        return this.toBuilder()
-                .saldo(nuevoSaldo.orElse(this.saldo))
-                .activa(nuevaActiva.orElse(this.activa))
-                .build();
-    }
 } 

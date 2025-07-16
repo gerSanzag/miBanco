@@ -9166,6 +9166,7 @@ oImplTest
 
 ---
 
+
 ¡Perfecto, German! Ahora sí, todos los caminos de los filtros internos de los métodos `obtenerHistorial` y `buscarPorFechas` están cubiertos:
 
 ---

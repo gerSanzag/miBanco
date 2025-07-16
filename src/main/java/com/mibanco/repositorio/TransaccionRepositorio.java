@@ -11,18 +11,10 @@ import com.mibanco.repositorio.util.BaseRepositorio;
 
 /**
  * Interfaz para operaciones CRUD de Transaccion
- * Siguiendo enfoque estrictamente funcional con Optional
- * tanto para parámetros como para resultados
+ * Extiende la interfaz base para heredar operaciones CRUD genéricas
+ * Incluye métodos específicos para búsquedas de transacciones
  */
 public interface TransaccionRepositorio extends BaseRepositorio<Transaccion, Long, TipoOperacionTransaccion> {
-    
-    
-    /**
-     * Busca una transacción por su ID
-     * @param id Optional con el ID de la transacción a buscar
-     * @return Optional con la transacción si existe
-     */
-    Optional<Transaccion> buscarPorId(Optional<Long> id);
     
     /**
      * Busca transacciones por el número de cuenta
@@ -52,23 +44,4 @@ public interface TransaccionRepositorio extends BaseRepositorio<Transaccion, Lon
      * @return Optional con lista de transacciones en el rango especificado
      */
     Optional<List<Transaccion>> buscarPorRangoFechas(Optional<LocalDate> fechaInicio, Optional<LocalDate> fechaFin);
-    
-    /**
-     * Obtiene todas las transacciones
-     * @return Optional con lista de transacciones
-     */
-    Optional<List<Transaccion>> buscarTodas();
-    
-    /**
-     * Elimina una transacción por su ID
-     * @param id Optional con el ID de la transacción a eliminar
-     * @return Optional con la transacción eliminada o Optional vacío si no existía
-     */
-    Optional<Transaccion> eliminarPorId(Optional<Long> id);
-    
-    /**
-     * Obtiene el número de transacciones en el repositorio
-     * @return Número de transacciones
-     */
-    long contarRegistros();
 } 

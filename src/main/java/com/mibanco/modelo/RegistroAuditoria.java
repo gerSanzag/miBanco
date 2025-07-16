@@ -1,6 +1,9 @@
 package com.mibanco.modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.AccessLevel;
@@ -16,8 +19,7 @@ import lombok.Value;
  * - E para el tipo de operación (debe ser un enum)
  */
 @Value
-@Builder(toBuilder = true)
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // Constructor privado para forzar uso del Builder
+@Builder
 public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
     // ID único del registro
     UUID id;
@@ -40,6 +42,25 @@ public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
     // Información adicional de la operación
     String detalles;
     
+    @JsonCreator
+    public RegistroAuditoria(
+        @JsonProperty("id") UUID id,
+        @JsonProperty("tipoOperacion") E tipoOperacion,
+        @JsonProperty("fechaHora") LocalDateTime fechaHora,
+        @JsonProperty("entidad") T entidad,
+        @JsonProperty("usuario") String usuario,
+        @JsonProperty("monto") Double monto,
+        @JsonProperty("detalles") String detalles
+    ) {
+        this.id = id;
+        this.tipoOperacion = tipoOperacion;
+        this.fechaHora = fechaHora;
+        this.entidad = entidad;
+        this.usuario = usuario;
+        this.monto = monto;
+        this.detalles = detalles;
+    }
+    
     /**
      * Método factory para crear registros básicos
      * @param tipoOperacion Tipo de operación (enum)
@@ -48,16 +69,16 @@ public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
      * @return Registro de auditoría inmutable
      */
     public static <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> of(
-            E tipoOperacion, 
-            T entidad, 
-            String usuario) {
+            Optional<E> tipoOperacion, 
+            Optional<T> entidad, 
+            Optional<String> usuario) {
         
         return RegistroAuditoria.<T, E>builder()
                 .id(UUID.randomUUID())
-                .tipoOperacion(tipoOperacion)
+                .tipoOperacion(tipoOperacion.orElse(null))
                 .fechaHora(LocalDateTime.now())
-                .entidad(entidad)
-                .usuario(usuario)
+                .entidad(entidad.orElse(null))
+                .usuario(usuario.orElse(null))
                 .build();
     }
     
@@ -71,20 +92,20 @@ public class RegistroAuditoria<T extends Identificable, E extends Enum<E>> {
      * @return Registro de auditoría inmutable
      */
     public static <T extends Identificable, E extends Enum<E>> RegistroAuditoria<T, E> ofDetallado(
-            E tipoOperacion, 
-            T entidad, 
-            String usuario,
-            Double monto,
-            String detalles) {
+            Optional<E> tipoOperacion, 
+            Optional<T> entidad, 
+            Optional<String> usuario,
+            Optional<Double> monto,
+            Optional<String> detalles) {
         
         return RegistroAuditoria.<T, E>builder()
                 .id(UUID.randomUUID())
-                .tipoOperacion(tipoOperacion)
+                .tipoOperacion(tipoOperacion.orElse(null))       
                 .fechaHora(LocalDateTime.now())
-                .entidad(entidad)
-                .usuario(usuario)
-                .monto(monto)
-                .detalles(detalles)
+                .entidad(entidad.orElse(null))
+                .usuario(usuario.orElse(null))
+                .monto(monto.orElse(null))
+                .detalles(detalles.orElse(null))
                 .build();
     }
 } 

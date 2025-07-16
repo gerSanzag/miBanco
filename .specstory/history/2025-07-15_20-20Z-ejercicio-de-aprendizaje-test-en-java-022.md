@@ -6626,6 +6626,7 @@ TarjetaRepositorioImplTest
 
 ---
 
+
 ¡Perfecto German! Aquí tienes el análisis y la comprobación:
 
 ---

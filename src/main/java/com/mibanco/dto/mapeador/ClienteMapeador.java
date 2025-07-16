@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación de Mapper para Cliente utilizando enfoque funcional
+ * Sin generación automática de IDs (manejada por el repositorio)
  */
 public class ClienteMapeador implements Mapeador<Cliente, ClienteDTO> {
 
@@ -33,6 +34,7 @@ public class ClienteMapeador implements Mapeador<Cliente, ClienteDTO> {
     /**
      * Convierte un ClienteDTO a Cliente
      * Implementación estrictamente funcional con Optional
+     * Copia todos los campos del DTO, incluyendo el ID si existe
      */
     @Override
     public Optional<Cliente> aEntidad(Optional<ClienteDTO> dtoOpt) {

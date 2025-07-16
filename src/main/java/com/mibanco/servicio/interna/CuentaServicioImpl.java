@@ -11,11 +11,14 @@ import com.mibanco.servicio.CuentaServicio;
 import com.mibanco.modelo.enums.TipoOperacionCuenta;
 import com.mibanco.repositorio.interna.RepositorioFactoria;
 import com.mibanco.servicio.TransaccionOperacionesServicio;
+import com.mibanco.util.ValidacionException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Implementación del servicio de cuentas
@@ -34,7 +37,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
         repositorioCuenta = RepositorioFactoria.obtenerInstancia().obtenerRepositorioCuenta();
         clienteMapeador = new ClienteMapeador();
         mapeador = new CuentaMapeador(clienteMapeador);
-        clienteServicio = ServicioFactoria.obtenerInstancia().obtenerServicioCliente();
+        clienteServicio = FactoriaServicio.obtenerInstancia().obtenerServicioCliente();
         cuentaDtoProcesador = new CuentaDtoProcesadorServicio(clienteServicio);
     }
 
@@ -49,9 +52,9 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
     // }
 
     @Override
-    public Optional<CuentaDTO> actualizarVariosCampos(Long numeroCuenta, Optional<CuentaDTO> cuentaDTO) {
+    public Optional<CuentaDTO> actualizarVariosCampos(Long idCuenta, Optional<CuentaDTO> cuentaDTO) {
         Optional<CuentaDTO> actualizaVariosCampos = actualizar(
-            numeroCuenta,
+            idCuenta,
             cuentaDTO,
             tipoActualizar,
             (cuentaExistente, cuentaNueva) -> cuentaExistente.conActualizaciones(
@@ -59,14 +62,14 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
                 Optional.ofNullable(cuentaNueva.isActiva())
             )
         );
-        guardar(tipoActualizar, actualizaVariosCampos);
+        guardarEntidad(tipoActualizar, actualizaVariosCampos);
         return actualizaVariosCampos;
     }
 
     @Override
-    public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<Long> numeroCuenta) {
-        return numeroCuenta.flatMap(numero -> 
-            repositorio.buscarPorNumero(Optional.of(numero))
+    public Optional<CuentaDTO> obtenerCuentaPorNumero(Optional<Long> idCuenta) {
+        return idCuenta.flatMap(id -> 
+            repositorio.buscarPorId(Optional.of(id))
                 .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)))
         );
     }
@@ -77,63 +80,58 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
     }
 
     @Override
-    public Optional<CuentaDTO> actualizarSaldoCuenta(Long numeroCuenta, Optional<BigDecimal> nuevoSaldo) {
+    public Optional<CuentaDTO> actualizarSaldoCuenta(Long idCuenta, Optional<BigDecimal> nuevoSaldo) {
         Optional<CuentaDTO> actualizaSaldo = actualizarCampo(
-            numeroCuenta,
+            idCuenta,
             nuevoSaldo,
-            Cuenta::getSaldo,
-            Cuenta::conSaldo
+            CuentaDTO::getSaldo,
+            CuentaDTO::conSaldo
         );
-        guardar(tipoActualizar, actualizaSaldo);
+        guardarEntidad(tipoActualizar, actualizaSaldo);
         return actualizaSaldo;
     }
 
     @Override
-    public Optional<CuentaDTO> actualizarEstadoCuenta(Long numeroCuenta, Optional<Boolean> nuevaActiva) {
+    public Optional<CuentaDTO> actualizarEstadoCuenta(Long idCuenta, Optional<Boolean> nuevaActiva) {
         Optional<CuentaDTO> actualizaEstado = actualizarCampo(
-            numeroCuenta,
+            idCuenta,
             nuevaActiva,
-            Cuenta::isActiva,
-            Cuenta::conActiva
+            CuentaDTO::isActiva,
+            CuentaDTO::conActiva
         );
-        guardar(tipoActualizar, actualizaEstado);
+        guardarEntidad(tipoActualizar, actualizaEstado);
         return actualizaEstado;
     }
 
    
-    public Optional<CuentaDTO> actualizarTitularCuenta(Long numeroCuenta, Optional<CuentaDTO> nuevoTitular) {
+    public Optional<CuentaDTO> actualizarTitularCuenta(Long idCuenta, Optional<CuentaDTO> nuevoTitular) {
         Optional<CuentaDTO> actualizaTitular = nuevoTitular.flatMap(titularDTO -> 
             clienteMapeador.aEntidad(Optional.of(titularDTO.getTitular()))
                 .flatMap(titular -> actualizarCampo(
-                    numeroCuenta,
+                    idCuenta,
                     Optional.of(titular),
-                    Cuenta::getTitular,
-                    (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titular).build()
+                    CuentaDTO::getTitular,
+                    (cuenta, nvoTitular) -> cuenta.toBuilder().titular(titularDTO.getTitular() ).build()
                 ))
         );
-        guardar(tipoActualizar, actualizaTitular);
+        guardarEntidad(tipoActualizar, actualizaTitular);
         return actualizaTitular;
     }
 
     @Override
-    public boolean eliminarCuenta(Optional<Long> numeroCuenta) {
-        return eliminarPorId(numeroCuenta, TipoOperacionCuenta.ELIMINAR);
+    public boolean eliminarCuenta(Optional<Long> idCuenta) {
+        return eliminarPorId(idCuenta, TipoOperacionCuenta.ELIMINAR);
     }
 
     @Override
-    public Optional<CuentaDTO> eliminarPorNumero(Optional<Long> numeroCuenta) {
-        return repositorio.eliminarPorNumero(numeroCuenta)
+    public Optional<CuentaDTO> eliminarPorNumero(Optional<Long> idCuenta) {
+        return repositorio.eliminarPorId(idCuenta, TipoOperacionCuenta.ELIMINAR)
             .flatMap(cuenta -> mapeador.aDto(Optional.of(cuenta)));
     }
 
     @Override
-    public Optional<CuentaDTO> restaurarCuenta(Optional<Long> numeroCuenta) {
-        return restaurar(numeroCuenta, TipoOperacionCuenta.RESTAURAR);
-    }
-
-    @Override
-    public List<CuentaDTO> obtenerCuentasEliminadas() {
-        return obtenerEliminados();
+    public Optional<CuentaDTO> restaurarCuenta(Optional<Long> idCuenta) {
+        return restaurar(idCuenta, TipoOperacionCuenta.RESTAURAR);
     }
 
     @Override
@@ -148,17 +146,17 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
 
     @Override
     public Optional<List<CuentaDTO>> buscarPorTitularId(Optional<Long> idTitular) {
-        return repositorio.buscarPorTitularId(idTitular)
+        return repositorio.buscarTodosPorPredicado(cuenta -> cuenta.getTitular().getId().equals(idTitular.get()))        
             .map(cuentas -> cuentas.stream()
                 .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
-                .filter(java.util.Objects::nonNull)
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
             );
     }
 
     @Override
     public Optional<List<CuentaDTO>> buscarPorTipo(Optional<TipoCuenta> tipo) {
-        return repositorio.buscarPorTipo(tipo)
+        return repositorio.buscarTodosPorPredicado(cuenta -> cuenta.getTipo().equals(tipo.get()))
             .map(cuentas -> cuentas.stream()
                 .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
                 .filter(java.util.Objects::nonNull)
@@ -168,7 +166,7 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
 
     @Override
     public Optional<List<CuentaDTO>> buscarActivas() {
-        return repositorio.buscarActivas()
+            return repositorio.buscarTodosPorPredicado(cuenta -> cuenta.isActiva())
             .map(cuentas -> cuentas.stream()
                 .map(cuenta -> mapeador.aDto(Optional.of(cuenta)).orElse(null))
                 .filter(java.util.Objects::nonNull)
@@ -183,9 +181,36 @@ class CuentaServicioImpl extends BaseServicioImpl<CuentaDTO, Cuenta, Long, TipoO
      * Garantiza consistencia transaccional: valida antes de persistir
      */
     public Optional<CuentaDTO> crearCuentaDto(Map<String, String> datosCrudos, BigDecimal montoInicial, TransaccionOperacionesServicio transaccionServicio) {
-        return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)
-            .flatMap(cuentaDTO -> cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))
-            .flatMap(cuentaConSaldo -> guardar(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo)))
-            .or(() -> Optional.empty());
+        try {
+            return cuentaDtoProcesador.procesarCuentaDto(datosCrudos)
+                .flatMap(cuentaDTO -> cuentaDtoProcesador.procesarIngresoInicial(cuentaDTO, montoInicial, transaccionServicio))
+                .flatMap(cuentaConSaldo -> {
+                    // Validar número de cuenta único antes de guardar
+                    validarNumeroCuentaUnico(cuentaConSaldo);
+                    return guardarEntidad(TipoOperacionCuenta.CREAR, Optional.of(cuentaConSaldo));
+                })
+                .or(() -> Optional.empty());
+        } catch (ValidacionException e) {
+            // Re-lanzar la excepción para que la vista la maneje
+            throw e;
+        }
+    }
+    
+    /**
+     * Método auxiliar para validar número de cuenta único
+     * @param dto DTO de la cuenta a validar
+     * @throws ValidacionException si el número de cuenta ya existe
+     */
+    private void validarNumeroCuentaUnico(CuentaDTO dto) {
+        // Solo validar si el número no es null (validación básica ya hecha en vista)
+        if (dto.getNumeroCuenta() != null) {
+            Optional<Cuenta> cuentaExistente = repositorioCuenta.buscarPorPredicado(
+                cuenta -> dto.getNumeroCuenta().equals(cuenta.getNumeroCuenta())
+            );
+            
+            if (cuentaExistente.isPresent()) {
+                throw new ValidacionException("Ya existe una cuenta con el número: " + dto.getNumeroCuenta());
+            }
+        }
     }
 } 

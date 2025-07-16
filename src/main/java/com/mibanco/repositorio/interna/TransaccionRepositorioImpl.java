@@ -1,5 +1,7 @@
 package com.mibanco.repositorio.interna;
 
+import com.mibanco.dto.TransaccionDTO;
+import com.mibanco.dto.mapeador.TransaccionMapeador;
 import com.mibanco.modelo.Transaccion;
 import com.mibanco.modelo.enums.TipoOperacionTransaccion;
 import com.mibanco.modelo.enums.TipoTransaccion;
@@ -7,8 +9,11 @@ import com.mibanco.repositorio.TransaccionRepositorio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Implementación del repositorio de Transacciones
@@ -58,20 +63,37 @@ class TransaccionRepositorioImpl extends BaseRepositorioImpl<Transaccion, Long, 
         );
     }
     
+    
+    
+    /**
+     * ✅ Obtiene la configuración para este repositorio
+     * @return Map con la configuración (ruta, clase, extractor de ID)
+     */
     @Override
-    public Optional<List<Transaccion>> buscarTodas() {
-        return buscarTodos();
+    protected Map<String, Object> obtenerConfiguracion() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("rutaArchivo", "src/main/resources/data/transaccion.json");
+        config.put("tipoClase", Transaccion.class);
+        config.put("extractorId", (Function<Transaccion, Long>) Transaccion::getId);
+        return config;
     }
     
-    @Override
-    public Optional<Transaccion> eliminarPorId(Optional<Long> id) {
-        return eliminarPorId(id, TipoOperacionTransaccion.ANULAR);
-    }
-
+    /**
+     * ✅ Crea una nueva transacción con ID automático
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
+     * @param transaccion Transacción a crear
+     * @return Transacción creada con nuevo ID
+     */
     @Override
     protected Transaccion crearConNuevoId(Transaccion transaccion) {
-        return transaccion.toBuilder()
-                .id(idContador.getAndIncrement())
-                .build();
+        TransaccionMapeador mapeador = new TransaccionMapeador();
+        
+        return mapeador.aDtoDirecto(transaccion)
+            .map(dto -> dto.toBuilder()
+                .id(idContador.incrementAndGet())
+                .build())
+            .flatMap(mapeador::aEntidadDirecta)
+            .orElseThrow(() -> new IllegalStateException("No se pudo procesar la entidad Transaccion"));
     }
 } 

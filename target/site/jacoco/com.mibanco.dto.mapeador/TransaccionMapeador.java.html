@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransaccionMapeador.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.dto.mapeador</a> &gt; <span class="el_source">TransaccionMapeador.java</span></div><h1>TransaccionMapeador.java</h1><pre class="source lang-java linenums">package com.mibanco.dto.mapeador;
+
+import com.mibanco.dto.TransaccionDTO;
+import com.mibanco.modelo.Transaccion;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+/**
+ * Implementación de Mapper para Transaccion utilizando enfoque funcional
+ * Sin generación automática de IDs (manejada por el repositorio)
+ */
+<span class="fc" id="L14">public class TransaccionMapeador implements Mapeador&lt;Transaccion, TransaccionDTO&gt; {</span>
+
+    /**
+     * Convierte una transacción a TransaccionDTO
+     * Implementación estrictamente funcional con Optional
+     */
+    @Override
+    public Optional&lt;TransaccionDTO&gt; aDto(Optional&lt;Transaccion&gt; transaccionOpt) {
+<span class="fc" id="L22">        return transaccionOpt.map(transaccion -&gt; TransaccionDTO.builder()</span>
+<span class="fc" id="L23">            .id(transaccion.getId())</span>
+<span class="fc" id="L24">            .numeroCuenta(transaccion.getNumeroCuenta())</span>
+<span class="fc" id="L25">            .numeroCuentaDestino(transaccion.getNumeroCuentaDestino())</span>
+<span class="fc" id="L26">            .tipo(transaccion.getTipo())</span>
+<span class="fc" id="L27">            .monto(transaccion.getMonto())</span>
+<span class="fc" id="L28">            .fecha(transaccion.getFecha())</span>
+<span class="fc" id="L29">            .descripcion(transaccion.getDescripcion())</span>
+<span class="fc" id="L30">            .build());</span>
+    }
+
+    /**
+     * Convierte un TransaccionDTO a Transaccion
+     * Implementación estrictamente funcional con Optional
+     * Sin generación automática de IDs (manejada por el repositorio)
+     */
+    @Override
+    public Optional&lt;Transaccion&gt; aEntidad(Optional&lt;TransaccionDTO&gt; dtoOpt) {
+<span class="fc" id="L40">        return dtoOpt.map(dto -&gt; Transaccion.builder()</span>
+<span class="fc" id="L41">            .id(dto.getId())</span>
+<span class="fc" id="L42">            .numeroCuenta(dto.getNumeroCuenta())</span>
+<span class="fc" id="L43">            .numeroCuentaDestino(dto.getNumeroCuentaDestino())</span>
+<span class="fc" id="L44">            .tipo(dto.getTipo())</span>
+<span class="fc" id="L45">            .monto(dto.getMonto())</span>
+<span class="fc" id="L46">            .fecha(dto.getFecha())</span>
+<span class="fc" id="L47">            .descripcion(dto.getDescripcion())</span>
+<span class="fc" id="L48">            .build());</span>
+    }
+   
+    /**
+     * Sobrecarga que acepta Transaccion directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional&lt;TransaccionDTO&gt; aDtoDirecto(Transaccion transaccion) {
+<span class="fc" id="L56">        return aDto(Optional.ofNullable(transaccion));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta TransaccionDTO directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional&lt;Transaccion&gt; aEntidadDirecta(TransaccionDTO dto) {
+<span class="fc" id="L64">        return aEntidad(Optional.ofNullable(dto));</span>
+    }
+    
+    /**
+     * Convierte una lista de Transaccion a lista de TransaccionDTO
+     * Utilizando programación funcional con streams
+     * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
+     */
+    public Optional&lt;List&lt;TransaccionDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Transaccion&gt;&gt; transacciones) {
+<span class="fc" id="L73">        return transacciones.map(list -&gt; list.stream()</span>
+<span class="fc" id="L74">                        .map(transaccion -&gt; aDto(Optional.of(transaccion)).orElse(null))</span>
+<span class="fc" id="L75">                        .filter(java.util.Objects::nonNull)</span>
+<span class="fc" id="L76">                .collect(Collectors.toList()));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta List&lt;Transaccion&gt; directamente
+     */
+    public Optional&lt;List&lt;TransaccionDTO&gt;&gt; aListaDto(List&lt;Transaccion&gt; transacciones) {
+<span class="fc" id="L83">        return aListaDto(Optional.ofNullable(transacciones));</span>
+    }
+    
+    /**
+     * Convierte una lista de TransaccionDTO a lista de Transaccion
+     * Utilizando programación funcional con streams
+     * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
+     */
+    public Optional&lt;List&lt;Transaccion&gt;&gt; aListaEntidad(Optional&lt;List&lt;TransaccionDTO&gt;&gt; dtos) {
+<span class="fc" id="L92">        return dtos.map(list -&gt; list.stream()</span>
+<span class="fc" id="L93">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="fc" id="L94">                        .filter(java.util.Objects::nonNull)</span>
+<span class="fc" id="L95">                .collect(Collectors.toList()));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta List&lt;TransaccionDTO&gt; directamente
+     */
+    public Optional&lt;List&lt;Transaccion&gt;&gt; aListaEntidad(List&lt;TransaccionDTO&gt; dtos) {
+<span class="fc" id="L102">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

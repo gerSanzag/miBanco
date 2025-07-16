@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransaccionRepositorioImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repositorio.interna</a> &gt; <span class="el_source">TransaccionRepositorioImpl.java</span></div><h1>TransaccionRepositorioImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repositorio.interna;
+
+import com.mibanco.dto.TransaccionDTO;
+import com.mibanco.dto.mapeador.TransaccionMapeador;
+import com.mibanco.modelo.Transaccion;
+import com.mibanco.modelo.enums.TipoOperacionTransaccion;
+import com.mibanco.modelo.enums.TipoTransaccion;
+import com.mibanco.repositorio.TransaccionRepositorio;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
+/**
+ * Implementación del repositorio de Transacciones
+ * Visibilidad restringida al paquete internal
+ */
+class TransaccionRepositorioImpl extends BaseRepositorioImpl&lt;Transaccion, Long, TipoOperacionTransaccion&gt; implements TransaccionRepositorio {
+    
+    /**
+     * Constructor con visibilidad de paquete
+     */
+    TransaccionRepositorioImpl() {
+<span class="fc" id="L28">        super();</span>
+<span class="fc" id="L29">    }</span>
+   
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorCuenta(Optional&lt;String&gt; numeroCuenta) {
+<span class="nc" id="L33">        return numeroCuenta.flatMap(numero -&gt; </span>
+<span class="nc" id="L34">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getNumeroCuenta().equals(numero))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorTipo(Optional&lt;TipoTransaccion&gt; tipo) {
+<span class="nc" id="L40">        return tipo.flatMap(t -&gt; </span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">            buscarTodosPorPredicado(transaccion -&gt; transaccion.getTipo() == t)</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorFecha(Optional&lt;LocalDate&gt; fecha) {
+<span class="nc" id="L47">        return fecha.flatMap(f -&gt; </span>
+<span class="nc" id="L48">            buscarTodosPorPredicado(transaccion -&gt; </span>
+<span class="nc" id="L49">                transaccion.getFecha().toLocalDate().equals(f))</span>
+        );
+    }
+    
+    @Override
+    public Optional&lt;List&lt;Transaccion&gt;&gt; buscarPorRangoFechas(Optional&lt;LocalDate&gt; fechaInicio, Optional&lt;LocalDate&gt; fechaFin) {
+<span class="nc" id="L55">        return fechaInicio.flatMap(inicio -&gt; </span>
+<span class="nc" id="L56">            fechaFin.flatMap(fin -&gt; </span>
+<span class="nc" id="L57">                buscarTodosPorPredicado(transaccion -&gt; {</span>
+<span class="nc" id="L58">                    LocalDateTime fechaTransaccion = transaccion.getFecha();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                    return !fechaTransaccion.toLocalDate().isBefore(inicio) &amp;&amp; </span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                           !fechaTransaccion.toLocalDate().isAfter(fin);</span>
+                })
+            )
+        );
+    }
+    
+    
+    
+    /**
+     * ✅ Obtiene la configuración para este repositorio
+     * @return Map con la configuración (ruta, clase, extractor de ID)
+     */
+    @Override
+    protected Map&lt;String, Object&gt; obtenerConfiguracion() {
+<span class="nc" id="L74">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L75">        config.put(&quot;rutaArchivo&quot;, &quot;src/main/resources/data/transaccion.json&quot;);</span>
+<span class="nc" id="L76">        config.put(&quot;tipoClase&quot;, Transaccion.class);</span>
+<span class="nc" id="L77">        config.put(&quot;extractorId&quot;, (Function&lt;Transaccion, Long&gt;) Transaccion::getId);</span>
+<span class="nc" id="L78">        return config;</span>
+    }
+    
+    /**
+     * ✅ Crea una nueva transacción con ID automático
+     * Usa DTOs para mantener la inmutabilidad de la entidad
+     * Enfoque funcional puro con Optional
+     * @param transaccion Transacción a crear
+     * @return Transacción creada con nuevo ID
+     */
+    @Override
+    protected Transaccion crearConNuevoId(Transaccion transaccion) {
+<span class="nc" id="L90">        TransaccionMapeador mapeador = new TransaccionMapeador();</span>
+        
+<span class="nc" id="L92">        return mapeador.aDtoDirecto(transaccion)</span>
+<span class="nc" id="L93">            .map(dto -&gt; dto.toBuilder()</span>
+<span class="nc" id="L94">                .id(idContador.incrementAndGet())</span>
+<span class="nc" id="L95">                .build())</span>
+<span class="nc" id="L96">            .flatMap(mapeador::aEntidadDirecta)</span>
+<span class="nc" id="L97">            .orElseThrow(() -&gt; new IllegalStateException(&quot;No se pudo procesar la entidad Transaccion&quot;));</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
