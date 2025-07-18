@@ -1948,13 +1948,325 @@ El proyecto está en excelente estado para continuar con el desarrollo o refacto
 
 _**User**_
 
-Haz un commit que refleje los cambios que no estan commitados
+Cambiamos a la rama modificación de nombres.
+Haz una limpieza.
 
 ---
 
 _**Assistant**_
 
-Te ayudo a hacer un commit con los cambios que no están commitados. Primero voy a verificar el estado actual del repositorio Git.
+Te ayudo a cambiar a la rama de modificación de nombres y hacer una limpieza del proyecto.
+
+
+---
+
+```bash
+git checkout modificación-de-nombres
+```
+
+```
+german@MacBook-Air-de-german miBanco % git checkout modificación-de-nombres
+error: pathspec 'modificación-de-nombres' did not match any file(s) known to git
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Parece que la rama no existe con ese nombre exacto. Vamos a verificar qué ramas están disponibles:
+
+
+---
+
+```bash
+git branch -a
+```
+
+```
+german@MacBook-Air-de-german miBanco % git branch -a
+* main
+  modificacion-de-nombres
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Perfecto, la rama se llama `modificacion-de-nombres` (sin acentos). Ahora cambiamos a esa rama:
+
+
+---
+
+```bash
+git checkout modificacion-de-nombres
+```
+
+```
+german@MacBook-Air-de-german miBanco % git checkout modificacion-de-nombres
+M       target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.class
+M       target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class
+M       target/jacoco.exec
+M       target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+M       target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.java.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/index.html
+M       target/site/jacoco/com.mibanco.repositorio.interna/index.source.html
+M       target/site/jacoco/index.html
+M       target/site/jacoco/jacoco-sessions.html
+M       target/site/jacoco/jacoco.csv
+M       target/site/jacoco/jacoco.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.TransaccionDtoTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.RegistroAuditoriaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.TransaccionTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.xml
+M       target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTest.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest.xml
+M       "target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\261oTest.xml"
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPredicadoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$AsignacionIdTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$ConfiguracionTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$IntegracionJsonTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$OperacionesCrudTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$IntegracionJsonTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$AsignacionIdTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ConfiguracionTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$IntegracionJsonTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$OperacionesCrudTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.xml
+M       target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.xml
+M       target/surefire-reports/TEST-com.mibanco.utilTest.AuditoriaUtilTest.xml
+M       target/surefire-reports/TEST-com.mibanco.utilTest.ReflexionUtilTest.xml
+M       target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.txt
+M       target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.ClienteTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.CuentaTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.RegistroAuditoriaTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.txt
+M       target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$AsignacionIdTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$ConfiguracionTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$IntegracionJsonTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$OperacionesCrudTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$IntegracionJsonTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$AsignacionIdTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ConfiguracionTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$IntegracionJsonTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$OperacionesCrudTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.txt
+M       target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.txt
+M       target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTest.txt
+M       target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTest.txt
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTests$1TestRepositorioConfigurac
+ionInvalida.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$AsignacionIdTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$CasosEdgeTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$ConfiguracionTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$IntegracionJsonTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$OperacionesCrudTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$TestClienteRepositorioImpl.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$IntegracionJsonTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$TestCuentaRepositorioImpl.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$AsignacionIdTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$CasosEdgeTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ConfiguracionTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$IntegracionJsonTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$OperacionesCrudTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$TestTarjetaRepositorioImpl.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.class
+M       target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest.class
+Switched to branch 'modificacion-de-nombres'
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Perfecto, ahora estamos en la rama `modificacion-de-nombres`. Veo que hay muchos archivos modificados en el directorio `target` (archivos compilados y reportes). Ahora vamos a hacer una limpieza completa del proyecto:
+
+
+---
+
+```bash
+mvn clean
+```
+
+```
+german@MacBook-Air-de-german miBanco % mvn clean
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ miBanco ---
+[INFO] Deleting /Users/german/ejerciciosJava/miBanco/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.237 s
+[INFO] Finished at: 2025-07-17T23:18:11+02:00
+[INFO] ------------------------------------------------------------------------
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Excelente. Ahora vamos a verificar el estado del repositorio Git para asegurarnos de que todo esté limpio:
 
 
 ---
@@ -1964,470 +2276,663 @@ git status
 ```
 
 ```
-On branch main
-Your branch is up to date with 'origin/main'.
-
+german@MacBook-Air-de-german miBanco % git status
+On branch modificacion-de-nombres
 Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
+  (use "git add/rm <file>..." to update what will be committed)
   (use "git restore <file>..." to discard changes in working directory)
-        modified:   target/classes/com/mibanco/repositorio/interna/AuditoriaRepo
-sitorioImpl.class
-        modified:   target/classes/com/mibanco/repositorio/interna/TransaccionRe
-positorioImpl.class
-        modified:   target/jacoco.exec
-        modified:   target/maven-status/maven-compiler-plugin/testCompile/defaul
-t-testCompile/createdFiles.lst
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Auditoria
-RepositorioImpl.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Auditoria
-RepositorioImpl.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Auditoria
-RepositorioImplWrapper.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Auditoria
-RepositorioImplWrapper.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/BaseRepos
-itorioImpl.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/BaseRepos
-itorioImpl.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/CuentaRep
-ositorioImpl.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/CuentaRep
-ositorioImpl.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Repositor
-ioFactoria.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Repositor
-ioFactoria.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRe
-positorioImpl.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRe
-positorioImpl.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Transacci
-onRepositorioImpl.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Transacci
-onRepositorioImpl.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Transacci
-onRepositorioImplWrapper.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/Transacci
-onRepositorioImplWrapper.java.html
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/index.htm
-l
-        modified:   target/site/jacoco/com.mibanco.repositorio.interna/index.sou
-rce.html
-        modified:   target/site/jacoco/index.html
-        modified:   target/site/jacoco/jacoco-sessions.html
-        modified:   target/site/jacoco/jacoco.csv
-        modified:   target/site/jacoco/jacoco.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoT
-est.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTe
-st.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDt
-oTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDt
-oTest$FuncionalidadGenericaTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDt
-oTest$InmutabilidadTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDt
-oTest$RespuestasErrorTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDt
-oTest$RespuestasExitosasTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDt
-oTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoT
-est.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.Transaccion
-DtoTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.ClienteMapeadorTest$DtoToEntityTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.ClienteMapeadorTest$EntityToDtoTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.ClienteMapeadorTest$ListasTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.ClienteMapeadorTest$MetodosDirectosTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.ClienteMapeadorTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.CuentaMapeadorTest$DirectMethodTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.CuentaMapeadorTest$DtoToEntityTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.CuentaMapeadorTest$EntityToDtoTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.CuentaMapeadorTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TarjetaMapeadorTest$DtoToEntityTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TarjetaMapeadorTest$EntityToDtoTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TarjetaMapeadorTest$ListasTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TarjetaMapeadorTest$MetodosDirectosTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TarjetaMapeadorTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TransaccionMapeadorTest$DirectMethodTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TransaccionMapeadorTest$DtoToEntityTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TransaccionMapeadorTest$EdgeCasesTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TransaccionMapeadorTest$EntityToDtoTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTes
-t.TransaccionMapeadorTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteT
-est.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTe
-st.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.Registro
-AuditoriaTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaT
-est.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.Transacc
-ionTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoCuentaTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoCuentaTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoCuentaTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoCuentaTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoCuentaTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionClienteTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionClienteTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionClienteTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionClienteTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionClienteTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionCuentaTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionCuentaTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionCuentaTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionCuentaTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionCuentaTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTarjetaTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTarjetaTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTarjetaTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTarjetaTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTarjetaTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTransaccionTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTransaccionTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTransaccionTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTransaccionTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoOperacionTransaccionTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTarjetaTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTarjetaTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTarjetaTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTarjetaTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTarjetaTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTransaccionTest$CasosEdgeTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTransaccionTest$FuncionalidadEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTransaccionTest$NombresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTransaccionTest$ValoresEnumTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTes
-t.TipoTransaccionTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseProcesadorJsonPersistenciaRealTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseProcesadorJsonTest$CalcularMaximoIdTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTest
+        deleted:    target/classes/com/mibanco/Main.class
+        deleted:    target/classes/com/mibanco/dto/ClienteDTO$ClienteDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/ClienteDTO.class
+        deleted:    target/classes/com/mibanco/dto/CuentaDTO$CuentaDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/CuentaDTO.class
+        deleted:    target/classes/com/mibanco/dto/RespuestaDTO$RespuestaDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/RespuestaDTO.class
+        deleted:    target/classes/com/mibanco/dto/TarjetaDTO$TarjetaDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/TarjetaDTO.class
+        deleted:    target/classes/com/mibanco/dto/TransaccionDTO$TransaccionDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/TransaccionDTO.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/ClienteMapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/CuentaMapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/Mapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/TarjetaMapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/TransaccionMapeador.class
+        deleted:    target/classes/com/mibanco/modelo/Cliente$ClienteBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Cliente.class
+        deleted:    target/classes/com/mibanco/modelo/Cuenta$CuentaBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Cuenta.class
+        deleted:    target/classes/com/mibanco/modelo/Identificable.class
+        deleted:    target/classes/com/mibanco/modelo/RegistroAuditoria$RegistroAuditoriaBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/RegistroAuditoria.class
+        deleted:    target/classes/com/mibanco/modelo/Tarjeta$TarjetaBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Tarjeta.class
+        deleted:    target/classes/com/mibanco/modelo/Transaccion$TransaccionBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Transaccion.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoCuenta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionCliente.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionCuenta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionTarjeta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionTransaccion.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoTarjeta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoTransaccion.class
+        deleted:    target/classes/com/mibanco/repositorio/AuditoriaRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/ClienteRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/CuentaRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/TarjetaRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/TransaccionRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseProcesadorJson.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseProcesadorJsonWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/RepositorioFactoria.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/util/BaseRepositorio.class
+        deleted:    target/classes/com/mibanco/servicio/AuditoriaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/ClienteServicio.class
+        deleted:    target/classes/com/mibanco/servicio/CuentaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/TarjetaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/TransaccionCrudServicio.class
+        deleted:    target/classes/com/mibanco/servicio/TransaccionOperacionesServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/AuditoriaServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/BaseServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/ClienteDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/ClienteServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/CuentaDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/CuentaServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/FactoriaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TarjetaDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TarjetaServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TransaccionDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/util/BaseServicio.class
+        deleted:    target/classes/com/mibanco/util/AuditoriaUtil.class
+        deleted:    target/classes/com/mibanco/util/ReflexionUtil$NoSolicitar.class
+        deleted:    target/classes/com/mibanco/util/ReflexionUtil.class
+        deleted:    target/classes/com/mibanco/util/ShutdownHookUtil.class
+        deleted:    target/classes/com/mibanco/util/ValidacionException.class
+        deleted:    target/classes/com/mibanco/vista/ClienteVista.class
+        deleted:    target/classes/com/mibanco/vista/CuentaVista.class
+        deleted:    target/classes/com/mibanco/vista/TarjetaVista.class
+        deleted:    target/classes/com/mibanco/vista/interna/BaseVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/ClienteVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/ConsolaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/CuentaVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/TarjetaVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/factoriaVista.class
+        deleted:    target/classes/com/mibanco/vista/util/BaseVista.class
+        deleted:    target/classes/com/mibanco/vista/util/Consola.class
+        deleted:    target/classes/data/clientes.json
+        deleted:    target/jacoco.exec
+        deleted:    target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+        deleted:    target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+        deleted:    target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+        deleted:    target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+        deleted:    target/site/.DS_Store
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/ClienteMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/ClienteMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/CuentaMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/CuentaMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TarjetaMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TarjetaMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TransaccionMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TransaccionMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/index.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.dto/ClienteDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/ClienteDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/CuentaDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/CuentaDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/RespuestaDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/RespuestaDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TarjetaDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TarjetaDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TransaccionDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TransaccionDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/index.html
+        deleted:    target/site/jacoco/com.mibanco.dto/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoCuenta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoCuenta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCliente.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCliente.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCuenta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCuenta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTarjeta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTarjeta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTransaccion.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTransaccion.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTarjeta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTarjeta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTransaccion.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTransaccion.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/index.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cliente.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cliente.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cuenta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cuenta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/RegistroAuditoria.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/RegistroAuditoria.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Tarjeta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Tarjeta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Transaccion.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Transaccion.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/index.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJson.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJson.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJsonWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJsonWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/index.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/AuditoriaServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/AuditoriaServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/FactoriaServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/FactoriaServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/index.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.util/AuditoriaUtil.html
+        deleted:    target/site/jacoco/com.mibanco.util/AuditoriaUtil.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/ReflexionUtil.html
+        deleted:    target/site/jacoco/com.mibanco.util/ReflexionUtil.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/ShutdownHookUtil.html
+        deleted:    target/site/jacoco/com.mibanco.util/ShutdownHookUtil.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/ValidacionException.html
+        deleted:    target/site/jacoco/com.mibanco.util/ValidacionException.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/index.html
+        deleted:    target/site/jacoco/com.mibanco.util/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/BaseVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/BaseVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ClienteVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ClienteVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ConsolaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ConsolaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/CuentaVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/CuentaVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/TarjetaVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/TarjetaVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/factoriaVista.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/factoriaVista.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/index.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/index.source.html
+        deleted:    target/site/jacoco/com.mibanco/Main.html
+        deleted:    target/site/jacoco/com.mibanco/Main.java.html
+        deleted:    target/site/jacoco/com.mibanco/index.html
+        deleted:    target/site/jacoco/com.mibanco/index.source.html
+        deleted:    target/site/jacoco/index.html
+        deleted:    target/site/jacoco/jacoco-resources/branchfc.gif
+        deleted:    target/site/jacoco/jacoco-resources/branchnc.gif
+        deleted:    target/site/jacoco/jacoco-resources/branchpc.gif
+        deleted:    target/site/jacoco/jacoco-resources/bundle.gif
+        deleted:    target/site/jacoco/jacoco-resources/class.gif
+        deleted:    target/site/jacoco/jacoco-resources/down.gif
+        deleted:    target/site/jacoco/jacoco-resources/greenbar.gif
+        deleted:    target/site/jacoco/jacoco-resources/group.gif
+        deleted:    target/site/jacoco/jacoco-resources/method.gif
+        deleted:    target/site/jacoco/jacoco-resources/package.gif
+        deleted:    target/site/jacoco/jacoco-resources/prettify.css
+        deleted:    target/site/jacoco/jacoco-resources/prettify.js
+        deleted:    target/site/jacoco/jacoco-resources/redbar.gif
+        deleted:    target/site/jacoco/jacoco-resources/report.css
+        deleted:    target/site/jacoco/jacoco-resources/report.gif
+        deleted:    target/site/jacoco/jacoco-resources/session.gif
+        deleted:    target/site/jacoco/jacoco-resources/sort.gif
+        deleted:    target/site/jacoco/jacoco-resources/sort.js
+        deleted:    target/site/jacoco/jacoco-resources/source.gif
+        deleted:    target/site/jacoco/jacoco-resources/up.gif
+        deleted:    target/site/jacoco/jacoco-sessions.html
+        deleted:    target/site/jacoco/jacoco.csv
+        deleted:    target/site/jacoco/jacoco.xml
+        deleted:    target/surefire-reports/2025-07-15T20-00-04_739-jvmRun1-commands.bin
+        deleted:    target/surefire-reports/2025-07-15T20-00-04_739-jvmRun1-events.bin
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.TransaccionDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.RegistroAuditoriaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.TransaccionTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTest
 s.xml
-                                                                       modified:
-   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProc
-esadorJsonTest$GuardarJsonTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseProcesadorJsonTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioGuardadoAutomaticoTest.xml
-        modified:   "target/surefire-reports/TEST-com.mibanco.repositorioTest.in
-ternaTest.BaseRepositorioGuardadoPorTama\303\261oTest.xml"
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$ActualizarTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$BuscarPorPredicadoTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$BuscarTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.x
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest.xml
+        deleted:    "target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\261oTest.xml"
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPredicadoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.x
 ml
-                                                                       modified:
-   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepo
-sitorioImplTest$ContadorYGuardadoTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$CrearTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$EliminarTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$RestaurarTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$UsuarioActualTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.BaseRepositorioImplTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.ClienteRepositorioImplTest$AsignacionIdTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.ClienteRepositorioImplTest$CasosEdgeTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.ClienteRepositorioImplTest$ConfiguracionTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.ClienteRepositorioImplTest$IntegracionJsonTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.ClienteRepositorioImplTest$OperacionesCrudTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.ClienteRepositorioImplTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.CuentaRepositorioImplTest$IntegracionJsonTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.CuentaRepositorioImplTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.TarjetaRepositorioImplTest$AsignacionIdTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.TarjetaRepositorioImplTest$CasosEdgeTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.TarjetaRepositorioImplTest$ConfiguracionTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.TarjetaRepositorioImplTest$IntegracionJsonTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.TarjetaRepositorioImplTest$OperacionesCrudTests.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.repositorioTest.int
-ernaTest.TarjetaRepositorioImplTest$ValidacionReglasNegocioTest
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$AsignacionIdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$ConfiguracionTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$IntegracionJsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$OperacionesCrudTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$BusquedasYFiltrosTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$CasosEdgeYValidacionesTests.
+xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ConfiguracionYAsignacionIdTe
+sts.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$IntegracionJsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$OperacionesCrudBasicasTests.
+xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ValidacionReglasNegocioTests
+.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$AsignacionIdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ConfiguracionTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$IntegracionJsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$OperacionesCrudTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ValidacionReglasNegocioTest
 s.xml
-                                                                       modified:
-   target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaR
-epositorioImplTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.utilTest.AuditoriaU
-tilTest.xml
-        modified:   target/surefire-reports/TEST-com.mibanco.utilTest.ReflexionU
-tilTest.xml
-        modified:   target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.t
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.utilTest.AuditoriaUtilTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.utilTest.ReflexionUtilTest.xml
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.CuentaDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.ClienteTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.CuentaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.RegistroAuditoriaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.TransaccionTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest.txt
+        deleted:    "target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\261oTest.txt"
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPredicadoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuardadoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDefensivaTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$AsignacionIdTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$ConfiguracionTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$IntegracionJsonTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$OperacionesCrudTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$BusquedasYFiltrosTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$CasosEdgeYValidacionesTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ConfiguracionYAsignacionIdTests.t
 xt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest
-$CasosEdgeTest.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest
-$FuncionalidadGenericaTest.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest
-$InmutabilidadTest.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest
-$RespuestasErrorTest.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest
-.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.t
-xt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTe
-st.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Cli
-enteMapeadorTest$DtoToEntityTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Cli
-enteMapeadorTest$ListasTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Cli
-enteMapeadorTest.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Cue
-ntaMapeadorTest$DirectMethodTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Cue
-ntaMapeadorTest$DtoToEntityTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tar
-jetaMapeadorTest$EntityToDtoTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tar
-jetaMapeadorTest$ListasTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tar
-jetaMapeadorTest.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tra
-nsaccionMapeadorTest$DirectMethodTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tra
-nsaccionMapeadorTest$EdgeCasesTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tra
-nsaccionMapeadorTest$EntityToDtoTests.txt
-        modified:   target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.Tra
-nsaccionMapeadorTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.ClienteTest.t
-xt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.CuentaTest.tx
-t
-        modified:   target/surefire-reports/com.mibanco.modeloTest.RegistroAudit
-oriaTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.t
-xt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oCuentaTest$CasosEdgeTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oCuentaTest$FuncionalidadEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oCuentaTest$NombresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oCuentaTest$ValoresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionClienteTest$FuncionalidadEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionClienteTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionCuentaTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTarjetaTest$CasosEdgeTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTarjetaTest$FuncionalidadEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTarjetaTest$ValoresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTarjetaTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTransaccionTest$CasosEdgeTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTransaccionTest$NombresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oOperacionTransaccionTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTarjetaTest$CasosEdgeTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTarjetaTest$NombresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTarjetaTest$ValoresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTarjetaTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTransaccionTest$CasosEdgeTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTransaccionTest$FuncionalidadEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTransaccionTest$NombresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTransaccionTest$ValoresEnumTest.txt
-        modified:   target/surefire-reports/com.mibanco.modeloTest.enumsTest.Tip
-oTransaccionTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseProcesadorJsonPersistenciaRealTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseProcesadorJsonTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioGuardadoAutomaticoTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest$ContadorYGuardadoTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest$CrearTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest$EliminarTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest$RestaurarTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest$UsuarioActualTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest$ValidacionDefensivaTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.BaseRepositorioImplTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.ClienteRepositorioImplTest$AsignacionIdTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.ClienteRepositorioImplTest$CasosEdgeTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.ClienteRepositorioImplTest$ConfiguracionTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.ClienteRepositorioImplTest$IntegracionJsonTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.ClienteRepositorioImplTest$OperacionesCrudTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.ClienteRepositorioImplTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.CuentaRepositorioImplTest$IntegracionJsonTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.CuentaRepositorioImplTest.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest$AsignacionIdTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest$CasosEdgeTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest$ConfiguracionTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest$IntegracionJsonTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest$OperacionesCrudTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.txt
-        modified:   target/surefire-reports/com.mibanco.repositorioTest.internaT
-est.TarjetaRepositorioImplTest.txt
-        modified:   target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTe
-st.txt
-        modified:   target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTe
-st.txt
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-BaseRepositorioImplTest$ValidacionDefensivaTests$1TestRepositor
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$IntegracionJsonTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$OperacionesCrudBasicasTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ValidacionReglasNegocioTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$AsignacionIdTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ConfiguracionTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$IntegracionJsonTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$OperacionesCrudTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTest.txt
+        deleted:    target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTest.txt
+        deleted:    target/test-classes/com/mibanco/dtoTest/ClienteDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/CuentaDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$FuncionalidadGenericaTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$InmutabilidadTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$RespuestasErrorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$RespuestasExitosasTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/TarjetaDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/TransaccionDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$ListasTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$MetodosDirectosTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$DirectMethodTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$ListasTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$MetodosDirectosTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$DirectMethodTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$EdgeCasesTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/ClienteTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/CuentaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/RegistroAuditoriaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/TarjetaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/TransaccionTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonPersistenciaRealTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$CalcularMaximoIdTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$CargarDatosCondicionalmenteTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$GuardarJsonTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoAutomaticoTest$TestRepositorioConGuardad
+o.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoAutomaticoTest.class
+        deleted:    "target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoPorTama\303\261oTest$TestRepositorioCon
+GuardadoPorTama\303\261o.class"
+        deleted:    "target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoPorTama\303\261oTest.class"
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ActualizarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarPorPredicadoTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTodosPorPredicadoTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ContadorYGuardadoTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$CrearTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$EliminarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$RestaurarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$TestRepositorioImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$UsuarioActualTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTests$1TestRepositor
 ioConfiguracionInvalida.class
-                                                                       modified:
-   target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioIm
-plTest$ValidacionDefensivaTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-BaseRepositorioImplTest.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-ClienteRepositorioImplTest$AsignacionIdTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-ClienteRepositorioImplTest$CasosEdgeTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-ClienteRepositorioImplTest$ConfiguracionTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-ClienteRepositorioImplTest$IntegracionJsonTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-ClienteRepositorioImplTest$OperacionesCrudTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-ClienteRepositorioImplTest$TestClienteRepositorioImpl.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-CuentaRepositorioImplTest$IntegracionJsonTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-CuentaRepositorioImplTest$TestCuentaRepositorioImpl.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-CuentaRepositorioImplTest.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$AsignacionIdTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$CasosEdgeTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$ConfiguracionTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$IntegracionJsonTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$OperacionesCrudTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$TestTarjetaRepositorioImpl.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.class
-        modified:   target/test-classes/com/mibanco/repositorioTest/internaTest/
-TarjetaRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$AsignacionIdTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$CasosEdgeTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$ConfiguracionTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$IntegracionJsonTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$OperacionesCrudTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$TestClienteRepositorioImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$BusquedasYFiltrosTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$CasosEdgeYValidacionesTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$ConfiguracionYAsignacionIdTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$IntegracionJsonTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$OperacionesCrudBasicasTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$TestCuentaRepositorioImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$ValidacionReglasNegocioTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$AsignacionIdTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$CasosEdgeTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ConfiguracionTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$IntegracionJsonTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$OperacionesCrudTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$TestTarjetaRepositorioImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ValidacionReglasNegocioTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/utilTest/AuditoriaUtilTest.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$ConNoSolicitar.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$ConOptional.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$Mixta.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$SinRequeridos.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$SoloSimples.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$Vacia.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest.class
+        deleted:    target/test-classes/data/test_clientes.json
+        deleted:    target/test-classes/data/test_clientes_auto.json
+        deleted:    target/test-classes/data/test_clientes_vacio.json
+        deleted:    target/test-classes/data/test_invoke_1752607909145.json
+        deleted:    target/test-classes/data/test_invoke_1752607909465.json
+        deleted:    target/test-classes/data/test_invoke_1752607909471.json
+        deleted:    target/test-classes/data/test_invoke_1752607909478.json
+        deleted:    target/test-classes/data/test_invoke_1752608137408.json
+        deleted:    target/test-classes/data/test_invoke_1752608137728.json
+        deleted:    target/test-classes/data/test_invoke_1752608137735.json
+        deleted:    target/test-classes/data/test_invoke_1752608137741.json
+        deleted:    target/test-classes/data/test_invoke_1752608724557.json
+        deleted:    target/test-classes/data/test_invoke_1752608724843.json
+        deleted:    target/test-classes/data/test_invoke_1752608724849.json
+        deleted:    target/test-classes/data/test_invoke_1752608724854.json
+        deleted:    target/test-classes/data/test_invoke_1752608745481.json
+        deleted:    target/test-classes/data/test_invoke_1752608745488.json
+        deleted:    target/test-classes/data/test_invoke_1752608745494.json
+        deleted:    target/test-classes/data/test_invoke_1752608745497.json
+        deleted:    target/test-classes/data/test_invoke_1752608816624.json
+        deleted:    target/test-classes/data/test_invoke_1752608816632.json
+        deleted:    target/test-classes/data/test_invoke_1752608816636.json
+        deleted:    target/test-classes/data/test_invoke_1752608816640.json
+        deleted:    target/test-classes/data/test_invoke_1752610829920.json
+        deleted:    target/test-classes/data/test_invoke_1752610829927.json
+        deleted:    target/test-classes/data/test_invoke_1752610829932.json
+        deleted:    target/test-classes/data/test_invoke_1752610829936.json
+        deleted:    target/test-classes/data/test_invoke_1752611516531.json
+        deleted:    target/test-classes/data/test_invoke_1752611516541.json
+        deleted:    target/test-classes/data/test_invoke_1752611516549.json
+        deleted:    target/test-classes/data/test_invoke_1752611516553.json
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
-        .specstory/history/2025-07-16_16-19Z-ejercicio-de-aprendizaje-test-en-ja
-va-024.md
+        .specstory/history/2025-07-16_16-19Z-ejercicio-de-aprendizaje-test-en-java-024.md
         .specstory/history/2025-07-16_17-14Z-refactorizacion-de-idioma-042.md
         src/test/resources/data/test_invoke_1752784245085.json
         src/test/resources/data/test_invoke_1752784245093.json
@@ -2457,191 +2962,2575 @@ va-024.md
         src/test/resources/data/test_invoke_1752786504840.json
         src/test/resources/data/test_invoke_1752786504843.json
         src/test/resources/data/test_invoke_1752786504845.json
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Aud
-itoriaRepositorioImplTest$BusquedasEspecificasTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Aud
-itoriaRepositorioImplTest$CasosEdgeTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Aud
-itoriaRepositorioImplTest$CoberturaFiltrosTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Aud
-itoriaRepositorioImplTest$IntegracionYEspecialesTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Aud
-itoriaRepositorioImplTest$OperacionesBasicasTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Aud
-itoriaRepositorioImplTest.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Bas
-eRepositorioImplTest$CargaDatosTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Cue
-ntaRepositorioImplTest$AsignacionNumeroCuentaTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Cue
-ntaRepositorioImplTest$CasosEdgeTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Cue
-ntaRepositorioImplTest$ConfiguracionTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Cue
-ntaRepositorioImplTest$OperacionesCrudFaltantesTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Cue
-ntaRepositorioImplTest$OperacionesCrudTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Rep
-ositorioFactoriaTest$ObtenerInstanciaTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Rep
-ositorioFactoriaTest$ObtenerRepositoriosTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Rep
-ositorioFactoriaTest.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tar
-jetaRepositorioImplTest$OperacionesCrudFaltantesTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest$AsignacionIdTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest$BusquedasEspecificasTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest$CasosEdgeTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest$ConfiguracionTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest$IntegracionJsonTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest$OperacionesCrudTests.xml
-        target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.Tra
-nsaccionRepositorioImplTest.xml
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Auditori
-aRepositorioImplTest$BusquedasEspecificasTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Auditori
-aRepositorioImplTest$CasosEdgeTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Auditori
-aRepositorioImplTest$CoberturaFiltrosTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Auditori
-aRepositorioImplTest$IntegracionYEspecialesTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Auditori
-aRepositorioImplTest$OperacionesBasicasTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Auditori
-aRepositorioImplTest.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepo
-sitorioImplTest$CargaDatosTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRe
-positorioImplTest$AsignacionNumeroCuentaTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRe
-positorioImplTest$CasosEdgeTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRe
-positorioImplTest$ConfiguracionTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRe
-positorioImplTest$OperacionesCrudFaltantesTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRe
-positorioImplTest$OperacionesCrudTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Reposito
-rioFactoriaTest$ObtenerInstanciaTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Reposito
-rioFactoriaTest$ObtenerRepositoriosTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Reposito
-rioFactoriaTest.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaR
-epositorioImplTest$OperacionesCrudFaltantesTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest$AsignacionIdTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest$BusquedasEspecificasTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest$CasosEdgeTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest$ConfiguracionTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest$IntegracionJsonTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest$OperacionesCrudTests.txt
-        target/surefire-reports/com.mibanco.repositorioTest.internaTest.Transacc
-ionRepositorioImplTest.txt
-        target/test-classes/com/mibanco/repositorioTest/internaTest/AuditoriaRep
-ositorioImplTest$BusquedasEspecificasTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/AuditoriaRep
-ositorioImplTest$CasosEdgeTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/AuditoriaRep
-ositorioImplTest$CoberturaFiltrosTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/AuditoriaRep
-ositorioImplTest$IntegracionYEspecialesTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/AuditoriaRep
-ositorioImplTest$OperacionesBasicasTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/AuditoriaRep
-ositorioImplTest.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/BaseReposito
-rioImplTest$CargaDatosTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaReposi
-torioImplTest$AsignacionNumeroCuentaTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaReposi
-torioImplTest$CasosEdgeTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaReposi
-torioImplTest$ConfiguracionTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaReposi
-torioImplTest$OperacionesCrudFaltantesTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaReposi
-torioImplTest$OperacionesCrudTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/RepositorioF
-actoriaTest$ObtenerInstanciaTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/RepositorioF
-actoriaTest$ObtenerRepositoriosTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/RepositorioF
-actoriaTest.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepos
-itorioImplTest$OperacionesCrudFaltantesTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$AsignacionIdTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$BusquedasEspecificasTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$CasosEdgeTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$ConfiguracionTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$IntegracionJsonTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$OperacionesCrudTests.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest$TestTransaccionRepositorioImpl.class
-        target/test-classes/com/mibanco/repositorioTest/internaTest/TransaccionR
-epositorioImplTest.class
-        target/test-classes/data/test_invoke_1752784245085.json
-        target/test-classes/data/test_invoke_1752784245093.json
-        target/test-classes/data/test_invoke_1752784245098.json
-        target/test-classes/data/test_invoke_1752784245102.json
-        target/test-classes/data/test_invoke_1752784906166.json
-        target/test-classes/data/test_invoke_1752784906173.json
-        target/test-classes/data/test_invoke_1752784906177.json
-        target/test-classes/data/test_invoke_1752784906180.json
-        target/test-classes/data/test_invoke_1752785921757.json
-        target/test-classes/data/test_invoke_1752785921767.json
-        target/test-classes/data/test_invoke_1752785921773.json
-        target/test-classes/data/test_invoke_1752785921776.json
-        target/test-classes/data/test_invoke_1752786254969.json
-        target/test-classes/data/test_invoke_1752786254976.json
-        target/test-classes/data/test_invoke_1752786254981.json
-        target/test-classes/data/test_invoke_1752786254984.json
-        target/test-classes/data/test_invoke_1752786303806.json
-        target/test-classes/data/test_invoke_1752786303815.json
-        target/test-classes/data/test_invoke_1752786303820.json
-        target/test-classes/data/test_invoke_1752786303822.json
-        target/test-classes/data/test_invoke_1752786346660.json
-        target/test-classes/data/test_invoke_1752786346665.json
-        target/test-classes/data/test_invoke_1752786346671.json
-        target/test-classes/data/test_invoke_1752786346674.json
-        target/test-classes/data/test_invoke_1752786504832.json
-        target/test-classes/data/test_invoke_1752786504840.json
-        target/test-classes/data/test_invoke_1752786504843.json
-        target/test-classes/data/test_invoke_1752786504845.json
 
 no changes added to commit (use "git add" and/or "git commit -a")
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Perfecto. Ahora vamos a limpiar estos archivos del directorio `target` que Git está detectando como eliminados, ya que son archivos generados que no deberían estar en el control de versiones:
+
+
+---
+
+```bash
+git add -A
+```
+
+---
+
+Ahora vamos a verificar el estado nuevamente:
+
+
+---
+
+```bash
+git status
+```
+
+```
+On branch modificacion-de-nombres
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   .specstory/history/2025-07-16_16-19Z-ejercicio-de-aprendizaje-test-en-java-024.md
+        new file:   .specstory/history/2025-07-16_17-14Z-refactorizacion-de-idioma-042.md
+        renamed:    target/test-classes/data/test_clientes_auto.json -> src/test/resources/data/test_invoke_1752784245085.json
+        renamed:    target/test-classes/data/test_invoke_1752607909465.json -> src/test/resources/data/test_invoke_17527842450
+93.json
+        renamed:    target/test-classes/data/test_invoke_1752607909145.json -> src/test/resources/data/test_invoke_17527842450
+98.json
+        renamed:    target/test-classes/data/test_invoke_1752607909471.json -> src/test/resources/data/test_invoke_17527842451
+02.json
+        renamed:    target/test-classes/data/test_invoke_1752607909478.json -> src/test/resources/data/test_invoke_17527849061
+66.json
+        renamed:    target/test-classes/data/test_invoke_1752608137728.json -> src/test/resources/data/test_invoke_17527849061
+73.json
+        renamed:    target/test-classes/data/test_invoke_1752608137408.json -> src/test/resources/data/test_invoke_17527849061
+77.json
+        renamed:    target/test-classes/data/test_invoke_1752608137735.json -> src/test/resources/data/test_invoke_17527849061
+80.json
+        renamed:    target/test-classes/data/test_invoke_1752608137741.json -> src/test/resources/data/test_invoke_17527859217
+57.json
+        renamed:    target/test-classes/data/test_invoke_1752608724843.json -> src/test/resources/data/test_invoke_17527859217
+67.json
+        renamed:    target/test-classes/data/test_invoke_1752608724557.json -> src/test/resources/data/test_invoke_17527859217
+73.json
+        renamed:    target/test-classes/data/test_invoke_1752608724849.json -> src/test/resources/data/test_invoke_17527859217
+76.json
+        renamed:    target/test-classes/data/test_invoke_1752608724854.json -> src/test/resources/data/test_invoke_17527862549
+69.json
+        renamed:    target/test-classes/data/test_invoke_1752608745488.json -> src/test/resources/data/test_invoke_17527862549
+76.json
+        renamed:    target/test-classes/data/test_invoke_1752608745481.json -> src/test/resources/data/test_invoke_17527862549
+81.json
+        renamed:    target/test-classes/data/test_invoke_1752608745494.json -> src/test/resources/data/test_invoke_17527862549
+84.json
+        renamed:    target/test-classes/data/test_invoke_1752608745497.json -> src/test/resources/data/test_invoke_17527863038
+06.json
+        renamed:    target/test-classes/data/test_invoke_1752608816632.json -> src/test/resources/data/test_invoke_17527863038
+15.json
+        renamed:    target/test-classes/data/test_invoke_1752608816624.json -> src/test/resources/data/test_invoke_17527863038
+20.json
+        renamed:    target/test-classes/data/test_invoke_1752608816636.json -> src/test/resources/data/test_invoke_17527863038
+22.json
+        renamed:    target/test-classes/data/test_invoke_1752608816640.json -> src/test/resources/data/test_invoke_17527863466
+60.json
+        renamed:    target/test-classes/data/test_invoke_1752610829927.json -> src/test/resources/data/test_invoke_17527863466
+65.json
+        renamed:    target/test-classes/data/test_invoke_1752610829920.json -> src/test/resources/data/test_invoke_17527863466
+71.json
+        renamed:    target/test-classes/data/test_invoke_1752610829932.json -> src/test/resources/data/test_invoke_17527863466
+74.json
+        renamed:    target/test-classes/data/test_invoke_1752610829936.json -> src/test/resources/data/test_invoke_17527865048
+32.json
+        renamed:    target/test-classes/data/test_invoke_1752611516541.json -> src/test/resources/data/test_invoke_17527865048
+40.json
+        renamed:    target/test-classes/data/test_invoke_1752611516531.json -> src/test/resources/data/test_invoke_17527865048
+43.json
+        renamed:    target/test-classes/data/test_invoke_1752611516549.json -> src/test/resources/data/test_invoke_17527865048
+45.json
+        deleted:    target/classes/com/mibanco/Main.class
+        deleted:    target/classes/com/mibanco/dto/ClienteDTO$ClienteDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/ClienteDTO.class
+        deleted:    target/classes/com/mibanco/dto/CuentaDTO$CuentaDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/CuentaDTO.class
+        deleted:    target/classes/com/mibanco/dto/RespuestaDTO$RespuestaDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/RespuestaDTO.class
+        deleted:    target/classes/com/mibanco/dto/TarjetaDTO$TarjetaDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/TarjetaDTO.class
+        deleted:    target/classes/com/mibanco/dto/TransaccionDTO$TransaccionDTOBuilder.class
+        deleted:    target/classes/com/mibanco/dto/TransaccionDTO.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/ClienteMapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/CuentaMapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/Mapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/TarjetaMapeador.class
+        deleted:    target/classes/com/mibanco/dto/mapeador/TransaccionMapeador.class
+        deleted:    target/classes/com/mibanco/modelo/Cliente$ClienteBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Cliente.class
+        deleted:    target/classes/com/mibanco/modelo/Cuenta$CuentaBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Cuenta.class
+        deleted:    target/classes/com/mibanco/modelo/Identificable.class
+        deleted:    target/classes/com/mibanco/modelo/RegistroAuditoria$RegistroAuditoriaBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/RegistroAuditoria.class
+        deleted:    target/classes/com/mibanco/modelo/Tarjeta$TarjetaBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Tarjeta.class
+        deleted:    target/classes/com/mibanco/modelo/Transaccion$TransaccionBuilder.class
+        deleted:    target/classes/com/mibanco/modelo/Transaccion.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoCuenta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionCliente.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionCuenta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionTarjeta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoOperacionTransaccion.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoTarjeta.class
+        deleted:    target/classes/com/mibanco/modelo/enums/TipoTransaccion.class
+        deleted:    target/classes/com/mibanco/repositorio/AuditoriaRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/ClienteRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/CuentaRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/TarjetaRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/TransaccionRepositorio.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseProcesadorJson.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseProcesadorJsonWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/BaseRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/RepositorioFactoria.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class
+        deleted:    target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImplWrapper.class
+        deleted:    target/classes/com/mibanco/repositorio/util/BaseRepositorio.class
+        deleted:    target/classes/com/mibanco/servicio/AuditoriaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/ClienteServicio.class
+        deleted:    target/classes/com/mibanco/servicio/CuentaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/TarjetaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/TransaccionCrudServicio.class
+        deleted:    target/classes/com/mibanco/servicio/TransaccionOperacionesServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/AuditoriaServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/BaseServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/ClienteDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/ClienteServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/CuentaDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/CuentaServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/FactoriaServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TarjetaDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TarjetaServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TransaccionDtoProcesadorServicio.class
+        deleted:    target/classes/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class
+        deleted:    target/classes/com/mibanco/servicio/util/BaseServicio.class
+        deleted:    target/classes/com/mibanco/util/AuditoriaUtil.class
+        deleted:    target/classes/com/mibanco/util/ReflexionUtil$NoSolicitar.class
+        deleted:    target/classes/com/mibanco/util/ReflexionUtil.class
+        deleted:    target/classes/com/mibanco/util/ShutdownHookUtil.class
+        deleted:    target/classes/com/mibanco/util/ValidacionException.class
+        deleted:    target/classes/com/mibanco/vista/ClienteVista.class
+        deleted:    target/classes/com/mibanco/vista/CuentaVista.class
+        deleted:    target/classes/com/mibanco/vista/TarjetaVista.class
+        deleted:    target/classes/com/mibanco/vista/interna/BaseVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/ClienteVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/ConsolaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/CuentaVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/TarjetaVistaImpl.class
+        deleted:    target/classes/com/mibanco/vista/interna/factoriaVista.class
+        deleted:    target/classes/com/mibanco/vista/util/BaseVista.class
+        deleted:    target/classes/com/mibanco/vista/util/Consola.class
+        deleted:    target/classes/data/clientes.json
+        deleted:    target/jacoco.exec
+        deleted:    target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+        deleted:    target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+        deleted:    target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+        deleted:    target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+        deleted:    target/site/.DS_Store
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/ClienteMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/ClienteMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/CuentaMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/CuentaMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TarjetaMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TarjetaMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TransaccionMapeador.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/TransaccionMapeador.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/index.html
+        deleted:    target/site/jacoco/com.mibanco.dto.mapeador/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.dto/ClienteDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/ClienteDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/CuentaDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/CuentaDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/RespuestaDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/RespuestaDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TarjetaDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TarjetaDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TransaccionDTO.html
+        deleted:    target/site/jacoco/com.mibanco.dto/TransaccionDTO.java.html
+        deleted:    target/site/jacoco/com.mibanco.dto/index.html
+        deleted:    target/site/jacoco/com.mibanco.dto/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoCuenta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoCuenta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCliente.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCliente.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCuenta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCuenta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTarjeta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTarjeta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTransaccion.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTransaccion.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTarjeta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTarjeta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTransaccion.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/TipoTransaccion.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/index.html
+        deleted:    target/site/jacoco/com.mibanco.modelo.enums/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cliente.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cliente.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cuenta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Cuenta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/RegistroAuditoria.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/RegistroAuditoria.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Tarjeta.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Tarjeta.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Transaccion.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/Transaccion.java.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/index.html
+        deleted:    target/site/jacoco/com.mibanco.modelo/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJson.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJson.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJsonWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJsonWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.java.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/index.html
+        deleted:    target/site/jacoco/com.mibanco.repositorio.interna/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/AuditoriaServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/AuditoriaServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/FactoriaServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/FactoriaServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionDtoProcesadorServicio.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionDtoProcesadorServicio.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/index.html
+        deleted:    target/site/jacoco/com.mibanco.servicio.interna/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.util/AuditoriaUtil.html
+        deleted:    target/site/jacoco/com.mibanco.util/AuditoriaUtil.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/ReflexionUtil.html
+        deleted:    target/site/jacoco/com.mibanco.util/ReflexionUtil.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/ShutdownHookUtil.html
+        deleted:    target/site/jacoco/com.mibanco.util/ShutdownHookUtil.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/ValidacionException.html
+        deleted:    target/site/jacoco/com.mibanco.util/ValidacionException.java.html
+        deleted:    target/site/jacoco/com.mibanco.util/index.html
+        deleted:    target/site/jacoco/com.mibanco.util/index.source.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/BaseVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/BaseVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ClienteVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ClienteVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ConsolaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/ConsolaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/CuentaVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/CuentaVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/TarjetaVistaImpl.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/TarjetaVistaImpl.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/factoriaVista.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/factoriaVista.java.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/index.html
+        deleted:    target/site/jacoco/com.mibanco.vista.interna/index.source.html
+        deleted:    target/site/jacoco/com.mibanco/Main.html
+        deleted:    target/site/jacoco/com.mibanco/Main.java.html
+        deleted:    target/site/jacoco/com.mibanco/index.html
+        deleted:    target/site/jacoco/com.mibanco/index.source.html
+        deleted:    target/site/jacoco/index.html
+        deleted:    target/site/jacoco/jacoco-resources/branchfc.gif
+        deleted:    target/site/jacoco/jacoco-resources/branchnc.gif
+        deleted:    target/site/jacoco/jacoco-resources/branchpc.gif
+        deleted:    target/site/jacoco/jacoco-resources/bundle.gif
+        deleted:    target/site/jacoco/jacoco-resources/class.gif
+        deleted:    target/site/jacoco/jacoco-resources/down.gif
+        deleted:    target/site/jacoco/jacoco-resources/greenbar.gif
+        deleted:    target/site/jacoco/jacoco-resources/group.gif
+        deleted:    target/site/jacoco/jacoco-resources/method.gif
+        deleted:    target/site/jacoco/jacoco-resources/package.gif
+        deleted:    target/site/jacoco/jacoco-resources/prettify.css
+        deleted:    target/site/jacoco/jacoco-resources/prettify.js
+        deleted:    target/site/jacoco/jacoco-resources/redbar.gif
+        deleted:    target/site/jacoco/jacoco-resources/report.css
+        deleted:    target/site/jacoco/jacoco-resources/report.gif
+        deleted:    target/site/jacoco/jacoco-resources/session.gif
+        deleted:    target/site/jacoco/jacoco-resources/sort.gif
+        deleted:    target/site/jacoco/jacoco-resources/sort.js
+        deleted:    target/site/jacoco/jacoco-resources/source.gif
+        deleted:    target/site/jacoco/jacoco-resources/up.gif
+        deleted:    target/site/jacoco/jacoco-sessions.html
+        deleted:    target/site/jacoco/jacoco.csv
+        deleted:    target/site/jacoco/jacoco.xml
+        deleted:    target/surefire-reports/2025-07-15T20-00-04_739-jvmRun1-commands.bin
+        deleted:    target/surefire-reports/2025-07-15T20-00-04_739-jvmRun1-events.bin
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.TransaccionDtoTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.xm
+l
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.RegistroAuditoriaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.TransaccionTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTe
+st.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTes
+t.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTe
+st.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.x
+ml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEn
+umTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest
+.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest
+.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.xm
+l
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTes
+t.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximo
+IdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCon
+dicionalmenteTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTes
+ts.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest
+.xml
+        deleted:    "target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\2
+61oTest.xml"
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTes
+ts.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPred
+icadoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.x
+ml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPo
+rPredicadoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuar
+dadoTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.xm
+l
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests
+.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTest
+s.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActual
+Tests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDef
+ensivaTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Asignacion
+IdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeT
+ests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Configurac
+ionTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Integracio
+nJsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Operacione
+sCrudTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$BusquedasYF
+iltrosTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$CasosEdgeYV
+alidacionesTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$Configuraci
+onYAsignacionIdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$Integracion
+JsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$Operaciones
+CrudBasicasTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ValidacionR
+eglasNegocioTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Asignacion
+IdTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeT
+ests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Configurac
+ionTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Integracio
+nJsonTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Operacione
+sCrudTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Validacion
+ReglasNegocioTests.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.utilTest.AuditoriaUtilTest.xml
+        deleted:    target/surefire-reports/TEST-com.mibanco.utilTest.ReflexionUtilTest.xml
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.CuentaDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.ClienteTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.CuentaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.RegistroAuditoriaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.TransaccionTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.tx
+t
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.tx
+t
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTes
+t.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.txt
+        deleted:    target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTes
+ts.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCondicio
+nalmenteTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.tx
+t
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest.txt
+        deleted:    "target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\261oTe
+st.txt"
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTests.tx
+t
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPredicado
+Tests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPorPred
+icadoTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuardadoT
+ests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests
+.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDefensiv
+aTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$AsignacionIdTes
+ts.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeTests.
+txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$ConfiguracionTe
+sts.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$IntegracionJson
+Tests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$OperacionesCrud
+Tests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$BusquedasYFiltro
+sTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$CasosEdgeYValida
+cionesTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ConfiguracionYAs
+ignacionIdTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$IntegracionJsonT
+ests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$OperacionesCrudB
+asicasTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ValidacionReglas
+NegocioTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$AsignacionIdTes
+ts.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeTests.
+txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ConfiguracionTe
+sts.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$IntegracionJson
+Tests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$OperacionesCrud
+Tests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ValidacionRegla
+sNegocioTests.txt
+        deleted:    target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.txt
+        deleted:    target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTest.txt
+        deleted:    target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTest.txt
+        deleted:    target/test-classes/com/mibanco/dtoTest/ClienteDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/CuentaDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$FuncionalidadGenericaTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$InmutabilidadTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$RespuestasErrorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$RespuestasExitosasTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/TarjetaDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/TransaccionDtoTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$ListasTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$MetodosDirectosTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$DirectMethodTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$ListasTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$MetodosDirectosTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$DirectMethodTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$DtoToEntityTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$EdgeCasesTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$EntityToDtoTests.class
+        deleted:    target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/ClienteTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/CuentaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/RegistroAuditoriaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/TarjetaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/TransaccionTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$FuncionalidadEnumTest.cl
+ass
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$1.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$CasosEdgeTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$FuncionalidadEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$NombresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$ValoresEnumTest.class
+        deleted:    target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonPersistenciaRealTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$CalcularMaximoIdTests.c
+lass
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$CargarDatosCondicionalm
+enteTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$GuardarJsonTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoAutomaticoTest$TestRepo
+sitorioConGuardado.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoAutomaticoTest.class
+        deleted:    "target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoPorTama\303\261oTest$T
+estRepositorioConGuardadoPorTama\303\261o.class"
+        deleted:    "target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoPorTama\303\261oTest.c
+lass"
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ActualizarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarPorPredicadoTest
+s.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTodosPorPredicad
+oTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ContadorYGuardadoTests
+.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$CrearTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$EliminarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$RestaurarTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$TestRepositorioImpl.cl
+ass
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$UsuarioActualTests.cla
+ss
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTes
+ts$1TestRepositorioConfiguracionInvalida.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTes
+ts.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$AsignacionIdTests.c
+lass
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$CasosEdgeTests.clas
+s
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$ConfiguracionTests.
+class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$IntegracionJsonTest
+s.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$OperacionesCrudTest
+s.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$TestClienteReposito
+rioImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$BusquedasYFiltrosTes
+ts.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$CasosEdgeYValidacion
+esTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$ConfiguracionYAsigna
+cionIdTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$IntegracionJsonTests
+.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$OperacionesCrudBasic
+asTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$TestCuentaRepositori
+oImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$ValidacionReglasNego
+cioTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$AsignacionIdTests.c
+lass
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$CasosEdgeTests.clas
+s
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ConfiguracionTests.
+class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$IntegracionJsonTest
+s.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$OperacionesCrudTest
+s.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$TestTarjetaReposito
+rioImpl.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ValidacionReglasNeg
+ocioTests.class
+        deleted:    target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest.class
+        deleted:    target/test-classes/com/mibanco/utilTest/AuditoriaUtilTest.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$ConNoSolicitar.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$ConOptional.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$Mixta.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$SinRequeridos.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$SoloSimples.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$Vacia.class
+        deleted:    target/test-classes/com/mibanco/utilTest/ReflexionUtilTest.class
+        deleted:    target/test-classes/data/test_clientes.json
+        deleted:    target/test-classes/data/test_clientes_vacio.json
+        deleted:    target/test-classes/data/test_invoke_1752611516553.json
+
 
 ```
 
 ---
 
-Veo que hay muchos archivos modificados, pero la mayoría son archivos generados por Maven (target/, reports de JaCoCo, etc.). Estos archivos no deberían incluirse en el commit. Voy a verificar si hay archivos de código fuente modificados y luego hacer un commit apropiado.
+La limpieza ha sido exitosa y ahora estás en la rama correcta (`modificacion-de-nombres`).  
+Se han eliminado todos los archivos generados y temporales del directorio `target`, y el proyecto está listo para trabajar de forma limpia.
+
+¿Quieres que haga el commit de esta limpieza? ¿O prefieres revisar los cambios antes?
+
+---
+
+_**User**_
+
+Haz el commit
+
+---
+
+_**Assistant**_
+
+Voy a realizar el commit de la limpieza de archivos generados y temporales en la rama `modificacion-de-nombres`. Utilizaré un mensaje de commit claro y detallado, como prefieres.
+
+Mensaje sugerido:
+```
+Limpieza de archivos generados y temporales
+
+- Se eliminan todos los archivos compilados (.class), reportes de pruebas, archivos de cobertura y otros archivos temporales del directorio target.
+- El proyecto queda en estado limpio y listo para nuevas modificaciones en la rama de refactorización de nombres.
+```
+
+Procedo a realizar el commit.
+
+---
+
+```bash
+git commit -m "Limpieza de archivos generados y temporales
+
+- Se eliminan todos los archivos compilados (.class), reportes de pruebas, archivos de cobertura y otros archivos temporales del directorio target.
+- El proyecto queda en estado limpio y listo para nuevas modificaciones en la rama de refactorización de nombres."
+```
+
+```
+[modificacion-de-nombres 30682af] Limpieza de archivos generados y temporales
+ 639 files changed, 9157 insertions(+), 15930 deletions(-)
+ create mode 100644 .specstory/history/2025-07-16_16-19Z-ejercicio-de-aprendizaje-test-en-java-024.md
+ create mode 100644 .specstory/history/2025-07-16_17-14Z-refactorizacion-de-idioma-042.md
+ rename target/test-classes/data/test_clientes_auto.json => src/test/resources/data/test_invoke_1752784245085.json (100%)
+ rename target/test-classes/data/test_invoke_1752607909465.json => src/test/resources/data/test_invoke_1752784245093.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752607909145.json => src/test/resources/data/test_invoke_1752784245098.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752607909471.json => src/test/resources/data/test_invoke_1752784245102.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752607909478.json => src/test/resources/data/test_invoke_1752784906166.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608137728.json => src/test/resources/data/test_invoke_1752784906173.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608137408.json => src/test/resources/data/test_invoke_1752784906177.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608137735.json => src/test/resources/data/test_invoke_1752784906180.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608137741.json => src/test/resources/data/test_invoke_1752785921757.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608724843.json => src/test/resources/data/test_invoke_1752785921767.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608724557.json => src/test/resources/data/test_invoke_1752785921773.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608724849.json => src/test/resources/data/test_invoke_1752785921776.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608724854.json => src/test/resources/data/test_invoke_1752786254969.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608745488.json => src/test/resources/data/test_invoke_1752786254976.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608745481.json => src/test/resources/data/test_invoke_1752786254981.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608745494.json => src/test/resources/data/test_invoke_1752786254984.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608745497.json => src/test/resources/data/test_invoke_1752786303806.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608816632.json => src/test/resources/data/test_invoke_1752786303815.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608816624.json => src/test/resources/data/test_invoke_1752786303820.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608816636.json => src/test/resources/data/test_invoke_1752786303822.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752608816640.json => src/test/resources/data/test_invoke_1752786346660.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752610829927.json => src/test/resources/data/test_invoke_1752786346665.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752610829920.json => src/test/resources/data/test_invoke_1752786346671.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752610829932.json => src/test/resources/data/test_invoke_1752786346674.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752610829936.json => src/test/resources/data/test_invoke_1752786504832.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752611516541.json => src/test/resources/data/test_invoke_1752786504840.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752611516531.json => src/test/resources/data/test_invoke_1752786504843.json (100
+%)
+ rename target/test-classes/data/test_invoke_1752611516549.json => src/test/resources/data/test_invoke_1752786504845.json (100
+%)
+ delete mode 100644 target/classes/com/mibanco/Main.class
+ delete mode 100644 target/classes/com/mibanco/dto/ClienteDTO$ClienteDTOBuilder.class
+ delete mode 100644 target/classes/com/mibanco/dto/ClienteDTO.class
+ delete mode 100644 target/classes/com/mibanco/dto/CuentaDTO$CuentaDTOBuilder.class
+ delete mode 100644 target/classes/com/mibanco/dto/CuentaDTO.class
+ delete mode 100644 target/classes/com/mibanco/dto/RespuestaDTO$RespuestaDTOBuilder.class
+ delete mode 100644 target/classes/com/mibanco/dto/RespuestaDTO.class
+ delete mode 100644 target/classes/com/mibanco/dto/TarjetaDTO$TarjetaDTOBuilder.class
+ delete mode 100644 target/classes/com/mibanco/dto/TarjetaDTO.class
+ delete mode 100644 target/classes/com/mibanco/dto/TransaccionDTO$TransaccionDTOBuilder.class
+ delete mode 100644 target/classes/com/mibanco/dto/TransaccionDTO.class
+ delete mode 100644 target/classes/com/mibanco/dto/mapeador/ClienteMapeador.class
+ delete mode 100644 target/classes/com/mibanco/dto/mapeador/CuentaMapeador.class
+ delete mode 100644 target/classes/com/mibanco/dto/mapeador/Mapeador.class
+ delete mode 100644 target/classes/com/mibanco/dto/mapeador/TarjetaMapeador.class
+ delete mode 100644 target/classes/com/mibanco/dto/mapeador/TransaccionMapeador.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Cliente$ClienteBuilder.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Cliente.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Cuenta$CuentaBuilder.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Cuenta.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Identificable.class
+ delete mode 100644 target/classes/com/mibanco/modelo/RegistroAuditoria$RegistroAuditoriaBuilder.class
+ delete mode 100644 target/classes/com/mibanco/modelo/RegistroAuditoria.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Tarjeta$TarjetaBuilder.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Tarjeta.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Transaccion$TransaccionBuilder.class
+ delete mode 100644 target/classes/com/mibanco/modelo/Transaccion.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoCuenta.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoOperacionCliente.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoOperacionCuenta.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoOperacionTarjeta.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoOperacionTransaccion.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoTarjeta.class
+ delete mode 100644 target/classes/com/mibanco/modelo/enums/TipoTransaccion.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/AuditoriaRepositorio.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/ClienteRepositorio.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/CuentaRepositorio.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/TarjetaRepositorio.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/TransaccionRepositorio.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImpl.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/AuditoriaRepositorioImplWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/BaseProcesadorJson.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/BaseProcesadorJsonWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/BaseRepositorioImpl.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/BaseRepositorioImplWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImpl.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/ClienteRepositorioImplWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImpl.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/CuentaRepositorioImplWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/RepositorioFactoria.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImpl.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/TarjetaRepositorioImplWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImpl.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/interna/TransaccionRepositorioImplWrapper.class
+ delete mode 100644 target/classes/com/mibanco/repositorio/util/BaseRepositorio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/AuditoriaServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/ClienteServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/CuentaServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/TarjetaServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/TransaccionCrudServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/TransaccionOperacionesServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/AuditoriaServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/BaseServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/ClienteDtoProcesadorServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/ClienteServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/CuentaDtoProcesadorServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/CuentaServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/FactoriaServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/TarjetaDtoProcesadorServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/TarjetaServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/TransaccionCrudServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/TransaccionDtoProcesadorServicio.class
+ delete mode 100644 target/classes/com/mibanco/servicio/interna/TransaccionOperacionesServicioImpl.class
+ delete mode 100644 target/classes/com/mibanco/servicio/util/BaseServicio.class
+ delete mode 100644 target/classes/com/mibanco/util/AuditoriaUtil.class
+ delete mode 100644 target/classes/com/mibanco/util/ReflexionUtil$NoSolicitar.class
+ delete mode 100644 target/classes/com/mibanco/util/ReflexionUtil.class
+ delete mode 100644 target/classes/com/mibanco/util/ShutdownHookUtil.class
+ delete mode 100644 target/classes/com/mibanco/util/ValidacionException.class
+ delete mode 100644 target/classes/com/mibanco/vista/ClienteVista.class
+ delete mode 100644 target/classes/com/mibanco/vista/CuentaVista.class
+ delete mode 100644 target/classes/com/mibanco/vista/TarjetaVista.class
+ delete mode 100644 target/classes/com/mibanco/vista/interna/BaseVistaImpl.class
+ delete mode 100644 target/classes/com/mibanco/vista/interna/ClienteVistaImpl.class
+ delete mode 100644 target/classes/com/mibanco/vista/interna/ConsolaImpl.class
+ delete mode 100644 target/classes/com/mibanco/vista/interna/CuentaVistaImpl.class
+ delete mode 100644 target/classes/com/mibanco/vista/interna/TarjetaVistaImpl.class
+ delete mode 100644 target/classes/com/mibanco/vista/interna/factoriaVista.class
+ delete mode 100644 target/classes/com/mibanco/vista/util/BaseVista.class
+ delete mode 100644 target/classes/com/mibanco/vista/util/Consola.class
+ delete mode 100644 target/classes/data/clientes.json
+ delete mode 100644 target/jacoco.exec
+ delete mode 100644 target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+ delete mode 100644 target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+ delete mode 100644 target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+ delete mode 100644 target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+ delete mode 100644 target/site/.DS_Store
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/ClienteMapeador.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/ClienteMapeador.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/CuentaMapeador.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/CuentaMapeador.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/TarjetaMapeador.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/TarjetaMapeador.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/TransaccionMapeador.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/TransaccionMapeador.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto.mapeador/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/ClienteDTO.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/ClienteDTO.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/CuentaDTO.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/CuentaDTO.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/RespuestaDTO.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/RespuestaDTO.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/TarjetaDTO.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/TarjetaDTO.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/TransaccionDTO.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/TransaccionDTO.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.dto/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoCuenta.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoCuenta.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCliente.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCliente.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCuenta.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionCuenta.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTarjeta.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTarjeta.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTransaccion.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoOperacionTransaccion.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoTarjeta.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoTarjeta.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoTransaccion.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/TipoTransaccion.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo.enums/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Cliente.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Cliente.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Cuenta.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Cuenta.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/RegistroAuditoria.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/RegistroAuditoria.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Tarjeta.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Tarjeta.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Transaccion.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/Transaccion.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.modelo/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/AuditoriaRepositorioImplWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJson.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJson.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJsonWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseProcesadorJsonWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImplWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/BaseRepositorioImplWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImplWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/ClienteRepositorioImplWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImplWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/CuentaRepositorioImplWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/RepositorioFactoria.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImplWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TarjetaRepositorioImplWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/TransaccionRepositorioImplWrapper.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.repositorio.interna/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/AuditoriaServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/AuditoriaServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/BaseServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/ClienteDtoProcesadorServicio.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/ClienteDtoProcesadorServicio.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/ClienteServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/CuentaDtoProcesadorServicio.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/CuentaDtoProcesadorServicio.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/CuentaServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/FactoriaServicio.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/FactoriaServicio.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TarjetaDtoProcesadorServicio.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TarjetaDtoProcesadorServicio.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TarjetaServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TransaccionCrudServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TransaccionDtoProcesadorServicio.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TransaccionDtoProcesadorServicio.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/TransaccionOperacionesServicioImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.servicio.interna/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/AuditoriaUtil.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/AuditoriaUtil.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/ReflexionUtil.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/ReflexionUtil.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/ShutdownHookUtil.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/ShutdownHookUtil.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/ValidacionException.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/ValidacionException.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.util/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/BaseVistaImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/BaseVistaImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/ClienteVistaImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/ClienteVistaImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/ConsolaImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/ConsolaImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/CuentaVistaImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/CuentaVistaImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/TarjetaVistaImpl.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/TarjetaVistaImpl.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/factoriaVista.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/factoriaVista.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco.vista.interna/index.source.html
+ delete mode 100644 target/site/jacoco/com.mibanco/Main.html
+ delete mode 100644 target/site/jacoco/com.mibanco/Main.java.html
+ delete mode 100644 target/site/jacoco/com.mibanco/index.html
+ delete mode 100644 target/site/jacoco/com.mibanco/index.source.html
+ delete mode 100644 target/site/jacoco/index.html
+ delete mode 100644 target/site/jacoco/jacoco-resources/branchfc.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/branchnc.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/branchpc.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/bundle.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/class.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/down.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/greenbar.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/group.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/method.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/package.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/prettify.css
+ delete mode 100644 target/site/jacoco/jacoco-resources/prettify.js
+ delete mode 100644 target/site/jacoco/jacoco-resources/redbar.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/report.css
+ delete mode 100644 target/site/jacoco/jacoco-resources/report.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/session.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/sort.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/sort.js
+ delete mode 100644 target/site/jacoco/jacoco-resources/source.gif
+ delete mode 100644 target/site/jacoco/jacoco-resources/up.gif
+ delete mode 100644 target/site/jacoco/jacoco-sessions.html
+ delete mode 100644 target/site/jacoco/jacoco.csv
+ delete mode 100644 target/site/jacoco/jacoco.xml
+ delete mode 100644 target/surefire-reports/2025-07-15T20-00-04_739-jvmRun1-commands.bin
+ delete mode 100644 target/surefire-reports/2025-07-15T20-00-04_739-jvmRun1-events.bin
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.ClienteDtoTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.CuentaDtoTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.RespuestaDtoTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.TarjetaDtoTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.TransaccionDtoTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.xm
+l
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.ClienteTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.CuentaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.RegistroAuditoriaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.TarjetaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.TransaccionTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoCuentaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTe
+st.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTes
+t.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTe
+st.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.x
+ml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEn
+umTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest
+.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest
+.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.xm
+l
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTes
+t.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximo
+IdTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCon
+dicionalmenteTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTes
+ts.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest
+.xml
+ delete mode 100644 "target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\2
+61oTest.xml"
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTes
+ts.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPred
+icadoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.x
+ml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPo
+rPredicadoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuar
+dadoTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.xm
+l
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests
+.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTest
+s.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActual
+Tests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDef
+ensivaTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Asignacion
+IdTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeT
+ests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Configurac
+ionTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Integracio
+nJsonTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$Operacione
+sCrudTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$BusquedasYF
+iltrosTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$CasosEdgeYV
+alidacionesTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$Configuraci
+onYAsignacionIdTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$Integracion
+JsonTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$Operaciones
+CrudBasicasTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ValidacionR
+eglasNegocioTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Asignacion
+IdTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeT
+ests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Configurac
+ionTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Integracio
+nJsonTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Operacione
+sCrudTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$Validacion
+ReglasNegocioTests.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.utilTest.AuditoriaUtilTest.xml
+ delete mode 100644 target/surefire-reports/TEST-com.mibanco.utilTest.ReflexionUtilTest.xml
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.ClienteDtoTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.CuentaDtoTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$FuncionalidadGenericaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$InmutabilidadTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasErrorTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest$RespuestasExitosasTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.RespuestaDtoTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.TarjetaDtoTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.TransaccionDtoTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$DtoToEntityTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$EntityToDtoTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$ListasTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest$MetodosDirectosTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.ClienteMapeadorTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DirectMethodTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$DtoToEntityTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest$EntityToDtoTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.CuentaMapeadorTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$DtoToEntityTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$EntityToDtoTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$ListasTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest$MetodosDirectosTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TarjetaMapeadorTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DirectMethodTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$DtoToEntityTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EdgeCasesTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest$EntityToDtoTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.dtoTest.mapeadorTest.TransaccionMapeadorTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.ClienteTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.CuentaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.RegistroAuditoriaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.TarjetaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.TransaccionTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$FuncionalidadEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoCuentaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$FuncionalidadEnumTest.tx
+t
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionClienteTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$FuncionalidadEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionCuentaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$FuncionalidadEnumTest.tx
+t
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTarjetaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$FuncionalidadEnumTes
+t.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoOperacionTransaccionTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$FuncionalidadEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTarjetaTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$CasosEdgeTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$FuncionalidadEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$NombresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest$ValoresEnumTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.modeloTest.enumsTest.TipoTransaccionTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonPersistenciaRealTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CalcularMaximoIdTes
+ts.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$CargarDatosCondicio
+nalmenteTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest$GuardarJsonTests.tx
+t
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseProcesadorJsonTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoAutomaticoTest.txt
+ delete mode 100644 "target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioGuardadoPorTama\303\261oTe
+st.txt"
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ActualizarTests.tx
+t
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarPorPredicado
+Tests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$BuscarTodosPorPred
+icadoTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ContadorYGuardadoT
+ests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$CrearTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$EliminarTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$RestaurarTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$UsuarioActualTests
+.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest$ValidacionDefensiv
+aTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.BaseRepositorioImplTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$AsignacionIdTes
+ts.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$CasosEdgeTests.
+txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$ConfiguracionTe
+sts.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$IntegracionJson
+Tests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest$OperacionesCrud
+Tests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.ClienteRepositorioImplTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$BusquedasYFiltro
+sTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$CasosEdgeYValida
+cionesTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ConfiguracionYAs
+ignacionIdTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$IntegracionJsonT
+ests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$OperacionesCrudB
+asicasTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest$ValidacionReglas
+NegocioTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.CuentaRepositorioImplTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$AsignacionIdTes
+ts.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$CasosEdgeTests.
+txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ConfiguracionTe
+sts.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$IntegracionJson
+Tests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$OperacionesCrud
+Tests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest$ValidacionRegla
+sNegocioTests.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.repositorioTest.internaTest.TarjetaRepositorioImplTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.utilTest.AuditoriaUtilTest.txt
+ delete mode 100644 target/surefire-reports/com.mibanco.utilTest.ReflexionUtilTest.txt
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/ClienteDtoTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/CuentaDtoTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$FuncionalidadGenericaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$InmutabilidadTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$RespuestasErrorTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest$RespuestasExitosasTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/RespuestaDtoTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/TarjetaDtoTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/TransaccionDtoTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$DtoToEntityTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$EntityToDtoTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$ListasTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest$MetodosDirectosTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/ClienteMapeadorTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$DirectMethodTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$DtoToEntityTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest$EntityToDtoTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/CuentaMapeadorTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$DtoToEntityTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$EntityToDtoTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$ListasTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest$MetodosDirectosTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TarjetaMapeadorTest.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$DirectMethodTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$DtoToEntityTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$EdgeCasesTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest$EntityToDtoTests.class
+ delete mode 100644 target/test-classes/com/mibanco/dtoTest/mapeadorTest/TransaccionMapeadorTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/ClienteTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/CuentaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/RegistroAuditoriaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/TarjetaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/TransaccionTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$FuncionalidadEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoCuentaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$FuncionalidadEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionClienteTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$FuncionalidadEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionCuentaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$FuncionalidadEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTarjetaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$FuncionalidadEnumTest.cl
+ass
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoOperacionTransaccionTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$FuncionalidadEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTarjetaTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$1.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$CasosEdgeTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$FuncionalidadEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$NombresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest$ValoresEnumTest.class
+ delete mode 100644 target/test-classes/com/mibanco/modeloTest/enumsTest/TipoTransaccionTest.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonPersistenciaRealTest.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$CalcularMaximoIdTests.c
+lass
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$CargarDatosCondicionalm
+enteTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest$GuardarJsonTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseProcesadorJsonTest.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoAutomaticoTest$TestRepo
+sitorioConGuardado.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoAutomaticoTest.class
+ delete mode 100644 "target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoPorTama\303\261oTest$T
+estRepositorioConGuardadoPorTama\303\261o.class"
+ delete mode 100644 "target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioGuardadoPorTama\303\261oTest.c
+lass"
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ActualizarTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarPorPredicadoTest
+s.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$BuscarTodosPorPredicad
+oTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ContadorYGuardadoTests
+.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$CrearTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$EliminarTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$RestaurarTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$TestRepositorioImpl.cl
+ass
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$UsuarioActualTests.cla
+ss
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTes
+ts$1TestRepositorioConfiguracionInvalida.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest$ValidacionDefensivaTes
+ts.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/BaseRepositorioImplTest.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$AsignacionIdTests.c
+lass
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$CasosEdgeTests.clas
+s
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$ConfiguracionTests.
+class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$IntegracionJsonTest
+s.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$OperacionesCrudTest
+s.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest$TestClienteReposito
+rioImpl.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/ClienteRepositorioImplTest.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$BusquedasYFiltrosTes
+ts.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$CasosEdgeYValidacion
+esTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$ConfiguracionYAsigna
+cionIdTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$IntegracionJsonTests
+.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$OperacionesCrudBasic
+asTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$TestCuentaRepositori
+oImpl.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest$ValidacionReglasNego
+cioTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/CuentaRepositorioImplTest.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$AsignacionIdTests.c
+lass
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$CasosEdgeTests.clas
+s
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ConfiguracionTests.
+class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$IntegracionJsonTest
+s.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$OperacionesCrudTest
+s.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$TestTarjetaReposito
+rioImpl.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest$ValidacionReglasNeg
+ocioTests.class
+ delete mode 100644 target/test-classes/com/mibanco/repositorioTest/internaTest/TarjetaRepositorioImplTest.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/AuditoriaUtilTest.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$ConNoSolicitar.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$ConOptional.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$Mixta.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$SinRequeridos.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$SoloSimples.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest$Vacia.class
+ delete mode 100644 target/test-classes/com/mibanco/utilTest/ReflexionUtilTest.class
+ delete mode 100644 target/test-classes/data/test_clientes.json
+ delete mode 100644 target/test-classes/data/test_clientes_vacio.json
+ delete mode 100644 target/test-classes/data/test_invoke_1752611516553.json
+
+```
+
+---
+
+El commit de limpieza se ha realizado correctamente en la rama `modificacion-de-nombres`.
+
+Resumen del commit:
+- Se eliminaron todos los archivos generados y temporales del directorio `target`.
+- El proyecto está ahora en un estado limpio y listo para continuar con la refactorización o nuevas tareas.
+
+¿Quieres que realice alguna otra acción, como hacer push al repositorio remoto, compilar, o continuar con otra tarea?
+
+---
+
+_**User**_
+
+
+Ignora la conversación a  partir de este punto.
+
+---
+
+_**Assistant**_
+
+¡Entendido, German! Ignoraré la conversación anterior a partir de este punto. Si necesitas cualquier cosa nueva, solo dime cómo puedo ayudarte.
+
+---
+
+_**User**_
+
+ 
+Qiero ajustar el proyecto a los standares de la industria.
+Aunque el programa este en españo he leido que segun standares los nombres es conveniente que se escriban en ingles.
+Por ejemplo nombres de paquetes, clases, metodos, campos,variables, comentarios, etc..
+
+@testMentoria.mdc 
+Hazlo de manera pausada, paso por paso y un paso a la vez.
+Dame retroalimentación a cada paso.
+Compila cada paso.
+
+De momento solo centrate en el paquete modelEnglish, las demas capas postreriores las haremos luego.
+
+
+
 
 
 ---
 
+_**Assistant**_
+
+¡Perfecto, German! Entiendo que quieres refactorizar el proyecto para seguir los estándares de la industria, comenzando con los nombres en inglés. Es una excelente práctica y muy común en proyectos profesionales.
+
+Voy a guiarte paso a paso, enfocándonos primero en el paquete `modelEnglish` como solicitas. Te daré retroalimentación en cada paso y compilaremos para asegurar que todo funcione correctamente.
+
+Primero, déjame explorar la estructura actual del proyecto para entender qué tenemos en el paquete de modelo:
 
 
 ---
 
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelo • **7** results</summary>
+        
+| Name |
+|-------|
+| 📁 `enums` |
+| 📄 `Transaccion.java` |
+| 📄 `Tarjeta.java` |
+| 📄 `RegistroAuditoria.java` |
+| 📄 `Cuenta.java` |
+| 📄 `Cliente.java` |
+| 📄 `Identificable.java` |
 
+</details>
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelo/enums • **7** results</summary>
+        
+| Name |
+|-------|
+| 📄 `TipoOperacionCliente.java` |
+| 📄 `TipoOperacionTransaccion.java` |
+| 📄 `TipoTransaccion.java` |
+| 📄 `TipoOperacionTarjeta.java` |
+| 📄 `TipoOperacionCuenta.java` |
+| 📄 `TipoTarjeta.java` |
+| 📄 `TipoCuenta.java` |
+
+</details>
+
+---
+
+Perfecto, German. He identificado la estructura del paquete modelo. Tenemos:
+
+**Clases principales:**
+- `Cliente.java`
+- `Cuenta.java` 
+- `Tarjeta.java`
+- `Transaccion.java`
+- `RegistroAuditoria.java`
+- `Identificable.java`
+
+**Enums:**
+- `TipoCuenta.java`
+- `TipoTarjeta.java`
+- `TipoTransaccion.java`
+- `TipoOperacionCliente.java`
+- `TipoOperacionCuenta.java`
+- `TipoOperacionTarjeta.java`
+- `TipoOperacionTransaccion.java`
+
+## �� **Paso 1: Crear el nuevo paquete `modelEnglish`**
+
+Primero vamos a crear la nueva estructura de directorios para el paquete en inglés:
+
+
+---
+
+```bash
+mkdir -p src/main/java/com/mibanco/modelEnglish/enums
+```
+
+```
+german@MacBook-Air-de-german miBanco % mkdir -p src/main/java/com/mibanco/modelEnglish/enums                           mkdir -p src/ma
+in/java/com/mibanco/modelEnglish/enums
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Excelente. Ahora vamos a verificar que se creó correctamente:
+
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco • **12** results</summary>
+        
+| Name |
+|-------|
+| 📁 `view` |
+| 📁 `repository` |
+| 📁 `service` |
+| 📁 `model` |
+| 📁 `modelEnglish` |
+| 📁 `modelo` |
+| 📁 `util` |
+| 📄 `Main.java` |
+| 📁 `dto` |
+| 📁 `vista` |
+| 📁 `servicio` |
+| 📁 `repositorio` |
+
+</details>
+
+---
+
+¡Perfecto! El directorio `modelEnglish` se ha creado correctamente. 
+
+## �� **Resumen del Paso 1:**
+✅ **Completado**: Creación del nuevo paquete `modelEnglish` con su subdirectorio `enums`
+✅ **Estructura creada**: `src/main/java/com/mibanco/modelEnglish/enums/`
+
+**Retroalimentación**: El primer paso se ha ejecutado correctamente. Ahora tenemos la base estructural para comenzar la migración de las clases del modelo a nombres en inglés.
+
+¿Quieres que proceda con el **Paso 2**, que sería comenzar a migrar las clases principales una por una, empezando por la más simple? Te sugiero comenzar con `Identificable.java` ya que es la más básica y luego seguir con las demás en orden de complejidad.
+
+---
+
+_**User**_
+
+Si puede ser, no reescribas la clase.
+Mejor haz una copia y sobre esa copia trabaja.
+
+---
+
+_**Assistant**_
+
+¡Excelente punto, German! Tienes razón, es mucho mejor hacer una copia y trabajar sobre ella. Así mantenemos el código original intacto y podemos hacer las modificaciones de forma segura.
+
+## **Paso 2: Copiar las clases del modelo original al nuevo paquete**
+
+Vamos a copiar todas las clases del paquete `modelo` al nuevo paquete `modelEnglish`:
+
+
+---
+
+```bash
+cp src/main/java/com/mibanco/modelo/*.java src/main/java/com/mibanco/modelEnglish/
+```
+
+---
+
+_**User**_
+
+Copiala de una en una a medida que las vas abordando.
+No las copies todas a la vez.
+
+---
+
+_**Assistant**_
+
+¡Perfecto, German! Tienes razón, es mejor ir paso a paso. Vamos a copiar una clase a la vez y trabajarla antes de pasar a la siguiente.
+
+## **Paso 2: Copiar la primera clase - Identificable.java**
+
+Empezaremos con la clase más simple: `Identificable.java`. Vamos a copiarla al nuevo paquete:
+
+
+---
+
+```bash
+cp src/main/java/com/mibanco/modelo/Identificable.java src/main/java/com/mibanco/modelEnglish/
+```
+
+```
+german@MacBook-Air-de-german miBanco % cp src/main/java/com/mibanco/modelo/Identificable.java src/main/java/com/mibanco/modelEnglish/
+```
+
+---
+
+Perfecto. Ahora vamos a verificar que se copió correctamente:
+
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelEnglish • **2** results</summary>
+        
+| Name |
+|-------|
+| 📄 `Identificable.java` |
+| 📁 `enums` |
+
+</details>
+
+---
+
+Excelente. Ahora vamos a leer el contenido de la clase `Identificable.java` para ver qué necesitamos modificar:
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/Identificable.java
+
+---
+
+Perfecto. Ahora voy a modificar esta clase para que use nombres en inglés. Los cambios necesarios son:
+
+1. **Cambiar el paquete** de `com.mibanco.modelo` a `com.mibanco.modelEnglish`
+2. **Cambiar el nombre de la interfaz** de `Identificable` a `Identifiable`
+3. **Traducir los comentarios** al inglés
+
+
+---
+
+```diff
+- package com.mibanco.modelo;
++ package com.mibanco.modelEnglish;
+  
+  /**
+-  * Interfaz para entidades que tienen un identificador único
+-  * Permite restringir los tipos genéricos a entidades que puedan ser identificadas
++  * Interface for entities that have a unique identifier
++  * Allows restricting generic types to entities that can be identified
+   */
+- public interface Identificable {
++ public interface Identifiable {
+      /**
+-      * Obtiene el identificador único de la entidad
+-      * @return El ID único de la entidad
++      * Gets the unique identifier of the entity
++      * @return The unique ID of the entity
+       */
+      Long getId();
+```
+
+---
+
+Ahora necesitamos renombrar el archivo para que coincida con el nuevo nombre de la clase:
+
+
+---
+
+```bash
+mv src/main/java/com/mibanco/modelEnglish/Identificable.java src/main/java/com/mibanco/modelEnglish/Identifiable.java
+```
+
+```
+<le.java src/main/java/com/mibanco/modelEnglish/Identifiable.java
+mv: src/main/java/com/mibanco/modelEnglish/Identificable.java: No such file or directory
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+Parece que hubo un problema. Vamos a verificar qué archivos tenemos en el directorio:
+
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelEnglish • **2** results</summary>
+        
+| Name |
+|-------|
+| 📄 `Identifiable.java` |
+| 📁 `enums` |
+
+</details>
+
+---
+
+¡Perfecto! El archivo ya se renombró automáticamente. Ahora vamos a compilar para verificar que todo funciona correctamente:
+
+
+---
+
+```bash
+mvn compile
+```
+
+```
+german@MacBook-Air-de-german miBanco % mvn compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.10:prepare-agent (default) @ miBanco ---
+[INFO] argLine set to -javaagent:/Users/german/.m2/repository/org/jacoco/org.jacoco.agent/0.8.10/org.jacoco.agent-0.8.10-runtime.jar=d
+estfile=/Users/german/ejerciciosJava/miBanco/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ miBanco ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ miBanco ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 80 source files to /Users/german/ejerciciosJava/miBanco/target/classes
+[INFO] /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java: /Users/german/ejer
+ciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java uses unchecked or unsafe operations.
+[INFO] /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java: Recompile with -Xl
+int:unchecked for details.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.066 s
+[INFO] Finished at: 2025-07-18T18:31:20+02:00
+[INFO] ------------------------------------------------------------------------
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+¡Excelente! La compilación fue exitosa. 
+
+## **Resumen del Paso 2:**
+✅ **Completado**: Migración de la clase `Identificable` a `Identifiable`
+✅ **Cambios realizados**:
+   - Paquete cambiado de `com.mibanco.modelo` a `com.mibanco.modelEnglish`
+   - Nombre de interfaz cambiado de `Identificable` a `Identifiable`
+   - Comentarios traducidos al inglés
+   - Archivo renombrado de `Identificable.java` a `Identifiable.java`
+✅ **Compilación**: Exitosa (BUILD SUCCESS)
+
+**Retroalimentación**: El primer paso de migración se ha completado perfectamente. La clase `Identifiable` ahora sigue los estándares de la industria con nombres en inglés y compila correctamente.
+
+¿Quieres que proceda con el **Paso 3**, que sería copiar y migrar la siguiente clase? Te sugiero continuar con los enums, ya que son más simples y nos darán una buena base para las clases principales.
+
+---
+
+_**User**_
+
+Ok. hazlos todos de una vez.
+
+---
+
+_**Assistant**_
+
+¡Perfecto, German! Vamos a copiar y migrar todos los enums de una vez. Empezaré copiando todos los enums del paquete original:
+
+
+---
+
+```bash
+cp src/main/java/com/mibanco/modelo/enums/*.java src/main/java/com/mibanco/modelEnglish/enums/
+```
+
+```
+german@MacBook-Air-de-german miBanco % cp src/main/java/com/mibanco/modelo/enums/*.java src/main/java/com/mibanco/modelEnglish/enums/
+```
+
+---
+
+Perfecto. Ahora vamos a verificar que se copiaron todos los enums:
+
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelEnglish/enums • **7** results</summary>
+        
+| Name |
+|-------|
+| 📄 `TipoTarjeta.java` |
+| 📄 `TipoTransaccion.java` |
+| 📄 `TipoOperacionCuenta.java` |
+| 📄 `TipoOperacionTarjeta.java` |
+| 📄 `TipoOperacionTransaccion.java` |
+| 📄 `TipoCuenta.java` |
+| 📄 `TipoOperacionCliente.java` |
+
+</details>
+
+---
+
+Excelente. Ahora voy a migrar todos los enums uno por uno. Empezaré con el más simple:
+
+## **Paso 3: Migrar todos los enums**
+
+### **3.1 - TipoCuenta.java → AccountType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoCuenta.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Enum que define los tipos de cuentas disponibles en el banco
++  * Enum that defines the types of accounts available in the bank
+   */
+- public enum TipoCuenta {
+-     AHORRO,
+-     CORRIENTE,
+-     PLAZO_FIJO
++ public enum AccountType {
++     SAVINGS,        // Ahorro
++     CHECKING,       // Corriente
++     FIXED_TERM      // Plazo fijo
+  } 
+```
+
+---
+
+```bash
+mv src/main/java/com/mibanco/modelEnglish/enums/TipoCuenta.java src/main/java/com/mibanco/modelEnglish/enums/AccountType.java
+```
+
+```
+<va src/main/java/com/mibanco/modelEnglish/enums/AccountType.java
+mv: src/main/java/com/mibanco/modelEnglish/enums/TipoCuenta.java: No such file or directory
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelEnglish/enums • **7** results</summary>
+        
+| Name |
+|-------|
+| 📄 `AccountType.java` |
+| 📄 `TipoTarjeta.java` |
+| 📄 `TipoTransaccion.java` |
+| 📄 `TipoOperacionCuenta.java` |
+| 📄 `TipoOperacionTarjeta.java` |
+| 📄 `TipoOperacionTransaccion.java` |
+| 📄 `TipoOperacionCliente.java` |
+
+</details>
+
+---
+
+Perfecto, se renombró automáticamente. Continuemos con el siguiente:
+
+### **3.2 - TipoTarjeta.java → CardType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoTarjeta.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Enum que define los tipos de tarjetas bancarias
++  * Enum that defines the types of bank cards
+   */
+- public enum TipoTarjeta {
+-     DEBITO,
+-     CREDITO
++ public enum CardType {
++     DEBIT,      // Débito
++     CREDIT      // Crédito
+  } 
+```
+
+---
+
+### **3.3 - TipoTransaccion.java → TransactionType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoTransaccion.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Enum que define los tipos de transacciones bancarias
++  * Enum that defines the types of bank transactions
+   */
+- public enum TipoTransaccion {
+-     DEPOSITO,
+-     RETIRO,
+-     TRANSFERENCIA_ENVIADA,
+-     TRANSFERENCIA_RECIBIDA,
+-     PAGO_SERVICIO
++ public enum TransactionType {
++     DEPOSIT,                // Depósito
++     WITHDRAWAL,             // Retiro
++     SENT_TRANSFER,          // Transferencia enviada
++     RECEIVED_TRANSFER,      // Transferencia recibida
++     SERVICE_PAYMENT         // Pago de servicio
+  } 
+```
+
+---
+
+### **3.4 - TipoOperacionCliente.java → ClientOperationType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoOperacionCliente.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Tipos de operaciones que se pueden realizar con clientes
++  * Types of operations that can be performed with clients
+   */
+- public enum TipoOperacionCliente  {
+-     CREAR,
+-     ACTUALIZAR,
+-     MODIFICAR,
+-     ELIMINAR,
+-     CONSULTAR,
+-     RESTAURAR,
+-     BLOQUEAR,
+-     DESBLOQUEAR,
+-     CAMBIAR_DATOS_CONTACTO;
+- 
++ public enum ClientOperationType {
++     CREATE,                 // Crear
++     UPDATE,                 // Actualizar
++     MODIFY,                 // Modificar
++     DELETE,                 // Eliminar
++     QUERY,                  // Consultar
++     RESTORE,                // Restaurar
++     BLOCK,                  // Bloquear
++     UNBLOCK,                // Desbloquear
++     CHANGE_CONTACT_DATA     // Cambiar datos de contacto
+  } 
+```
+
+---
+
+### **3.5 - TipoOperacionCuenta.java → AccountOperationType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoOperacionCuenta.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Tipos de operaciones que se pueden realizar con cuentas
++  * Types of operations that can be performed with accounts
+   */
+- public enum TipoOperacionCuenta {
+-     CREAR,
+-     MODIFICAR,
+-     ELIMINAR,
+-     ACTIVAR,
+-     DESACTIVAR,
+-     BLOQUEAR,
+-     DESBLOQUEAR, 
+-     ACTUALIZAR, 
+-     RESTAURAR
++ public enum AccountOperationType {
++     CREATE,         // Crear
++     MODIFY,         // Modificar
++     DELETE,         // Eliminar
++     ACTIVATE,       // Activar
++     DEACTIVATE,     // Desactivar
++     BLOCK,          // Bloquear
++     UNBLOCK,        // Desbloquear
++     UPDATE,         // Actualizar
++     RESTORE         // Restaurar
+  } 
+```
+
+---
+
+### **3.6 - TipoOperacionTarjeta.java → CardOperationType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoOperacionTarjeta.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Tipos de operaciones que se pueden realizar con tarjetas
++  * Types of operations that can be performed with cards
+   */
+- public enum TipoOperacionTarjeta {
+-     CREAR,
+-     MODIFICAR,
+-     ELIMINAR,
+-     ACTIVAR,
+-     DESACTIVAR,
+-     BLOQUEAR,
+-     DESBLOQUEAR,
+-     AUMENTAR_LIMITE,
+-     REDUCIR_LIMITE, ACTUALIZAR
++ public enum CardOperationType {
++     CREATE,             // Crear
++     MODIFY,             // Modificar
++     DELETE,             // Eliminar
++     ACTIVATE,           // Activar
++     DEACTIVATE,         // Desactivar
++     BLOCK,              // Bloquear
++     UNBLOCK,            // Desbloquear
++     INCREASE_LIMIT,     // Aumentar límite
++     REDUCE_LIMIT,       // Reducir límite
++     UPDATE              // Actualizar
+  } 
+```
+
+---
+
+### **3.7 - TipoOperacionTransaccion.java → TransactionOperationType.java**
+
+
+---
+
+Read file: src/main/java/com/mibanco/modelEnglish/enums/TipoOperacionTransaccion.java
+
+---
+
+```diff
+- package com.mibanco.modelo.enums;
++ package com.mibanco.modelEnglish.enums;
+  
+  /**
+-  * Tipos de operaciones que se pueden realizar con transacciones
++  * Types of operations that can be performed with transactions
+   */
+- public enum TipoOperacionTransaccion {
+-     CREAR,
+-     ANULAR,
+-     REVERSAR,
+-     VERIFICAR,
+-     AUTORIZAR,
+-     RECHAZAR, 
+-     ACTUALIZAR,
+-     ELIMINAR,
++ public enum TransactionOperationType {
++     CREATE,         // Crear
++     CANCEL,         // Anular
++     REVERSE,        // Reversar
++     VERIFY,         // Verificar
++     AUTHORIZE,      // Autorizar
++     REJECT,         // Rechazar
++     UPDATE,         // Actualizar
++     DELETE          // Eliminar
+  } 
+```
+
+---
+
+Ahora vamos a verificar que todos los archivos se renombraron correctamente:
+
+
+---
+
+<details>
+            <summary>Listed directory src/main/java/com/mibanco/modelEnglish/enums • **7** results</summary>
+        
+| Name |
+|-------|
+| 📄 `TransactionOperationType.java` |
+| 📄 `CardOperationType.java` |
+| 📄 `AccountOperationType.java` |
+| 📄 `ClientOperationType.java` |
+| 📄 `TransactionType.java` |
+| 📄 `CardType.java` |
+| 📄 `AccountType.java` |
+
+</details>
+
+---
+
+¡Perfecto! Todos los enums se han migrado correctamente. Ahora vamos a compilar para verificar que todo funciona:
+
+
+---
+
+```bash
+mvn compile
+```
+
+```
+german@MacBook-Air-de-german miBanco % mvn compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.mibanco:miBanco >-------------------------
+[INFO] Building miBanco 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.10:prepare-agent (default) @ miBanco ---
+[INFO] argLine set to -javaagent:/Users/german/.m2/repository/org/jacoco/org.jacoco.agent/0.8.10/org.jacoco.agent-0.8.10-runtime.jar=d
+estfile=/Users/german/ejerciciosJava/miBanco/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ miBanco ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ miBanco ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 87 source files to /Users/german/ejerciciosJava/miBanco/target/classes
+[INFO] /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java: /Users/german/ejer
+ciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java uses unchecked or unsafe operations.
+[INFO] /Users/german/ejerciciosJava/miBanco/src/main/java/com/mibanco/repositorio/interna/BaseRepositorioImpl.java: Recompile with -Xl
+int:unchecked for details.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.952 s
+[INFO] Finished at: 2025-07-18T18:33:49+02:00
+[INFO] ------------------------------------------------------------------------
+german@MacBook-Air-de-german miBanco %
+```
+
+---
+
+¡Excelente! La compilación fue exitosa.
+
+## **Resumen del Paso 3:**
+✅ **Completado**: Migración de todos los enums al paquete `modelEnglish`
+
+### **Enums migrados:**
+1. **`TipoCuenta` → `AccountType`**
+   - `AHORRO` → `SAVINGS`
+   - `CORRIENTE` → `CHECKING`
+   - `PLAZO_FIJO` → `FIXED_TERM`
+
+2. **`TipoTarjeta` → `CardType`**
+   - `DEBITO` → `DEBIT`
+   - `CREDITO` → `CREDIT`
+
+3. **`TipoTransaccion` → `TransactionType`**
+   - `DEPOSITO` → `DEPOSIT`
+   - `RETIRO` → `WITHDRAWAL`
+   - `TRANSFERENCIA_ENVIADA` → `SENT_TRANSFER`
+   - `TRANSFERENCIA_RECIBIDA` → `RECEIVED_TRANSFER`
+   - `PAGO_SERVICIO` → `SERVICE_PAYMENT`
+
+4. **`TipoOperacionCliente` → `ClientOperationType`**
+   - `CREAR` → `CREATE`
+   - `ACTUALIZAR` → `UPDATE`
+   - `MODIFICAR` → `MODIFY`
+   - `ELIMINAR` → `DELETE`
+   - `CONSULTAR` → `QUERY`
+   - `RESTAURAR` → `RESTORE`
+   - `BLOQUEAR` → `BLOCK`
+   - `DESBLOQUEAR` → `UNBLOCK`
+   - `CAMBIAR_DATOS_CONTACTO` → `CHANGE_CONTACT_DATA`
+
+5. **`TipoOperacionCuenta` → `AccountOperationType`**
+   - `CREAR` → `CREATE`
+   - `MODIFICAR` → `MODIFY`
+   - `ELIMINAR` → `DELETE`
+   - `ACTIVAR` → `ACTIVATE`
+   - `DESACTIVAR` → `DEACTIVATE`
+   - `BLOQUEAR` → `BLOCK`
+   - `DESBLOQUEAR` → `UNBLOCK`
+   - `ACTUALIZAR` → `UPDATE`
+   - `RESTAURAR` → `RESTORE`
+
+6. **`TipoOperacionTarjeta` → `CardOperationType`**
+   - `CREAR` → `CREATE`
+   - `MODIFICAR` → `MODIFY`
+   - `ELIMINAR` → `DELETE`
+   - `ACTIVAR` → `ACTIVATE`
+   - `DESACTIVAR` → `DEACTIVATE`
+   - `BLOQUEAR` → `BLOCK`
+   - `DESBLOQUEAR` → `UNBLOCK`
+   - `AUMENTAR_LIMITE` → `INCREASE_LIMIT`
+   - `REDUCIR_LIMITE` → `REDUCE_LIMIT`
+   - `ACTUALIZAR` → `UPDATE`
+
+7. **`TipoOperacionTransaccion` → `TransactionOperationType`**
+   - `CREAR` → `CREATE`
+   - `ANULAR` → `CANCEL`
+   - `REVERSAR` → `REVERSE`
+   - `VERIFICAR` → `VERIFY`
+   - `AUTORIZAR` → `AUTHORIZE`
+   - `RECHAZAR` → `REJECT`
+   - `ACTUALIZAR` → `UPDATE`
+   - `ELIMINAR` → `DELETE`
+
+✅ **Compilación**: Exitosa (BUILD SUCCESS)
+✅ **Comentarios**: Todos traducidos al inglés con referencias en español
+✅ **Paquetes**: Todos actualizados a `com.mibanco.modelEnglish.enums`
+
+**Retroalimentación**: La migración de todos los enums se ha completado exitosamente. Todos los nombres siguen ahora los estándares de la industria en inglés, manteniendo la funcionalidad original y agregando comentarios en español para referencia.
+
+¿Quieres que proceda con el **Paso 4**, que sería comenzar a migrar las clases principales del modelo (Cliente, Cuenta, Tarjeta, etc.)?
+
+---
+
+_**User**_
+
+Vamos a cambiar de chat.
+Deja una referencia a cerca del estado del proyecto.
+
+---
+
+_**Assistant**_
+
+¡Perfecto, German! Te dejo un resumen completo del estado actual del proyecto para que puedas continuar en el nuevo chat:
+
+## 📋 **Estado Actual del Proyecto - Refactorización a Estándares de la Industria**
+
+### 🎯 **Objetivo**
+Refactorizar el proyecto para seguir estándares de la industria, cambiando nombres de paquetes, clases, métodos, campos, variables y comentarios del español al inglés.
+
+### ✅ **Progreso Completado**
+
+#### **Paso 1: Creación de estructura**
+- ✅ Creado nuevo paquete `modelEnglish` en `src/main/java/com/mibanco/modelEnglish/`
+- ✅ Creado subdirectorio `enums` en `src/main/java/com/mibanco/modelEnglish/enums/`
+
+#### **Paso 2: Migración de interfaz base**
+- ✅ **`Identificable.java` → `Identifiable.java`**
+  - Paquete: `com.mibanco.modelo` → `com.mibanco.modelEnglish`
+  - Interfaz: `Identificable` → `Identifiable`
+  - Comentarios traducidos al inglés
+  - Compilación exitosa
+
+#### **Paso 3: Migración completa de enums**
+- ✅ **`TipoCuenta` → `AccountType`**
+  - `AHORRO` → `SAVINGS`
+  - `CORRIENTE` → `CHECKING`
+  - `PLAZO_FIJO` → `FIXED_TERM`
+
+- ✅ **`TipoTarjeta` → `CardType`**
+  - `DEBITO` → `DEBIT`
+  - `CREDITO` → `CREDIT`
+
+- ✅ **`TipoTransaccion` → `TransactionType`**
+  - `DEPOSITO` → `DEPOSIT`
+  - `RETIRO` → `WITHDRAWAL`
+  - `TRANSFERENCIA_ENVIADA` → `SENT_TRANSFER`
+  - `TRANSFERENCIA_RECIBIDA` → `RECEIVED_TRANSFER`
+  - `PAGO_SERVICIO` → `SERVICE_PAYMENT`
+
+- ✅ **`TipoOperacionCliente` → `ClientOperationType`**
+- ✅ **`TipoOperacionCuenta` → `AccountOperationType`**
+- ✅ **`TipoOperacionTarjeta` → `CardOperationType`**
+- ✅ **`TipoOperacionTransaccion` → `TransactionOperationType`**
+
+### 📁 **Estructura Actual del Paquete `modelEnglish`**
+```
+src/main/java/com/mibanco/modelEnglish/
+├── Identifiable.java
+└── enums/
+    ├── AccountType.java
+    ├── CardType.java
+    ├── TransactionType.java
+    ├── ClientOperationType.java
+    ├── AccountOperationType.java
+    ├── CardOperationType.java
+    └── TransactionOperationType.java
+```
+
+### 🔄 **Próximos Pasos Pendientes**
+
+#### **Paso 4: Migración de clases principales**
+- ⏳ `Cliente.java` → `Client.java`
+- ⏳ `Cuenta.java` → `Account.java`
+- ⏳ `Tarjeta.java` → `Card.java`
+- ⏳ `Transaccion.java` → `Transaction.java`
+- ⏳ `RegistroAuditoria.java` → `AuditRecord.java`
+
+#### **Paso 5: Migración de otras capas**
+- ⏳ Paquete `dto` → `dtoEnglish`
+- ⏳ Paquete `repositorio` → `repository`
+- ⏳ Paquete `servicio` → `service`
+- ⏳ Paquete `vista` → `view`
+
+### ✅ **Estado de Compilación**
+- **Última compilación**: Exitosa (BUILD SUCCESS)
+- **Archivos compilados**: 87 source files
+- **Sin errores de compilación**
+
+### 📝 **Notas Importantes**
+1. **Estrategia**: Se está trabajando sobre copias, manteniendo el código original intacto
+2. **Comentarios**: Se mantienen referencias en español con comentarios en inglés
+3. **Enums**: Todos los valores de enum incluyen comentarios en español para referencia
+4. **Compilación**: Se compila después de cada paso para verificar funcionalidad
+
+### 🎯 **Rama de Trabajo**
+- **Rama actual**: `modificacion-de-nombres`
+- **Último commit**: Limpieza de archivos generados y temporales
+
+¡El proyecto está listo para continuar con la migración de las clases principales del modelo!
 
 ---
 
