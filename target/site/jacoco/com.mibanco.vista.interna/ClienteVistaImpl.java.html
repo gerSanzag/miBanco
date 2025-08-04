@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteVistaImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.vista.interna</a> &gt; <span class="el_source">ClienteVistaImpl.java</span></div><h1>ClienteVistaImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.vista.interna;
+
+import com.mibanco.dto.ClienteDTO;
+import com.mibanco.modelo.Cliente;
+import com.mibanco.vista.ClienteVista;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Implementación de la vista para la entidad Cliente.
+ * Visibilidad de paquete para que solo pueda ser instanciada a través de VistaFactoria.
+ */
+public class ClienteVistaImpl extends BaseVistaImpl&lt;ClienteDTO&gt; implements ClienteVista {
+
+    /**
+     * Constructor con visibilidad de paquete.
+     */
+    public ClienteVistaImpl() {
+<span class="nc" id="L22">        super(); // Inicializa la consola a través de BaseVistaImpl</span>
+<span class="nc" id="L23">    }</span>
+
+    @Override
+    public Map&lt;String, String&gt; solicitarDatosParaCrear(String mensaje) {
+<span class="nc" id="L27">        mostrarMensaje(mensaje);</span>
+<span class="nc" id="L28">        return solicitarDatosGenerico(Cliente.class);</span>
+    }
+
+    @Override
+    public void mostrarMenuPrincipal() {
+<span class="nc" id="L33">        consola.mostrar(&quot;\n=== GESTIÓN DE CLIENTES ===\n&quot;);</span>
+<span class="nc" id="L34">        consola.mostrar(&quot;1. Crear cliente\n&quot;);</span>
+<span class="nc" id="L35">        consola.mostrar(&quot;2. Buscar cliente por ID\n&quot;);</span>
+<span class="nc" id="L36">        consola.mostrar(&quot;3. Buscar cliente por DNI\n&quot;);</span>
+<span class="nc" id="L37">        consola.mostrar(&quot;4. Listar todos los clientes\n&quot;);</span>
+<span class="nc" id="L38">        consola.mostrar(&quot;5. Actualizar cliente\n&quot;);</span>
+<span class="nc" id="L39">        consola.mostrar(&quot;6. Eliminar cliente\n&quot;);</span>
+<span class="nc" id="L40">        consola.mostrar(&quot;7. Restaurar cliente\n&quot;);</span>
+<span class="nc" id="L41">        consola.mostrar(&quot;8. Mostrar clientes eliminados\n&quot;);</span>
+<span class="nc" id="L42">        consola.mostrar(&quot;0. Volver al menú principal\n&quot;);</span>
+<span class="nc" id="L43">        consola.mostrar(&quot;Seleccione una opción: &quot;);</span>
+<span class="nc" id="L44">    }</span>
+
+    @Override
+    public Optional&lt;Long&gt; solicitarIdCliente() {
+<span class="nc" id="L48">        return leerNumero(&quot;Introduzca el ID del cliente&quot;, </span>
+<span class="nc" id="L49">        &quot;El ID debe ser un número válido.&quot;);</span>
+    }
+
+    @Override
+    public Optional&lt;String&gt; solicitarDni() {
+<span class="nc" id="L54">        consola.mostrar(&quot;Introduzca el DNI del cliente: &quot;);</span>
+<span class="nc" id="L55">        String dni = consola.leerLinea().trim();</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        return dni.isEmpty() ? Optional.empty() : Optional.of(dni);</span>
+    }
+
+ 
+    @Override
+    public void mostrarTodosLosClientes(List&lt;ClienteDTO&gt; clientes) {
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (clientes.isEmpty()) {</span>
+<span class="nc" id="L63">            mostrarMensaje(&quot;No hay clientes registrados.&quot;);</span>
+<span class="nc" id="L64">            return;</span>
+        }
+        
+<span class="nc" id="L67">        consola.mostrar(&quot;\n--- LISTA DE CLIENTES ---\n&quot;);</span>
+<span class="nc" id="L68">        clientes.forEach(cliente -&gt; {</span>
+<span class="nc" id="L69">            mostrarEntidad(Optional.of(cliente));   </span>
+<span class="nc" id="L70">        });</span>
+<span class="nc" id="L71">    }</span>
+
+    @Override
+    public Map&lt;String, String&gt; solicitarDatosParaActualizar(ClienteDTO clienteActual) {
+<span class="nc" id="L75">        consola.mostrar(&quot;\n--- ACTUALIZAR CLIENTE ---\n&quot;);</span>
+<span class="nc" id="L76">        consola.mostrar(&quot;Cliente actual: &quot; + clienteActual.getNombre() + &quot; &quot; + clienteActual.getApellido() + &quot;\n&quot;);</span>
+<span class="nc" id="L77">        consola.mostrar(&quot;Deje vacío el campo que no desee modificar.\n&quot;);</span>
+        
+<span class="nc" id="L79">        Map&lt;String, String&gt; datos = new HashMap&lt;&gt;();</span>
+        
+        // Solo pedir campos que se pueden modificar (no id, fechaCreacion, etc.)
+<span class="nc" id="L82">        String email = leerCampo(&quot;Email actual: &quot; + clienteActual.getEmail());</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (!email.isEmpty()) datos.put(&quot;email&quot;, email);</span>
+        
+<span class="nc" id="L85">        String telefono = leerCampo(&quot;Teléfono actual: &quot; + clienteActual.getTelefono());</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (!telefono.isEmpty()) datos.put(&quot;telefono&quot;, telefono);</span>
+        
+<span class="nc" id="L88">        String direccion = leerCampo(&quot;Dirección actual: &quot; + clienteActual.getDireccion());</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (!direccion.isEmpty()) datos.put(&quot;direccion&quot;, direccion);</span>
+        
+<span class="nc" id="L91">        return datos;</span>
+    }
+
+    @Override
+    public void mostrarEntidad(Optional&lt;ClienteDTO&gt; cliente) {
+<span class="nc" id="L96">        cliente.ifPresentOrElse(</span>
+<span class="nc" id="L97">            c -&gt; {</span>
+<span class="nc" id="L98">                consola.mostrar(&quot;\n--- DATOS DEL CLIENTE ---\n&quot;);</span>
+<span class="nc" id="L99">                consola.mostrar(&quot;ID: &quot; + c.getId() + &quot;\n&quot;);</span>
+<span class="nc" id="L100">                consola.mostrar(&quot;Nombre: &quot; + c.getNombre() + &quot;\n&quot;);</span>
+<span class="nc" id="L101">                consola.mostrar(&quot;Apellido: &quot; + c.getApellido() + &quot;\n&quot;);</span>
+<span class="nc" id="L102">                consola.mostrar(&quot;DNI: &quot; + c.getDni() + &quot;\n&quot;);</span>
+<span class="nc" id="L103">                consola.mostrar(&quot;Fecha de Nacimiento: &quot; + c.getFechaNacimiento() + &quot;\n&quot;);</span>
+<span class="nc" id="L104">                consola.mostrar(&quot;Email: &quot; + c.getEmail() + &quot;\n&quot;);</span>
+<span class="nc" id="L105">                consola.mostrar(&quot;Teléfono: &quot; + c.getTelefono() + &quot;\n&quot;);</span>
+<span class="nc" id="L106">                consola.mostrar(&quot;Dirección: &quot; + c.getDireccion() + &quot;\n&quot;);</span>
+<span class="nc" id="L107">            },</span>
+<span class="nc" id="L108">            () -&gt; mostrarMensaje(&quot;Cliente no encontrado.&quot;)</span>
+        );
+<span class="nc" id="L110">    }</span>
+
+    @Override
+    public void mostrarMensaje(String mensaje) {
+<span class="nc" id="L114">        consola.mostrar(&quot;&gt;&gt; &quot; + mensaje + &quot;\n&quot;);</span>
+<span class="nc" id="L115">    }</span>
+
+    @Override
+    public boolean confirmarRestauracion(ClienteDTO cliente) {
+<span class="nc" id="L119">        consola.mostrar(&quot;\n--- CONFIRMAR RESTAURACIÓN ---\n&quot;);</span>
+<span class="nc" id="L120">        mostrarEntidad(Optional.of(cliente));</span>
+<span class="nc" id="L121">        consola.mostrar(&quot;\n¿Está seguro de que desea restaurar este cliente? (s/n): &quot;);</span>
+<span class="nc" id="L122">        String respuesta = consola.leerLinea().toLowerCase();</span>
+<span class="nc" id="L123">        return &quot;s&quot;.equals(respuesta);</span>
+    }
+
+    @Override
+    public void mostrarClientesEliminados(List&lt;ClienteDTO&gt; clientesEliminados) {
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (clientesEliminados.isEmpty()) {</span>
+<span class="nc" id="L129">            mostrarMensaje(&quot;No hay clientes eliminados.&quot;);</span>
+<span class="nc" id="L130">            return;</span>
+        }
+        
+<span class="nc" id="L133">        consola.mostrar(&quot;\n--- CLIENTES ELIMINADOS ---\n&quot;);</span>
+<span class="nc" id="L134">        clientesEliminados.forEach(cliente -&gt; {</span>
+<span class="nc" id="L135">            consola.mostrar(&quot;ID: &quot; + cliente.getId() + </span>
+<span class="nc" id="L136">                           &quot; | &quot; + cliente.getNombre() + &quot; &quot; + cliente.getApellido() + </span>
+<span class="nc" id="L137">                           &quot; | DNI: &quot; + cliente.getDni() + &quot;\n&quot;);</span>
+<span class="nc" id="L138">        });</span>
+<span class="nc" id="L139">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Transaction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.modelEnglish</a> &gt; <span class="el_source">Transaction.java</span></div><h1>Transaction.java</h1><pre class="source lang-java linenums">package com.mibanco.modelEnglish;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Value;
+import lombok.Builder;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import com.mibanco.modelEnglish.enums.TransactionType;
+
+/**
+ * Class that represents a bank transaction
+ * A transaction is an event that should not be modified once created
+ * so we implement a completely immutable approach
+ */
+@Value
+@Builder
+public class Transaction implements Identifiable {
+    Long id;
+    String accountNumber;        // numeroCuenta
+    String destinationAccountNumber;  // numeroCuentaDestino
+    TransactionType type;        // tipo
+    BigDecimal amount;           // monto
+    LocalDateTime date;          // fecha
+    String description;          // descripcion
+    
+    @JsonCreator
+<span class="fc" id="L30">    public Transaction(</span>
+        @JsonProperty(&quot;id&quot;) Long id,
+        @JsonProperty(&quot;accountNumber&quot;) String accountNumber,
+        @JsonProperty(&quot;destinationAccountNumber&quot;) String destinationAccountNumber,
+        @JsonProperty(&quot;type&quot;) TransactionType type,
+        @JsonProperty(&quot;amount&quot;) BigDecimal amount,
+        @JsonProperty(&quot;date&quot;) LocalDateTime date,
+        @JsonProperty(&quot;description&quot;) String description
+    ) {
+<span class="fc" id="L39">        this.id = id;</span>
+<span class="fc" id="L40">        this.accountNumber = accountNumber;</span>
+<span class="fc" id="L41">        this.destinationAccountNumber = destinationAccountNumber;</span>
+<span class="fc" id="L42">        this.type = type;</span>
+<span class="fc" id="L43">        this.amount = amount;</span>
+<span class="fc" id="L44">        this.date = date;</span>
+<span class="fc" id="L45">        this.description = description;</span>
+<span class="fc" id="L46">    }</span>
+    
+    /**
+     * Factory method to create transactions
+     */
+    public static Transaction of(Long id, String accountNumber, String destinationAccountNumber,
+                               TransactionType type, BigDecimal amount, 
+                               LocalDateTime date, String description) {
+<span class="fc" id="L54">        return Transaction.builder()</span>
+<span class="fc" id="L55">                .id(id)</span>
+<span class="fc" id="L56">                .accountNumber(accountNumber)</span>
+<span class="fc" id="L57">                .destinationAccountNumber(destinationAccountNumber)</span>
+<span class="fc" id="L58">                .type(type)</span>
+<span class="fc" id="L59">                .amount(amount)</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                .date(date != null ? date : LocalDateTime.now())</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                .description(description != null ? description : &quot;&quot;)</span>
+<span class="fc" id="L62">                .build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

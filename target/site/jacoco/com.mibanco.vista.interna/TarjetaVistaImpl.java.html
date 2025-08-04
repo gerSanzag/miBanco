@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TarjetaVistaImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.vista.interna</a> &gt; <span class="el_source">TarjetaVistaImpl.java</span></div><h1>TarjetaVistaImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.vista.interna;
+
+import com.mibanco.modelo.Tarjeta;
+import com.mibanco.modelo.enums.TipoTarjeta;
+import com.mibanco.vista.TarjetaVista;
+import com.mibanco.vista.util.Consola;
+import com.mibanco.dto.TarjetaDTO;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.stream.IntStream;
+
+/**
+ * Implementación de la vista para la entidad Tarjeta.
+ * Visibilidad de paquete para que solo pueda ser instanciada a través de VistaFactoria.
+ */
+class TarjetaVistaImpl extends BaseVistaImpl&lt;TarjetaDTO&gt; implements TarjetaVista {
+    
+    /**
+     * Constructor con visibilidad de paquete.
+     * Obtiene la instancia de la consola para la interacción con el usuario.
+     */
+    TarjetaVistaImpl() {
+<span class="nc" id="L30">        super();</span>
+<span class="nc" id="L31">    }</span>
+    
+    @Override
+    public void mostrarMenuPrincipal() {
+<span class="nc" id="L35">        consola.mostrar(&quot;\n--- Menú de Gestión de Tarjetas ---\n&quot;);</span>
+<span class="nc" id="L36">        consola.mostrar(&quot;1. Crear nueva tarjeta\n&quot;);</span>
+<span class="nc" id="L37">        consola.mostrar(&quot;2. Buscar tarjeta por número\n&quot;);</span>
+<span class="nc" id="L38">        consola.mostrar(&quot;3. Listar todas las tarjetas\n&quot;);</span>
+<span class="nc" id="L39">        consola.mostrar(&quot;4. Actualizar tarjeta\n&quot;);</span>
+<span class="nc" id="L40">        consola.mostrar(&quot;5. Eliminar tarjeta\n&quot;);</span>
+<span class="nc" id="L41">        consola.mostrar(&quot;6. Buscar tarjetas por titular\n&quot;);</span>
+<span class="nc" id="L42">        consola.mostrar(&quot;7. Buscar tarjetas por tipo\n&quot;);</span>
+<span class="nc" id="L43">        consola.mostrar(&quot;8. Buscar tarjetas por cuenta asociada\n&quot;);</span>
+<span class="nc" id="L44">        consola.mostrar(&quot;9. Listar tarjetas activas\n&quot;);</span>
+<span class="nc" id="L45">        consola.mostrar(&quot;10. Mostrar tarjetas eliminadas\n&quot;);</span>
+<span class="nc" id="L46">        consola.mostrar(&quot;11. Restaurar tarjeta eliminada\n&quot;);</span>
+<span class="nc" id="L47">        consola.mostrar(&quot;12. Contar total de tarjetas\n&quot;);</span>
+<span class="nc" id="L48">        consola.mostrar(&quot;0. Volver al menú principal\n&quot;);</span>
+<span class="nc" id="L49">        consola.mostrar(&quot;------------------------------------\n&quot;);</span>
+<span class="nc" id="L50">    }</span>
+    
+    @Override
+    public Optional&lt;Integer&gt; obtenerOpcion() {
+<span class="nc" id="L54">        consola.mostrar(&quot;Seleccione una opción: &quot;);</span>
+        try {
+<span class="nc" id="L56">            return Optional.of(Integer.parseInt(consola.leerLinea()));</span>
+<span class="nc" id="L57">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L58">            mostrarMensaje(&quot;Error: Por favor, introduzca un número válido.&quot;);</span>
+<span class="nc" id="L59">            return Optional.empty();</span>
+        }
+    }
+    
+    @Override
+    public Map&lt;String, String&gt; solicitarDatosParaCrear() {
+<span class="nc" id="L65">        consola.mostrar(&quot;\n--- Creación de Nueva Tarjeta ---\n&quot;);</span>
+<span class="nc" id="L66">        return solicitarDatosGenerico(Tarjeta.class);</span>
+    }
+
+    // Implementación del método abstracto de BaseVista
+    @Override
+    public Map&lt;String, String&gt; solicitarDatosParaCrear(String mensaje) {
+<span class="nc" id="L72">        consola.mostrar(&quot;\n--- &quot; + mensaje + &quot; ---\n&quot;);</span>
+<span class="nc" id="L73">        return solicitarDatosGenerico(Tarjeta.class);</span>
+    }
+    
+    @Override
+    public Optional&lt;String&gt; solicitarNumeroTarjeta() {
+<span class="nc" id="L78">        consola.mostrar(&quot;Introduzca el número de tarjeta: &quot;);</span>
+<span class="nc" id="L79">        String numeroTarjeta = consola.leerLinea();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        return numeroTarjeta.isEmpty() ? Optional.empty() : Optional.of(numeroTarjeta);</span>
+    }
+    
+    @Override
+    public Map&lt;String, String&gt; solicitarDatosParaActualizar(TarjetaDTO tarjetaActual) {
+<span class="nc" id="L85">        consola.mostrar(&quot;\n--- Datos modificables de la Tarjeta: &quot; + tarjetaActual.getNumero() + &quot; ---\n&quot;);</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        consola.mostrar(&quot;Estado actual: &quot; + (tarjetaActual.isActiva() ? &quot;Activa&quot; : &quot;Inactiva&quot;) + &quot;\n&quot;);</span>
+<span class="nc" id="L87">        consola.mostrar(&quot;Fecha de expiración actual: &quot; + tarjetaActual.getFechaExpiracion() + &quot;\n&quot;);</span>
+        
+<span class="nc" id="L89">        consola.mostrar(&quot;\n¿Qué desea modificar?\n&quot;);</span>
+<span class="nc" id="L90">        consola.mostrar(&quot;1. Cambiar estado (Activar/Desactivar)\n&quot;);</span>
+<span class="nc" id="L91">        consola.mostrar(&quot;2. Cambiar fecha de expiración\n&quot;);</span>
+<span class="nc" id="L92">        consola.mostrar(&quot;0. Cancelar\n&quot;);</span>
+        
+<span class="nc" id="L94">        Optional&lt;Integer&gt; opcion = obtenerOpcion();</span>
+        
+<span class="nc" id="L96">        return opcion.map(opt -&gt; {</span>
+<span class="nc bnc" id="L97" title="All 4 branches missed.">            Map&lt;String, String&gt; datos = switch (opt) {</span>
+                case 1 -&gt; {
+<span class="nc" id="L99">                    Optional&lt;Boolean&gt; nuevoEstado = solicitarNuevoEstado();</span>
+<span class="nc" id="L100">                    yield nuevoEstado.map(estado -&gt; Map.of(&quot;activa&quot;, String.valueOf(estado))).orElse(Map.of());</span>
+                }
+                case 2 -&gt; {
+<span class="nc" id="L103">                    Optional&lt;LocalDate&gt; nuevaFecha = solicitarFecha();</span>
+<span class="nc" id="L104">                    yield nuevaFecha.map(fecha -&gt; Map.of(&quot;fechaExpiracion&quot;, fecha.toString())).orElse(Map.of());</span>
+                }
+                case 0 -&gt; {
+<span class="nc" id="L107">                    mostrarMensaje(&quot;Operación cancelada.&quot;);</span>
+<span class="nc" id="L108">                    yield Map.of();</span>
+                }
+                default -&gt; {
+<span class="nc" id="L111">                    mostrarMensaje(&quot;Opción no válida.&quot;);</span>
+<span class="nc" id="L112">                    yield Map.of();</span>
+                }
+            };
+<span class="nc" id="L115">            return datos;</span>
+<span class="nc" id="L116">        }).orElse(Map.of());</span>
+    }
+    
+    @Override
+    public void mostrarTarjeta(Optional&lt;TarjetaDTO&gt; tarjetaOpt) {
+<span class="nc" id="L121">        tarjetaOpt.ifPresentOrElse(</span>
+<span class="nc" id="L122">            tarjeta -&gt; {</span>
+<span class="nc" id="L123">                consola.mostrar(&quot;\n--- Detalles de la Tarjeta ---\n&quot;);</span>
+<span class="nc" id="L124">                consola.mostrar(&quot;Número: &quot; + tarjeta.getNumero() + &quot;\n&quot;);</span>
+<span class="nc" id="L125">                consola.mostrar(&quot;Titular: &quot; + tarjeta.getTitular().getNombre() + &quot; &quot; + tarjeta.getTitular().getApellido() + &quot;\n&quot;);</span>
+<span class="nc" id="L126">                consola.mostrar(&quot;Tipo: &quot; + tarjeta.getTipo() + &quot;\n&quot;);</span>
+<span class="nc" id="L127">                consola.mostrar(&quot;Cuenta asociada: &quot; + tarjeta.getNumeroCuentaAsociada() + &quot;\n&quot;);</span>
+<span class="nc" id="L128">                consola.mostrar(&quot;Fecha de expiración: &quot; + tarjeta.getFechaExpiracion() + &quot;\n&quot;);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                consola.mostrar(&quot;Estado: &quot; + (tarjeta.isActiva() ? &quot;Activa&quot; : &quot;Inactiva&quot;) + &quot;\n&quot;);</span>
+<span class="nc" id="L130">                consola.mostrar(&quot;----------------------------\n&quot;);</span>
+<span class="nc" id="L131">            },</span>
+<span class="nc" id="L132">            () -&gt; mostrarMensaje(&quot;Tarjeta no encontrada.&quot;)</span>
+        );
+<span class="nc" id="L134">    }</span>
+    
+    @Override
+    public void mostrarListaTarjetas(List&lt;TarjetaDTO&gt; tarjetas) {
+<span class="nc" id="L138">        consola.mostrar(&quot;\n--- Listado de Tarjetas ---\n&quot;);</span>
+        
+<span class="nc" id="L140">        Optional.of(tarjetas)</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            .filter(lista -&gt; !lista.isEmpty())</span>
+<span class="nc" id="L142">            .ifPresentOrElse(</span>
+<span class="nc" id="L143">                lista -&gt; {</span>
+<span class="nc" id="L144">                    lista.forEach(tarjeta -&gt; mostrarTarjeta(Optional.of(tarjeta)));</span>
+<span class="nc" id="L145">                    consola.mostrar(&quot;---------------------------\n&quot;);</span>
+<span class="nc" id="L146">                },</span>
+<span class="nc" id="L147">                () -&gt; consola.mostrar(&quot;No hay tarjetas registradas.\n&quot;)</span>
+            );
+<span class="nc" id="L149">    }</span>
+    
+    @Override
+    public void mostrarMensaje(String mensaje) {
+<span class="nc" id="L153">        consola.mostrar(&quot;&gt;&gt; &quot; + mensaje + &quot;\n&quot;);</span>
+<span class="nc" id="L154">    }</span>
+    
+    @Override
+    public boolean confirmarAccion(TarjetaDTO tarjeta, String titulo, String mensaje) {
+<span class="nc" id="L158">        consola.mostrar(&quot;\n--- &quot; + titulo + &quot; ---\n&quot;);</span>
+<span class="nc" id="L159">        mostrarTarjeta(Optional.of(tarjeta));</span>
+        
+<span class="nc" id="L161">        consola.mostrar(&quot;\n&quot; + mensaje + &quot; (s/n): &quot;);</span>
+<span class="nc" id="L162">        String respuesta = consola.leerLinea().toLowerCase();</span>
+        
+<span class="nc" id="L164">        return &quot;s&quot;.equals(respuesta);</span>
+    }
+
+    // Implementación del método abstracto de BaseVistaImpl
+    @Override
+    public void mostrarEntidad(Optional&lt;TarjetaDTO&gt; entidad) {
+<span class="nc" id="L170">        mostrarTarjeta(entidad);</span>
+<span class="nc" id="L171">    }</span>
+    
+    // Métodos específicos para Tarjeta que no se pueden generalizar
+    @Override
+    public Optional&lt;Long&gt; solicitarIdTitular() {
+<span class="nc" id="L176">        consola.mostrar(&quot;Introduzca el ID del titular: &quot;);</span>
+        try {
+<span class="nc" id="L178">            String input = consola.leerLinea();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">            return input.isEmpty() ? Optional.empty() : Optional.of(Long.parseLong(input));</span>
+<span class="nc" id="L180">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L181">            mostrarMensaje(&quot;Error: El ID debe ser un número válido.&quot;);</span>
+<span class="nc" id="L182">            return Optional.empty();</span>
+        }
+    }
+    
+    @Override
+    public Optional&lt;String&gt; solicitarTipoTarjeta() {
+<span class="nc" id="L188">        consola.mostrar(&quot;\nTipos de tarjeta disponibles:\n&quot;);</span>
+        
+        // Recorrer el enum dinámicamente usando Stream
+<span class="nc" id="L191">        TipoTarjeta[] tipos = TipoTarjeta.values();</span>
+<span class="nc" id="L192">        IntStream.range(0, tipos.length)</span>
+<span class="nc" id="L193">            .forEach(i -&gt; consola.mostrar((i + 1) + &quot;. &quot; + tipos[i].name() + &quot;\n&quot;));</span>
+        
+<span class="nc" id="L195">        consola.mostrar(&quot;Seleccione el tipo de tarjeta (1-&quot; + tipos.length + &quot;): &quot;);</span>
+        
+        try {
+<span class="nc" id="L198">            int seleccion = Integer.parseInt(consola.leerLinea());</span>
+<span class="nc bnc" id="L199" title="All 4 branches missed.">            if (seleccion &gt;= 1 &amp;&amp; seleccion &lt;= tipos.length) {</span>
+<span class="nc" id="L200">                return Optional.of(tipos[seleccion - 1].name());</span>
+            } else {
+<span class="nc" id="L202">                mostrarMensaje(&quot;Error: Selección fuera de rango.&quot;);</span>
+<span class="nc" id="L203">                return Optional.empty();</span>
+            }
+<span class="nc" id="L205">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L206">            mostrarMensaje(&quot;Error: Por favor, introduzca un número válido.&quot;);</span>
+<span class="nc" id="L207">            return Optional.empty();</span>
+        }
+    }
+    
+    @Override
+    public Optional&lt;String&gt; solicitarCvv() {
+<span class="nc" id="L213">        consola.mostrar(&quot;Introduzca el CVV (3 dígitos): &quot;);</span>
+<span class="nc" id="L214">        String cvv = consola.leerLinea();</span>
+<span class="nc bnc" id="L215" title="All 4 branches missed.">        if (cvv.length() == 3 &amp;&amp; cvv.matches(&quot;\\d{3}&quot;)) {</span>
+<span class="nc" id="L216">            return Optional.of(cvv);</span>
+        } else {
+<span class="nc" id="L218">            mostrarMensaje(&quot;Error: El CVV debe tener exactamente 3 dígitos.&quot;);</span>
+<span class="nc" id="L219">            return Optional.empty();</span>
+        }
+    }
+    
+    @Override
+    public Optional&lt;String&gt; solicitarNumeroCuentaAsociada() {
+<span class="nc" id="L225">        consola.mostrar(&quot;Introduzca el número de cuenta asociada: &quot;);</span>
+<span class="nc" id="L226">        String numeroCuenta = consola.leerLinea();</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        return numeroCuenta.isEmpty() ? Optional.empty() : Optional.of(numeroCuenta);</span>
+    }
+    
+    @Override
+    public Optional&lt;LocalDate&gt; solicitarFecha() {
+<span class="nc" id="L232">        consola.mostrar(&quot;Introduzca la fecha de expiración (yyyy-MM-dd): &quot;);</span>
+        try {
+<span class="nc" id="L234">            String fechaStr = consola.leerLinea();</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">            if (fechaStr.isEmpty()) {</span>
+<span class="nc" id="L236">                return Optional.empty();</span>
+            }
+<span class="nc" id="L238">            LocalDate fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="nc" id="L239">            return Optional.of(fecha);</span>
+<span class="nc" id="L240">        } catch (DateTimeParseException e) {</span>
+<span class="nc" id="L241">            mostrarMensaje(&quot;Error: Formato de fecha incorrecto. Use yyyy-MM-dd.&quot;);</span>
+<span class="nc" id="L242">            return Optional.empty();</span>
+        }
+    }
+    
+    @Override
+    public Optional&lt;Boolean&gt; solicitarNuevoEstado() {
+<span class="nc" id="L248">        consola.mostrar(&quot;¿Desea activar la tarjeta? (s/n): &quot;);</span>
+<span class="nc" id="L249">        String respuesta = consola.leerLinea().toLowerCase();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        return &quot;s&quot;.equals(respuesta) ? Optional.of(true) : </span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">               &quot;n&quot;.equals(respuesta) ? Optional.of(false) : Optional.empty();</span>
+    }
+    
+    @Override
+    public void mostrarTarjetasEliminadas(List&lt;TarjetaDTO&gt; tarjetas) {
+<span class="nc" id="L256">        consola.mostrar(&quot;\n--- Tarjetas Eliminadas ---\n&quot;);</span>
+        
+<span class="nc" id="L258">        Optional.of(tarjetas)</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">            .filter(lista -&gt; !lista.isEmpty())</span>
+<span class="nc" id="L260">            .ifPresentOrElse(</span>
+<span class="nc" id="L261">                lista -&gt; {</span>
+<span class="nc" id="L262">                    lista.forEach(tarjeta -&gt; mostrarTarjeta(Optional.of(tarjeta)));</span>
+<span class="nc" id="L263">                    consola.mostrar(&quot;---------------------------\n&quot;);</span>
+<span class="nc" id="L264">                },</span>
+<span class="nc" id="L265">                () -&gt; consola.mostrar(&quot;No hay tarjetas eliminadas.\n&quot;)</span>
+            );
+<span class="nc" id="L267">    }</span>
+    
+    @Override
+    public void mostrarTotalTarjetas(long total) {
+<span class="nc" id="L271">        consola.mostrar(&quot;\n--- Total de Tarjetas ---\n&quot;);</span>
+<span class="nc" id="L272">        consola.mostrar(&quot;Total de tarjetas registradas: &quot; + total + &quot;\n&quot;);</span>
+<span class="nc" id="L273">        consola.mostrar(&quot;---------------------------\n&quot;);</span>
+<span class="nc" id="L274">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

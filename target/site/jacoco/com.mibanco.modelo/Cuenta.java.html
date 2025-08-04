@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cuenta.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.modelo</a> &gt; <span class="el_source">Cuenta.java</span></div><h1>Cuenta.java</h1><pre class="source lang-java linenums">package com.mibanco.modelo;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+
+import com.mibanco.modelo.enums.TipoCuenta;
+
+import lombok.Builder;
+import lombok.Value;
+
+/**
+ * Clase que representa una cuenta bancaria
+ * Implementa un enfoque completamente funcional con inmutabilidad total
+ * Implementa Identificable para ser compatible con el repositorio base
+ */
+@Value
+@Builder
+public class Cuenta implements Identificable {
+    
+    String numeroCuenta;
+    Cliente titular;
+    TipoCuenta tipo;
+    LocalDateTime fechaCreacion;
+    BigDecimal saldoInicial;
+    BigDecimal saldo;
+    boolean activa;
+    
+    @JsonCreator
+<span class="nc" id="L32">    public Cuenta(</span>
+        @JsonProperty(&quot;numeroCuenta&quot;) String numeroCuenta,
+        @JsonProperty(&quot;titular&quot;) Cliente titular,
+        @JsonProperty(&quot;tipo&quot;) TipoCuenta tipo,
+        @JsonProperty(&quot;fechaCreacion&quot;) LocalDateTime fechaCreacion,
+        @JsonProperty(&quot;saldoInicial&quot;) BigDecimal saldoInicial,
+        @JsonProperty(&quot;saldo&quot;) BigDecimal saldo,
+        @JsonProperty(&quot;activa&quot;) boolean activa
+    ) {
+<span class="nc" id="L41">        this.numeroCuenta = numeroCuenta;</span>
+<span class="nc" id="L42">        this.titular = titular;</span>
+<span class="nc" id="L43">        this.tipo = tipo;</span>
+<span class="nc" id="L44">        this.fechaCreacion = fechaCreacion;</span>
+<span class="nc" id="L45">        this.saldoInicial = saldoInicial;</span>
+<span class="nc" id="L46">        this.saldo = saldo;</span>
+<span class="nc" id="L47">        this.activa = activa;</span>
+<span class="nc" id="L48">    }</span>
+    
+    /**
+     * Implementación de getId() para la interfaz Identificable
+     * Extrae la parte numérica del IBAN (numeroCuenta) para usarla como ID
+     * Usa solo los primeros 18 dígitos para que quepan en Long
+     * Ejemplo: &quot;ES3400000000000000001002&quot; → 340000000000000000L
+     * @return La parte numérica del numeroCuenta como Long
+     */
+    @Override
+    public Long getId() {
+        // Extraer solo la parte numérica del IBAN
+<span class="nc" id="L60">        String parteNumerica = numeroCuenta.replaceAll(&quot;[^0-9]&quot;, &quot;&quot;);</span>
+        
+        try {
+            // Usar solo los primeros 18 dígitos para que quepan en Long
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            if (parteNumerica.length() &gt; 18) {</span>
+<span class="nc" id="L65">                parteNumerica = parteNumerica.substring(0, 18);</span>
+            }
+<span class="nc" id="L67">            return Long.parseLong(parteNumerica);</span>
+<span class="nc" id="L68">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L69">            throw new IllegalStateException(&quot;Identificador erróneo, no existe.&quot;);</span>
+        }
+    }
+    
+    /**
+     * Método factory para facilitar la creación de instancias
+     */
+    public static Cuenta of(String numeroCuenta, Cliente titular, TipoCuenta tipo, 
+                           BigDecimal saldoInicial, LocalDateTime fechaCreacion, boolean activa) {
+<span class="nc" id="L78">        return Cuenta.builder()</span>
+<span class="nc" id="L79">                .numeroCuenta(numeroCuenta)</span>
+<span class="nc" id="L80">                .titular(titular)</span>
+<span class="nc" id="L81">                .tipo(tipo)</span>
+<span class="nc" id="L82">                .saldoInicial(saldoInicial)</span>
+<span class="nc" id="L83">                .saldo(saldoInicial)</span>
+<span class="nc" id="L84">                .fechaCreacion(fechaCreacion)</span>
+<span class="nc" id="L85">                .activa(activa)</span>
+<span class="nc" id="L86">                .build();</span>
+    }
+    
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.serviceEnglish.internal</a> &gt; <span class="el_source">ClientServiceImpl.java</span></div><h1>ClientServiceImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.serviceEnglish.internal;
+
+import com.mibanco.modelEnglish.Client;
+import com.mibanco.dtoEnglish.ClientDTO;
+import com.mibanco.repositoryEnglish.ClientRepository;
+import com.mibanco.dtoEnglish.mappers.ClientMapper;
+import com.mibanco.modelEnglish.enums.ClientOperationType;
+import com.mibanco.repositoryEnglish.internal.RepositoryFactory;         
+import com.mibanco.serviceEnglish.ClientService;
+import com.mibanco.utilEnglish.ValidationException;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+class ClientServiceImpl extends BaseServiceImpl&lt;ClientDTO, Client, Long, ClientOperationType, ClientRepository&gt; implements ClientService {
+    
+    private static final ClientRepository clientRepository;
+    private static final ClientMapper mapper;
+    private static final ClientDtoProcessorService clientDtoProcessor;
+<span class="nc" id="L23">    private final ClientOperationType updateType = ClientOperationType.UPDATE;</span>
+    
+    static {
+<span class="nc" id="L26">        clientRepository = RepositoryFactory.getInstance().getClientRepository();</span>
+<span class="nc" id="L27">        mapper = new ClientMapper();</span>
+<span class="nc" id="L28">        clientDtoProcessor = new ClientDtoProcessorService();</span>
+<span class="nc" id="L29">    }</span>
+    
+    public ClientServiceImpl() {
+<span class="nc" id="L32">        super(clientRepository, mapper);</span>
+<span class="nc" id="L33">    }</span>
+
+    @Override
+    public Optional&lt;ClientDTO&gt; createClientDto(Map&lt;String, String&gt; clientData) {
+        try {
+            // Use specialized processor to create DTO with validations
+<span class="nc" id="L39">            return clientDtoProcessor.processClientDto(clientData)</span>
+<span class="nc" id="L40">                .flatMap(clientDto -&gt; {</span>
+                    // Validate unique DNI before saving
+<span class="nc" id="L42">                    validateUniqueDni(clientDto);</span>
+<span class="nc" id="L43">                    return saveEntity(ClientOperationType.CREATE, Optional.of(clientDto));</span>
+                });
+<span class="nc" id="L45">        } catch (ValidationException e) {</span>
+<span class="nc" id="L46">            System.err.println(&quot;Validation error: &quot; + e.getMessage());</span>
+<span class="nc" id="L47">            return Optional.empty();</span>
+        }
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; saveClient(Optional&lt;ClientDTO&gt; clientDTO) {
+        // NO validation here - DTO should already be validated
+<span class="nc" id="L54">        return saveEntity(ClientOperationType.CREATE, clientDTO);</span>
+    }
+    
+    /**
+     * Helper method to validate unique DNI
+     * @param dto Client DTO to validate
+     * @throws ValidationException if DNI already exists
+     */
+    private void validateUniqueDni(ClientDTO dto) {
+        // Only validate if DNI is not null (basic validation already done in view)
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (dto.getDni() != null) {</span>
+<span class="nc" id="L65">            Optional&lt;Client&gt; existingClient = clientRepository.findByPredicate(</span>
+<span class="nc" id="L66">                client -&gt; dto.getDni().equals(client.getDni())</span>
+            );
+            
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (existingClient.isPresent()) {</span>
+<span class="nc" id="L70">                throw new ValidationException(&quot;A client with DNI already exists: &quot; + dto.getDni());</span>
+            }
+        }
+<span class="nc" id="L73">    }</span>
+
+    @Override
+    public Optional&lt;ClientDTO&gt; updateMultipleFields(Long id, Optional&lt;ClientDTO&gt; clientDTO) {
+<span class="nc" id="L77">        return clientDTO.flatMap(newClient -&gt; {</span>
+            // Get existing client
+<span class="nc" id="L79">            Optional&lt;ClientDTO&gt; existingClientOpt = findById(Optional.of(id));</span>
+            
+<span class="nc" id="L81">            return existingClientOpt.map(existingClient -&gt; {</span>
+                // Update using DTO methods
+<span class="nc" id="L83">                ClientDTO updatedClient = existingClient.withContactData(</span>
+<span class="nc" id="L84">                    Optional.ofNullable(newClient.getEmail()),</span>
+<span class="nc" id="L85">                    Optional.ofNullable(newClient.getPhone()),</span>
+<span class="nc" id="L86">                    Optional.ofNullable(newClient.getAddress())</span>
+                );
+                
+                // Save and return
+<span class="nc" id="L90">                return saveEntity(updateType, Optional.of(updatedClient)).orElse(updatedClient);</span>
+            });
+        });
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; updateClientEmail(Long id, Optional&lt;String&gt; newEmail) {
+<span class="nc" id="L97">        return newEmail.flatMap(email -&gt; {</span>
+<span class="nc" id="L98">            Optional&lt;ClientDTO&gt; existingClientOpt = findById(Optional.of(id));</span>
+            
+<span class="nc" id="L100">            return existingClientOpt.map(existingClient -&gt; {</span>
+<span class="nc" id="L101">                ClientDTO updatedClient = existingClient.withEmail(email);</span>
+<span class="nc" id="L102">                return saveEntity(updateType, Optional.of(updatedClient)).orElse(updatedClient);</span>
+            });
+        });
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; updateClientPhone(Long id, Optional&lt;String&gt; newPhone) {
+<span class="nc" id="L109">        return newPhone.flatMap(phone -&gt; {</span>
+<span class="nc" id="L110">            Optional&lt;ClientDTO&gt; existingClientOpt = findById(Optional.of(id));</span>
+            
+<span class="nc" id="L112">            return existingClientOpt.map(existingClient -&gt; {</span>
+<span class="nc" id="L113">                ClientDTO updatedClient = existingClient.withPhone(phone);</span>
+<span class="nc" id="L114">                return saveEntity(updateType, Optional.of(updatedClient)).orElse(updatedClient);</span>
+            });
+        });
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; updateClientAddress(Long id, Optional&lt;String&gt; newAddress) {
+<span class="nc" id="L121">        return newAddress.flatMap(address -&gt; {</span>
+<span class="nc" id="L122">            Optional&lt;ClientDTO&gt; existingClientOpt = findById(Optional.of(id));</span>
+            
+<span class="nc" id="L124">            return existingClientOpt.map(existingClient -&gt; {</span>
+<span class="nc" id="L125">                ClientDTO updatedClient = existingClient.withAddress(address);</span>
+<span class="nc" id="L126">                return saveEntity(updateType, Optional.of(updatedClient)).orElse(updatedClient);</span>
+            });
+        });
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; getClientById(Optional&lt;Long&gt; id) {
+<span class="nc" id="L133">        return findById(id);</span>
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; getClientByDni(Optional&lt;String&gt; dni) {
+<span class="nc" id="L138">        return dni.flatMap(dniValue -&gt; clientRepository.findById(Optional.of(Long.parseLong(dniValue)))</span>
+<span class="nc" id="L139">                .flatMap(entity -&gt; mapper.toDto(Optional.of(entity))));</span>
+    }
+
+    @Override
+    public Optional&lt;List&lt;ClientDTO&gt;&gt; getAllClients() {
+<span class="nc" id="L144">        return findAll();</span>
+    }
+
+    @Override
+    public boolean deleteClient(Optional&lt;Long&gt; id) {
+<span class="nc" id="L149">        return deleteById(id, ClientOperationType.DELETE);</span>
+    }
+
+    @Override
+    public Optional&lt;ClientDTO&gt; restoreClient(Optional&lt;Long&gt; id) {
+<span class="nc" id="L154">        return restore(id, ClientOperationType.RESTORE);</span>
+    }
+
+    @Override
+    public void setCurrentUser(String user) {
+<span class="nc" id="L159">        setCurrentUser(user);</span>
+<span class="nc" id="L160">    }</span>
+
+    @Override
+    public long countClients() {
+<span class="nc" id="L164">        return countRecords();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteMapeador.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.dto.mapeador</a> &gt; <span class="el_source">ClienteMapeador.java</span></div><h1>ClienteMapeador.java</h1><pre class="source lang-java linenums">package com.mibanco.dto.mapeador;
+
+import com.mibanco.dto.ClienteDTO;
+import com.mibanco.modelo.Cliente;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+/**
+ * Implementación de Mapper para Cliente utilizando enfoque funcional
+ * Sin generación automática de IDs (manejada por el repositorio)
+ */
+<span class="nc" id="L14">public class ClienteMapeador implements Mapeador&lt;Cliente, ClienteDTO&gt; {</span>
+
+    /**
+     * Convierte un Cliente a ClienteDTO
+     * Implementación estrictamente funcional con Optional
+     */
+    @Override
+    public Optional&lt;ClienteDTO&gt; aDto(Optional&lt;Cliente&gt; clienteOpt) {
+<span class="nc" id="L22">        return clienteOpt.map(cliente -&gt; ClienteDTO.builder()</span>
+<span class="nc" id="L23">                .id(cliente.getId())</span>
+<span class="nc" id="L24">                .nombre(cliente.getNombre())</span>
+<span class="nc" id="L25">                .apellido(cliente.getApellido())</span>
+<span class="nc" id="L26">                .dni(cliente.getDni())</span>
+<span class="nc" id="L27">                .email(cliente.getEmail())</span>
+<span class="nc" id="L28">                .telefono(cliente.getTelefono())</span>
+<span class="nc" id="L29">                .fechaNacimiento(cliente.getFechaNacimiento())</span>
+<span class="nc" id="L30">                .direccion(cliente.getDireccion())</span>
+<span class="nc" id="L31">                .build());</span>
+    }
+
+    /**
+     * Convierte un ClienteDTO a Cliente
+     * Implementación estrictamente funcional con Optional
+     * Copia todos los campos del DTO, incluyendo el ID si existe
+     */
+    @Override
+    public Optional&lt;Cliente&gt; aEntidad(Optional&lt;ClienteDTO&gt; dtoOpt) {
+<span class="nc" id="L41">        return dtoOpt.map(dto -&gt; Cliente.builder()</span>
+<span class="nc" id="L42">                .id(dto.getId())</span>
+<span class="nc" id="L43">                .nombre(dto.getNombre())</span>
+<span class="nc" id="L44">                .apellido(dto.getApellido())</span>
+<span class="nc" id="L45">                .dni(dto.getDni())</span>
+<span class="nc" id="L46">                .email(dto.getEmail())</span>
+<span class="nc" id="L47">                .telefono(dto.getTelefono())</span>
+<span class="nc" id="L48">                .fechaNacimiento(dto.getFechaNacimiento())</span>
+<span class="nc" id="L49">                .direccion(dto.getDireccion())</span>
+<span class="nc" id="L50">                .build());</span>
+    }
+   
+    /**
+     * Sobrecarga que acepta Cliente directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional&lt;ClienteDTO&gt; aDtoDirecto(Cliente cliente) {
+<span class="nc" id="L58">        return aDto(Optional.ofNullable(cliente));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta ClienteDTO directamente
+     * Para facilitar el uso en contextos donde no se trabaja con Optional
+     */
+    public Optional&lt;Cliente&gt; aEntidadDirecta(ClienteDTO dto) {
+<span class="nc" id="L66">        return aEntidad(Optional.ofNullable(dto));</span>
+    }
+    
+    /**
+     * Convierte una lista de Cliente a lista de ClienteDTO
+     * Utilizando programación funcional con streams
+     * @return Optional con la lista de DTOs o Optional.empty() si la entrada es nula
+     */
+    public Optional&lt;List&lt;ClienteDTO&gt;&gt; aListaDto(Optional&lt;List&lt;Cliente&gt;&gt; clientes) {
+<span class="nc" id="L75">        return clientes.map(list -&gt; list.stream()</span>
+<span class="nc" id="L76">                        .map(cliente -&gt; aDto(Optional.of(cliente)).orElse(null))</span>
+<span class="nc" id="L77">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L78">                .collect(Collectors.toList()));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta List&lt;Cliente&gt; directamente
+     */
+    public Optional&lt;List&lt;ClienteDTO&gt;&gt; aListaDto(List&lt;Cliente&gt; clientes) {
+<span class="nc" id="L85">        return aListaDto(Optional.ofNullable(clientes));</span>
+    }
+    
+    /**
+     * Convierte una lista de ClienteDTO a lista de Cliente
+     * Utilizando programación funcional con streams
+     * @return Optional con la lista de entidades o Optional.empty() si la entrada es nula
+     */
+    public Optional&lt;List&lt;Cliente&gt;&gt; aListaEntidad(Optional&lt;List&lt;ClienteDTO&gt;&gt; dtos) {
+<span class="nc" id="L94">        return dtos.map(list -&gt; list.stream()</span>
+<span class="nc" id="L95">                        .map(dto -&gt; aEntidad(Optional.of(dto)).orElse(null))</span>
+<span class="nc" id="L96">                        .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L97">                .collect(Collectors.toList()));</span>
+    }
+    
+    /**
+     * Sobrecarga que acepta List&lt;ClienteDTO&gt; directamente
+     */
+    public Optional&lt;List&lt;Cliente&gt;&gt; aListaEntidad(List&lt;ClienteDTO&gt; dtos) {
+<span class="nc" id="L104">        return aListaEntidad(Optional.ofNullable(dtos));</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

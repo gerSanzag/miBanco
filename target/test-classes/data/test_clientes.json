@@ -1,0 +1,28 @@
+[ {
+  "id" : 1,
+  "nombre" : "Juan",
+  "apellido" : "Pérez",
+  "dni" : "12345678",
+  "fechaNacimiento" : "1990-01-01",
+  "email" : "juan@test.com",
+  "telefono" : "123456789",
+  "direccion" : "Calle Test 123"
+}, {
+  "id" : 5,
+  "nombre" : "María",
+  "apellido" : "García",
+  "dni" : "87654321",
+  "fechaNacimiento" : "1985-05-15",
+  "email" : "maria@test.com",
+  "telefono" : "987654321",
+  "direccion" : "Avenida Test 456"
+}, {
+  "id" : 10,
+  "nombre" : "Carlos",
+  "apellido" : "López",
+  "dni" : "11111111",
+  "fechaNacimiento" : "1995-08-20",
+  "email" : "carlos@test.com",
+  "telefono" : "555555555",
+  "direccion" : "Calle Nueva 789"
+} ]

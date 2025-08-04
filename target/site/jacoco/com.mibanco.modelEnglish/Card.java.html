@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Card.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.modelEnglish</a> &gt; <span class="el_source">Card.java</span></div><h1>Card.java</h1><pre class="source lang-java linenums">package com.mibanco.modelEnglish;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
+
+import com.mibanco.modelEnglish.enums.CardType;
+
+import lombok.Builder;
+import lombok.Value;
+
+
+/**
+ * Class that represents a bank card
+ * Implements a completely functional approach with total immutability
+ */
+@Value
+@Builder
+public class Card implements Identifiable {
+
+    Long number;             // numero
+    Client holder;           // titular
+    String associatedAccountNumber;  // numeroCuentaAsociada
+    CardType type;           // tipo
+    String cvv;
+    LocalDate expirationDate;    // fechaExpiracion
+    boolean active;          // activa
+    
+    @JsonCreator
+<span class="fc" id="L30">    public Card(</span>
+        @JsonProperty(&quot;number&quot;) Long number,
+        @JsonProperty(&quot;holder&quot;) Client holder,
+        @JsonProperty(&quot;associatedAccountNumber&quot;) String associatedAccountNumber,
+        @JsonProperty(&quot;type&quot;) CardType type,
+        @JsonProperty(&quot;cvv&quot;) String cvv,
+        @JsonProperty(&quot;expirationDate&quot;) LocalDate expirationDate,
+        @JsonProperty(&quot;active&quot;) boolean active
+    ) {
+<span class="fc" id="L39">        this.number = number;</span>
+<span class="fc" id="L40">        this.holder = holder;</span>
+<span class="fc" id="L41">        this.associatedAccountNumber = associatedAccountNumber;</span>
+<span class="fc" id="L42">        this.type = type;</span>
+<span class="fc" id="L43">        this.cvv = cvv;</span>
+<span class="fc" id="L44">        this.expirationDate = expirationDate;</span>
+<span class="fc" id="L45">        this.active = active;</span>
+<span class="fc" id="L46">    }</span>
+    
+    /**
+     * Implementation of getId() for the Identifiable interface
+     * The card number is directly the identifier
+     * @return The card number as Long
+     */
+    @Override
+    public Long getId() {
+<span class="fc" id="L55">        return number;</span>
+    }
+    
+    /**
+     * Factory method to facilitate instance creation
+     */
+    public static Card of(Long number, Client holder, String associatedAccountNumber, 
+                            CardType type, LocalDate expirationDate, String cvv, boolean active) {
+<span class="fc" id="L63">        return Card.builder()</span>
+<span class="fc" id="L64">                .number(number)</span>
+<span class="fc" id="L65">                .holder(holder)</span>
+<span class="fc" id="L66">                .associatedAccountNumber(associatedAccountNumber)</span>
+<span class="fc" id="L67">                .type(type)</span>
+<span class="fc" id="L68">                .expirationDate(expirationDate)</span>
+<span class="fc" id="L69">                .cvv(cvv)</span>
+<span class="fc" id="L70">                .active(active)</span>
+<span class="fc" id="L71">                .build();</span>
+    }
+    
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
