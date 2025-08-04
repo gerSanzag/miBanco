@@ -1,10 +1,10 @@
 package com.mibanco.utilEnglish;
 
-import com.mibanco.repositorio.interna.RepositorioFactoria;
+import com.mibanco.repositoryEnglish.internal.RepositoryFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Utility class to handle application shutdown
+ * Utility class for handling application shutdown
  * Registers a shutdown hook that forces data saving before closing
  */
 public class ShutdownHookUtil {
@@ -18,25 +18,25 @@ public class ShutdownHookUtil {
     public static void registerShutdownHook() {
         if (hookRegistered.compareAndSet(false, true)) {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("🔄 Guardando datos antes de cerrar la aplicación...");
+                System.out.println("🔄 Saving data before closing the application...");
                 
                 try {
-                    // Get repository factory instance
-                    RepositorioFactoria factory = RepositorioFactoria.obtenerInstancia();
+                    // Get instance of repository factory
+                    RepositoryFactory factory = RepositoryFactory.getInstance();
                     
                     // Save data from all repositories
-                    factory.obtenerRepositorioCliente().guardarDatos();
-                    factory.obtenerRepositorioCuenta().guardarDatos();
-                    factory.obtenerRepositorioTarjeta().guardarDatos();
-                    factory.obtenerRepositorioTransaccion().guardarDatos();
+                    factory.getClientRepository().saveData();
+                    factory.getAccountRepository().saveData();
+                    factory.getCardRepository().saveData();
+                    factory.getTransactionRepository().saveData();
                     
-                    System.out.println("✅ Datos guardados exitosamente");
+                    System.out.println("✅ Data saved successfully");
                 } catch (Exception e) {
-                    System.err.println("❌ Error al guardar datos durante el cierre: " + e.getMessage());
+                    System.err.println("❌ Error saving data during shutdown: " + e.getMessage());
                 }
-            }, "ShutdownHook-Guardado"));
+            }, "ShutdownHook-Save"));
             
-            System.out.println("🔧 Shutdown hook registrado para guardado automático");
+            System.out.println("🔧 Shutdown hook registered for automatic saving");
         }
     }
     
