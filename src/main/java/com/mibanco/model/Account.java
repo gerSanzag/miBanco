@@ -56,6 +56,11 @@ public class Account implements Identifiable {
      */
     @Override
     public Long getId() {
+        // Handle null accountNumber case
+        if (accountNumber == null) {
+            return null;
+        }
+        
         // Extract only the numeric part of the IBAN
         String numericPart = accountNumber.replaceAll("[^0-9]", "");
         
