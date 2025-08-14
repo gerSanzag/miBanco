@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -140,6 +141,35 @@ class ClientRepositoryImplTest {
             assertNotNull(result);
             // If we get here without errors, it means getConfiguration() executed correctly
             // and returned the expected configuration (file path, class type, ID extractor)
+        }
+
+        @Test
+        @DisplayName("Should call getConfiguration() directly")
+        void shouldCallGetConfigurationDirectly() {
+            // Arrange - Use reflection to access the protected method
+            try {
+                // Get the real repository instance
+                com.mibanco.repository.ClientRepository realRepository = 
+                    com.mibanco.repository.internal.RepositoryFactory.getInstance().getClientRepository();
+                
+                // Use reflection to access the protected getConfiguration method
+                java.lang.reflect.Method getConfigMethod = 
+                    realRepository.getClass().getDeclaredMethod("getConfiguration");
+                getConfigMethod.setAccessible(true);
+                
+                // Act - Call getConfiguration() directly
+                @SuppressWarnings("unchecked")
+                Map<String, Object> config = (Map<String, Object>) getConfigMethod.invoke(realRepository);
+                
+                // Assert - Verify the configuration is correct
+                assertNotNull(config);
+                assertEquals("src/main/resources/data/clientes.json", config.get("filePath"));
+                assertEquals(Client.class, config.get("classType"));
+                assertNotNull(config.get("idExtractor"));
+                
+            } catch (Exception e) {
+                fail("Should not throw exception when calling getConfiguration(): " + e.getMessage());
+            }
         }
     }
     

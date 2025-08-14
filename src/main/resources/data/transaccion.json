@@ -1,0 +1,169 @@
+[ {
+  "id" : 17,
+  "accountNumber" : "505050505",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1200.00,
+  "date" : "2025-08-14T13:13:18.843265",
+  "description" : "Transaction for count"
+}, {
+  "id" : 1,
+  "accountNumber" : "123456789",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1000.00,
+  "date" : "2025-08-14T13:13:18.843835",
+  "description" : "Test deposit"
+}, {
+  "id" : 11,
+  "accountNumber" : "888888888",
+  "destinationAccountNumber" : null,
+  "type" : "SENT_TRANSFER",
+  "amount" : 1000.00,
+  "date" : "2025-08-14T13:13:18.844274",
+  "description" : "Transfer 1"
+}, {
+  "id" : 12,
+  "accountNumber" : "999999999",
+  "destinationAccountNumber" : null,
+  "type" : "SENT_TRANSFER",
+  "amount" : 2000.00,
+  "date" : "2025-08-14T13:13:18.844284",
+  "description" : "Transfer 2"
+}, {
+  "id" : 10,
+  "accountNumber" : "777777777",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 3000.00,
+  "date" : "2025-08-14T13:13:18.844988",
+  "description" : "Test transaction for predicate"
+}, {
+  "id" : 2,
+  "accountNumber" : "987654321",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 500.00,
+  "date" : "2025-08-14T13:13:18.845442",
+  "description" : "Test withdrawal"
+}, {
+  "id" : 7,
+  "accountNumber" : "444444444",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1500.00,
+  "date" : "2025-08-14T00:00:00",
+  "description" : "Test transaction for date"
+}, {
+  "id" : 5,
+  "accountNumber" : "222222222",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 2000.00,
+  "date" : "2025-08-14T13:13:18.846476",
+  "description" : "Test deposit"
+}, {
+  "id" : 6,
+  "accountNumber" : "333333333",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 1000.00,
+  "date" : "2025-08-14T13:13:18.846484",
+  "description" : "Test withdrawal"
+}, {
+  "id" : 2,
+  "accountNumber" : "707070707",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 300.00,
+  "date" : "2025-08-14T13:13:18.847384",
+  "description" : "Transaction with null ID"
+}, {
+  "id" : 8,
+  "accountNumber" : "555555555",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1000.00,
+  "date" : "2025-08-13T12:00:00",
+  "description" : "Transaction in range 1"
+}, {
+  "id" : 9,
+  "accountNumber" : "666666666",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 500.00,
+  "date" : "2025-08-14T12:00:00",
+  "description" : "Transaction in range 2"
+}, {
+  "id" : 13,
+  "accountNumber" : "101010101",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1000.00,
+  "date" : "2025-08-14T13:13:18.849806",
+  "description" : "All transaction 1"
+}, {
+  "id" : 14,
+  "accountNumber" : "202020202",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 500.00,
+  "date" : "2025-08-14T13:13:18.849815",
+  "description" : "All transaction 2"
+}, {
+  "id" : 3,
+  "accountNumber" : "111111111",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1000.00,
+  "date" : "2025-08-14T13:13:18.850291",
+  "description" : "First deposit"
+}, {
+  "id" : 4,
+  "accountNumber" : "111111111",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 500.00,
+  "date" : "2025-08-14T13:13:18.850299",
+  "description" : "First withdrawal"
+}, {
+  "id" : 13,
+  "accountNumber" : "RANGE_TEST_BEFORE",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 100.00,
+  "date" : "2025-08-12T12:00:00",
+  "description" : "Transaction before range"
+}, {
+  "id" : 14,
+  "accountNumber" : "RANGE_TEST_222",
+  "destinationAccountNumber" : null,
+  "type" : "WITHDRAWAL",
+  "amount" : 200.00,
+  "date" : "2025-08-14T12:00:00",
+  "description" : "Transaction in range"
+}, {
+  "id" : 15,
+  "accountNumber" : "303030303",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1500.00,
+  "date" : "2025-08-14T13:13:18.851583",
+  "description" : "Updated description"
+}, {
+  "id" : 15,
+  "accountNumber" : "303030303",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 1000.00,
+  "date" : "2025-08-14T13:13:18.851572",
+  "description" : "Original description"
+}, {
+  "id" : 18,
+  "accountNumber" : "606060606",
+  "destinationAccountNumber" : null,
+  "type" : "DEPOSIT",
+  "amount" : 2000.00,
+  "date" : "2025-08-14T13:13:18.851957",
+  "description" : "Transaction to save"
+} ]

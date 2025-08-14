@@ -35,8 +35,7 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl<TransactionDTO, T
     }
 
     public TransactionOperationsServiceImpl() {
-        super(transactionRepository, mapper);
-        
+        super(transactionRepository, mapper, RepositoryFactory.getInstance().getAuditRepository());
     }
 
     // Static map of transaction type inversions

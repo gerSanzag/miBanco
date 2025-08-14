@@ -287,7 +287,6 @@ class AuditRepositoryImplTest {
                 repository.findByUser(Optional.empty());
             
             // Assert
-            // When Optional.empty() is passed, the method returns Optional.empty()
             assertFalse(records.isPresent());
         }
         
@@ -311,10 +310,9 @@ class AuditRepositoryImplTest {
         void shouldHandleSearchByOperationTypeWithNullType() {
             // Act
             Optional<List<AuditRecord<Client, ClientOperationType>>> records = 
-                repository.findByOperationType(Optional.of(ClientOperationType.CREATE), Optional.empty());
+                repository.findByOperationType(Optional.empty(), Optional.of(ClientOperationType.class));
             
             // Assert
-            // When Optional.empty() is passed, the method returns Optional.empty()
             assertFalse(records.isPresent());
         }
         
@@ -323,10 +321,9 @@ class AuditRepositoryImplTest {
         void shouldHandleSearchByOperationTypeWithNullEnumType() {
             // Act
             Optional<List<AuditRecord<Client, ClientOperationType>>> records = 
-                repository.findByOperationType(Optional.empty(), Optional.of(ClientOperationType.class));
+                repository.findByOperationType(Optional.of(ClientOperationType.CREATE), Optional.empty());
             
             // Assert
-            // When Optional.empty() is passed, the method returns Optional.empty()
             assertFalse(records.isPresent());
         }
     }
@@ -814,9 +811,10 @@ class AuditRepositoryImplTest {
             // Assert
             assertTrue(records.isPresent());
             List<AuditRecord<Client, ClientOperationType>> recordList = records.get();
-            // The search might not find records if the data is not properly loaded
-            // Just verify the method doesn't throw an exception
-            assertNotNull(recordList);
+            // The list might be empty if no records have the exact same timestamp
+            // This is expected behavior in the new architecture
+            assertTrue(recordList.isEmpty() || recordList.stream().allMatch(record -> 
+                record.getDateTime().equals(exactDate)));
         }
     }
 }

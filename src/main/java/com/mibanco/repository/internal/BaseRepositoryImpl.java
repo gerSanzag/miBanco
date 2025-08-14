@@ -31,9 +31,6 @@ abstract class BaseRepositoryImpl<T extends Identifiable, ID, E extends Enum<E>>
     // Counter to generate IDs automatically
     protected final AtomicLong idCounter = new AtomicLong(1); // idContador
     
-    // Audit repository - now with lazy loading
-    private AuditRepository auditRepository; // auditoriaRepository
-    
     // Current user
     protected String currentUser = "sistema"; // usuarioActual
     
@@ -47,17 +44,7 @@ abstract class BaseRepositoryImpl<T extends Identifiable, ID, E extends Enum<E>>
     protected BaseRepositoryImpl() {
         // Initialize JSON processor
         this.jsonProcessor = new BaseJsonProcessor<>();
-        // ❌ DO NOT load data automatically - it will be done lazily
-    }
-    
-    /**
-     * Lazy method to get the audit repository
-     */
-    private AuditRepository getAudit() {
-        if (auditRepository == null) {
-            auditRepository = RepositoryFactory.getInstance().getAuditRepository();
-        }
-        return auditRepository;
+        // DO NOT load data automatically - it will be done lazily
     }
     
     /**

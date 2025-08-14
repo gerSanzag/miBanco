@@ -3,6 +3,7 @@ package com.mibanco.service.internal;
 import com.mibanco.dto.mappers.Mapper;
 import com.mibanco.model.Identifiable;
 import com.mibanco.repository.util.BaseRepository;
+import com.mibanco.repository.AuditRepository;
 import com.mibanco.service.util.BaseService;
 
 import java.util.ArrayList;
@@ -24,10 +25,12 @@ abstract class BaseServiceImpl<T, E extends Identifiable, ID, O extends Enum<O>,
     
     protected final R repository;
     protected final Mapper<E, T> mapper;
+    protected final AuditRepository auditRepository;
     
-    protected BaseServiceImpl(R repository, Mapper<E, T> mapper) {
+    protected BaseServiceImpl(R repository, Mapper<E, T> mapper, AuditRepository auditRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.auditRepository = auditRepository;
     }
 
     @Override

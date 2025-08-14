@@ -43,8 +43,7 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
     }
 
     public AccountServiceImpl() {
-        super(accountRepository, mapper);
-        
+        super(accountRepository, mapper, RepositoryFactory.getInstance().getAuditRepository());
     }
 
     @Override
