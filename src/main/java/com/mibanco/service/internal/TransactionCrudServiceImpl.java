@@ -35,7 +35,7 @@ class TransactionCrudServiceImpl extends BaseServiceImpl<TransactionDTO, Transac
     }
     
     public TransactionCrudServiceImpl() {
-        super(transactionRepository, mapper, RepositoryFactory.getInstance().getAuditRepository());
+        super(transactionRepository, mapper);
     }
     
     @Override

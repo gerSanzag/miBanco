@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repository.internal</a> &gt; <span class="el_source">ClientRepositoryImpl.java</span></div><h1>ClientRepositoryImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repository.internal;
+
+import com.mibanco.dto.mappers.ClientMapper;
+import com.mibanco.model.Client;
+import com.mibanco.model.enums.ClientOperationType;
+import com.mibanco.repository.ClientRepository;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+/**
+ * Implementation of Client repository with restricted access
+ * Only accessible through Factory and public interfaces
+ */
+class ClientRepositoryImpl extends BaseRepositoryImpl&lt;Client, Long, ClientOperationType&gt; implements ClientRepository {
+    
+    /**
+     * Package-private constructor
+     */
+    ClientRepositoryImpl() {
+<span class="fc" id="L22">        super();</span>
+<span class="fc" id="L23">    }</span>
+    
+    /**
+     * Specific implementation to assign new ID to Client
+     * Uses DTOs to maintain entity immutability
+     * Pure functional approach with Optional
+     * @param client Client without assigned ID
+     * @return Client with new assigned ID
+     */
+    @Override
+    protected Client createWithNewId(Client client) {
+<span class="nc" id="L34">        ClientMapper mapper = new ClientMapper();</span>
+        
+<span class="nc" id="L36">        return mapper.toDtoDirect(client)</span>
+<span class="nc" id="L37">            .map(dto -&gt; dto.toBuilder()</span>
+<span class="nc" id="L38">                .id(idCounter.incrementAndGet())</span>
+<span class="nc" id="L39">                .build())</span>
+<span class="nc" id="L40">            .flatMap(mapper::toEntityDirect)</span>
+<span class="nc" id="L41">            .orElseThrow(() -&gt; new IllegalStateException(&quot;Could not process Client entity&quot;));</span>
+    }
+    
+    /**
+     * Specific implementation to get repository configuration
+     * @return Map with necessary configuration
+     */
+    @Override
+    protected Map&lt;String, Object&gt; getConfiguration() {
+<span class="nc" id="L50">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L51">        config.put(&quot;filePath&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
+<span class="nc" id="L52">        config.put(&quot;classType&quot;, Client.class);</span>
+<span class="nc" id="L53">        config.put(&quot;idExtractor&quot;, (Function&lt;Client, Long&gt;) Client::getId);</span>
+<span class="nc" id="L54">        return config;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

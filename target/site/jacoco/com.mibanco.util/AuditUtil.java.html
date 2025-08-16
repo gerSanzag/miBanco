@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuditUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.util</a> &gt; <span class="el_source">AuditUtil.java</span></div><h1>AuditUtil.java</h1><pre class="source lang-java linenums">package com.mibanco.util;
+
+import com.mibanco.model.AuditRecord;
+import com.mibanco.model.Identifiable;
+import com.mibanco.repository.AuditRepository;
+import com.mibanco.repository.internal.RepositoryFactory;
+
+import java.util.Optional;
+
+/**
+ * Utility class for centralized audit handling
+ * Simple and direct approach without intermediate functions
+ */
+<span class="nc" id="L14">public class AuditUtil {</span>
+    
+    // Centralized audit repository reference
+<span class="fc" id="L17">    private static final AuditRepository auditRepository = RepositoryFactory.getInstance().getAuditRepository();</span>
+    
+    /**
+     * Registers an audit operation directly
+     * @param operationType The type of operation performed
+     * @param entity The entity on which the operation was performed
+     * @param user The user who performed the operation
+     * @return The created and saved audit record
+     */
+    public static &lt;T extends Identifiable, E extends Enum&lt;E&gt;&gt; 
+           AuditRecord&lt;T, E&gt; registerOperation(
+               Optional&lt;E&gt; operationType, 
+               Optional&lt;T&gt; entity, 
+               Optional&lt;String&gt; user) {
+        
+        // Create audit record
+<span class="fc" id="L33">        AuditRecord&lt;T, E&gt; record = AuditRecord.of(operationType, entity, user);</span>
+        
+        // Save and return using centralized repository
+<span class="fc" id="L36">        Optional&lt;AuditRecord&lt;T, E&gt;&gt; savedRecord = auditRepository.register(Optional.of(record));</span>
+<span class="fc" id="L37">        return savedRecord.orElse(record);</span>
+    }
+    
+    /**
+     * Registers an audit operation with simplified parameters
+     * @param entityType The type of entity
+     * @param entityId The entity ID
+     * @param operationType The type of operation
+     * @param user The user who performed the operation
+     */
+    public static void registerOperation(String entityType, Long entityId, String operationType, String user) {
+        // For simplified operations, we'll use a basic approach
+        // This method provides a simplified interface for audit registration
+        // The actual implementation can be extended as needed
+        try {
+            // For now, we'll just log the operation
+<span class="fc" id="L53">            System.out.println(&quot;Audit operation registered: &quot; + entityType + &quot;:&quot; + entityId + &quot; - &quot; + operationType + &quot; by &quot; + user);</span>
+<span class="pc" id="L54">        } catch (Exception e) {</span>
+            // Log the error but don't throw it to avoid breaking the application
+<span class="nc" id="L56">            System.err.println(&quot;Error registering audit operation: &quot; + e.getMessage());</span>
+        }
+<span class="fc" id="L58">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

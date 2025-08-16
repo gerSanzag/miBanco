@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.service.internal</a> &gt; <span class="el_source">AccountServiceImpl.java</span></div><h1>AccountServiceImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.service.internal;
+
+import com.mibanco.dto.AccountDTO;
+import com.mibanco.dto.mappers.AccountMapper;
+import com.mibanco.dto.mappers.ClientMapper;
+import com.mibanco.model.Account;
+import com.mibanco.model.enums.AccountOperationType;
+import com.mibanco.model.enums.AccountType;
+import com.mibanco.repository.AccountRepository;
+import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.service.AccountService;
+import com.mibanco.service.ClientService;
+import com.mibanco.service.TransactionOperationsService;
+import com.mibanco.util.ValidationException;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Account service implementation
+ */
+class AccountServiceImpl extends BaseServiceImpl&lt;AccountDTO, Account, Long, AccountOperationType, AccountRepository&gt; 
+        implements AccountService {
+    
+    private static final AccountRepository accountRepository;
+    private static ClientService clientService;
+    private static final AccountMapper mapper;
+    private static final ClientMapper clientMapper;
+<span class="nc" id="L34">    private final AccountOperationType updateType = AccountOperationType.UPDATE;</span>
+    private static AccountDtoProcessorService accountDtoProcessor;
+    
+    static {
+<span class="nc" id="L38">        accountRepository = RepositoryFactory.getInstance().getAccountRepository();</span>
+<span class="nc" id="L39">        clientMapper = new ClientMapper();</span>
+<span class="nc" id="L40">        mapper = new AccountMapper(clientMapper);</span>
+<span class="nc" id="L41">        clientService = ServiceFactory.getInstance().getClientService();</span>
+<span class="nc" id="L42">        accountDtoProcessor = new AccountDtoProcessorService(clientService);</span>
+<span class="nc" id="L43">    }</span>
+
+    public AccountServiceImpl() {
+<span class="nc" id="L46">        super(accountRepository, mapper);</span>
+<span class="nc" id="L47">    }</span>
+
+    @Override
+    public Optional&lt;AccountDTO&gt; updateMultipleFields(Long accountId, Optional&lt;AccountDTO&gt; accountDTO) {
+<span class="nc" id="L51">        Optional&lt;AccountDTO&gt; updateMultipleFields = update(</span>
+            accountId,
+            accountDTO,
+            updateType,
+<span class="nc" id="L55">            (existingAccount, newAccount) -&gt; existingAccount.withUpdates(</span>
+<span class="nc" id="L56">                Optional.ofNullable(newAccount.getBalance()),</span>
+<span class="nc" id="L57">                Optional.ofNullable(newAccount.isActive())</span>
+            )
+        );
+<span class="nc" id="L60">        saveEntity(updateType, updateMultipleFields);</span>
+<span class="nc" id="L61">        return updateMultipleFields;</span>
+    }
+
+    @Override
+    public Optional&lt;AccountDTO&gt; getAccountByNumber(Optional&lt;Long&gt; accountId) {
+<span class="nc" id="L66">        return accountId.flatMap(id -&gt; </span>
+<span class="nc" id="L67">            repository.findById(Optional.of(id))</span>
+<span class="nc" id="L68">                .flatMap(account -&gt; mapper.toDto(Optional.of(account)))</span>
+        );
+    }
+
+    @Override
+    public Optional&lt;List&lt;AccountDTO&gt;&gt; getAllAccounts() {
+<span class="nc" id="L74">        return findAll();</span>
+    }
+
+    @Override
+    public Optional&lt;AccountDTO&gt; updateAccountBalance(Long accountId, Optional&lt;BigDecimal&gt; newBalance) {
+<span class="nc" id="L79">        Optional&lt;AccountDTO&gt; updateBalance = updateField(</span>
+            accountId,
+            newBalance,
+            AccountDTO::getBalance,
+            AccountDTO::withBalance
+        );
+<span class="nc" id="L85">        saveEntity(updateType, updateBalance);</span>
+<span class="nc" id="L86">        return updateBalance;</span>
+    }
+
+    @Override
+    public Optional&lt;AccountDTO&gt; updateAccountStatus(Long accountId, Optional&lt;Boolean&gt; newActive) {
+<span class="nc" id="L91">        Optional&lt;AccountDTO&gt; updateStatus = updateField(</span>
+            accountId,
+            newActive,
+            AccountDTO::isActive,
+            AccountDTO::withActive
+        );
+<span class="nc" id="L97">        saveEntity(updateType, updateStatus);</span>
+<span class="nc" id="L98">        return updateStatus;</span>
+    }
+
+   
+    public Optional&lt;AccountDTO&gt; updateAccountHolder(Long accountId, Optional&lt;AccountDTO&gt; newHolder) {
+<span class="nc" id="L103">        Optional&lt;AccountDTO&gt; updateHolder = newHolder.flatMap(holderDTO -&gt; </span>
+<span class="nc" id="L104">            clientMapper.toEntity(Optional.of(holderDTO.getHolder()))</span>
+<span class="nc" id="L105">                .flatMap(holder -&gt; updateField(</span>
+                    accountId,
+<span class="nc" id="L107">                    Optional.of(holder),</span>
+                    AccountDTO::getHolder,
+<span class="nc" id="L109">                    (account, holderEntity) -&gt; account.toBuilder().holder(holderDTO.getHolder() ).build()</span>
+                ))
+        );
+<span class="nc" id="L112">        saveEntity(updateType, updateHolder);</span>
+<span class="nc" id="L113">        return updateHolder;</span>
+    }
+
+    @Override
+    public boolean deleteAccount(Optional&lt;Long&gt; accountId) {
+<span class="nc" id="L118">        return deleteById(accountId, AccountOperationType.DELETE);</span>
+    }
+
+    @Override
+    public Optional&lt;AccountDTO&gt; deleteByNumber(Optional&lt;Long&gt; accountId) {
+<span class="nc" id="L123">        return repository.deleteById(accountId, AccountOperationType.DELETE)</span>
+<span class="nc" id="L124">            .flatMap(account -&gt; mapper.toDto(Optional.of(account)));</span>
+    }
+
+    @Override
+    public Optional&lt;AccountDTO&gt; restoreAccount(Optional&lt;Long&gt; accountId) {
+<span class="nc" id="L129">        return restore(accountId, AccountOperationType.RESTORE);</span>
+    }
+
+    @Override
+    public long countAccounts() {
+<span class="nc" id="L134">        return countRecords();</span>
+    }
+
+    @Override
+    public void setCurrentUser(String user) {
+<span class="nc" id="L139">        super.setCurrentUser(user);</span>
+<span class="nc" id="L140">    }</span>
+
+    @Override
+    public Optional&lt;List&lt;AccountDTO&gt;&gt; searchByHolderId(Optional&lt;Long&gt; holderId) {
+<span class="nc" id="L144">        return repository.findAllByPredicate(account -&gt; account.getHolder().getId().equals(holderId.get()))        </span>
+<span class="nc" id="L145">            .map(accounts -&gt; accounts.stream()</span>
+<span class="nc" id="L146">                .map(account -&gt; mapper.toDto(Optional.of(account)).orElse(null))</span>
+<span class="nc" id="L147">                .filter(Objects::nonNull)</span>
+<span class="nc" id="L148">                .collect(Collectors.toList())</span>
+            );
+    }
+
+    @Override
+    public Optional&lt;List&lt;AccountDTO&gt;&gt; searchByType(Optional&lt;AccountType&gt; type) {
+<span class="nc" id="L154">        return repository.findAllByPredicate(account -&gt; account.getType().equals(type.get()))</span>
+<span class="nc" id="L155">            .map(accounts -&gt; accounts.stream()</span>
+<span class="nc" id="L156">                .map(account -&gt; mapper.toDto(Optional.of(account)).orElse(null))</span>
+<span class="nc" id="L157">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L158">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+            );
+    }
+
+    @Override
+    public Optional&lt;List&lt;AccountDTO&gt;&gt; searchActive() {
+<span class="nc" id="L164">            return repository.findAllByPredicate(account -&gt; account.isActive())</span>
+<span class="nc" id="L165">            .map(accounts -&gt; accounts.stream()</span>
+<span class="nc" id="L166">                .map(account -&gt; mapper.toDto(Optional.of(account)).orElse(null))</span>
+<span class="nc" id="L167">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L168">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+            );
+    }
+
+    /**
+     * Creates an account DTO with mandatory initial balance using functional programming
+     * The account is created once with the initial balance included
+     * Eliminates nested ifs using Optional chaining and early returns
+     * Guarantees transactional consistency: validates before persisting
+     */
+    public Optional&lt;AccountDTO&gt; createAccountDto(Map&lt;String, String&gt; rawData, BigDecimal initialAmount, TransactionOperationsService transactionService) {
+        try {
+<span class="nc" id="L180">            return accountDtoProcessor.processAccountDto(rawData)</span>
+<span class="nc" id="L181">                .flatMap(accountDTO -&gt; accountDtoProcessor.processInitialDeposit(accountDTO, initialAmount, transactionService))</span>
+<span class="nc" id="L182">                .flatMap(accountWithBalance -&gt; {</span>
+                    // Validate unique account number before saving
+<span class="nc" id="L184">                    validateUniqueAccountNumber(accountWithBalance);</span>
+<span class="nc" id="L185">                    return saveEntity(AccountOperationType.CREATE, Optional.of(accountWithBalance));</span>
+                })
+<span class="nc" id="L187">                .or(() -&gt; Optional.empty());</span>
+<span class="nc" id="L188">        } catch (ValidationException e) {</span>
+            // Re-throw the exception for the view to handle
+<span class="nc" id="L190">            throw e;</span>
+        }
+    }
+    
+    /**
+     * Helper method to validate unique account number
+     * @param dto Account DTO to validate
+     * @throws ValidationException if the account number already exists
+     */
+    private void validateUniqueAccountNumber(AccountDTO dto) {
+        // Only validate if the number is not null (basic validation already done in view)
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (dto.getAccountNumber() != null) {</span>
+<span class="nc" id="L202">            Optional&lt;Account&gt; existingAccount = accountRepository.findByPredicate(</span>
+<span class="nc" id="L203">                account -&gt; dto.getAccountNumber().equals(account.getAccountNumber())</span>
+            );
+            
+<span class="nc bnc" id="L206" title="All 2 branches missed.">            if (existingAccount.isPresent()) {</span>
+<span class="nc" id="L207">                throw new ValidationException(&quot;An account with number already exists: &quot; + dto.getAccountNumber());</span>
+            }
+        }
+<span class="nc" id="L210">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

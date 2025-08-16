@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CardDtoProcessorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.service.internal</a> &gt; <span class="el_source">CardDtoProcessorService.java</span></div><h1>CardDtoProcessorService.java</h1><pre class="source lang-java linenums">package com.mibanco.service.internal;
+
+import com.mibanco.dto.CardDTO;
+import com.mibanco.dto.ClientDTO;
+import com.mibanco.service.ClientService;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Specialized service for processing CardDTO creation
+ * Applies the Single Responsibility Principle (SRP)
+ * Responsible solely for transforming raw data into valid CardDTOs
+ * and processing card-related operations
+ */
+public class CardDtoProcessorService {
+    
+    private final ClientService clientService;
+    
+<span class="nc" id="L22">    public CardDtoProcessorService(ClientService clientService) {</span>
+<span class="nc" id="L23">        this.clientService = clientService;</span>
+<span class="nc" id="L24">    }</span>
+    
+    /**
+     * Processes raw data and creates a valid CardDTO
+     * @param rawData Map with card data
+     * @return Optional with processed CardDTO or empty if there are errors
+     */
+    public Optional&lt;CardDTO&gt; processCardDto(Map&lt;String, String&gt; rawData) {
+<span class="nc" id="L32">        return Optional.of(rawData)</span>
+<span class="nc" id="L33">            .flatMap(this::getHolderById)</span>
+<span class="nc" id="L34">            .flatMap(holder -&gt; buildCardDTO(rawData, holder));</span>
+    }
+    
+    /**
+     * Extracts holder ID and gets client in a single functional method
+     */
+    private Optional&lt;ClientDTO&gt; getHolderById(Map&lt;String, String&gt; rawData) {
+<span class="nc" id="L41">        return Optional.ofNullable(rawData.get(&quot;holderId&quot;))</span>
+<span class="nc" id="L42">            .map(Long::parseLong)</span>
+<span class="nc" id="L43">            .flatMap(holderId -&gt; clientService.getClientById(Optional.of(holderId)));</span>
+    }
+    
+    /**
+     * Builds the CardDTO from raw data and holder
+     */
+    private Optional&lt;CardDTO&gt; buildCardDTO(Map&lt;String, String&gt; rawData, ClientDTO holder) {
+        try {
+<span class="nc" id="L51">            CardDTO.CardDTOBuilder builder = CardDTO.builder()</span>
+<span class="nc" id="L52">                .holder(holder);</span>
+
+            // Apply functional transformations with validations
+<span class="nc" id="L55">            Optional.ofNullable(rawData.get(&quot;associatedAccountNumber&quot;))</span>
+<span class="nc" id="L56">                .ifPresent(builder::associatedAccountNumber);</span>
+
+<span class="nc" id="L58">            Optional.ofNullable(rawData.get(&quot;type&quot;))</span>
+<span class="nc" id="L59">                .map(com.mibanco.model.enums.CardType::valueOf)</span>
+<span class="nc" id="L60">                .ifPresent(builder::type);</span>
+
+<span class="nc" id="L62">            Optional.ofNullable(rawData.get(&quot;expirationDate&quot;))</span>
+<span class="nc" id="L63">                .map(date -&gt; LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE))</span>
+<span class="nc" id="L64">                .ifPresent(builder::expirationDate);</span>
+
+            // Active status by default
+<span class="nc" id="L67">            Optional.ofNullable(rawData.get(&quot;active&quot;))</span>
+<span class="nc" id="L68">                .map(Boolean::parseBoolean)</span>
+<span class="nc" id="L69">                .or(() -&gt; Optional.of(true))</span>
+<span class="nc" id="L70">                .ifPresent(builder::active);</span>
+
+<span class="nc" id="L72">            return Optional.of(builder.build());</span>
+<span class="nc" id="L73">        } catch (Exception e) {</span>
+<span class="nc" id="L74">            return Optional.empty();</span>
+        }
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

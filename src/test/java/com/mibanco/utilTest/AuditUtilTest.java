@@ -57,12 +57,11 @@ class AuditUtilTest {
     @DisplayName("Should register operation successfully")
     void shouldRegisterOperationSuccessfully() {
         // Arrange (Prepare)
-        // Configure mock: "when register is called with any parameter, return expected record"
-        when(mockAuditRepository.register(any(Optional.class))).thenReturn(Optional.of(expectedRecord));
+        // Note: Since AuditUtil now uses RepositoryFactory internally,
+        // we test the actual behavior rather than mocking
         
         // Act (Act)
         AuditRecord<Client, ClientOperationType> result = AuditUtil.registerOperation(
-            mockAuditRepository,
             Optional.of(operationType),
             Optional.of(client),
             Optional.of(user)
@@ -70,53 +69,16 @@ class AuditUtilTest {
         
         // Assert (Verify)
         assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(expectedRecord);
-        
-        // Verify that the repository's register method was called
-        verify(mockAuditRepository).register(any());
-    }
-
-    @Test
-    @DisplayName("Should return original record when repository fails")
-    void shouldReturnOriginalRecordWhenRepositoryFails() {
-        // Arrange (Prepare)
-        // Configure mock: "when register is called, return empty (simulates failure)"
-        when(mockAuditRepository.register(any(Optional.class))).thenReturn(Optional.empty());
-        
-        // Act (Act)
-        AuditRecord<Client, ClientOperationType> result = AuditUtil.registerOperation(
-            mockAuditRepository,
-            Optional.of(operationType),
-            Optional.of(client),
-            Optional.of(user)
-        );
-        
-        // Assert (Verify)
-        assertThat(result).isNotNull();
-        // Getters return direct values, not Optional
         assertThat(result.getOperationType()).isEqualTo(operationType);
         assertThat(result.getEntity()).isEqualTo(client);
         assertThat(result.getUser()).isEqualTo(user);
-        
-        // Verify that the repository's register method was called
-        verify(mockAuditRepository).register(any());
     }
 
     @Test
     @DisplayName("Should handle empty Optionals correctly")
     void shouldHandleEmptyOptionalsCorrectly() {
-        // Arrange (Prepare)
-        // Configure mock to return a record with empty Optionals
-        AuditRecord<Client, ClientOperationType> recordWithEmpties = AuditRecord.of(
-            Optional.<ClientOperationType>empty(), 
-            Optional.<Client>empty(), 
-            Optional.<String>empty()
-        );
-        when(mockAuditRepository.register(any(Optional.class))).thenReturn(Optional.of(recordWithEmpties));
-        
         // Act (Act)
         AuditRecord<Client, ClientOperationType> result = AuditUtil.registerOperation(
-            mockAuditRepository,
             Optional.<ClientOperationType>empty(), // empty operationType
             Optional.<Client>empty(), // empty entity
             Optional.<String>empty()  // empty user
@@ -128,9 +90,6 @@ class AuditUtilTest {
         assertThat(result.getOperationType()).isNull();
         assertThat(result.getEntity()).isNull();
         assertThat(result.getUser()).isNull();
-        
-        // Verify that the repository's register method was called
-        verify(mockAuditRepository).register(any());
     }
 
     @Test
@@ -142,11 +101,8 @@ class AuditUtilTest {
         Optional<Client> originalClient = Optional.of(client);
         Optional<String> originalUser = Optional.of(user);
         
-        when(mockAuditRepository.register(any(Optional.class))).thenReturn(Optional.of(expectedRecord));
-        
         // Act (Act)
         AuditRecord<Client, ClientOperationType> result = AuditUtil.registerOperation(
-            mockAuditRepository,
             originalOperationType,
             originalClient,
             originalUser
@@ -159,9 +115,55 @@ class AuditUtilTest {
         assertThat(originalOperationType).isEqualTo(Optional.of(operationType));
         assertThat(originalClient).isEqualTo(Optional.of(client));
         assertThat(originalUser).isEqualTo(Optional.of(user));
-        
-        // Verify that the repository's register method was called
-        verify(mockAuditRepository).register(any());
     }
 
+    @Test
+    @DisplayName("Should create audit record with correct values")
+    void shouldCreateAuditRecordWithCorrectValues() {
+        // Act (Act)
+        AuditRecord<Client, ClientOperationType> result = AuditUtil.registerOperation(
+            Optional.of(operationType),
+            Optional.of(client),
+            Optional.of(user)
+        );
+        
+        // Assert (Verify)
+        assertThat(result).isNotNull();
+        assertThat(result.getOperationType()).isEqualTo(ClientOperationType.CREATE);
+        assertThat(result.getEntity()).isEqualTo(client);
+        assertThat(result.getUser()).isEqualTo(user);
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getDateTime()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Should register operation with simplified parameters")
+    void shouldRegisterOperationWithSimplifiedParameters() {
+        // Arrange (Prepare)
+        String entityType = "Client";
+        Long entityId = 123L;
+        String operationType = "CREATE";
+        String user = "test_user";
+        
+        // Act (Act) - This should not throw any exception
+        AuditUtil.registerOperation(entityType, entityId, operationType, user);
+        
+        // Assert (Verify) - Since the method doesn't return anything, we just verify it doesn't throw
+        // The method should execute without errors
+    }
+
+    @Test
+    @DisplayName("Should handle simplified operation with null parameters")
+    void shouldHandleSimplifiedOperationWithNullParameters() {
+        // Arrange (Prepare)
+        String entityType = null;
+        Long entityId = null;
+        String operationType = null;
+        String user = "test_user";
+        
+        // Act (Act) - This should not throw any exception
+        AuditUtil.registerOperation(entityType, entityId, operationType, user);
+        
+        // Assert (Verify) - The method should handle null parameters gracefully
+    }
 } 

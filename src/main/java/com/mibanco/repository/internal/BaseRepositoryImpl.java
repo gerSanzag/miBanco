@@ -109,11 +109,8 @@ abstract class BaseRepositoryImpl<T extends Identifiable, ID, E extends Enum<E>>
         
         T entity = entityOpt.get();
         
-        // Generate new ID if not present
-        if (entity.getId() == null) {
-            entity = createWithNewId(entity);
-    }
-    
+        entity = createWithNewId(entity);   
+ 
         // Add to entities list
         entities.add(entity);
         

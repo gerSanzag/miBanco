@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RepositoryFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repository.internal</a> &gt; <span class="el_source">RepositoryFactory.java</span></div><h1>RepositoryFactory.java</h1><pre class="source lang-java linenums">package com.mibanco.repository.internal;
+
+import com.mibanco.repository.AccountRepository;
+import com.mibanco.repository.AuditRepository;
+import com.mibanco.repository.CardRepository;
+import com.mibanco.repository.ClientRepository;
+import com.mibanco.repository.TransactionRepository;
+
+/**
+ * Centralized repository configuration
+ * This is the only class that has access to implementations
+ * Being in the same package as implementations, it can instantiate them
+ */
+public final class RepositoryFactory {
+    
+    private static volatile RepositoryFactory instance;
+    private final AuditRepository auditRepository;
+    private final ClientRepository clientRepository;
+    private final AccountRepository accountRepository;
+    private final CardRepository cardRepository;
+    private final TransactionRepository transactionRepository;
+    
+    /**
+     * Private constructor that initializes all implementations
+     * Being in the same package, it has access to package-private classes
+     */
+<span class="fc" id="L27">    private RepositoryFactory() {</span>
+<span class="fc" id="L28">        this.auditRepository = new AuditRepositoryImpl();</span>
+<span class="fc" id="L29">        this.clientRepository = new ClientRepositoryImpl();</span>
+<span class="fc" id="L30">        this.accountRepository = new AccountRepositoryImpl();</span>
+<span class="fc" id="L31">        this.cardRepository = new CardRepositoryImpl();</span>
+<span class="fc" id="L32">        this.transactionRepository = new TransactionRepositoryImpl();</span>
+<span class="fc" id="L33">    }</span>
+    
+    /**
+     * Gets the single instance of RepositoryFactory
+     * This is the only access point to repository implementations
+     */
+    public static RepositoryFactory getInstance() {
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (instance == null) {</span>
+<span class="fc" id="L41">            synchronized (RepositoryFactory.class) {</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">                if (instance == null) {</span>
+<span class="fc" id="L43">                    instance = new RepositoryFactory();</span>
+                }
+<span class="fc" id="L45">            }</span>
+        }
+<span class="fc" id="L47">        return instance;</span>
+    }
+    
+    /**
+     * Gets the audit repository
+     * @return Public interface of the audit repository
+     */
+    public AuditRepository getAuditRepository() {
+<span class="fc" id="L55">        return auditRepository;</span>
+    }
+    
+    /**
+     * Gets the client repository
+     * @return Public interface of the client repository
+     */
+    public ClientRepository getClientRepository() {
+<span class="nc" id="L63">        return clientRepository;</span>
+    }
+    
+    /**
+     * Gets the account repository
+     * @return Public interface of the account repository
+     */
+    public AccountRepository getAccountRepository() {
+<span class="nc" id="L71">        return accountRepository;</span>
+    }
+    
+    /**
+     * Gets the card repository
+     * @return Public interface of the card repository
+     */
+    public CardRepository getCardRepository() {
+<span class="nc" id="L79">        return cardRepository;</span>
+    }
+    
+    /**
+     * Gets the transaction repository
+     * @return Public interface of the transaction repository
+     */
+    public TransactionRepository getTransactionRepository() {
+<span class="nc" id="L87">        return transactionRepository;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

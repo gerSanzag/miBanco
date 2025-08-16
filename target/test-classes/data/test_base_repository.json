@@ -1,0 +1,12 @@
+[
+    {
+        "id": 5,
+        "firstName": "Test",
+        "lastName": "User",
+        "dni": "12345678",
+        "birthDate": "1990-01-01",
+        "email": "test@test.com",
+        "phone": "123456789",
+        "address": "Test Address"
+    }
+]

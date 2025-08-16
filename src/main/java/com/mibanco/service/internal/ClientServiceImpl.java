@@ -29,7 +29,7 @@ class ClientServiceImpl extends BaseServiceImpl<ClientDTO, Client, Long, ClientO
     }
     
     public ClientServiceImpl() {
-        super(clientRepository, mapper, RepositoryFactory.getInstance().getAuditRepository());
+        super(clientRepository, mapper);
     }
 
     @Override

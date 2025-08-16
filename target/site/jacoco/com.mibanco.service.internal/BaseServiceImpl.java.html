@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.service.internal</a> &gt; <span class="el_source">BaseServiceImpl.java</span></div><h1>BaseServiceImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.service.internal;
+
+import com.mibanco.dto.mappers.Mapper;
+import com.mibanco.model.Identifiable;
+import com.mibanco.repository.util.BaseRepository;
+import com.mibanco.service.util.BaseService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+/**
+ * Base implementation for services
+ * Package-private visibility
+ * @param &lt;T&gt; DTO type
+ * @param &lt;E&gt; Entity type that must implement Identifiable
+ * @param &lt;ID&gt; Identifier type
+ * @param &lt;O&gt; Enum type for operations
+ * @param &lt;R&gt; Specific repository type that extends BaseRepository
+ */
+abstract class BaseServiceImpl&lt;T, E extends Identifiable, ID, O extends Enum&lt;O&gt;, R extends BaseRepository&lt;E, ID, O&gt;&gt; implements BaseService&lt;T, E, ID, O&gt; {
+    
+    protected final R repository;
+    protected final Mapper&lt;E, T&gt; mapper;
+    
+<span class="nc" id="L28">    protected BaseServiceImpl(R repository, Mapper&lt;E, T&gt; mapper) {</span>
+<span class="nc" id="L29">        this.repository = repository;</span>
+<span class="nc" id="L30">        this.mapper = mapper;</span>
+<span class="nc" id="L31">    }</span>
+
+    @Override
+    public Optional&lt;T&gt; saveEntity(O operationType, Optional&lt;T&gt; dto) {
+<span class="nc" id="L35">     return dto</span>
+<span class="nc" id="L36">            .flatMap(d -&gt; mapper.toEntity(Optional.of(d)))</span>
+<span class="nc" id="L37">            .flatMap(entity -&gt; {</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">                if (entity.getId() == null) {</span>
+<span class="nc" id="L39">                    return repository.createRecord(Optional.of(entity), operationType);</span>
+                } else {
+<span class="nc" id="L41">                    return repository.updateRecord(Optional.of(entity), operationType);</span>
+                }
+            })
+<span class="nc" id="L44">            .flatMap(e -&gt; mapper.toDto(Optional.of(e)));</span>
+    }
+
+    @Override
+    public &lt;V&gt; Optional&lt;T&gt; updateField(
+            ID id,
+            Optional&lt;V&gt; newValue,
+            Function&lt;T, V&gt; currentValue,
+            BiFunction&lt;T, V, T&gt; updater) {
+            
+<span class="nc" id="L54">        return Optional.ofNullable(id)</span>
+<span class="nc" id="L55">            .flatMap(idValue -&gt; repository.findById(Optional.of(idValue)))</span>
+<span class="nc" id="L56">            .flatMap(entity -&gt; mapper.toDto(Optional.of(entity)));</span>
+            
+    }
+
+    @Override
+    public Optional&lt;T&gt; update(
+            ID id,
+            Optional&lt;T&gt; dto,
+            O operationType,
+            BiFunction&lt;T, E, T&gt; updater) {
+            
+<span class="nc" id="L67">        return Optional.ofNullable(id)</span>
+<span class="nc" id="L68">            .flatMap(idValue -&gt; repository.findById(Optional.of(idValue)))</span>
+<span class="nc" id="L69">            .flatMap(entity -&gt; mapper.toDto(Optional.of(entity)))</span>
+<span class="nc" id="L70">            .flatMap(updatedDto -&gt; saveEntity(operationType, Optional.of(updatedDto)));</span>
+    }
+
+    @Override
+    public Optional&lt;T&gt; findById(Optional&lt;ID&gt; id) {
+<span class="nc" id="L75">        return id.flatMap(idValue -&gt; </span>
+<span class="nc" id="L76">            repository.findById(Optional.of(idValue))</span>
+<span class="nc" id="L77">                .flatMap(entity -&gt; mapper.toDto(Optional.of(entity)))</span>
+        );
+    }
+
+    @Override
+    public Optional&lt;List&lt;T&gt;&gt; findAll() {
+<span class="nc" id="L83">        return repository.findAll()</span>
+<span class="nc" id="L84">            .map(entities -&gt; entities.stream()</span>
+<span class="nc" id="L85">                .map(entity -&gt; mapper.toDto(Optional.of(entity)).orElse(null))</span>
+<span class="nc" id="L86">                .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L87">                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll)</span>
+            );
+    }
+
+    @Override
+    public boolean deleteById(Optional&lt;ID&gt; id, O operationType) {
+<span class="nc" id="L93">        return id.flatMap(idValue -&gt; </span>
+<span class="nc" id="L94">            repository.deleteById(Optional.of(idValue), operationType)</span>
+<span class="nc" id="L95">        ).isPresent();</span>
+    }
+
+    @Override
+    public long countRecords() {
+<span class="nc" id="L100">        return repository.countRecords();</span>
+    }
+
+    @Override
+    public void setCurrentUser(String user) {
+<span class="nc" id="L105">        repository.setCurrentUser(user);</span>
+<span class="nc" id="L106">    }</span>
+
+    @Override
+    public List&lt;T&gt; getDeleted() {
+<span class="nc" id="L110">        return repository.getDeleted().stream()</span>
+<span class="nc" id="L111">            .map(entity -&gt; mapper.toDto(Optional.of(entity)).orElse(null))</span>
+<span class="nc" id="L112">            .filter(java.util.Objects::nonNull)</span>
+<span class="nc" id="L113">            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);</span>
+    }
+
+    @Override
+    public Optional&lt;T&gt; restore(Optional&lt;ID&gt; id, O operationType) {
+<span class="nc" id="L118">        return id.flatMap(idValue -&gt; </span>
+<span class="nc" id="L119">            repository.restore(Optional.of(idValue), operationType)</span>
+<span class="nc" id="L120">                .flatMap(entity -&gt; mapper.toDto(Optional.of(entity)))</span>
+        );
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionOperationsServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.service.internal</a> &gt; <span class="el_source">TransactionOperationsServiceImpl.java</span></div><h1>TransactionOperationsServiceImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.service.internal;
+
+import com.mibanco.dto.TransactionDTO;
+import com.mibanco.dto.mappers.TransactionMapper;
+import com.mibanco.model.Transaction;
+import com.mibanco.model.enums.TransactionOperationType;
+import com.mibanco.model.enums.TransactionType;
+import com.mibanco.repository.TransactionRepository;
+import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.service.AccountService;
+import com.mibanco.service.TransactionOperationsService;
+
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+class TransactionOperationsServiceImpl extends BaseServiceImpl&lt;TransactionDTO, Transaction, Long, TransactionOperationType, TransactionRepository&gt; implements TransactionOperationsService {
+
+    private static final TransactionRepository transactionRepository;
+    private static final TransactionMapper mapper;
+    private static final AccountService accountService;
+<span class="nc" id="L28">    private final Set&lt;Long&gt; blockedAccounts = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L29">    private final Object lock = new Object();</span>
+
+    static {
+<span class="nc" id="L32">        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();</span>
+<span class="nc" id="L33">        mapper = new TransactionMapper();</span>
+<span class="nc" id="L34">        accountService = new AccountServiceImpl();</span>
+    }
+
+    public TransactionOperationsServiceImpl() {
+<span class="nc" id="L38">        super(transactionRepository, mapper);</span>
+<span class="nc" id="L39">    }</span>
+
+    // Static map of transaction type inversions
+<span class="nc" id="L42">    private static final Map&lt;TransactionType, TransactionType&gt; TYPE_INVERSIONS = ofEntries(</span>
+<span class="nc" id="L43">        entry(TransactionType.DEPOSIT, TransactionType.WITHDRAWAL),</span>
+<span class="nc" id="L44">        entry(TransactionType.WITHDRAWAL, TransactionType.DEPOSIT),</span>
+<span class="nc" id="L45">        entry(TransactionType.SENT_TRANSFER, TransactionType.RECEIVED_TRANSFER),</span>
+<span class="nc" id="L46">        entry(TransactionType.RECEIVED_TRANSFER, TransactionType.SENT_TRANSFER)</span>
+    );
+ 
+
+    private boolean blockAccount(Optional&lt;Long&gt; accountId) {
+<span class="nc" id="L51">        return accountId.map(id -&gt; {</span>
+<span class="nc" id="L52">            synchronized (lock) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                if (blockedAccounts.contains(id)) {</span>
+<span class="nc" id="L54">                    return false;</span>
+                }
+<span class="nc" id="L56">                blockedAccounts.add(id);</span>
+<span class="nc" id="L57">                return true;</span>
+            }
+<span class="nc" id="L59">        }).orElse(false);</span>
+    }
+
+    private void releaseAccount(Optional&lt;Long&gt; accountId) {
+<span class="nc" id="L63">        accountId.ifPresent(id -&gt; {</span>
+<span class="nc" id="L64">            synchronized (lock) {</span>
+<span class="nc" id="L65">                blockedAccounts.remove(id);</span>
+<span class="nc" id="L66">            }</span>
+<span class="nc" id="L67">        });</span>
+<span class="nc" id="L68">    }</span>
+
+    @Override
+    public Optional&lt;TransactionDTO&gt; deposit(Optional&lt;Long&gt; accountId, Optional&lt;BigDecimal&gt; amount, Optional&lt;String&gt; description) {
+<span class="nc" id="L72">        return accountId</span>
+<span class="nc" id="L73">            .flatMap(id -&gt; {</span>
+                // Try to block the account
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                if (!blockAccount(Optional.of(id))) {</span>
+<span class="nc" id="L76">                    return Optional.empty();</span>
+                }
+                
+                try {
+                    // Get the account
+<span class="nc" id="L81">                    return accountService.getAccountByNumber(Optional.of(id))</span>
+<span class="nc" id="L82">                        .flatMap(accountDTO -&gt; {</span>
+                            // If the account is not active, activate it
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                            if (!accountDTO.isActive()) {</span>
+<span class="nc" id="L85">                                return accountService.updateAccountStatus(id, Optional.of(true));</span>
+                            }
+<span class="nc" id="L87">                            return Optional.of(accountDTO);</span>
+                        })
+<span class="nc" id="L89">                        .flatMap(accountDTO -&gt; {</span>
+                            // Update the balance
+<span class="nc" id="L91">                            BigDecimal newBalance = accountDTO.getBalance().add(amount.get());</span>
+<span class="nc" id="L92">                            return accountService.updateAccountBalance(id, Optional.of(newBalance));</span>
+                        })
+<span class="nc" id="L94">                        .flatMap(updatedAccount -&gt; {</span>
+                            // Create the transaction
+<span class="nc" id="L96">                            TransactionDTO transactionDTO = TransactionDTO.builder()</span>
+<span class="nc" id="L97">                                .accountNumber(updatedAccount.getAccountNumber())</span>
+<span class="nc" id="L98">                                .type(TransactionType.DEPOSIT)</span>
+<span class="nc" id="L99">                                .amount(amount.get())</span>
+<span class="nc" id="L100">                                .description(description.orElse(&quot;Deposit&quot;))</span>
+<span class="nc" id="L101">                                .date(LocalDateTime.now())</span>
+<span class="nc" id="L102">                                .build();</span>
+                            
+<span class="nc" id="L104">                            return saveEntity(TransactionOperationType.CREATE, Optional.of(transactionDTO));</span>
+                        });
+                } finally {
+                    // Always release the account
+<span class="nc" id="L108">                    releaseAccount(Optional.of(id));</span>
+                }
+            });
+    }
+    
+    @Override
+    public Optional&lt;TransactionDTO&gt; withdraw(Optional&lt;Long&gt; accountId, Optional&lt;BigDecimal&gt; amount, Optional&lt;String&gt; description) {
+<span class="nc" id="L115">        return accountId</span>
+<span class="nc" id="L116">            .flatMap(id -&gt; {</span>
+                // Try to block the account
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                if (!blockAccount(Optional.of(id))) {</span>
+<span class="nc" id="L119">                    return Optional.empty();</span>
+                }
+                
+                try {
+                    // Get the account
+<span class="nc" id="L124">                    return accountService.getAccountByNumber(Optional.of(id))</span>
+<span class="nc" id="L125">                        .flatMap(accountDTO -&gt; {</span>
+                            // Check if the account is active
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                            if (!accountDTO.isActive()) {</span>
+<span class="nc" id="L128">                                return Optional.empty();</span>
+                            }
+                            
+                            // Check if there's enough balance
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                            if (accountDTO.getBalance().compareTo(amount.get()) &lt; 0) {</span>
+<span class="nc" id="L133">                                return Optional.empty();</span>
+                            }
+                            
+<span class="nc" id="L136">                            return Optional.of(accountDTO);</span>
+                        })
+<span class="nc" id="L138">                        .flatMap(accountDTO -&gt; {</span>
+                            // Update the balance
+<span class="nc" id="L140">                            BigDecimal newBalance = accountDTO.getBalance().subtract(amount.get());</span>
+<span class="nc" id="L141">                            return accountService.updateAccountBalance(id, Optional.of(newBalance));</span>
+                        })
+<span class="nc" id="L143">                        .flatMap(updatedAccount -&gt; {</span>
+                            // Create the transaction
+<span class="nc" id="L145">                            TransactionDTO transactionDTO = TransactionDTO.builder()</span>
+<span class="nc" id="L146">                                .accountNumber(updatedAccount.getAccountNumber())</span>
+<span class="nc" id="L147">                                .type(TransactionType.WITHDRAWAL)</span>
+<span class="nc" id="L148">                                .amount(amount.get())</span>
+<span class="nc" id="L149">                                .description(description.orElse(&quot;Withdrawal&quot;))</span>
+<span class="nc" id="L150">                                .date(LocalDateTime.now())</span>
+<span class="nc" id="L151">                                .build();</span>
+                            
+<span class="nc" id="L153">                            return saveEntity(TransactionOperationType.CREATE, Optional.of(transactionDTO));</span>
+                        });
+                } finally {
+                    // Always release the account
+<span class="nc" id="L157">                    releaseAccount(Optional.of(id));</span>
+                }
+            });
+    }
+    
+    @Override
+    public Optional&lt;TransactionDTO&gt; transfer(Optional&lt;Long&gt; sourceAccountId, Optional&lt;Long&gt; destinationAccountId, Optional&lt;BigDecimal&gt; amount, Optional&lt;String&gt; description) {
+<span class="nc" id="L164">        return sourceAccountId</span>
+<span class="nc" id="L165">            .flatMap(sourceId -&gt; destinationAccountId</span>
+<span class="nc" id="L166">                .flatMap(destId -&gt; {</span>
+                    // Try to block both accounts
+<span class="nc bnc" id="L168" title="All 4 branches missed.">                    if (!blockAccount(Optional.of(sourceId)) || !blockAccount(Optional.of(destId))) {</span>
+<span class="nc" id="L169">                        return Optional.empty();</span>
+                    }
+                    
+                    try {
+                        // Get the source account
+<span class="nc" id="L174">                        return accountService.getAccountByNumber(Optional.of(sourceId))</span>
+<span class="nc" id="L175">                            .flatMap(sourceAccount -&gt; {</span>
+                                // Check if the source account is active
+<span class="nc bnc" id="L177" title="All 2 branches missed.">                                if (!sourceAccount.isActive()) {</span>
+<span class="nc" id="L178">                                    return Optional.empty();</span>
+                                }
+                                
+                                // Check if there's enough balance
+<span class="nc bnc" id="L182" title="All 2 branches missed.">                                if (sourceAccount.getBalance().compareTo(amount.get()) &lt; 0) {</span>
+<span class="nc" id="L183">                                    return Optional.empty();</span>
+                                }
+                                
+<span class="nc" id="L186">                                return Optional.of(sourceAccount);</span>
+                            })
+<span class="nc" id="L188">                            .flatMap(sourceAccount -&gt; {</span>
+                                // Get the destination account
+<span class="nc" id="L190">                                return accountService.getAccountByNumber(Optional.of(destinationAccountId.get()))</span>
+<span class="nc" id="L191">                                    .flatMap(destAccount -&gt; {</span>
+                                        // Check if the destination account is active
+<span class="nc bnc" id="L193" title="All 2 branches missed.">                                        if (!destAccount.isActive()) {</span>
+<span class="nc" id="L194">                                            return Optional.empty();</span>
+                                        }
+                                        
+<span class="nc" id="L197">                                        return Optional.of(destAccount);</span>
+                                    })
+<span class="nc" id="L199">                                    .flatMap(destAccount -&gt; {</span>
+                                        // Update source account balance
+<span class="nc" id="L201">                                        BigDecimal newSourceBalance = sourceAccount.getBalance().subtract(amount.get());</span>
+<span class="nc" id="L202">                                        return accountService.updateAccountBalance(sourceId, Optional.of(newSourceBalance))</span>
+<span class="nc" id="L203">                                            .flatMap(updatedSourceAccount -&gt; {</span>
+                                                // Update destination account balance
+<span class="nc" id="L205">                                                BigDecimal newDestBalance = destAccount.getBalance().add(amount.get());</span>
+<span class="nc" id="L206">                                                return accountService.updateAccountBalance(destinationAccountId.get(), Optional.of(newDestBalance))</span>
+<span class="nc" id="L207">                                                    .flatMap(updatedDestAccount -&gt; {</span>
+                                                        // Create the sent transaction
+<span class="nc" id="L209">                                                        TransactionDTO sentTransaction = TransactionDTO.builder()</span>
+<span class="nc" id="L210">                                                            .accountNumber(updatedSourceAccount.getAccountNumber())</span>
+<span class="nc" id="L211">                                                            .destinationAccountNumber(updatedDestAccount.getAccountNumber())</span>
+<span class="nc" id="L212">                                                            .type(TransactionType.SENT_TRANSFER)</span>
+<span class="nc" id="L213">                                                            .amount(amount.get())</span>
+<span class="nc" id="L214">                                                            .description(description.orElse(&quot;Transfer sent&quot;))</span>
+<span class="nc" id="L215">                                                            .date(LocalDateTime.now())</span>
+<span class="nc" id="L216">                                                            .build();</span>
+                                                        
+<span class="nc" id="L218">                                                        return saveEntity(TransactionOperationType.CREATE, Optional.of(sentTransaction));</span>
+                                                    });
+                                            });
+                                    });
+                            });
+                    } finally {
+                        // Always release both accounts
+<span class="nc" id="L225">                        releaseAccount(Optional.of(sourceId));</span>
+<span class="nc" id="L226">                        releaseAccount(Optional.of(destId));</span>
+                    }
+                }));
+    }
+    
+    @Override
+    public Optional&lt;TransactionDTO&gt; cancelTransaction(Optional&lt;Long&gt; transactionId) {
+<span class="nc" id="L233">        return transactionId</span>
+<span class="nc" id="L234">            .flatMap(id -&gt; findById(Optional.of(id))</span>
+<span class="nc" id="L235">                .flatMap(transactionDTO -&gt; {</span>
+                    // Get the inverse transaction type
+<span class="nc" id="L237">                    TransactionType inverseType = TYPE_INVERSIONS.get(transactionDTO.getType());</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">                    if (inverseType == null) {</span>
+<span class="nc" id="L239">                        return Optional.empty();</span>
+                    }
+                    
+                    // Get the account
+<span class="nc" id="L243">                    return accountService.getAccountByNumber(Optional.of(Long.parseLong(transactionDTO.getAccountNumber())))</span>
+<span class="nc" id="L244">                        .flatMap(accountDTO -&gt; {</span>
+                            // Apply the inverse operation
+                            BigDecimal newBalance;
+<span class="nc bnc" id="L247" title="All 4 branches missed.">                            if (transactionDTO.getType() == TransactionType.DEPOSIT || transactionDTO.getType() == TransactionType.RECEIVED_TRANSFER) {</span>
+                                // If it was a deposit/received transfer, we subtract
+<span class="nc" id="L249">                                newBalance = accountDTO.getBalance().subtract(transactionDTO.getAmount());</span>
+                            } else {
+                                // If it was a withdrawal/sent transfer, we add
+<span class="nc" id="L252">                                newBalance = accountDTO.getBalance().add(transactionDTO.getAmount());</span>
+                            }
+                            
+<span class="nc" id="L255">                            return accountService.updateAccountBalance(Long.parseLong(transactionDTO.getAccountNumber()), Optional.of(newBalance));</span>
+                        })
+<span class="nc" id="L257">                        .flatMap(updatedAccount -&gt; {</span>
+                            // Create the cancellation transaction
+<span class="nc" id="L259">                            TransactionDTO cancellationTransaction = TransactionDTO.builder()</span>
+<span class="nc" id="L260">                                .accountNumber(updatedAccount.getAccountNumber())</span>
+<span class="nc" id="L261">                                .type(inverseType)</span>
+<span class="nc" id="L262">                                .amount(transactionDTO.getAmount())</span>
+<span class="nc" id="L263">                                .description(&quot;Cancellation of transaction &quot; + id)</span>
+<span class="nc" id="L264">                                .date(LocalDateTime.now())</span>
+<span class="nc" id="L265">                                .build();</span>
+                            
+<span class="nc" id="L267">                            return saveEntity(TransactionOperationType.CREATE, Optional.of(cancellationTransaction));</span>
+                        });
+                }));
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

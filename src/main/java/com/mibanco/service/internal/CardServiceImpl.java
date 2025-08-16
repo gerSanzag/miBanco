@@ -35,7 +35,7 @@ class CardServiceImpl extends BaseServiceImpl<CardDTO, Card, Long, CardOperation
     }
     
     public CardServiceImpl() {
-        super(cardRepository, mapper, RepositoryFactory.getInstance().getAuditRepository());
+        super(cardRepository, mapper);
     }
     
     @Override

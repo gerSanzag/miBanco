@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">miBanco</a> &gt; <a href="index.source.html" class="el_package">com.mibanco.repository.internal</a> &gt; <span class="el_source">BaseRepositoryImpl.java</span></div><h1>BaseRepositoryImpl.java</h1><pre class="source lang-java linenums">package com.mibanco.repository.internal;
+
+import com.mibanco.model.Identifiable;
+import com.mibanco.repository.AuditRepository;
+import com.mibanco.repository.util.BaseRepository;
+import com.mibanco.util.AuditUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.Objects;
+
+/**
+ * Abstract base implementation for repositories with restricted access
+ * @param &lt;T&gt; Entity type that must implement Identifiable
+ * @param &lt;ID&gt; Identifier type
+ * @param &lt;E&gt; Enum type for operations
+ */
+abstract class BaseRepositoryImpl&lt;T extends Identifiable, ID, E extends Enum&lt;E&gt;&gt; implements BaseRepository&lt;T, ID, E&gt; {
+    
+    // List to store entities in memory
+<span class="fc" id="L26">    protected final List&lt;T&gt; entities = new ArrayList&lt;&gt;(); // entidades</span>
+    
+    // Cache for restoration of deleted entities
+<span class="fc" id="L29">    protected final List&lt;T&gt; deletedEntities = new ArrayList&lt;&gt;(); // entidadesEliminadas</span>
+    
+    // Counter to generate IDs automatically
+<span class="fc" id="L32">    protected final AtomicLong idCounter = new AtomicLong(1); // idContador</span>
+    
+    // Current user
+<span class="fc" id="L35">    protected String currentUser = &quot;sistema&quot;; // usuarioActual</span>
+    
+    // Generic JSON processor
+    private final BaseJsonProcessor&lt;T&gt; jsonProcessor; // jsonProcesador
+    
+    /**
+     * Protected constructor without automatic loading
+     * Data will be loaded lazily when needed
+     */
+<span class="fc" id="L44">    protected BaseRepositoryImpl() {</span>
+        // Initialize JSON processor
+<span class="fc" id="L46">        this.jsonProcessor = new BaseJsonProcessor&lt;&gt;();</span>
+        // DO NOT load data automatically - it will be done lazily
+<span class="fc" id="L48">    }</span>
+    
+    /**
+     * Public method to load data manually
+     * Useful for testing and cases where explicit control is needed
+     */
+    public void loadData() {
+<span class="nc" id="L55">        loadDataFromJson();</span>
+<span class="nc" id="L56">    }</span>
+    
+    /**
+     * Loads data from JSON automatically when creating the repository
+     * Data is loaded into the entities list
+     */
+    private void loadDataFromJson() {
+<span class="nc" id="L63">        Map&lt;String, Object&gt; config = getConfiguration();</span>
+        
+        // Defensive validation for critical fields
+<span class="nc" id="L66">        Class&lt;T&gt; classType = Objects.requireNonNull(</span>
+<span class="nc" id="L67">            (Class&lt;T&gt;) config.get(&quot;classType&quot;), </span>
+            &quot;CRITICAL ERROR: Class type not configured&quot;
+        );
+        
+<span class="nc" id="L71">        Function&lt;T, Long&gt; idExtractor = Objects.requireNonNull(</span>
+<span class="nc" id="L72">            (Function&lt;T, Long&gt;) config.get(&quot;idExtractor&quot;), </span>
+            &quot;CRITICAL ERROR: ID extractor not configured&quot;
+        );
+        
+        // Optional field: if null, don't load data
+<span class="nc" id="L77">        String path = (String) config.get(&quot;filePath&quot;);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (path == null) {</span>
+<span class="nc" id="L79">            System.err.println(&quot;WARNING: File path not configured, skipping data loading&quot;);</span>
+<span class="nc" id="L80">            return;</span>
+        }
+        
+        // Load data from JSON
+<span class="nc" id="L84">        List&lt;T&gt; loadedData = jsonProcessor.loadDataConditionally(path, classType);</span>
+        
+        // Add loaded data to entities list
+<span class="nc" id="L87">        entities.addAll(loadedData);</span>
+        
+        // Update counter if data was loaded
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (!loadedData.isEmpty()) {</span>
+<span class="nc" id="L91">            long maxId = loadedData.stream()</span>
+<span class="nc" id="L92">                .mapToLong(entity -&gt; idExtractor.apply(entity))</span>
+<span class="nc" id="L93">                .max()</span>
+<span class="nc" id="L94">                .orElse(0);</span>
+<span class="nc" id="L95">            idCounter.set(maxId + 1);</span>
+        }
+<span class="nc" id="L97">    }</span>
+    
+    @Override
+    public void setCurrentUser(String user) {
+<span class="nc" id="L101">        this.currentUser = user;</span>
+<span class="nc" id="L102">    }</span>
+    
+    @Override
+    public Optional&lt;T&gt; createRecord(Optional&lt;T&gt; entityOpt, E operationType) {
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (entityOpt.isEmpty()) {</span>
+<span class="nc" id="L107">            return Optional.empty();</span>
+        }
+        
+<span class="nc" id="L110">        T entity = entityOpt.get();</span>
+        
+        // Generate new ID if not present
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (entity.getId() == null) {</span>
+<span class="nc" id="L114">            entity = createWithNewId(entity);</span>
+    }
+    
+        // Add to entities list
+<span class="nc" id="L118">        entities.add(entity);</span>
+        
+        // Register audit
+<span class="nc" id="L121">        registerAudit(entity, operationType);</span>
+        
+<span class="nc" id="L123">        return Optional.of(entity);</span>
+    }
+    
+    protected abstract T createWithNewId(T entity);
+    
+    protected abstract Map&lt;String, Object&gt; getConfiguration();
+    
+    @Override
+    public Optional&lt;T&gt; updateRecord(Optional&lt;T&gt; entityOpt, E operationType) {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (entityOpt.isEmpty()) {</span>
+<span class="nc" id="L133">            return Optional.empty();</span>
+        }
+        
+<span class="nc" id="L136">        T entity = entityOpt.get();</span>
+        
+        // Find and update existing entity
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        for (int i = 0; i &lt; entities.size(); i++) {</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">            if (Objects.equals(entities.get(i).getId(), entity.getId())) {</span>
+<span class="nc" id="L141">                entities.set(i, entity);</span>
+<span class="nc" id="L142">                registerAudit(entity, operationType);</span>
+<span class="nc" id="L143">                return Optional.of(entity);</span>
+            }
+        }
+        
+<span class="nc" id="L147">        return Optional.empty();</span>
+    }
+    
+    @Override
+    public Optional&lt;T&gt; findById(Optional&lt;ID&gt; idOpt) {
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (idOpt.isEmpty()) {</span>
+<span class="nc" id="L153">            return Optional.empty();</span>
+        }
+        
+<span class="nc" id="L156">        ID id = idOpt.get();</span>
+<span class="nc" id="L157">        return entities.stream()</span>
+<span class="nc" id="L158">            .filter(entity -&gt; Objects.equals(entity.getId(), id))</span>
+<span class="nc" id="L159">            .findFirst();</span>
+    }
+    
+    @Override
+    public Optional&lt;T&gt; findByPredicate(Predicate&lt;T&gt; predicate) {
+<span class="nc" id="L164">        return entities.stream()</span>
+<span class="nc" id="L165">            .filter(predicate)</span>
+<span class="nc" id="L166">                .findFirst();</span>
+    }
+    
+    @Override
+    public Optional&lt;List&lt;T&gt;&gt; findAllByPredicate(Predicate&lt;T&gt; predicate) {
+<span class="nc" id="L171">        List&lt;T&gt; filteredEntities = entities.stream()</span>
+<span class="nc" id="L172">            .filter(predicate)</span>
+<span class="nc" id="L173">            .toList();</span>
+<span class="nc" id="L174">        return Optional.of(filteredEntities);</span>
+    }
+    
+    @Override
+    public Optional&lt;List&lt;T&gt;&gt; findAll() {
+<span class="nc" id="L179">        return Optional.of(new ArrayList&lt;&gt;(entities));</span>
+    }
+    
+    @Override
+    public Optional&lt;T&gt; deleteById(Optional&lt;ID&gt; idOpt, E operationType) {
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (idOpt.isEmpty()) {</span>
+<span class="nc" id="L185">            return Optional.empty();</span>
+        }
+        
+<span class="nc" id="L188">        ID id = idOpt.get();</span>
+            
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        for (int i = 0; i &lt; entities.size(); i++) {</span>
+<span class="nc" id="L191">            T entity = entities.get(i);</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">            if (Objects.equals(entity.getId(), id)) {</span>
+<span class="nc" id="L193">                entities.remove(i);</span>
+<span class="nc" id="L194">                deletedEntities.add(entity);</span>
+<span class="nc" id="L195">                registerAudit(entity, operationType);</span>
+<span class="nc" id="L196">                return Optional.of(entity);</span>
+            }
+        }
+            
+<span class="nc" id="L200">        return Optional.empty();</span>
+    }
+    
+    @Override
+    public long countRecords() {
+<span class="nc" id="L205">        return entities.size();</span>
+    }
+    
+    @Override
+    public Optional&lt;T&gt; restore(Optional&lt;ID&gt; idOpt, E operationType) {
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (idOpt.isEmpty()) {</span>
+<span class="nc" id="L211">            return Optional.empty();</span>
+        }
+        
+<span class="nc" id="L214">        ID id = idOpt.get();</span>
+        
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        for (int i = 0; i &lt; deletedEntities.size(); i++) {</span>
+<span class="nc" id="L217">            T entity = deletedEntities.get(i);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            if (Objects.equals(entity.getId(), id)) {</span>
+<span class="nc" id="L219">                deletedEntities.remove(i);</span>
+<span class="nc" id="L220">                entities.add(entity);</span>
+<span class="nc" id="L221">                registerAudit(entity, operationType);</span>
+<span class="nc" id="L222">                return Optional.of(entity);</span>
+            }
+        }
+        
+<span class="nc" id="L226">        return Optional.empty();</span>
+    }
+    
+    private void registerAudit(T entity, E operationType) {
+<span class="nc" id="L230">        AuditUtil.registerOperation(</span>
+<span class="nc" id="L231">            entity.getClass().getSimpleName(),</span>
+<span class="nc" id="L232">            entity.getId(),</span>
+<span class="nc" id="L233">            operationType.name(),</span>
+            currentUser
+        );
+<span class="nc" id="L236">    }</span>
+
+    @Override
+    public List&lt;T&gt; getDeleted() {
+<span class="nc" id="L240">        return new ArrayList&lt;&gt;(deletedEntities);</span>
+    }
+    
+    protected void incrementCounterAndSave() {
+<span class="nc" id="L244">        idCounter.incrementAndGet();</span>
+<span class="nc" id="L245">        saveData();</span>
+<span class="nc" id="L246">        }</span>
+    
+    @Override
+    public void saveData() {
+<span class="nc" id="L250">        Map&lt;String, Object&gt; config = getConfiguration();</span>
+<span class="nc" id="L251">        String path = (String) config.get(&quot;filePath&quot;);</span>
+        
+<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (path != null) {</span>
+<span class="nc" id="L254">            jsonProcessor.saveData(entities, path);</span>
+        }
+<span class="nc" id="L256">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
