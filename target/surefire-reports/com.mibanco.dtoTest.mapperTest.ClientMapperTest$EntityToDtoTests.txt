@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.mibanco.dtoTest.mapperTest.ClientMapperTest$EntityToDtoTests
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s - in com.mibanco.dtoTest.mapperTest.ClientMapperTest$EntityToDtoTests

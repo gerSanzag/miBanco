@@ -48,7 +48,7 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
 
     @Override
     public Optional<AccountDTO> updateMultipleFields(Long accountId, Optional<AccountDTO> accountDTO) {
-        Optional<AccountDTO> updateMultipleFields = update(
+        return super.updateMultipleFields(
             accountId,
             accountDTO,
             updateType,
@@ -57,8 +57,6 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
                 Optional.ofNullable(newAccount.isActive())
             )
         );
-        saveEntity(updateType, updateMultipleFields);
-        return updateMultipleFields;
     }
 
     @Override

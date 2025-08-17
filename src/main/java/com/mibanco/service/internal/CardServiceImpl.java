@@ -80,7 +80,7 @@ class CardServiceImpl extends BaseServiceImpl<CardDTO, Card, Long, CardOperation
     
     @Override
     public Optional<CardDTO> updateMultipleFields(Long cardNumber, Optional<CardDTO> cardDTO) {
-        Optional<CardDTO> updateMultipleFields = update(
+        return super.updateMultipleFields(
             cardNumber,
             cardDTO,
             updateType,
@@ -89,8 +89,6 @@ class CardServiceImpl extends BaseServiceImpl<CardDTO, Card, Long, CardOperation
                 Optional.ofNullable(newCard.isActive())
             )
         );
-        saveEntity(updateType, updateMultipleFields);
-        return updateMultipleFields;
     }
     
     @Override
