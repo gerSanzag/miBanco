@@ -31,14 +31,14 @@ class ClientRepositoryImpl extends BaseRepositoryImpl&lt;Client, Long, ClientOpe
      */
     @Override
     protected Client createWithNewId(Client client) {
-<span class="nc" id="L34">        ClientMapper mapper = new ClientMapper();</span>
+<span class="fc" id="L34">        ClientMapper mapper = new ClientMapper();</span>
         
-<span class="nc" id="L36">        return mapper.toDtoDirect(client)</span>
-<span class="nc" id="L37">            .map(dto -&gt; dto.toBuilder()</span>
-<span class="nc" id="L38">                .id(idCounter.incrementAndGet())</span>
-<span class="nc" id="L39">                .build())</span>
-<span class="nc" id="L40">            .flatMap(mapper::toEntityDirect)</span>
-<span class="nc" id="L41">            .orElseThrow(() -&gt; new IllegalStateException(&quot;Could not process Client entity&quot;));</span>
+<span class="fc" id="L36">        return mapper.toDtoDirect(client)</span>
+<span class="fc" id="L37">            .map(dto -&gt; dto.toBuilder()</span>
+<span class="fc" id="L38">                .id(idCounter.incrementAndGet())</span>
+<span class="fc" id="L39">                .build())</span>
+<span class="fc" id="L40">            .flatMap(mapper::toEntityDirect)</span>
+<span class="pc" id="L41">            .orElseThrow(() -&gt; new IllegalStateException(&quot;Could not process Client entity&quot;));</span>
     }
     
     /**
@@ -47,11 +47,11 @@ class ClientRepositoryImpl extends BaseRepositoryImpl&lt;Client, Long, ClientOpe
      */
     @Override
     protected Map&lt;String, Object&gt; getConfiguration() {
-<span class="nc" id="L50">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L51">        config.put(&quot;filePath&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
-<span class="nc" id="L52">        config.put(&quot;classType&quot;, Client.class);</span>
-<span class="nc" id="L53">        config.put(&quot;idExtractor&quot;, (Function&lt;Client, Long&gt;) Client::getId);</span>
-<span class="nc" id="L54">        return config;</span>
+<span class="fc" id="L50">        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L51">        config.put(&quot;filePath&quot;, &quot;src/main/resources/data/clientes.json&quot;);</span>
+<span class="fc" id="L52">        config.put(&quot;classType&quot;, Client.class);</span>
+<span class="fc" id="L53">        config.put(&quot;idExtractor&quot;, (Function&lt;Client, Long&gt;) Client::getId);</span>
+<span class="fc" id="L54">        return config;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

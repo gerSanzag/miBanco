@@ -33,10 +33,10 @@ class BaseJsonProcessor&lt;T&gt; {
      * @return List of objects loaded from JSON or empty list
      */
     public List&lt;T&gt; loadDataConditionally(String path, Class&lt;T&gt; classType) {
-<span class="nc" id="L36">        return Optional.ofNullable(path)</span>
-<span class="nc" id="L37">            .filter(this::fileExists)</span>
-<span class="nc" id="L38">            .map(file -&gt; readJson(file, classType))</span>
-<span class="nc" id="L39">            .orElse(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L36">        return Optional.ofNullable(path)</span>
+<span class="fc" id="L37">            .filter(this::fileExists)</span>
+<span class="fc" id="L38">            .map(file -&gt; readJson(file, classType))</span>
+<span class="fc" id="L39">            .orElse(new ArrayList&lt;&gt;());</span>
     }
     
     /**
@@ -47,10 +47,10 @@ class BaseJsonProcessor&lt;T&gt; {
      * @return The maximum ID found, or 0 if list is empty
      */
     public Long calculateMaxId(List&lt;T&gt; entities, java.util.function.Function&lt;T, Long&gt; idExtractor) {
-<span class="nc" id="L50">        return entities.stream()</span>
-<span class="nc" id="L51">            .mapToLong(idExtractor::apply)</span>
-<span class="nc" id="L52">            .max()</span>
-<span class="nc" id="L53">            .orElse(0);</span>
+<span class="fc" id="L50">        return entities.stream()</span>
+<span class="fc" id="L51">            .mapToLong(idExtractor::apply)</span>
+<span class="fc" id="L52">            .max()</span>
+<span class="fc" id="L53">            .orElse(0);</span>
     }
     
     /**
@@ -59,8 +59,8 @@ class BaseJsonProcessor&lt;T&gt; {
      * @return true if exists and is a file, false otherwise
      */
     private boolean fileExists(String path) {
-<span class="nc" id="L62">        File file = new File(path);</span>
-<span class="nc bnc" id="L63" title="All 4 branches missed.">        return file.exists() &amp;&amp; file.isFile();</span>
+<span class="fc" id="L62">        File file = new File(path);</span>
+<span class="pc bpc" id="L63" title="1 of 4 branches missed.">        return file.exists() &amp;&amp; file.isFile();</span>
     }
     
     /**
@@ -71,16 +71,16 @@ class BaseJsonProcessor&lt;T&gt; {
      */
     private List&lt;T&gt; readJson(String path, Class&lt;T&gt; classType) {
         try {
-<span class="nc" id="L74">            File file = new File(path);</span>
+<span class="fc" id="L74">            File file = new File(path);</span>
             
-<span class="nc" id="L76">            return mapper.readValue(file, </span>
-<span class="nc" id="L77">                mapper.getTypeFactory().constructCollectionType(List.class, classType));</span>
+<span class="fc" id="L76">            return mapper.readValue(file, </span>
+<span class="fc" id="L77">                mapper.getTypeFactory().constructCollectionType(List.class, classType));</span>
                 
-<span class="nc" id="L79">        } catch (Exception e) {</span>
+<span class="fc" id="L79">        } catch (Exception e) {</span>
             // If there's an error, return empty list
-<span class="nc" id="L81">            System.err.println(&quot;Error reading JSON: &quot; + e.getMessage());</span>
-<span class="nc" id="L82">            e.printStackTrace();</span>
-<span class="nc" id="L83">            return new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L81">            System.err.println(&quot;Error reading JSON: &quot; + e.getMessage());</span>
+<span class="fc" id="L82">            e.printStackTrace();</span>
+<span class="fc" id="L83">            return new ArrayList&lt;&gt;();</span>
         }
     }
     
@@ -91,18 +91,18 @@ class BaseJsonProcessor&lt;T&gt; {
      */
     public void saveData(List&lt;T&gt; data, String path) {
         try {
-<span class="nc" id="L94">            File file = new File(path);</span>
+<span class="fc" id="L94">            File file = new File(path);</span>
             
             // Create directory if it doesn't exist
-<span class="nc" id="L97">            file.getParentFile().mkdirs();</span>
+<span class="fc" id="L97">            file.getParentFile().mkdirs();</span>
             
             // Write JSON with readable format
-<span class="nc" id="L100">            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);</span>
+<span class="fc" id="L100">            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);</span>
             
-<span class="nc" id="L102">        } catch (Exception e) {</span>
+<span class="pc" id="L102">        } catch (Exception e) {</span>
             // Log the error (for now just print)
 <span class="nc" id="L104">            System.err.println(&quot;Error saving JSON: &quot; + e.getMessage());</span>
-<span class="nc" id="L105">        }</span>
-<span class="nc" id="L106">    }</span>
+        }
+<span class="fc" id="L106">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

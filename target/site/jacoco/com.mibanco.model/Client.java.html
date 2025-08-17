@@ -26,7 +26,7 @@ public class Client implements Identifiable {
     String address;          // direccion
     
     @JsonCreator
-    public Client(
+<span class="fc" id="L29">    public Client(</span>
         @JsonProperty(&quot;id&quot;) Long id,
         @JsonProperty(&quot;firstName&quot;) String firstName,
         @JsonProperty(&quot;lastName&quot;) String lastName,
@@ -35,7 +35,7 @@ public class Client implements Identifiable {
         @JsonProperty(&quot;email&quot;) String email,
         @JsonProperty(&quot;phone&quot;) String phone,
         @JsonProperty(&quot;address&quot;) String address
-<span class="fc" id="L38">    ) {</span>
+    ) {
 <span class="fc" id="L39">        this.id = id;</span>
 <span class="fc" id="L40">        this.firstName = firstName;</span>
 <span class="fc" id="L41">        this.lastName = lastName;</span>
@@ -52,13 +52,13 @@ public class Client implements Identifiable {
      */
     public static List&lt;String&gt; getRequiredFields() {
 <span class="fc" id="L54">        return Arrays.asList(</span>
-            &quot;firstName&quot;,      // nombre
-            &quot;lastName&quot;,       // apellido
-            &quot;dni&quot;,
-            &quot;email&quot;,
-            &quot;phone&quot;,          // telefono
-            &quot;address&quot;,        // direccion
-            &quot;birthDate&quot;       // fechaNacimiento
+<span class="fc" id="L55">            &quot;firstName&quot;,      // nombre</span>
+<span class="fc" id="L56">            &quot;lastName&quot;,       // apellido</span>
+<span class="fc" id="L57">            &quot;dni&quot;,</span>
+<span class="fc" id="L58">            &quot;email&quot;,</span>
+<span class="fc" id="L59">            &quot;phone&quot;,          // telefono</span>
+<span class="fc" id="L60">            &quot;address&quot;,        // direccion</span>
+<span class="fc" id="L61">            &quot;birthDate&quot;       // fechaNacimiento</span>
         );
     }
     

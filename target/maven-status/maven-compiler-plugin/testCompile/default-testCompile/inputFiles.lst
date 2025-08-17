@@ -1,8 +1,11 @@
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/modelTest/ClientTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/modelTest/enumsTest/ClientOperationTypeTest.java
+/Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/serviceTest/internalTest/ServiceFactoryTest.java
+/Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/serviceTest/internalTest/BaseServiceImplTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/modelTest/enumsTest/TransactionOperationTypeTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/dtoTest/mapperTest/ClientMapperTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/modelTest/AccountTest.java
+/Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/serviceTest/internalTest/ClientDtoProcessorServiceTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/repositoryTest/internalTest/RepositoryFactoryTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/repositoryTest/internalTest/BaseRepositoryAutomaticSavingTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/dtoTest/CardDtoTest.java
@@ -21,6 +24,7 @@
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/dtoTest/mapperTest/AccountMapperTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/utilTest/ReflectionUtilTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/repositoryTest/internalTest/AuditRepositoryImplTest.java
+/Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/serviceTest/internalTest/TransactionDtoProcessorServiceTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/repositoryTest/internalTest/TransactionRepositoryImplTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/dtoTest/mapperTest/TransactionMapperTest.java
 /Users/german/ejerciciosJava/miBanco/src/test/java/com/mibanco/repositoryTest/internalTest/ClientRepositoryImplTest.java

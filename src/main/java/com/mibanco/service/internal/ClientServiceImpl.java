@@ -156,11 +156,34 @@ class ClientServiceImpl extends BaseServiceImpl<ClientDTO, Client, Long, ClientO
 
     @Override
     public void setCurrentUser(String user) {
-        setCurrentUser(user);
+        super.setCurrentUser(user);
     }
 
     @Override
     public long countClients() {
         return countRecords();
+    }
+
+    @Override
+    public <V> Optional<ClientDTO> updateField(
+            Long id,
+            Optional<V> newValue,
+            java.util.function.Function<ClientDTO, V> currentValue,
+            java.util.function.BiFunction<ClientDTO, V, ClientDTO> updater) {
+        return super.updateField(id, newValue, currentValue, updater);
+    }
+
+    @Override
+    public Optional<ClientDTO> updateMultipleFields(
+            Long id,
+            Optional<ClientDTO> dto,
+            com.mibanco.model.enums.ClientOperationType operationType,
+            java.util.function.BiFunction<ClientDTO, com.mibanco.model.Client, ClientDTO> updater) {
+        return super.updateMultipleFields(id, dto, operationType, updater);
+    }
+
+    @Override
+    public java.util.List<ClientDTO> getDeleted() {
+        return super.getDeleted();
     }
 } 

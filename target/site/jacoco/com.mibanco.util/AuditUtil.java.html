@@ -45,16 +45,8 @@ import java.util.Optional;
      * @param user The user who performed the operation
      */
     public static void registerOperation(String entityType, Long entityId, String operationType, String user) {
-        // For simplified operations, we'll use a basic approach
         // This method provides a simplified interface for audit registration
-        // The actual implementation can be extended as needed
-        try {
-            // For now, we'll just log the operation
-<span class="fc" id="L53">            System.out.println(&quot;Audit operation registered: &quot; + entityType + &quot;:&quot; + entityId + &quot; - &quot; + operationType + &quot; by &quot; + user);</span>
-<span class="pc" id="L54">        } catch (Exception e) {</span>
-            // Log the error but don't throw it to avoid breaking the application
-<span class="nc" id="L56">            System.err.println(&quot;Error registering audit operation: &quot; + e.getMessage());</span>
-        }
-<span class="fc" id="L58">    }</span>
+        // Implementation can be added as needed
+<span class="fc" id="L50">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

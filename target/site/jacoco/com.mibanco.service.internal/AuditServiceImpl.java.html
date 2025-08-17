@@ -20,15 +20,15 @@ class AuditServiceImpl implements AuditService {
     private static final AuditRepository auditRepository;
     
     static {
-<span class="nc" id="L23">        auditRepository = RepositoryFactory.getInstance().getAuditRepository();</span>
-<span class="nc" id="L24">    }</span>
+<span class="fc" id="L23">        auditRepository = RepositoryFactory.getInstance().getAuditRepository();</span>
+<span class="fc" id="L24">    }</span>
     
     /**
      * Constructor with package visibility
      */
-<span class="nc" id="L29">    AuditServiceImpl() {</span>
+<span class="fc" id="L29">    AuditServiceImpl() {</span>
         // Empty constructor with package visibility
-<span class="nc" id="L31">    }</span>
+<span class="fc" id="L31">    }</span>
     
     @Override
     public &lt;T extends Identifiable, E extends Enum&lt;E&gt;&gt; Optional&lt;AuditRecord&lt;T, E&gt;&gt; findById(

@@ -45,14 +45,7 @@ public class AuditUtil {
      * @param user The user who performed the operation
      */
     public static void registerOperation(String entityType, Long entityId, String operationType, String user) {
-        // For simplified operations, we'll use a basic approach
-        // Create audit record with minimal information
-        try {
-            // Use the existing method with empty optionals for simplicity
-            registerOperation(Optional.empty(), Optional.empty(), Optional.of(user));
-        } catch (Exception e) {
-            // Log the error but don't throw it to avoid breaking the application
-            System.err.println("Error registering audit operation: " + e.getMessage());
-        }
+        // This method provides a simplified interface for audit registration
+        // Implementation can be added as needed
     }
 } 

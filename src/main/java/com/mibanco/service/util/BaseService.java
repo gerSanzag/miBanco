@@ -39,14 +39,14 @@ public interface BaseService<T, E extends Identifiable, ID, O extends Enum<O>> {
             BiFunction<T, V, T> updater);
 
     /**
-     * Generic method to update an existing entity
+     * Generic method to update multiple fields of an existing entity
      * @param id ID of the entity to update
      * @param dto Optional with new data
      * @param operationType Type of operation for auditing
      * @param updater Function that updates the existing entity with new data
      * @return Optional with the updated DTO
      */
-    Optional<T> update(
+    Optional<T> updateMultipleFields(
             ID id,
             Optional<T> dto,
             O operationType,

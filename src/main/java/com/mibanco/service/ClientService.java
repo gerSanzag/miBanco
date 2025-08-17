@@ -28,7 +28,7 @@ public interface ClientService {
     Optional<ClientDTO> saveClient(Optional<ClientDTO> clientDTO);
     
     /**
-     * Updates complete client information
+     * Updates complete client information using the generic updateMultipleFields method
      * @param id ID of the client to update
      * @param clientDTO Optional with new client data
      * @return Optional with the updated client DTO
@@ -104,4 +104,38 @@ public interface ClientService {
      * @param user Current user
      */
     void setCurrentUser(String user);
+
+    /**
+     * Generic method to update a specific field of a client
+     * @param id ID of the client to update
+     * @param newValue Optional with the new value
+     * @param currentValue Function to get the current value
+     * @param updater Function to update the value
+     * @return Optional with the updated client DTO
+     */
+    <V> Optional<ClientDTO> updateField(
+            Long id,
+            Optional<V> newValue,
+            java.util.function.Function<ClientDTO, V> currentValue,
+            java.util.function.BiFunction<ClientDTO, V, ClientDTO> updater);
+
+    /**
+     * Generic method to update multiple fields of a client
+     * @param id ID of the client to update
+     * @param dto Optional with new data
+     * @param operationType Type of operation for auditing
+     * @param updater Function that updates the existing client with new data
+     * @return Optional with the updated client DTO
+     */
+    Optional<ClientDTO> updateMultipleFields(
+            Long id,
+            Optional<ClientDTO> dto,
+            com.mibanco.model.enums.ClientOperationType operationType,
+            java.util.function.BiFunction<ClientDTO, com.mibanco.model.Client, ClientDTO> updater);
+
+    /**
+     * Gets the list of deleted clients
+     * @return List of deleted client DTOs
+     */
+    java.util.List<ClientDTO> getDeleted();
 } 

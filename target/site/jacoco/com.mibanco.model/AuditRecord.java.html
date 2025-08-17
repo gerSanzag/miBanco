@@ -43,7 +43,7 @@ public class AuditRecord&lt;T extends Identifiable, E extends Enum&lt;E&gt;&gt; 
     String details;         // detalles
     
     @JsonCreator
-    public AuditRecord(
+<span class="fc" id="L46">    public AuditRecord(</span>
         @JsonProperty(&quot;id&quot;) UUID id,
         @JsonProperty(&quot;operationType&quot;) E operationType,
         @JsonProperty(&quot;dateTime&quot;) LocalDateTime dateTime,
@@ -51,7 +51,7 @@ public class AuditRecord&lt;T extends Identifiable, E extends Enum&lt;E&gt;&gt; 
         @JsonProperty(&quot;user&quot;) String user,
         @JsonProperty(&quot;amount&quot;) Double amount,
         @JsonProperty(&quot;details&quot;) String details
-<span class="fc" id="L54">    ) {</span>
+    ) {
 <span class="fc" id="L55">        this.id = id;</span>
 <span class="fc" id="L56">        this.operationType = operationType;</span>
 <span class="fc" id="L57">        this.dateTime = dateTime;</span>

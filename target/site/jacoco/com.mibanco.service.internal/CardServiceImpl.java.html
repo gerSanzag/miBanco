@@ -43,7 +43,7 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
         try {
             // Use specialized processor to create DTO with validations
 <span class="nc" id="L45">            CardDtoProcessorService processor = new CardDtoProcessorService(</span>
-                new ClientServiceImpl()
+<span class="nc" id="L46">                new ClientServiceImpl()</span>
             );
             
 <span class="nc" id="L49">            return processor.processCardDto(cardData)</span>
@@ -84,13 +84,13 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
             cardNumber,
             cardDTO,
             updateType,
-<span class="nc" id="L87">            (existingCard, newCard) -&gt; existingCard.withUpdates(</span>
-<span class="nc" id="L88">                Optional.ofNullable(newCard.getExpirationDate()),</span>
-<span class="nc" id="L89">                Optional.ofNullable(newCard.isActive())</span>
+            (existingCard, newCard) -&gt; existingCard.withUpdates(
+                Optional.ofNullable(newCard.getExpirationDate()),
+                Optional.ofNullable(newCard.isActive())
             )
         );
-<span class="nc" id="L92">        saveEntity(updateType, updateMultipleFields);</span>
-<span class="nc" id="L93">        return updateMultipleFields;</span>
+        saveEntity(updateType, updateMultipleFields);
+        return updateMultipleFields;
     }
     
     @Override
@@ -109,10 +109,10 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
     @Override
     public Optional&lt;CardDTO&gt; updateExpirationDate(Long cardNumber, Optional&lt;LocalDate&gt; newDate) {
 <span class="nc" id="L111">        Optional&lt;CardDTO&gt; updateDate = updateField(</span>
-            cardNumber,
-            newDate,
-            CardDTO::getExpirationDate,
-            CardDTO::withExpirationDate
+<span class="nc" id="L112">            cardNumber,</span>
+<span class="nc" id="L113">            newDate,</span>
+<span class="nc" id="L114">            CardDTO::getExpirationDate,</span>
+<span class="nc" id="L115">            CardDTO::withExpirationDate</span>
         );
 <span class="nc" id="L117">        saveEntity(updateType, updateDate);</span>
 <span class="nc" id="L118">        return updateDate;</span>
@@ -121,10 +121,10 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
     @Override
     public Optional&lt;CardDTO&gt; updateCardStatus(Long cardNumber, Optional&lt;Boolean&gt; newActive) {
 <span class="nc" id="L123">        Optional&lt;CardDTO&gt; updateStatus = updateField(</span>
-            cardNumber,
-            newActive,
-            CardDTO::isActive,
-            CardDTO::withActive 
+<span class="nc" id="L124">            cardNumber,</span>
+<span class="nc" id="L125">            newActive,</span>
+<span class="nc" id="L126">            CardDTO::isActive,</span>
+<span class="nc" id="L127">            CardDTO::withActive </span>
         );
 <span class="nc" id="L129">        saveEntity(updateType, updateStatus);</span>
 <span class="nc" id="L130">        return updateStatus;</span>
@@ -135,11 +135,11 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
 <span class="nc" id="L135">        Optional&lt;CardDTO&gt; updateHolder = newHolder.flatMap(dto -&gt; </span>
 <span class="nc" id="L136">                Optional.of(dto.getHolder())   </span>
 <span class="nc" id="L137">                .flatMap(holder -&gt; updateField(</span>
-                    cardNumber,
+<span class="nc" id="L138">                    cardNumber,</span>
 <span class="nc" id="L139">                    Optional.of(holder),</span>
-                    CardDTO::getHolder,
+<span class="nc" id="L140">                    CardDTO::getHolder,</span>
 <span class="nc" id="L141">                    (card, newHolderEntity) -&gt; card.toBuilder().holder(holder).build()</span>
-                ))
+<span class="nc" id="L142">                ))</span>
         );
 <span class="nc" id="L144">        saveEntity(updateType, updateHolder);</span>
 <span class="nc" id="L145">        return updateHolder;</span>
@@ -182,7 +182,7 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
 <span class="nc" id="L182">                        .map(card -&gt; mapper.toDto(Optional.of(card)).orElse(null))</span>
 <span class="nc" id="L183">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L184">                        .toList()</span>
-                ))
+<span class="nc" id="L185">                ))</span>
         );
     }
     
@@ -195,7 +195,7 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
 <span class="nc" id="L195">                        .map(card -&gt; mapper.toDto(Optional.of(card)).orElse(null))</span>
 <span class="nc" id="L196">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L197">                        .toList()</span>
-                ))
+<span class="nc" id="L198">                ))</span>
         );
     }
     
@@ -207,7 +207,7 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
 <span class="nc" id="L207">                    .map(card -&gt; mapper.toDto(Optional.of(card)).orElse(null))</span>
 <span class="nc" id="L208">                    .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L209">                    .toList()</span>
-            ));
+<span class="nc" id="L210">            ));</span>
     }
     
     @Override
@@ -219,7 +219,7 @@ class CardServiceImpl extends BaseServiceImpl&lt;CardDTO, Card, Long, CardOperat
 <span class="nc" id="L219">                        .map(card -&gt; mapper.toDto(Optional.of(card)).orElse(null))</span>
 <span class="nc" id="L220">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L221">                        .toList()</span>
-                ))
+<span class="nc" id="L222">                ))</span>
         );
     }
 } 

@@ -67,6 +67,7 @@ com/mibanco/service/internal/TransactionDtoProcessorService.class
 com/mibanco/model/Account$AccountBuilder.class
 com/mibanco/model/enums/ClientOperationType.class
 com/mibanco/service/internal/ClientDtoProcessorService.class
+com/mibanco/util/AuditUtil.class
 com/mibanco/service/CardService.class
 com/mibanco/model/AuditRecord.class
 com/mibanco/model/Card.class

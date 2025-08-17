@@ -25,28 +25,28 @@ public final class ServiceFactory {
      * Private constructor that initializes all implementations
      * Being in the same package, it has access to package-private classes
      */
-<span class="nc" id="L28">    private ServiceFactory() {</span>
-<span class="nc" id="L29">        this.clientService = new ClientServiceImpl();</span>
-<span class="nc" id="L30">        this.accountService = new AccountServiceImpl();</span>
+<span class="fc" id="L28">    private ServiceFactory() {</span>
+<span class="fc" id="L29">        this.clientService = new ClientServiceImpl();</span>
+<span class="fc" id="L30">        this.accountService = new AccountServiceImpl();</span>
         // this.cardService = new CardServiceImpl();
-<span class="nc" id="L32">        this.transactionCrudService = new TransactionCrudServiceImpl();</span>
-<span class="nc" id="L33">        this.transactionOperationsService = new TransactionOperationsServiceImpl();</span>
-<span class="nc" id="L34">        this.auditService = new AuditServiceImpl();</span>
-<span class="nc" id="L35">    }</span>
+<span class="fc" id="L32">        this.transactionCrudService = new TransactionCrudServiceImpl();</span>
+<span class="fc" id="L33">        this.transactionOperationsService = new TransactionOperationsServiceImpl();</span>
+<span class="fc" id="L34">        this.auditService = new AuditServiceImpl();</span>
+<span class="fc" id="L35">    }</span>
     
     /**
      * Gets the single instance of ServiceFactory
      * This is the only access point to service implementations
      */
     public static ServiceFactory getInstance() {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (instance == null) {</span>
-<span class="nc" id="L43">            synchronized (ServiceFactory.class) {</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">                if (instance == null) {</span>
-<span class="nc" id="L45">                    instance = new ServiceFactory();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L43">            synchronized (ServiceFactory.class) {</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">                if (instance == null) {</span>
+<span class="fc" id="L45">                    instance = new ServiceFactory();</span>
                 }
-<span class="nc" id="L47">            }</span>
+            }
         }
-<span class="nc" id="L49">        return instance;</span>
+<span class="fc" id="L49">        return instance;</span>
     }
     
     /**
@@ -54,7 +54,7 @@ public final class ServiceFactory {
      * @return Public interface of client service
      */
     public ClientService getClientService() {
-<span class="nc" id="L57">        return clientService;</span>
+<span class="fc" id="L57">        return clientService;</span>
     }
     
     /**
@@ -62,7 +62,7 @@ public final class ServiceFactory {
      * @return Public interface of account service
      */
     public AccountService getAccountService() {
-<span class="nc" id="L65">        return accountService;</span>
+<span class="fc" id="L65">        return accountService;</span>
     }
     
     /**
@@ -78,7 +78,7 @@ public final class ServiceFactory {
      * @return Public interface of transaction CRUD service
      */
     public TransactionCrudService getTransactionCrudService() {
-<span class="nc" id="L81">        return transactionCrudService;</span>
+<span class="fc" id="L81">        return transactionCrudService;</span>
     }
     
     /**
@@ -86,7 +86,7 @@ public final class ServiceFactory {
      * @return Public interface of transaction operations service
      */
     public TransactionOperationsService getTransactionOperationsService() {
-<span class="nc" id="L89">        return transactionOperationsService;</span>
+<span class="fc" id="L89">        return transactionOperationsService;</span>
     }
     
     /**
@@ -94,7 +94,7 @@ public final class ServiceFactory {
      * @return Public interface of audit service
      */
     public AuditService getAuditService() {
-<span class="nc" id="L97">        return auditService;</span>
+<span class="fc" id="L97">        return auditService;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -25,26 +25,26 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl&lt;TransactionDTO
     private static final TransactionRepository transactionRepository;
     private static final TransactionMapper mapper;
     private static final AccountService accountService;
-<span class="nc" id="L28">    private final Set&lt;Long&gt; blockedAccounts = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L29">    private final Object lock = new Object();</span>
+<span class="fc" id="L28">    private final Set&lt;Long&gt; blockedAccounts = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L29">    private final Object lock = new Object();</span>
 
     static {
-<span class="nc" id="L32">        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();</span>
-<span class="nc" id="L33">        mapper = new TransactionMapper();</span>
-<span class="nc" id="L34">        accountService = new AccountServiceImpl();</span>
+<span class="fc" id="L32">        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();</span>
+<span class="fc" id="L33">        mapper = new TransactionMapper();</span>
+<span class="fc" id="L34">        accountService = new AccountServiceImpl();</span>
     }
 
     public TransactionOperationsServiceImpl() {
-<span class="nc" id="L38">        super(transactionRepository, mapper);</span>
-<span class="nc" id="L39">    }</span>
+<span class="fc" id="L38">        super(transactionRepository, mapper);</span>
+<span class="fc" id="L39">    }</span>
 
     // Static map of transaction type inversions
-<span class="nc" id="L42">    private static final Map&lt;TransactionType, TransactionType&gt; TYPE_INVERSIONS = ofEntries(</span>
-<span class="nc" id="L43">        entry(TransactionType.DEPOSIT, TransactionType.WITHDRAWAL),</span>
-<span class="nc" id="L44">        entry(TransactionType.WITHDRAWAL, TransactionType.DEPOSIT),</span>
-<span class="nc" id="L45">        entry(TransactionType.SENT_TRANSFER, TransactionType.RECEIVED_TRANSFER),</span>
-<span class="nc" id="L46">        entry(TransactionType.RECEIVED_TRANSFER, TransactionType.SENT_TRANSFER)</span>
-    );
+<span class="fc" id="L42">    private static final Map&lt;TransactionType, TransactionType&gt; TYPE_INVERSIONS = ofEntries(</span>
+<span class="fc" id="L43">        entry(TransactionType.DEPOSIT, TransactionType.WITHDRAWAL),</span>
+<span class="fc" id="L44">        entry(TransactionType.WITHDRAWAL, TransactionType.DEPOSIT),</span>
+<span class="fc" id="L45">        entry(TransactionType.SENT_TRANSFER, TransactionType.RECEIVED_TRANSFER),</span>
+<span class="fc" id="L46">        entry(TransactionType.RECEIVED_TRANSFER, TransactionType.SENT_TRANSFER)</span>
+<span class="fc" id="L47">    );</span>
  
 
     private boolean blockAccount(Optional&lt;Long&gt; accountId) {
@@ -63,7 +63,7 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl&lt;TransactionDTO
 <span class="nc" id="L63">        accountId.ifPresent(id -&gt; {</span>
 <span class="nc" id="L64">            synchronized (lock) {</span>
 <span class="nc" id="L65">                blockedAccounts.remove(id);</span>
-<span class="nc" id="L66">            }</span>
+            }
 <span class="nc" id="L67">        });</span>
 <span class="nc" id="L68">    }</span>
 
@@ -225,7 +225,7 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl&lt;TransactionDTO
 <span class="nc" id="L225">                        releaseAccount(Optional.of(sourceId));</span>
 <span class="nc" id="L226">                        releaseAccount(Optional.of(destId));</span>
                     }
-                }));
+<span class="nc" id="L228">                }));</span>
     }
     
     @Override
@@ -247,7 +247,7 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl&lt;TransactionDTO
 <span class="nc bnc" id="L247" title="All 4 branches missed.">                            if (transactionDTO.getType() == TransactionType.DEPOSIT || transactionDTO.getType() == TransactionType.RECEIVED_TRANSFER) {</span>
                                 // If it was a deposit/received transfer, we subtract
 <span class="nc" id="L249">                                newBalance = accountDTO.getBalance().subtract(transactionDTO.getAmount());</span>
-                            } else {
+<span class="nc" id="L250">                            } else {</span>
                                 // If it was a withdrawal/sent transfer, we add
 <span class="nc" id="L252">                                newBalance = accountDTO.getBalance().add(transactionDTO.getAmount());</span>
                             }
@@ -266,7 +266,7 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl&lt;TransactionDTO
                             
 <span class="nc" id="L267">                            return saveEntity(TransactionOperationType.CREATE, Optional.of(cancellationTransaction));</span>
                         });
-                }));
+<span class="nc" id="L269">                }));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

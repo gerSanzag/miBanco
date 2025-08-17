@@ -37,12 +37,12 @@ public final class RepositoryFactory {
      * This is the only access point to repository implementations
      */
     public static RepositoryFactory getInstance() {
-<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (instance == null) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (instance == null) {</span>
 <span class="fc" id="L41">            synchronized (RepositoryFactory.class) {</span>
 <span class="pc bpc" id="L42" title="1 of 2 branches missed.">                if (instance == null) {</span>
 <span class="fc" id="L43">                    instance = new RepositoryFactory();</span>
                 }
-<span class="fc" id="L45">            }</span>
+            }
         }
 <span class="fc" id="L47">        return instance;</span>
     }
@@ -60,7 +60,7 @@ public final class RepositoryFactory {
      * @return Public interface of the client repository
      */
     public ClientRepository getClientRepository() {
-<span class="nc" id="L63">        return clientRepository;</span>
+<span class="fc" id="L63">        return clientRepository;</span>
     }
     
     /**
@@ -68,7 +68,7 @@ public final class RepositoryFactory {
      * @return Public interface of the account repository
      */
     public AccountRepository getAccountRepository() {
-<span class="nc" id="L71">        return accountRepository;</span>
+<span class="fc" id="L71">        return accountRepository;</span>
     }
     
     /**
@@ -76,7 +76,7 @@ public final class RepositoryFactory {
      * @return Public interface of the card repository
      */
     public CardRepository getCardRepository() {
-<span class="nc" id="L79">        return cardRepository;</span>
+<span class="fc" id="L79">        return cardRepository;</span>
     }
     
     /**
@@ -84,7 +84,7 @@ public final class RepositoryFactory {
      * @return Public interface of the transaction repository
      */
     public TransactionRepository getTransactionRepository() {
-<span class="nc" id="L87">        return transactionRepository;</span>
+<span class="fc" id="L87">        return transactionRepository;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

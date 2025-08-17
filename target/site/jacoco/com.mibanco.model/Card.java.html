@@ -27,7 +27,7 @@ public class Card implements Identifiable {
     boolean active;          // activa
     
     @JsonCreator
-    public Card(
+<span class="fc" id="L30">    public Card(</span>
         @JsonProperty(&quot;number&quot;) Long number,
         @JsonProperty(&quot;holder&quot;) Client holder,
         @JsonProperty(&quot;associatedAccountNumber&quot;) String associatedAccountNumber,
@@ -35,7 +35,7 @@ public class Card implements Identifiable {
         @JsonProperty(&quot;cvv&quot;) String cvv,
         @JsonProperty(&quot;expirationDate&quot;) LocalDate expirationDate,
         @JsonProperty(&quot;active&quot;) boolean active
-<span class="fc" id="L38">    ) {</span>
+    ) {
 <span class="fc" id="L39">        this.number = number;</span>
 <span class="fc" id="L40">        this.holder = holder;</span>
 <span class="fc" id="L41">        this.associatedAccountNumber = associatedAccountNumber;</span>

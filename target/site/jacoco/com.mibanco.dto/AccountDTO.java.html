@@ -37,15 +37,15 @@ public class AccountDTO {
         public static AccountDTO of(String accountNumber, Optional&lt;ClientDTO&gt; holder, Optional&lt;AccountType&gt; type,
                                BigDecimal initialBalance, Optional&lt;LocalDateTime&gt; creationDate, 
                                Optional&lt;Boolean&gt; active) {
-<span class="nc" id="L40">        return AccountDTO.builder()</span>
-<span class="nc" id="L41">                .accountNumber(accountNumber)</span>
-<span class="nc" id="L42">                .holder(holder.orElse(null))</span>
-<span class="nc" id="L43">                .type(type.orElse(null))</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">                .initialBalance(initialBalance != null ? initialBalance : BigDecimal.ZERO)</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">                .balance(initialBalance != null ? initialBalance : BigDecimal.ZERO)</span>
-<span class="nc" id="L46">                .creationDate(creationDate.orElse(LocalDateTime.now()))</span>
-<span class="nc" id="L47">                .active(active.orElse(true))</span>
-<span class="nc" id="L48">                .build();</span>
+<span class="fc" id="L40">        return AccountDTO.builder()</span>
+<span class="fc" id="L41">                .accountNumber(accountNumber)</span>
+<span class="fc" id="L42">                .holder(holder.orElse(null))</span>
+<span class="fc" id="L43">                .type(type.orElse(null))</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                .initialBalance(initialBalance != null ? initialBalance : BigDecimal.ZERO)</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                .balance(initialBalance != null ? initialBalance : BigDecimal.ZERO)</span>
+<span class="fc" id="L46">                .creationDate(creationDate.orElse(LocalDateTime.now()))</span>
+<span class="fc" id="L47">                .active(active.orElse(true))</span>
+<span class="fc" id="L48">                .build();</span>
     }
     
     /**
@@ -53,9 +53,9 @@ public class AccountDTO {
      * &quot;With&quot; method for immutable transformation
      */
     public AccountDTO withBalance(BigDecimal newBalance) {
-<span class="nc" id="L56">        return this.toBuilder()</span>
-<span class="nc" id="L57">                .balance(newBalance)</span>
-<span class="nc" id="L58">                .build();</span>
+<span class="fc" id="L56">        return this.toBuilder()</span>
+<span class="fc" id="L57">                .balance(newBalance)</span>
+<span class="fc" id="L58">                .build();</span>
     }
     
     /**
@@ -63,9 +63,9 @@ public class AccountDTO {
      * &quot;With&quot; method for immutable transformation
      */
     public AccountDTO withActive(boolean newActive) {
-<span class="nc" id="L66">        return this.toBuilder()</span>
-<span class="nc" id="L67">                .active(newActive)</span>
-<span class="nc" id="L68">                .build();</span>
+<span class="fc" id="L66">        return this.toBuilder()</span>
+<span class="fc" id="L67">                .active(newActive)</span>
+<span class="fc" id="L68">                .build();</span>
     }
     
     /**
@@ -73,9 +73,9 @@ public class AccountDTO {
      * &quot;With&quot; method for immutable transformation
      */
     public AccountDTO withHolder(ClientDTO newHolder) {
-<span class="nc" id="L76">        return this.toBuilder()</span>
-<span class="nc" id="L77">                .holder(newHolder)</span>
-<span class="nc" id="L78">                .build();</span>
+<span class="fc" id="L76">        return this.toBuilder()</span>
+<span class="fc" id="L77">                .holder(newHolder)</span>
+<span class="fc" id="L78">                .build();</span>
     }
     
     /**
@@ -86,10 +86,10 @@ public class AccountDTO {
             Optional&lt;BigDecimal&gt; newBalance,
             Optional&lt;Boolean&gt; newActive) {
         
-<span class="nc" id="L89">        return this.toBuilder()</span>
-<span class="nc" id="L90">                .balance(newBalance.orElse(this.balance))</span>
-<span class="nc" id="L91">                .active(newActive.orElse(this.active))</span>
-<span class="nc" id="L92">                .build();</span>
+<span class="fc" id="L89">        return this.toBuilder()</span>
+<span class="fc" id="L90">                .balance(newBalance.orElse(this.balance))</span>
+<span class="fc" id="L91">                .active(newActive.orElse(this.active))</span>
+<span class="fc" id="L92">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

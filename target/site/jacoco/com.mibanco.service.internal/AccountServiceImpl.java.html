@@ -31,20 +31,20 @@ class AccountServiceImpl extends BaseServiceImpl&lt;AccountDTO, Account, Long, A
     private static ClientService clientService;
     private static final AccountMapper mapper;
     private static final ClientMapper clientMapper;
-<span class="nc" id="L34">    private final AccountOperationType updateType = AccountOperationType.UPDATE;</span>
+<span class="fc" id="L34">    private final AccountOperationType updateType = AccountOperationType.UPDATE;</span>
     private static AccountDtoProcessorService accountDtoProcessor;
     
     static {
-<span class="nc" id="L38">        accountRepository = RepositoryFactory.getInstance().getAccountRepository();</span>
-<span class="nc" id="L39">        clientMapper = new ClientMapper();</span>
-<span class="nc" id="L40">        mapper = new AccountMapper(clientMapper);</span>
-<span class="nc" id="L41">        clientService = ServiceFactory.getInstance().getClientService();</span>
-<span class="nc" id="L42">        accountDtoProcessor = new AccountDtoProcessorService(clientService);</span>
-<span class="nc" id="L43">    }</span>
+<span class="fc" id="L38">        accountRepository = RepositoryFactory.getInstance().getAccountRepository();</span>
+<span class="fc" id="L39">        clientMapper = new ClientMapper();</span>
+<span class="fc" id="L40">        mapper = new AccountMapper(clientMapper);</span>
+<span class="fc" id="L41">        clientService = ServiceFactory.getInstance().getClientService();</span>
+<span class="fc" id="L42">        accountDtoProcessor = new AccountDtoProcessorService(clientService);</span>
+<span class="fc" id="L43">    }</span>
 
     public AccountServiceImpl() {
-<span class="nc" id="L46">        super(accountRepository, mapper);</span>
-<span class="nc" id="L47">    }</span>
+<span class="fc" id="L46">        super(accountRepository, mapper);</span>
+<span class="fc" id="L47">    }</span>
 
     @Override
     public Optional&lt;AccountDTO&gt; updateMultipleFields(Long accountId, Optional&lt;AccountDTO&gt; accountDTO) {
@@ -52,13 +52,13 @@ class AccountServiceImpl extends BaseServiceImpl&lt;AccountDTO, Account, Long, A
             accountId,
             accountDTO,
             updateType,
-<span class="nc" id="L55">            (existingAccount, newAccount) -&gt; existingAccount.withUpdates(</span>
-<span class="nc" id="L56">                Optional.ofNullable(newAccount.getBalance()),</span>
-<span class="nc" id="L57">                Optional.ofNullable(newAccount.isActive())</span>
+            (existingAccount, newAccount) -&gt; existingAccount.withUpdates(
+                Optional.ofNullable(newAccount.getBalance()),
+                Optional.ofNullable(newAccount.isActive())
             )
         );
-<span class="nc" id="L60">        saveEntity(updateType, updateMultipleFields);</span>
-<span class="nc" id="L61">        return updateMultipleFields;</span>
+        saveEntity(updateType, updateMultipleFields);
+        return updateMultipleFields;
     }
 
     @Override
@@ -77,10 +77,10 @@ class AccountServiceImpl extends BaseServiceImpl&lt;AccountDTO, Account, Long, A
     @Override
     public Optional&lt;AccountDTO&gt; updateAccountBalance(Long accountId, Optional&lt;BigDecimal&gt; newBalance) {
 <span class="nc" id="L79">        Optional&lt;AccountDTO&gt; updateBalance = updateField(</span>
-            accountId,
-            newBalance,
-            AccountDTO::getBalance,
-            AccountDTO::withBalance
+<span class="nc" id="L80">            accountId,</span>
+<span class="nc" id="L81">            newBalance,</span>
+<span class="nc" id="L82">            AccountDTO::getBalance,</span>
+<span class="nc" id="L83">            AccountDTO::withBalance</span>
         );
 <span class="nc" id="L85">        saveEntity(updateType, updateBalance);</span>
 <span class="nc" id="L86">        return updateBalance;</span>
@@ -89,10 +89,10 @@ class AccountServiceImpl extends BaseServiceImpl&lt;AccountDTO, Account, Long, A
     @Override
     public Optional&lt;AccountDTO&gt; updateAccountStatus(Long accountId, Optional&lt;Boolean&gt; newActive) {
 <span class="nc" id="L91">        Optional&lt;AccountDTO&gt; updateStatus = updateField(</span>
-            accountId,
-            newActive,
-            AccountDTO::isActive,
-            AccountDTO::withActive
+<span class="nc" id="L92">            accountId,</span>
+<span class="nc" id="L93">            newActive,</span>
+<span class="nc" id="L94">            AccountDTO::isActive,</span>
+<span class="nc" id="L95">            AccountDTO::withActive</span>
         );
 <span class="nc" id="L97">        saveEntity(updateType, updateStatus);</span>
 <span class="nc" id="L98">        return updateStatus;</span>
@@ -103,11 +103,11 @@ class AccountServiceImpl extends BaseServiceImpl&lt;AccountDTO, Account, Long, A
 <span class="nc" id="L103">        Optional&lt;AccountDTO&gt; updateHolder = newHolder.flatMap(holderDTO -&gt; </span>
 <span class="nc" id="L104">            clientMapper.toEntity(Optional.of(holderDTO.getHolder()))</span>
 <span class="nc" id="L105">                .flatMap(holder -&gt; updateField(</span>
-                    accountId,
+<span class="nc" id="L106">                    accountId,</span>
 <span class="nc" id="L107">                    Optional.of(holder),</span>
-                    AccountDTO::getHolder,
+<span class="nc" id="L108">                    AccountDTO::getHolder,</span>
 <span class="nc" id="L109">                    (account, holderEntity) -&gt; account.toBuilder().holder(holderDTO.getHolder() ).build()</span>
-                ))
+<span class="nc" id="L110">                ))</span>
         );
 <span class="nc" id="L112">        saveEntity(updateType, updateHolder);</span>
 <span class="nc" id="L113">        return updateHolder;</span>

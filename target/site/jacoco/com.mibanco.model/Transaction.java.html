@@ -27,7 +27,7 @@ public class Transaction implements Identifiable {
     String description;          // descripcion
     
     @JsonCreator
-    public Transaction(
+<span class="fc" id="L30">    public Transaction(</span>
         @JsonProperty(&quot;id&quot;) Long id,
         @JsonProperty(&quot;accountNumber&quot;) String accountNumber,
         @JsonProperty(&quot;destinationAccountNumber&quot;) String destinationAccountNumber,
@@ -35,7 +35,7 @@ public class Transaction implements Identifiable {
         @JsonProperty(&quot;amount&quot;) BigDecimal amount,
         @JsonProperty(&quot;date&quot;) LocalDateTime date,
         @JsonProperty(&quot;description&quot;) String description
-<span class="fc" id="L38">    ) {</span>
+    ) {
 <span class="fc" id="L39">        this.id = id;</span>
 <span class="fc" id="L40">        this.accountNumber = accountNumber;</span>
 <span class="fc" id="L41">        this.destinationAccountNumber = destinationAccountNumber;</span>

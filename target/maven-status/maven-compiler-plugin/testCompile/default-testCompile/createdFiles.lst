@@ -5,6 +5,7 @@ com/mibanco/utilTest/ReflectionUtilTest$Empty.class
 com/mibanco/modelTest/enumsTest/CardOperationTypeTest.class
 com/mibanco/repositoryTest/internalTest/RepositoryFactoryTest.class
 com/mibanco/repositoryTest/internalTest/TransactionRepositoryImplTest$ConfigurationTests.class
+com/mibanco/serviceTest/internalTest/ServiceFactoryTest.class
 com/mibanco/modelTest/AccountTest.class
 com/mibanco/dtoTest/ResponseDtoTest$ErrorResponsesTest.class
 com/mibanco/repositoryTest/internalTest/AccountRepositoryImplTest$JsonIntegrationTests.class
@@ -15,6 +16,7 @@ com/mibanco/repositoryTest/internalTest/RepositoryFactoryTest$GetRepositoriesTes
 com/mibanco/repositoryTest/internalTest/BaseRepositorySizeBasedSavingTest.class
 com/mibanco/modelTest/enumsTest/ClientOperationTypeTest$EnumFunctionalityTest.class
 com/mibanco/repositoryTest/internalTest/CardRepositoryImplTest$CrudOperationTests.class
+com/mibanco/serviceTest/internalTest/BaseServiceImplTest.class
 com/mibanco/modelTest/enumsTest/ClientOperationTypeTest$EnumNamesTest.class
 com/mibanco/repositoryTest/internalTest/AccountRepositoryImplTest$TestAccountRepositoryImpl.class
 com/mibanco/modelTest/enumsTest/CardTypeTest$EnumValuesTest.class
@@ -82,6 +84,7 @@ com/mibanco/modelTest/AuditRecordTest.class
 com/mibanco/repositoryTest/internalTest/CardRepositoryImplTest.class
 com/mibanco/repositoryTest/internalTest/BaseJsonProcessorTest$SaveJsonTests.class
 com/mibanco/dtoTest/mapperTest/ClientMapperTest.class
+com/mibanco/utilTest/AuditUtilTest.class
 com/mibanco/utilTest/ReflectionUtilTest$WithOptional.class
 com/mibanco/modelTest/enumsTest/TransactionTypeTest$EnumFunctionalityTest.class
 com/mibanco/modelTest/enumsTest/CardOperationTypeTest$EnumNamesTest.class

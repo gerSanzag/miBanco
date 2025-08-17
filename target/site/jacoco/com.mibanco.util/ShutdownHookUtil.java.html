@@ -34,7 +34,7 @@ import com.mibanco.repository.internal.RepositoryFactory;
 <span class="nc" id="L34">                    System.out.println(&quot;✅ Data saved successfully&quot;);</span>
 <span class="nc" id="L35">                } catch (Exception e) {</span>
 <span class="nc" id="L36">                    System.err.println(&quot;❌ Error saving data during shutdown: &quot; + e.getMessage());</span>
-<span class="nc" id="L37">                }</span>
+                }
 <span class="nc" id="L38">            }, &quot;ShutdownHook-Save&quot;));</span>
             
 <span class="nc" id="L40">            System.out.println(&quot;🔧 Shutdown hook registered for automatic saving&quot;);</span>

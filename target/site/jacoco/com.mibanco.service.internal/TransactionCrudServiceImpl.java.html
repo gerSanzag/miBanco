@@ -29,14 +29,14 @@ class TransactionCrudServiceImpl extends BaseServiceImpl&lt;TransactionDTO, Tran
     private static final TransactionMapper mapper;
    
     static {
-<span class="nc" id="L32">        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();</span>
-<span class="nc" id="L33">        mapper = new TransactionMapper();</span>
+<span class="fc" id="L32">        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();</span>
+<span class="fc" id="L33">        mapper = new TransactionMapper();</span>
        
-<span class="nc" id="L35">    }</span>
+<span class="fc" id="L35">    }</span>
     
     public TransactionCrudServiceImpl() {
-<span class="nc" id="L38">        super(transactionRepository, mapper);</span>
-<span class="nc" id="L39">    }</span>
+<span class="fc" id="L38">        super(transactionRepository, mapper);</span>
+<span class="fc" id="L39">    }</span>
     
     @Override
     public Optional&lt;TransactionDTO&gt; createTransaction(Map&lt;String, String&gt; transactionData) {
@@ -66,7 +66,7 @@ class TransactionCrudServiceImpl extends BaseServiceImpl&lt;TransactionDTO, Tran
 <span class="nc" id="L66">                        .map(transaction -&gt; mapper.toDto(Optional.of(transaction)).orElse(null))</span>
 <span class="nc" id="L67">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L68">                        .toList()</span>
-                ))
+<span class="nc" id="L69">                ))</span>
         );
     }
     
@@ -79,7 +79,7 @@ class TransactionCrudServiceImpl extends BaseServiceImpl&lt;TransactionDTO, Tran
 <span class="nc" id="L79">                        .map(transaction -&gt; mapper.toDto(Optional.of(transaction)).orElse(null))</span>
 <span class="nc" id="L80">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L81">                        .toList()</span>
-                ))
+<span class="nc" id="L82">                ))</span>
         );
     }
     
@@ -92,7 +92,7 @@ class TransactionCrudServiceImpl extends BaseServiceImpl&lt;TransactionDTO, Tran
 <span class="nc" id="L92">                        .map(transaction -&gt; mapper.toDto(Optional.of(transaction)).orElse(null))</span>
 <span class="nc" id="L93">                        .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L94">                        .toList()</span>
-                ))
+<span class="nc" id="L95">                ))</span>
         );
     }
     
@@ -106,8 +106,8 @@ class TransactionCrudServiceImpl extends BaseServiceImpl&lt;TransactionDTO, Tran
 <span class="nc" id="L106">                            .map(transaction -&gt; mapper.toDto(Optional.of(transaction)).orElse(null))</span>
 <span class="nc" id="L107">                            .filter(java.util.Objects::nonNull)</span>
 <span class="nc" id="L108">                            .toList()</span>
-                    ))
-            )
+<span class="nc" id="L109">                    ))</span>
+<span class="nc" id="L110">            )</span>
         );
     }
     

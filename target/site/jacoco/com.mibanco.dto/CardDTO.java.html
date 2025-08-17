@@ -32,42 +32,42 @@ public class CardDTO {
     public static CardDTO of(Long number, Optional&lt;ClientDTO&gt; holder, Optional&lt;String&gt; associatedAccountNumber,
                                Optional&lt;CardType&gt; type, Optional&lt;LocalDate&gt; expirationDate,
                                Optional&lt;Boolean&gt; active) {
-<span class="nc" id="L35">        LocalDate expDate = expirationDate.orElse(LocalDate.now().plusYears(3));</span>
-<span class="nc" id="L36">        return CardDTO.builder()</span>
-<span class="nc" id="L37">                .number(number)</span>
-<span class="nc" id="L38">                .holder(holder.orElse(null))</span>
-<span class="nc" id="L39">                .associatedAccountNumber(associatedAccountNumber.orElse(null))</span>
-<span class="nc" id="L40">                .type(type.orElse(null))</span>
-<span class="nc" id="L41">                .expirationDate(expDate)</span>
-<span class="nc" id="L42">                .active(active.orElse(true))</span>
-<span class="nc" id="L43">                .build();</span>
+<span class="fc" id="L35">        LocalDate expDate = expirationDate.orElse(LocalDate.now().plusYears(3));</span>
+<span class="fc" id="L36">        return CardDTO.builder()</span>
+<span class="fc" id="L37">                .number(number)</span>
+<span class="fc" id="L38">                .holder(holder.orElse(null))</span>
+<span class="fc" id="L39">                .associatedAccountNumber(associatedAccountNumber.orElse(null))</span>
+<span class="fc" id="L40">                .type(type.orElse(null))</span>
+<span class="fc" id="L41">                .expirationDate(expDate)</span>
+<span class="fc" id="L42">                .active(active.orElse(true))</span>
+<span class="fc" id="L43">                .build();</span>
     }
     
     /**
      * Creates a new instance with updated expiration date
      */
     public CardDTO withExpirationDate(LocalDate newDate) {
-<span class="nc" id="L50">        return this.toBuilder()</span>
-<span class="nc" id="L51">                .expirationDate(newDate)</span>
-<span class="nc" id="L52">                .build();</span>
+<span class="fc" id="L50">        return this.toBuilder()</span>
+<span class="fc" id="L51">                .expirationDate(newDate)</span>
+<span class="fc" id="L52">                .build();</span>
     }
     
     /**
      * Creates a new instance with updated active state
      */
     public CardDTO withActive(boolean newActive) {
-<span class="nc" id="L59">        return this.toBuilder()</span>
-<span class="nc" id="L60">                .active(newActive)</span>
-<span class="nc" id="L61">                .build();</span>
+<span class="fc" id="L59">        return this.toBuilder()</span>
+<span class="fc" id="L60">                .active(newActive)</span>
+<span class="fc" id="L61">                .build();</span>
     }
     
     /**
      * Creates a new instance with updated holder
      */
     public CardDTO withHolder(ClientDTO newHolder) {
-<span class="nc" id="L68">        return this.toBuilder()</span>
-<span class="nc" id="L69">                .holder(newHolder)</span>
-<span class="nc" id="L70">                .build();</span>
+<span class="fc" id="L68">        return this.toBuilder()</span>
+<span class="fc" id="L69">                .holder(newHolder)</span>
+<span class="fc" id="L70">                .build();</span>
     }
     
     /**
@@ -76,11 +76,11 @@ public class CardDTO {
     public CardDTO withUpdates(
             Optional&lt;LocalDate&gt; newDate,
             Optional&lt;Boolean&gt; newActive) {
-<span class="nc" id="L79">        LocalDate finalDate = newDate.orElse(this.expirationDate);</span>
-<span class="nc" id="L80">        return this.toBuilder()</span>
-<span class="nc" id="L81">                .expirationDate(finalDate)</span>
-<span class="nc" id="L82">                .active(newActive.orElse(this.active))</span>
-<span class="nc" id="L83">                .build();</span>
+<span class="fc" id="L79">        LocalDate finalDate = newDate.orElse(this.expirationDate);</span>
+<span class="fc" id="L80">        return this.toBuilder()</span>
+<span class="fc" id="L81">                .expirationDate(finalDate)</span>
+<span class="fc" id="L82">                .active(newActive.orElse(this.active))</span>
+<span class="fc" id="L83">                .build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
