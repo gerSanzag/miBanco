@@ -47,15 +47,22 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
     }
 
     @Override
-    public Optional<AccountDTO> updateMultipleFields(Long accountId, Optional<AccountDTO> accountDTO) {
+    public Optional<AccountDTO> updateMultipleFields(Long accountId, Map<String, Object> updates) {
         return super.updateMultipleFields(
             accountId,
-            accountDTO,
+            updates,
             updateType,
-            (existingAccount, newAccount) -> existingAccount.withUpdates(
-                Optional.ofNullable(newAccount.getBalance()),
-                Optional.ofNullable(newAccount.isActive())
-            )
+            (existingAccount, updateData) -> {
+                // Extrae valores del Map y los convierte a Optional
+                Optional<BigDecimal> newBalance = Optional.ofNullable(updateData.get("balance"))
+                    .map(value -> new BigDecimal(value.toString()));
+                    
+                Optional<Boolean> newActive = Optional.ofNullable(updateData.get("active"))
+                    .map(value -> Boolean.parseBoolean(value.toString()));
+                
+                // Usa withUpdates con Optionals
+                return existingAccount.withUpdates(newBalance, newActive);
+            }
         );
     }
 

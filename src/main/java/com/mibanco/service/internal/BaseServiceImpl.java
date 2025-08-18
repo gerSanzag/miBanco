@@ -7,6 +7,7 @@ import com.mibanco.service.util.BaseService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -68,18 +69,17 @@ abstract class BaseServiceImpl<T, E extends Identifiable, ID, O extends Enum<O>,
     @Override
     public Optional<T> updateMultipleFields(
             ID id,
-            Optional<T> dto,
+            Map<String, Object> updates,
             O operationType,
-            BiFunction<T, E, T> updater) {
+            BiFunction<T, Map<String, Object>, T> updater) {
             
         return Optional.ofNullable(id)
             .flatMap(idValue -> repository.findById(Optional.of(idValue)))
-            .flatMap(entity -> dto
-                .map(newDto -> updater.apply(newDto, entity))
-                .flatMap(updatedDto -> mapper.toDto(Optional.of(entity))
-                    .map(existingDto -> saveEntity(operationType, Optional.of(updatedDto)))
-                    .orElse(Optional.empty())
-                )
+            .flatMap(entity -> mapper.toDto(Optional.of(entity))
+                .flatMap(dto -> {
+                    T updatedDto = updater.apply(dto, updates);
+                    return saveEntity(operationType, Optional.of(updatedDto));
+                })
             );
     }
 

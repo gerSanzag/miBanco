@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Test class for ClientService
@@ -302,9 +304,13 @@ class BaseServiceImplTest {
                 .build();
 
         // When
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("email", "updated@test.com");
+        updates.put("phone", "111111111");
+        updates.put("address", "Nueva Dirección");
         Optional<ClientDTO> updatedClient = clientService.updateMultipleFields(
             createdClient.get().getId(), 
-            Optional.of(updatedData)
+            updates
         );
 
         // Then
@@ -428,16 +434,15 @@ class BaseServiceImplTest {
                 .build();
 
         // When - Using updateMultipleFields method
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("firstName", "UpdatedMultiple");
+        updates.put("lastName", "Updated");
+        updates.put("email", "updatedmultiple@test.com");
+        updates.put("phone", "444444444");
+        updates.put("address", "Nueva Calle UpdateMultiple");
         Optional<ClientDTO> updatedClient = clientService.updateMultipleFields(
             createdClient.get().getId(),
-            Optional.of(newData),
-            com.mibanco.model.enums.ClientOperationType.UPDATE,
-            (newDto, entity) -> {
-                // Combine new data with existing entity data
-                return newDto.toBuilder()
-                    .id(entity.getId()) // Keep original ID
-                    .build();
-            }
+            updates
         );
 
         // Then
@@ -465,12 +470,10 @@ class BaseServiceImplTest {
         
         Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
 
-        // When - Using updateMultipleFields method with null DTO
+        // When - Using updateMultipleFields method with null data
         Optional<ClientDTO> updatedClient = clientService.updateMultipleFields(
             createdClient.get().getId(),
-            Optional.empty(), // null DTO
-            com.mibanco.model.enums.ClientOperationType.UPDATE,
-            (newDto, entity) -> newDto.toBuilder().id(entity.getId()).build()
+            null // null data
         );
 
         // Then

@@ -383,20 +383,77 @@ class CardServiceImplTest {
             cardData.put("associatedAccountNumber", "ES3412345678901234567890");
 
             Optional<CardDTO> savedCard = cardService.createCardDto(cardData);
-
-            // Given - Create update data
-            CardDTO updateData = CardDTO.builder()
-                .expirationDate(LocalDate.parse("2026-12-31"))
-                .active(false)
-                .build();
+            assertThat(savedCard).isPresent();
 
             // When - Update multiple fields
-            Optional<CardDTO> result = cardService.updateMultipleFields(1L, Optional.of(updateData));
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("expirationDate", LocalDate.parse("2026-12-31"));
+            updates.put("active", false);
+            Optional<CardDTO> result = cardService.updateMultipleFields(savedCard.get().getNumber(), updates);
 
-            // Then - Should handle multiple fields update gracefully
-            // The method should not throw an exception
-            // We verify the card was created successfully
+            // Then - Should update successfully
+            assertThat(result).isPresent();
+            CardDTO updatedCard = result.get();
+            assertThat(updatedCard.getExpirationDate()).isEqualTo(LocalDate.parse("2026-12-31"));
+            assertThat(updatedCard.isActive()).isFalse();
+        }
+
+        @Test
+        @DisplayName("Should handle update multiple fields with null values in map")
+        void shouldHandleUpdateMultipleFieldsWithNullValuesInMap() {
+            // Given - Create a card first
+            ClientDTO holder = createTestClient();
+            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            
+            Map<String, String> cardData = new HashMap<>();
+            cardData.put("holderId", savedHolder.get().getId().toString());
+            cardData.put("type", "CREDIT");
+            cardData.put("expirationDate", "2025-12-31");
+            cardData.put("active", "true");
+            cardData.put("associatedAccountNumber", "ES3412345678901234567890");
+
+            Optional<CardDTO> savedCard = cardService.createCardDto(cardData);
             assertThat(savedCard).isPresent();
+
+            // When - Update multiple fields with null values
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("expirationDate", null);
+            updates.put("active", null);
+            Optional<CardDTO> result = cardService.updateMultipleFields(savedCard.get().getNumber(), updates);
+
+            // Then - Should handle null values gracefully
+            assertThat(result).isPresent();
+            // The card should remain unchanged since we passed null values
+        }
+
+        @Test
+        @DisplayName("Should handle update multiple fields with string values")
+        void shouldHandleUpdateMultipleFieldsWithStringValues() {
+            // Given - Create a card first
+            ClientDTO holder = createTestClient();
+            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            
+            Map<String, String> cardData = new HashMap<>();
+            cardData.put("holderId", savedHolder.get().getId().toString());
+            cardData.put("type", "CREDIT");
+            cardData.put("expirationDate", "2025-12-31");
+            cardData.put("active", "true");
+            cardData.put("associatedAccountNumber", "ES3412345678901234567890");
+
+            Optional<CardDTO> savedCard = cardService.createCardDto(cardData);
+            assertThat(savedCard).isPresent();
+
+            // When - Update multiple fields with string values
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("expirationDate", "2026-12-31");
+            updates.put("active", "false");
+            Optional<CardDTO> result = cardService.updateMultipleFields(savedCard.get().getNumber(), updates);
+
+            // Then - Should parse string values correctly
+            assertThat(result).isPresent();
+            CardDTO updatedCard = result.get();
+            assertThat(updatedCard.getExpirationDate()).isEqualTo(LocalDate.parse("2026-12-31"));
+            assertThat(updatedCard.isActive()).isFalse();
         }
 
         @Test
@@ -422,7 +479,10 @@ class CardServiceImplTest {
                 .build();
 
             // When - Update multiple fields with null ID
-            Optional<CardDTO> result = cardService.updateMultipleFields(null, Optional.of(updateData));
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("expirationDate", LocalDate.parse("2026-12-31"));
+            updates.put("active", false);
+            Optional<CardDTO> result = cardService.updateMultipleFields(null, updates);
 
             // Then - Should handle null ID gracefully
             // The method should not throw an exception
@@ -447,7 +507,7 @@ class CardServiceImplTest {
             Optional<CardDTO> savedCard = cardService.createCardDto(cardData);
 
             // When - Update multiple fields with null data
-            Optional<CardDTO> result = cardService.updateMultipleFields(1L, Optional.empty());
+            Optional<CardDTO> result = cardService.updateMultipleFields(1L, null);
 
             // Then - Should handle null data gracefully
             // The method should not throw an exception

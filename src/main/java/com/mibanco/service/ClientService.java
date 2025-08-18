@@ -30,10 +30,10 @@ public interface ClientService {
     /**
      * Updates complete client information using the generic updateMultipleFields method
      * @param id ID of the client to update
-     * @param clientDTO Optional with new client data
+     * @param updates Map with raw update data
      * @return Optional with the updated client DTO
      */
-    Optional<ClientDTO> updateMultipleFields(Long id, Optional<ClientDTO> clientDTO);
+    Optional<ClientDTO> updateMultipleFields(Long id, Map<String, Object> updates);
     
     /**
      * Gets a client by its ID
@@ -119,19 +119,7 @@ public interface ClientService {
             java.util.function.Function<ClientDTO, V> currentValue,
             java.util.function.BiFunction<ClientDTO, V, ClientDTO> updater);
 
-    /**
-     * Generic method to update multiple fields of a client
-     * @param id ID of the client to update
-     * @param dto Optional with new data
-     * @param operationType Type of operation for auditing
-     * @param updater Function that updates the existing client with new data
-     * @return Optional with the updated client DTO
-     */
-    Optional<ClientDTO> updateMultipleFields(
-            Long id,
-            Optional<ClientDTO> dto,
-            com.mibanco.model.enums.ClientOperationType operationType,
-            java.util.function.BiFunction<ClientDTO, com.mibanco.model.Client, ClientDTO> updater);
+
 
     /**
      * Gets the list of deleted clients

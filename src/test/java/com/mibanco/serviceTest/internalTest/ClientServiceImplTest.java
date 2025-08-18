@@ -468,11 +468,10 @@ class ClientServiceImplTest {
             updates.put("email", "johnny@test.com");
 
             // When
-            ClientDTO updateDto = ClientDTO.builder()
-                    .firstName("Johnny")
-                    .email("johnny@test.com")
-                    .build();
-            Optional<ClientDTO> result = clientService.updateMultipleFields(clientId, Optional.of(updateDto));
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("firstName", "Johnny");
+            updateData.put("email", "johnny@test.com");
+            Optional<ClientDTO> result = clientService.updateMultipleFields(clientId, updateData);
 
             // Then
             assertThat(result).isPresent();

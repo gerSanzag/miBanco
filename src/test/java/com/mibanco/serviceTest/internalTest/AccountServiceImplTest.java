@@ -562,20 +562,84 @@ class AccountServiceImplTest {
             rawData.put("active", "true");
 
             Optional<AccountDTO> savedAccount = accountService.createAccountDto(rawData, new BigDecimal("1000.00"), transactionService);
-
-            // Given - Create update data
-            AccountDTO updateData = AccountDTO.builder()
-                .balance(new BigDecimal("2500.00"))
-                .active(false)
-                .build();
+            assertThat(savedAccount).isPresent();
 
             // When - Update multiple fields
-            Optional<AccountDTO> result = accountService.updateMultipleFields(1L, Optional.of(updateData));
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("balance", new BigDecimal("2500.00"));
+            updates.put("active", false);
+            // Extract the numeric part of the account number to use as ID
+            String numericPart = savedAccount.get().getAccountNumber().replaceAll("[^0-9]", "");
+            Long accountId = Long.parseLong(numericPart.substring(0, Math.min(numericPart.length(), 18)));
+            Optional<AccountDTO> result = accountService.updateMultipleFields(accountId, updates);
 
-            // Then - Should handle multiple fields update gracefully
-            // The method should not throw an exception
-            // We verify the account was created successfully
+            // Then - Should update successfully
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getBalance()).isEqualTo(new BigDecimal("2500.00"));
+            assertThat(updatedAccount.isActive()).isFalse();
+        }
+
+        @Test
+        @DisplayName("Should handle update multiple fields with null values in map")
+        void shouldHandleUpdateMultipleFieldsWithNullValuesInMap() {
+            // Given - Create an account first
+            ClientDTO holder = createTestClient();
+            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            
+            Map<String, String> rawData = new HashMap<>();
+            rawData.put("holderId", savedHolder.get().getId().toString());
+            rawData.put("type", "SAVINGS");
+            rawData.put("creationDate", "2025-01-15T10:30:00");
+            rawData.put("active", "true");
+
+            Optional<AccountDTO> savedAccount = accountService.createAccountDto(rawData, new BigDecimal("1000.00"), transactionService);
             assertThat(savedAccount).isPresent();
+
+            // When - Update multiple fields with null values
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("balance", null);
+            updates.put("active", null);
+            // Extract the numeric part of the account number to use as ID
+            String numericPart = savedAccount.get().getAccountNumber().replaceAll("[^0-9]", "");
+            Long accountId = Long.parseLong(numericPart.substring(0, Math.min(numericPart.length(), 18)));
+            Optional<AccountDTO> result = accountService.updateMultipleFields(accountId, updates);
+
+            // Then - Should handle null values gracefully
+            assertThat(result).isPresent();
+            // The account should remain unchanged since we passed null values
+        }
+
+        @Test
+        @DisplayName("Should handle update multiple fields with string values")
+        void shouldHandleUpdateMultipleFieldsWithStringValues() {
+            // Given - Create an account first
+            ClientDTO holder = createTestClient();
+            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            
+            Map<String, String> rawData = new HashMap<>();
+            rawData.put("holderId", savedHolder.get().getId().toString());
+            rawData.put("type", "SAVINGS");
+            rawData.put("creationDate", "2025-01-15T10:30:00");
+            rawData.put("active", "true");
+
+            Optional<AccountDTO> savedAccount = accountService.createAccountDto(rawData, new BigDecimal("1000.00"), transactionService);
+            assertThat(savedAccount).isPresent();
+
+            // When - Update multiple fields with string values
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("balance", "2500.00");
+            updates.put("active", "false");
+            // Extract the numeric part of the account number to use as ID
+            String numericPart = savedAccount.get().getAccountNumber().replaceAll("[^0-9]", "");
+            Long accountId = Long.parseLong(numericPart.substring(0, Math.min(numericPart.length(), 18)));
+            Optional<AccountDTO> result = accountService.updateMultipleFields(accountId, updates);
+
+            // Then - Should parse string values correctly
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getBalance()).isEqualTo(new BigDecimal("2500.00"));
+            assertThat(updatedAccount.isActive()).isFalse();
         }
 
         @Test
@@ -600,7 +664,10 @@ class AccountServiceImplTest {
                 .build();
 
             // When - Update multiple fields with null ID
-            Optional<AccountDTO> result = accountService.updateMultipleFields(null, Optional.of(updateData));
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("balance", new BigDecimal("2500.00"));
+            updates.put("active", false);
+            Optional<AccountDTO> result = accountService.updateMultipleFields(null, updates);
 
             // Then - Should handle null ID gracefully
             // The method should not throw an exception
@@ -624,7 +691,7 @@ class AccountServiceImplTest {
             Optional<AccountDTO> savedAccount = accountService.createAccountDto(rawData, new BigDecimal("1000.00"), transactionService);
 
             // When - Update multiple fields with null data
-            Optional<AccountDTO> result = accountService.updateMultipleFields(1L, Optional.empty());
+            Optional<AccountDTO> result = accountService.updateMultipleFields(1L, null);
 
             // Then - Should handle null data gracefully
             // The method should not throw an exception

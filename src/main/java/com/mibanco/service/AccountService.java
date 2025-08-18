@@ -23,11 +23,11 @@ public interface AccountService {
     
     /**
      * Updates complete account information
-     * @param accountNumber Account number to update
-     * @param accountDTO Optional with new account data
+     * @param accountId Account ID to update
+     * @param updates Map with raw update data
      * @return Optional with updated account DTO
      */
-    Optional<AccountDTO> updateMultipleFields(Long accountId, Optional<AccountDTO> accountDTO);
+    Optional<AccountDTO> updateMultipleFields(Long accountId, Map<String, Object> updates);
     
     /**
      * Gets an account by its number
