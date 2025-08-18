@@ -16,7 +16,7 @@ public final class ServiceFactory {
     private static volatile ServiceFactory instance;
     private final ClientService clientService;
     private final AccountService accountService;
-    // private final CardService cardService;
+    private final CardService cardService;
     private final TransactionCrudService transactionCrudService;
     private final TransactionOperationsService transactionOperationsService;
     private final AuditService auditService;
@@ -28,7 +28,7 @@ public final class ServiceFactory {
     private ServiceFactory() {
         this.clientService = new ClientServiceImpl();
         this.accountService = new AccountServiceImpl();
-        // this.cardService = new CardServiceImpl();
+        this.cardService = new CardServiceImpl();
         this.transactionCrudService = new TransactionCrudServiceImpl();
         this.transactionOperationsService = new TransactionOperationsServiceImpl();
         this.auditService = new AuditServiceImpl();
@@ -69,9 +69,9 @@ public final class ServiceFactory {
      * Gets the card service
      * @return Public interface of card service
      */
-    // public CardService getCardService() {
-    //     return cardService;
-    // }
+    public CardService getCardService() {
+        return cardService;
+    }
     
     /**
      * Gets the transaction CRUD service
