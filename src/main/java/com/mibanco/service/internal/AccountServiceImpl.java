@@ -96,7 +96,7 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
         return updateStatus;
     }
 
-   
+    @Override
     public Optional<AccountDTO> updateAccountHolder(Long accountId, Optional<AccountDTO> newHolder) {
         Optional<AccountDTO> updateHolder = newHolder.flatMap(holderDTO -> 
             clientMapper.toEntity(Optional.of(holderDTO.getHolder()))
@@ -176,12 +176,12 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
     public Optional<AccountDTO> createAccountDto(Map<String, String> rawData, BigDecimal initialAmount, TransactionOperationsService transactionService) {
         try {
             return accountDtoProcessor.processAccountDto(rawData)
-                .flatMap(accountDTO -> accountDtoProcessor.processInitialDeposit(accountDTO, initialAmount, transactionService))
-                .flatMap(accountWithBalance -> {
+                .flatMap(accountDTO -> {
                     // Validate unique account number before saving
-                    validateUniqueAccountNumber(accountWithBalance);
-                    return saveEntity(AccountOperationType.CREATE, Optional.of(accountWithBalance));
+                    validateUniqueAccountNumber(accountDTO);
+                    return saveEntity(AccountOperationType.CREATE, Optional.of(accountDTO));
                 })
+                .flatMap(savedAccount -> accountDtoProcessor.processInitialDeposit(savedAccount, initialAmount, transactionService))
                 .or(() -> Optional.empty());
         } catch (ValidationException e) {
             // Re-throw the exception for the view to handle

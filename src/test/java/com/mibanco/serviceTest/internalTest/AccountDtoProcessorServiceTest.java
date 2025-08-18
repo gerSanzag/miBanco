@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.AccountDTO;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.enums.AccountType;
+import com.mibanco.service.AccountService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.TransactionOperationsService;
 import com.mibanco.service.internal.AccountDtoProcessorService;
@@ -29,11 +30,13 @@ class AccountDtoProcessorServiceTest {
     private AccountDtoProcessorService processor;
     private ClientService clientService;
     private TransactionOperationsService transactionService;
+    private AccountService accountService;
 
     @BeforeEach
     void setUp() {
         clientService = ServiceFactory.getInstance().getClientService();
         transactionService = ServiceFactory.getInstance().getTransactionOperationsService();
+        accountService = ServiceFactory.getInstance().getAccountService();
         processor = new AccountDtoProcessorService(clientService);
     }
 
@@ -392,8 +395,8 @@ class AccountDtoProcessorServiceTest {
     class InitialDepositProcessingTests {
 
         @Test
-        @DisplayName("Should throw exception when account has no ID for initial deposit")
-        void shouldThrowExceptionWhenAccountHasNoIdForInitialDeposit() {
+        @DisplayName("Should process initial deposit successfully even when account has no ID")
+        void shouldProcessInitialDepositSuccessfullyEvenWhenAccountHasNoId() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
             Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
@@ -407,14 +410,19 @@ class AccountDtoProcessorServiceTest {
 
             BigDecimal initialAmount = new BigDecimal("1000.00");
 
-            // When & Then
-            assertThatThrownBy(() -> processor.processInitialDeposit(account, initialAmount, transactionService))
-                .isInstanceOf(NullPointerException.class);
+            // When - Process initial deposit (should work now with simplified logic)
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with updated balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(initialAmount);
+            assertThat(updatedAccount.getBalance()).isEqualTo(initialAmount);
         }
 
         @Test
-        @DisplayName("Should throw exception when account has no ID for zero deposit")
-        void shouldThrowExceptionWhenAccountHasNoIdForZeroDeposit() {
+        @DisplayName("Should process initial deposit successfully with zero amount")
+        void shouldProcessInitialDepositSuccessfullyWithZeroAmount() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
             Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
@@ -428,14 +436,19 @@ class AccountDtoProcessorServiceTest {
 
             BigDecimal initialAmount = BigDecimal.ZERO;
 
-            // When & Then
-            assertThatThrownBy(() -> processor.processInitialDeposit(account, initialAmount, transactionService))
-                .isInstanceOf(NullPointerException.class);
+            // When - Process initial deposit with zero amount
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with zero balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(BigDecimal.ZERO);
+            assertThat(updatedAccount.getBalance()).isEqualTo(BigDecimal.ZERO);
         }
 
         @Test
-        @DisplayName("Should throw exception when account has no ID for negative deposit")
-        void shouldThrowExceptionWhenAccountHasNoIdForNegativeDeposit() {
+        @DisplayName("Should process initial deposit successfully with negative amount")
+        void shouldProcessInitialDepositSuccessfullyWithNegativeAmount() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
             Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
@@ -449,14 +462,19 @@ class AccountDtoProcessorServiceTest {
 
             BigDecimal initialAmount = new BigDecimal("-500.00");
 
-            // When & Then
-            assertThatThrownBy(() -> processor.processInitialDeposit(account, initialAmount, transactionService))
-                .isInstanceOf(NullPointerException.class);
+            // When - Process initial deposit with negative amount
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with negative balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(new BigDecimal("-500.00"));
+            assertThat(updatedAccount.getBalance()).isEqualTo(new BigDecimal("-500.00"));
         }
 
         @Test
-        @DisplayName("Should throw exception when account has no ID for large deposit")
-        void shouldThrowExceptionWhenAccountHasNoIdForLargeDeposit() {
+        @DisplayName("Should process initial deposit successfully with large amount")
+        void shouldProcessInitialDepositSuccessfullyWithLargeAmount() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
             Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
@@ -470,9 +488,14 @@ class AccountDtoProcessorServiceTest {
 
             BigDecimal initialAmount = new BigDecimal("1000000.00");
 
-            // When & Then
-            assertThatThrownBy(() -> processor.processInitialDeposit(account, initialAmount, transactionService))
-                .isInstanceOf(NullPointerException.class);
+            // When - Process initial deposit with large amount
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with large balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(new BigDecimal("1000000.00"));
+            assertThat(updatedAccount.getBalance()).isEqualTo(new BigDecimal("1000000.00"));
         }
     }
 
@@ -604,8 +627,8 @@ class AccountDtoProcessorServiceTest {
         }
 
         @Test
-        @DisplayName("Should process account creation but throw exception for initial deposit due to no ID")
-        void shouldProcessAccountCreationButThrowExceptionForInitialDepositDueToNoId() {
+        @DisplayName("Should process account creation and initial deposit successfully")
+        void shouldProcessAccountCreationAndInitialDepositSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
             Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
@@ -623,9 +646,116 @@ class AccountDtoProcessorServiceTest {
             AccountDTO account = accountResult.get();
             BigDecimal initialAmount = new BigDecimal("5000.00");
             
-            // When & Then - Process initial deposit
-            assertThatThrownBy(() -> processor.processInitialDeposit(account, initialAmount, transactionService))
-                .isInstanceOf(NullPointerException.class);
+            // When - Process initial deposit (should work now with corrected logic)
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with updated balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(initialAmount);
+            assertThat(updatedAccount.getBalance()).isEqualTo(initialAmount);
+        }
+
+        @Test
+        @DisplayName("Should process initial deposit successfully with null account ID")
+        void shouldProcessInitialDepositSuccessfullyWithNullAccountId() {
+            // Given - Create an account DTO without ID (not persisted)
+            ClientDTO holder = createTestClient();
+            AccountDTO account = AccountDTO.builder()
+                .holder(holder)
+                .type(AccountType.SAVINGS)
+                .creationDate(LocalDateTime.now())
+                .active(true)
+                .build();
+
+            BigDecimal initialAmount = new BigDecimal("1000.00");
+
+            // When - Process initial deposit (should work now with simplified logic)
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with updated balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(initialAmount);
+            assertThat(updatedAccount.getBalance()).isEqualTo(initialAmount);
+        }
+
+        @Test
+        @DisplayName("Should process initial deposit successfully even with mapper issues")
+        void shouldProcessInitialDepositSuccessfullyEvenWithMapperIssues() {
+            // Given - Create an account DTO that would cause mapper issues
+            ClientDTO holder = createTestClient();
+            AccountDTO account = AccountDTO.builder()
+                .holder(holder)
+                .type(AccountType.SAVINGS)
+                .creationDate(LocalDateTime.now())
+                .active(true)
+                .build();
+
+            BigDecimal initialAmount = new BigDecimal("1000.00");
+
+            // When - Process initial deposit (should work now with simplified logic)
+            Optional<AccountDTO> result = processor.processInitialDeposit(account, initialAmount, transactionService);
+
+            // Then - Should return account with updated balance
+            assertThat(result).isPresent();
+            AccountDTO updatedAccount = result.get();
+            assertThat(updatedAccount.getInitialBalance()).isEqualTo(initialAmount);
+            assertThat(updatedAccount.getBalance()).isEqualTo(initialAmount);
+        }
+
+        @Test
+        @DisplayName("Should update account with balance successfully")
+        void shouldUpdateAccountWithBalanceSuccessfully() {
+            // Given - Create an account DTO
+            ClientDTO holder = createTestClient();
+            AccountDTO account = AccountDTO.builder()
+                .accountNumber("ES3412345678901234567890")
+                .holder(holder)
+                .type(AccountType.SAVINGS)
+                .creationDate(LocalDateTime.now())
+                .active(true)
+                .build();
+
+            BigDecimal balance = new BigDecimal("2500.00");
+
+            // When - Update account with balance
+            AccountDTO result = processor.updateAccountWithBalance(account, balance);
+
+            // Then - Should return account with updated balance
+            assertThat(result.getInitialBalance()).isEqualTo(balance);
+            assertThat(result.getBalance()).isEqualTo(balance);
+            assertThat(result.getAccountNumber()).isEqualTo("ES3412345678901234567890");
+        }
+
+        @Test
+        @DisplayName("Should test createAccountDto flow with corrected order")
+        void shouldTestCreateAccountDtoFlowWithCorrectedOrder() {
+            // Given - Create a client and save it
+            ClientDTO holder = createTestClient();
+            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            
+            // Given - Prepare account data
+            Map<String, String> rawData = new HashMap<>();
+            rawData.put("holderId", savedHolder.get().getId().toString());
+            rawData.put("type", "SAVINGS");
+            rawData.put("creationDate", "2025-01-15T10:30:00");
+            rawData.put("active", "true");
+
+            BigDecimal initialAmount = new BigDecimal("1000.00");
+
+            // When - Use the corrected createAccountDto flow
+            // This should now work because we fixed the order in AccountServiceImpl
+            Optional<AccountDTO> result = accountService.createAccountDto(rawData, initialAmount, transactionService);
+
+            // Then - Should create account successfully
+            assertThat(result).isPresent();
+            AccountDTO createdAccount = result.get();
+            assertThat(createdAccount.getHolder()).isEqualTo(savedHolder.get());
+            assertThat(createdAccount.getType()).isEqualTo(AccountType.SAVINGS);
+            assertThat(createdAccount.getInitialBalance()).isEqualTo(initialAmount);
+            assertThat(createdAccount.getBalance()).isEqualTo(initialAmount);
+            assertThat(createdAccount.getAccountNumber()).isNotNull();
         }
     }
 

@@ -1,0 +1,91 @@
+[ {
+  "id" : 1,
+  "firstName" : "Client0",
+  "lastName" : "Test0",
+  "dni" : "DNI0",
+  "birthDate" : "1990-01-01",
+  "email" : "client0@test.com",
+  "phone" : "123456780",
+  "address" : "Address 0"
+}, {
+  "id" : 2,
+  "firstName" : "Client1",
+  "lastName" : "Test1",
+  "dni" : "DNI1",
+  "birthDate" : "1990-01-01",
+  "email" : "client1@test.com",
+  "phone" : "123456781",
+  "address" : "Address 1"
+}, {
+  "id" : 3,
+  "firstName" : "Client2",
+  "lastName" : "Test2",
+  "dni" : "DNI2",
+  "birthDate" : "1990-01-01",
+  "email" : "client2@test.com",
+  "phone" : "123456782",
+  "address" : "Address 2"
+}, {
+  "id" : 4,
+  "firstName" : "Client3",
+  "lastName" : "Test3",
+  "dni" : "DNI3",
+  "birthDate" : "1990-01-01",
+  "email" : "client3@test.com",
+  "phone" : "123456783",
+  "address" : "Address 3"
+}, {
+  "id" : 5,
+  "firstName" : "Client4",
+  "lastName" : "Test4",
+  "dni" : "DNI4",
+  "birthDate" : "1990-01-01",
+  "email" : "client4@test.com",
+  "phone" : "123456784",
+  "address" : "Address 4"
+}, {
+  "id" : 6,
+  "firstName" : "Client5",
+  "lastName" : "Test5",
+  "dni" : "DNI5",
+  "birthDate" : "1990-01-01",
+  "email" : "client5@test.com",
+  "phone" : "123456785",
+  "address" : "Address 5"
+}, {
+  "id" : 7,
+  "firstName" : "Client6",
+  "lastName" : "Test6",
+  "dni" : "DNI6",
+  "birthDate" : "1990-01-01",
+  "email" : "client6@test.com",
+  "phone" : "123456786",
+  "address" : "Address 6"
+}, {
+  "id" : 8,
+  "firstName" : "Client7",
+  "lastName" : "Test7",
+  "dni" : "DNI7",
+  "birthDate" : "1990-01-01",
+  "email" : "client7@test.com",
+  "phone" : "123456787",
+  "address" : "Address 7"
+}, {
+  "id" : 9,
+  "firstName" : "Client8",
+  "lastName" : "Test8",
+  "dni" : "DNI8",
+  "birthDate" : "1990-01-01",
+  "email" : "client8@test.com",
+  "phone" : "123456788",
+  "address" : "Address 8"
+}, {
+  "id" : 10,
+  "firstName" : "Client9",
+  "lastName" : "Test9",
+  "dni" : "DNI9",
+  "birthDate" : "1990-01-01",
+  "email" : "client9@test.com",
+  "phone" : "123456789",
+  "address" : "Address 9"
+} ]
