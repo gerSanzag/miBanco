@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mibanco.model.AuditRecord;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.ClientOperationType;
+import com.mibanco.BaseTest;
 import com.mibanco.repository.AuditRepository;
 import com.mibanco.util.AuditUtil;
 
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tests for AuditUtil class")
-class AuditUtilTest {
+class AuditUtilTest extends BaseTest {
 
     @Mock
     private AuditRepository mockAuditRepository;

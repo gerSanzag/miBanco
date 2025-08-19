@@ -1,6 +1,7 @@
 package com.mibanco.serviceTest.internalTest;
 
 import com.mibanco.dto.ClientDTO;
+import com.mibanco.BaseTest;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ import java.util.HashMap;
  * Tests the CRUD operations using real classes
  */
 @DisplayName("ClientService CRUD Operations Tests")
-class BaseServiceImplTest {
+class BaseServiceImplTest extends BaseTest {
 
     private ClientService clientService;
 

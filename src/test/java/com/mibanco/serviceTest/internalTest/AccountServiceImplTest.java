@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.AccountDTO;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.enums.AccountType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.AccountService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.TransactionOperationsService;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Tests all CRUD operations and business logic
  */
 @DisplayName("AccountServiceImpl Tests")
-class AccountServiceImplTest {
+class AccountServiceImplTest extends BaseTest {
 
     private AccountService accountService;
     private ClientService clientService;

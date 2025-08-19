@@ -1,5 +1,6 @@
 package com.mibanco.repositoryTest.internalTest;
 
+import com.mibanco.BaseTest;
 import com.mibanco.model.Account;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.AccountOperationType;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Includes configuration, mapping and specific edge case tests
  */
 @DisplayName("AccountRepositoryImpl Tests")
-class AccountRepositoryImplTest {
+class AccountRepositoryImplTest extends BaseTest {
     
     private AccountRepositoryImplWrapper repository;
     private Client holder1;

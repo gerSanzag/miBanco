@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.CardDTO;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.enums.CardType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.CardService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.ServiceFactory;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Tests all CRUD operations and business logic
  */
 @DisplayName("CardServiceImpl Tests")
-class CardServiceImplTest {
+class CardServiceImplTest extends BaseTest {
 
     private CardService cardService;
     private ClientService clientService;

@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.model.AuditRecord;
 import com.mibanco.model.Account;
 import com.mibanco.model.enums.AccountOperationType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.AuditService;
 import com.mibanco.service.internal.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import java.util.UUID;
  * Tests all audit query operations using real classes
  */
 @DisplayName("AuditService Query Operations Tests")
-class AuditServiceImplTest {
+class AuditServiceImplTest extends BaseTest {
 
     private AuditService auditService;
 

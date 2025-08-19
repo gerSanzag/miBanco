@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.AccountType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("ClientServiceImpl Tests")
-class ClientServiceImplTest {
+class ClientServiceImplTest extends BaseTest {
 
     private ClientService clientService;
 
