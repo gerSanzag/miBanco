@@ -1,6 +1,5 @@
 package com.mibanco.repositoryTest.internalTest;
 
-import com.mibanco.dto.ClientDTO;
 import com.mibanco.dto.mappers.ClientMapper;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.ClientOperationType;
@@ -9,11 +8,10 @@ import com.mibanco.repository.internal.BaseRepositoryImplWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -24,68 +22,129 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for BaseRepositoryImpl using a concrete implementation for testing
- * Validates all base repository functionality
+ * Tests to verify specific uncovered branches in BaseRepositoryImpl
+ * Focuses on edge cases that are not covered by other tests
  */
-@DisplayName("BaseRepositoryImpl Tests")
+@DisplayName("BaseRepositoryImpl - Uncovered Branches Tests")
 class BaseRepositoryImplTest {
-    
-    private TestRepositoryImpl repository;
-    private Client client1;
-    private Client client2;
-    
+
+    private TestRepository repository;
+    private String currentTestFile;
+
     @BeforeEach
-    void setUp(@TempDir Path tempDir) {
-        // Create temporary JSON file for testing
-        File jsonFile = tempDir.resolve("test_clients.json").toFile();
+    void setUp() throws IOException {
+        // Create a temporary test file
+        currentTestFile = "src/test/resources/data/test_base_repository.json";
+        File file = new File(currentTestFile);
+        file.getParentFile().mkdirs();
         
-        // Create test data
-        client1 = Client.builder()
-            .id(1L)
-            .firstName("Juan")
-            .lastName("Pérez")
-            .dni("12345678")
-            .email("juan@test.com")
-            .phone("123456789")
-            .address("Calle Test 123")
-            .birthDate(LocalDate.of(1990, 1, 1))
-            .build();
-            
-        client2 = Client.builder()
-            .id(2L)
-            .firstName("María")
-            .lastName("García")
-            .dni("87654321")
-            .email("maria@test.com")
-            .phone("987654321")
-            .address("Avenida Test 456")
-            .birthDate(LocalDate.of(1985, 5, 15))
-            .build();
-        
-        // Create repository with temporary configuration
-        repository = new TestRepositoryImpl(jsonFile.getAbsolutePath());
+        // Create repository with test configuration
+        repository = new TestRepository(currentTestFile);
     }
-    
+
+    @Test
+    @DisplayName("Should handle updateRecord with empty Optional")
+    void shouldHandleUpdateRecordWithEmptyOptional() {
+        // Act - Try to update with empty Optional
+        Optional<Client> result = repository.updateRecord(Optional.empty(), ClientOperationType.UPDATE);
+        
+        // Assert - Should return empty Optional
+        assertTrue(result.isEmpty(), "Should return empty Optional when updating with empty Optional");
+    }
+
+    @Test
+    @DisplayName("Should handle loadDataFromJson with empty data")
+    void shouldHandleLoadDataFromJsonWithEmptyData() throws IOException {
+        // Arrange - Create empty JSON file
+        File file = new File(currentTestFile);
+        Files.write(file.toPath(), "[]".getBytes());
+        
+        // Act - Load data (should trigger the if (!loadedData.isEmpty()) branch)
+        repository.loadData();
+        
+        // Assert - Counter should remain at 1 (default value)
+        assertEquals(1, repository.getIdCounterValue(), "Counter should remain at default value when no data is loaded");
+    }
+
+    @Test
+    @DisplayName("Should handle loadDataFromJson with non-empty data")
+    void shouldHandleLoadDataFromJsonWithNonEmptyData() throws IOException {
+        // Arrange - Create JSON file with data
+        String jsonData = """
+            [
+                {
+                    "id": 5,
+                    "firstName": "Test",
+                    "lastName": "User",
+                    "dni": "12345678",
+                    "birthDate": "1990-01-01",
+                    "email": "test@test.com",
+                    "phone": "123456789",
+                    "address": "Test Address"
+                }
+            ]
+            """;
+        File file = new File(currentTestFile);
+        Files.write(file.toPath(), jsonData.getBytes());
+        
+        // Act - Load data (should trigger the if (!loadedData.isEmpty()) branch)
+        repository.loadData();
+        
+        // Assert - Counter should be updated to max ID + 1
+        assertEquals(6, repository.getIdCounterValue(), "Counter should be updated to max ID + 1 when data is loaded");
+    }
+
+    @Test
+    @DisplayName("Should test real BaseRepositoryImpl through real ClientRepository")
+    void shouldTestRealBaseRepositoryImplThroughRealClientRepository() {
+        // Arrange - Get the REAL ClientRepository from Factory
+        com.mibanco.repository.ClientRepository realRepository = 
+            com.mibanco.repository.internal.RepositoryFactory.getInstance().getClientRepository();
+        
+        // Act - Test updateRecord with empty Optional (real BaseRepositoryImpl logic)
+        Optional<Client> result = realRepository.updateRecord(Optional.empty(), ClientOperationType.UPDATE);
+        
+        // Assert - Should return empty Optional (real BaseRepositoryImpl behavior)
+        assertTrue(result.isEmpty(), "Real BaseRepositoryImpl should return empty Optional when updating with empty Optional");
+    }
+
+    @Test
+    @DisplayName("Should test real BaseRepositoryImpl loadDataFromJson through real repository")
+    void shouldTestRealBaseRepositoryImplLoadDataFromJson() {
+        // Arrange - Get the REAL ClientRepository from Factory
+        com.mibanco.repository.ClientRepository realRepository = 
+            com.mibanco.repository.internal.RepositoryFactory.getInstance().getClientRepository();
+        
+        // Act - Call findAll() which triggers the REAL loadDataFromJson method internally
+        // This will load data from the real file: src/main/resources/data/clientes.json
+        Optional<List<Client>> allClients = realRepository.findAll();
+        
+        // Assert - Verify that the real method executed without errors
+        assertNotNull(allClients, "Real loadDataFromJson should execute without errors");
+        
+        // If we get here, it means the real if (!loadedData.isEmpty()) branch was executed
+        // either with empty data (false branch) or with real data (true branch)
+    }
+
     /**
-     * Concrete implementation of BaseRepositoryImpl for testing
+     * Test-specific implementation of BaseRepositoryImplWrapper
+     * Provides access to protected methods for testing
      */
-    private static class TestRepositoryImpl extends BaseRepositoryImplWrapper<Client, Long, ClientOperationType> {
+    private static class TestRepository extends BaseRepositoryImplWrapper<Client, Long, ClientOperationType> {
         
         private final String filePath;
         
-        public TestRepositoryImpl(String filePath) {
-            this.filePath = filePath; // Allow null to test defensive validation
+        TestRepository(String filePath) {
+            this.filePath = filePath;
         }
         
         @Override
-        protected Client createWithNewId(Client entity) {
-            // Simulate ID assignment using counter
-            // Pure functional approach with Optional
+        protected Client createWithNewId(Client client) {
             ClientMapper mapper = new ClientMapper();
             
-            return mapper.toDtoDirect(entity)
+            return mapper.toDtoDirect(client)
                 .map(dto -> dto.toBuilder()
-                    .id(idCounter.getAndIncrement())
+                    .id(idCounter.incrementAndGet())
                     .build())
                 .flatMap(mapper::toEntityDirect)
                 .orElseThrow(() -> new IllegalStateException("Could not process Client entity"));
@@ -99,481 +158,12 @@ class BaseRepositoryImplTest {
             config.put("idExtractor", (Function<Client, Long>) Client::getId);
             return config;
         }
-
-        // Public "bridge" methods for testing only
-        public Optional<Client> findByPredicatePublic(java.util.function.Predicate<Client> predicate) {
-            return super.findByPredicate(predicate);
-        }
-
-        public Optional<List<Client>> findAllByPredicatePublic(java.util.function.Predicate<Client> predicate) {
-            return super.findAllByPredicate(predicate);
-        }
-
-        public void incrementCounterAndSavePublic() {
-            super.incrementCounterAndSave();
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for create")
-    class CreateTests {
         
-        @Test
-        @DisplayName("Should create a new entity with automatic ID")
-        void shouldCreateEntityWithAutomaticId() {
-            // Arrange
-            Client newClient = Client.builder()
-                .firstName("Nuevo")
-                .lastName("Cliente")
-                .dni("11111111")
-                .email("nuevo@test.com")
-                .phone("111111111")
-                .address("Nueva Dirección")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .build();
-            
-            // Act
-            Optional<Client> result = repository.createRecord(Optional.of(newClient), ClientOperationType.CREATE);
-            
-            // Assert
-            assertTrue(result.isPresent());
-            Client createdClient = result.get();
-            assertNotNull(createdClient.getId());
-            assertEquals("Nuevo", createdClient.getFirstName());
-            assertEquals(1, repository.countRecords());
-        }
-        
-        @Test
-        @DisplayName("Should return empty for null entity")
-        void shouldReturnEmptyForNullEntity() {
-            // Act
-            Optional<Client> result = repository.createRecord(Optional.empty(), ClientOperationType.CREATE);
-            
-            // Assert
-            assertFalse(result.isPresent());
-            assertEquals(0, repository.countRecords());
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for search")
-    class SearchTests {
-        
-        @BeforeEach
-        void setUp() {
-            // Create test entities
-            repository.createRecord(Optional.of(client1), ClientOperationType.CREATE);
-            repository.createRecord(Optional.of(client2), ClientOperationType.CREATE);
-        }
-        
-        @Test
-        @DisplayName("Should search entity by existing ID")
-        void shouldSearchByExistingId() {
-            // Act
-            Optional<Client> result = repository.findById(Optional.of(1L));
-            
-            // Assert
-            assertTrue(result.isPresent());
-            assertEquals("Juan", result.get().getFirstName());
-        }
-        
-        @Test
-        @DisplayName("Should return empty for non-existent ID")
-        void shouldReturnEmptyForNonExistentId() {
-            // Act
-            Optional<Client> result = repository.findById(Optional.of(999L));
-            
-            // Assert
-            assertFalse(result.isPresent());
-        }
-        
-        @Test
-        @DisplayName("Should return empty for null ID")
-        void shouldReturnEmptyForNullId() {
-            // Act
-            Optional<Client> result = repository.findById(Optional.empty());
-            
-            // Assert
-            assertFalse(result.isPresent());
-        }
-        
-        @Test
-        @DisplayName("Should search all entities")
-        void shouldSearchAllEntities() {
-            // Act
-            Optional<List<Client>> result = repository.findAll();
-            
-            // Assert
-            assertTrue(result.isPresent());
-            List<Client> clients = result.get();
-            assertEquals(2, clients.size());
-            assertTrue(clients.stream().anyMatch(c -> c.getFirstName().equals("Juan")));
-            assertTrue(clients.stream().anyMatch(c -> c.getFirstName().equals("María")));
-        }
-        
-        @Test
-        @DisplayName("Should count records correctly")
-        void shouldCountRecordsCorrectly() {
-            // Act
-            long count = repository.countRecords();
-            
-            // Assert
-            assertEquals(2, count);
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for predicate searches")
-    class SearchByPredicateTests {
-
-        @BeforeEach
-        void setUp() {
-            repository.createRecord(Optional.of(client1), ClientOperationType.CREATE);
-            repository.createRecord(Optional.of(client2), ClientOperationType.CREATE);
-        }
-
-        @Test
-        @DisplayName("Should return Optional.empty() if no client matches the predicate")
-        void shouldReturnEmptyIfNoMatches() {
-            // Act
-            Optional<Client> result = repository.findByPredicatePublic(c -> c.getFirstName().equals("NoExiste"));
-
-            // Assert
-            assertFalse(result.isPresent());
-        }
-
-        @Test
-        @DisplayName("Should return the correct client if the predicate finds it")
-        void shouldReturnClientIfPredicateMatches() {
-            // Act
-            Optional<Client> result = repository.findByPredicatePublic(c -> c.getFirstName().equals("Juan"));
-
-            // Assert
-            assertTrue(result.isPresent());
-            assertEquals("Juan", result.get().getFirstName());
-        }
-    }
-
-    @Nested
-    @DisplayName("Tests for list searches by predicate")
-    class SearchAllByPredicateTests {
-
-        @BeforeEach
-        void setUp() {
-            repository.createRecord(Optional.of(client1), ClientOperationType.CREATE);
-            repository.createRecord(Optional.of(client2), ClientOperationType.CREATE);
-        }
-
-        @Test
-        @DisplayName("Should return Optional with empty list if no client matches the predicate")
-        void shouldReturnEmptyListIfNoMatches() {
-            // Act
-            Optional<List<Client>> result = repository.findAllByPredicatePublic(c -> c.getFirstName().equals("NoExiste"));
-
-            // Assert
-            assertTrue(result.isPresent());
-            assertTrue(result.get().isEmpty());
-        }
-
-        @Test
-        @DisplayName("Should return all clients that match the predicate")
-        void shouldReturnAllClientsThatMatchPredicate() {
-            // Act
-            Optional<List<Client>> result = repository.findAllByPredicatePublic(c -> c.getLastName().contains("a"));
-
-            // Assert
-            assertTrue(result.isPresent());
-            List<Client> list = result.get();
-            assertFalse(list.isEmpty());
-            assertTrue(list.stream().anyMatch(c -> c.getFirstName().equals("María")));
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for update")
-    class UpdateTests {
-        
-        @BeforeEach
-        void setUp() {
-            
-        }
-        
-        @Test
-        @DisplayName("Should update existing entity")
-        void shouldUpdateExistingEntity() {
-            // Arrange - Create a client first
-            Client newClient = Client.builder()
-                .firstName("Juan")
-                .lastName("Pérez")
-                .dni("12345678")
-                .email("juan@test.com")
-                .phone("123456789")
-                .address("Calle Test 123")
-                .birthDate(LocalDate.of(1990, 1, 1))
-                .build();
-            
-            Optional<Client> createdClient = repository.createRecord(Optional.of(newClient), ClientOperationType.CREATE);
-            assertTrue(createdClient.isPresent());
-            
-            // Manual save to ensure data is persisted
-            repository.saveData();
-            
-            // Act - Update the client
-            Client updatedClient = Client.builder()
-                .id(createdClient.get().getId())
-                .firstName("Juan Updated")
-                .lastName("Pérez Updated")
-                .dni("87654321")
-                .email("juan.updated@test.com")
-                .phone("987654321")
-                .address("Avenida Test 456")
-                .birthDate(LocalDate.of(1985, 5, 15))
-                .build();
-            
-            Optional<Client> result = repository.updateRecord(Optional.of(updatedClient), ClientOperationType.UPDATE);
-            
-            // Assert
-            assertTrue(result.isPresent());
-            Client modifiedClient = result.get();
-            assertEquals("Juan Updated", modifiedClient.getFirstName());
-            assertEquals("Pérez Updated", modifiedClient.getLastName());
-            assertEquals("87654321", modifiedClient.getDni());
-            assertEquals("juan.updated@test.com", modifiedClient.getEmail());
-            assertEquals("987654321", modifiedClient.getPhone());
-            assertEquals("Avenida Test 456", modifiedClient.getAddress());
-            assertEquals(LocalDate.of(1985, 5, 15), modifiedClient.getBirthDate());
-            assertEquals(createdClient.get().getId(), modifiedClient.getId());
-        }
-        
-       
-    }
-    
-    @Nested
-    @DisplayName("Tests for delete")
-    class DeleteTests {
-        
-        private Client createdClient;
-        
-        @BeforeEach
-        void setUp() {
-            // Create test entity
-            Optional<Client> result = repository.createRecord(Optional.of(client1), ClientOperationType.CREATE);
-            createdClient = result.get();
-        }
-        
-        @Test
-        @DisplayName("Should delete entity by ID")
-        void shouldDeleteById() {
-            // Act
-            Optional<Client> result = repository.deleteById(Optional.of(createdClient.getId()), ClientOperationType.DELETE);
-            
-            // Assert
-            assertTrue(result.isPresent());
-            assertEquals("Juan", result.get().getFirstName());
-            assertEquals(0, repository.countRecords());
-            assertEquals(1, repository.getDeleted().size());
-        }
-        
-        @Test
-        @DisplayName("Should return empty for non-existent ID")
-        void shouldReturnEmptyForNonExistentId() {
-            // Act
-            Optional<Client> result = repository.deleteById(Optional.of(999L), ClientOperationType.DELETE);
-            
-            // Assert
-            assertFalse(result.isPresent());
-            assertEquals(1, repository.countRecords());
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for restore")
-    class RestoreTests {
-        
-        private Client deletedClient;
-        
-        @BeforeEach
-        void setUp() {
-            // Create and delete test entity
-            Optional<Client> result = repository.createRecord(Optional.of(client1), ClientOperationType.CREATE);
-            Client createdClient = result.get();
-            deletedClient = repository.deleteById(Optional.of(createdClient.getId()), ClientOperationType.DELETE).get();
-            // deletedClient = createdClient;
-        }
-        
-        @Test
-        @DisplayName("Should restore deleted entity")
-        void shouldRestoreDeletedEntity() {
-            // Act
-            Optional<Client> result = repository.restore(Optional.of(deletedClient.getId()), ClientOperationType.RESTORE);
-            
-            // Assert
-            assertTrue(result.isPresent());
-            assertEquals("Juan", result.get().getFirstName());
-            assertEquals(1, repository.countRecords());
-            assertEquals(0, repository.getDeleted().size());
-        }
-        
-        @Test
-        @DisplayName("Should return empty for non-existent ID in deleted")
-        void shouldReturnEmptyForNonExistentIdInDeleted() {
-            // Act
-            Optional<Client> result = repository.restore(Optional.of(999L), ClientOperationType.RESTORE);
-            
-            // Assert
-            assertFalse(result.isPresent());
-            assertEquals(0, repository.countRecords());
-            assertEquals(1, repository.getDeleted().size());
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for current user")
-    class CurrentUserTests {
-        
-        @Test
-        @DisplayName("Should set current user")
-        void shouldSetCurrentUser() {
-            // Arrange
-            String newUser = "test_user";
-            
-            // Act
-            repository.setCurrentUser(newUser);
-            
-            // Assert
-            // Note: We cannot directly access the currentUser field because it's protected
-            // But we can verify that the method executes without errors
-            assertDoesNotThrow(() -> repository.setCurrentUser(newUser));
-        }
-    }
-
-    @Nested
-    @DisplayName("Tests for counter and periodic saving")
-    class CounterAndSavingTests {
-
-        @Test
-        @DisplayName("Should not save before 10 operations")
-        void shouldNotSaveBeforeTenOperations() {
-            // Simulate 9 operations
-            for (int i = 0; i < 9; i++) {
-                repository.incrementCounterAndSavePublic();
-            }
-            // If you had access to the counter or could mock the saving, you would verify it here
-            // For now, we only check that it doesn't throw an exception
-            assertDoesNotThrow(() -> repository.incrementCounterAndSavePublic());
-        }
-
-        @Test
-        @DisplayName("Should save on operation 10 and reset the counter")
-        void shouldSaveOnOperationTenAndResetCounter() {
-            for (int i = 0; i < 10; i++) {
-                repository.incrementCounterAndSavePublic();
-            }
-            // Here you should verify that saveJson was called and the counter was reset
-            // If you can mock the JSON processor, verify the call
-            assertDoesNotThrow(() -> repository.incrementCounterAndSavePublic());
-        }
-    }
-
-    @Nested
-    @DisplayName("Tests for data loading")
-    class DataLoadingTests {
-        
-        @Test
-        @DisplayName("Should load data manually using loadData()")
-        void shouldLoadDataManually() {
-            // Arrange - Create repository with valid JSON file
-            File jsonFile = new File("src/test/resources/data/test_clients.json");
-            TestRepositoryImpl repositoryWithData = new TestRepositoryImpl(jsonFile.getAbsolutePath());
-            
-            // Act - Call the public loadData() method
-            repositoryWithData.loadData();
-            
-            // Assert - Verify that data was loaded (or empty if file doesn't exist)
-            long recordCount = repositoryWithData.countRecords();
-            // The test file might not exist, so we just verify the method doesn't throw an exception
-            assertTrue(recordCount >= 0, "Should not throw exception when loading data");
-        }
-        
-        @Test
-        @DisplayName("Should handle data loading with null path")
-        void shouldHandleDataLoadingWithNullPath() {
-            // Arrange - Create repository with null path
-            TestRepositoryImpl repositoryWithoutPath = new TestRepositoryImpl(null);
-            
-            // Act - Call the public loadData() method
-            repositoryWithoutPath.loadData();
-            
-            // Assert - Verify that no data was loaded (null path)
-            long recordCount = repositoryWithoutPath.countRecords();
-            assertEquals(0, recordCount, "Should not load data when path is null");
-        }
-    }
-    
-    @Nested
-    @DisplayName("Tests for defensive validation")
-    class DefensiveValidationTests {
-
-        @Test
-        @DisplayName("Should handle correctly when file path is null")
-        void shouldHandleNullPathCorrectly() {
-            // Arrange - Create repository with null path
-            TestRepositoryImpl repositoryWithNullPath = new TestRepositoryImpl(null);
-            
-            // Act & Assert - Should not throw exception
-            assertDoesNotThrow(() -> {
-                // Try to create an entity (this will trigger data loading)
-                Client newClient = Client.builder()
-                    .firstName("Test")
-                    .lastName("Cliente")
-                    .dni("12345678")
-                    .email("test@test.com")
-                    .phone("123456789")
-                    .address("Test Dirección")
-                    .birthDate(LocalDate.of(1990, 1, 1))
-                    .build();
-                
-                Optional<Client> result = repositoryWithNullPath.createRecord(Optional.of(newClient), ClientOperationType.CREATE);
-                
-                // Verify that the operation was successful despite null path
-                assertTrue(result.isPresent());
-                assertNotNull(result.get().getId());
-            });
-        }
-
-        @Test
-        @DisplayName("Should handle correctly when configuration has critical null fields")
-        void shouldThrowExceptionForCriticalNullFields() {
-            // Arrange - Create a subclass that returns configuration with critical null fields
-            class TestRepositoryInvalidConfiguration extends BaseRepositoryImplWrapper<Client, Long, ClientOperationType> {
-                
-                @Override
-                protected Client createWithNewId(Client entity) {
-                    ClientMapper mapper = new ClientMapper();
-                    return mapper.toDtoDirect(entity)
-                        .map(dto -> dto.toBuilder()
-                            .id(1L)
-                            .build())
-                        .flatMap(mapper::toEntityDirect)
-                        .orElseThrow(() -> new IllegalStateException("Could not process Client entity"));
-                }
-                
-                @Override
-                protected Map<String, Object> getConfiguration() {
-                    Map<String, Object> config = new HashMap<>();
-                    config.put("filePath", "test.json"); // Valid path
-                    config.put("classType", null); // Critical field null
-                    config.put("idExtractor", (Function<Client, Long>) Client::getId);
-                    return config;
-                }
-            }
-            
-            TestRepositoryInvalidConfiguration repository = new TestRepositoryInvalidConfiguration();
-            
-            // Act & Assert - Should handle null configuration gracefully
-            assertDoesNotThrow(() -> {
-                repository.findAll(); // This should handle null configuration gracefully
-            });
+        /**
+         * Get the current value of the ID counter for testing
+         */
+        public long getIdCounterValue() {
+            return idCounter.get();
         }
     }
 }

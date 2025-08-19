@@ -1,0 +1,217 @@
+[ {
+  "accountNumber" : "ES3400000000000000001008",
+  "holder" : {
+    "id" : 8,
+    "firstName" : "Update",
+    "lastName" : "Test",
+    "dni" : "66666666",
+    "birthDate" : "1990-01-01",
+    "email" : "update@test.com",
+    "phone" : "666666666",
+    "address" : "Update Address"
+  },
+  "type" : "CHECKING",
+  "creationDate" : "2025-08-14T13:13:18.82118",
+  "initialBalance" : 1000.00,
+  "balance" : 2500.00,
+  "active" : false,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001004",
+  "holder" : {
+    "id" : 4,
+    "firstName" : "John",
+    "lastName" : "Smith",
+    "dni" : "22222222",
+    "birthDate" : "1980-03-15",
+    "email" : "john@test.com",
+    "phone" : "222222222",
+    "address" : "Address 1"
+  },
+  "type" : "SAVINGS",
+  "creationDate" : "2025-08-14T13:13:18.819311",
+  "initialBalance" : 1000.00,
+  "balance" : 1000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001005",
+  "holder" : {
+    "id" : 5,
+    "firstName" : "Jane",
+    "lastName" : "Smith",
+    "dni" : "33333333",
+    "birthDate" : "1982-07-25",
+    "email" : "jane@test.com",
+    "phone" : "333333333",
+    "address" : "Address 2"
+  },
+  "type" : "SAVINGS",
+  "creationDate" : "2025-08-14T13:13:18.819322",
+  "initialBalance" : 1500.00,
+  "balance" : 1500.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001012",
+  "holder" : {
+    "id" : 12,
+    "firstName" : "Deleted",
+    "lastName" : "Test",
+    "dni" : "12121212",
+    "birthDate" : "1987-02-14",
+    "email" : "deleted@test.com",
+    "phone" : "121212121",
+    "address" : "Deleted Address"
+  },
+  "type" : "SAVINGS",
+  "creationDate" : "2025-08-14T13:13:18.820018",
+  "initialBalance" : 1000.00,
+  "balance" : 1000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001001",
+  "holder" : {
+    "id" : 1,
+    "firstName" : "Test",
+    "lastName" : "User",
+    "dni" : "12345678",
+    "birthDate" : "1990-01-01",
+    "email" : "test@test.com",
+    "phone" : "123456789",
+    "address" : "Test Address"
+  },
+  "type" : "SAVINGS",
+  "creationDate" : "2025-08-14T13:13:18.820606",
+  "initialBalance" : 1000.00,
+  "balance" : 1000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001008",
+  "holder" : {
+    "id" : 8,
+    "firstName" : "Update",
+    "lastName" : "Test",
+    "dni" : "66666666",
+    "birthDate" : "1990-01-01",
+    "email" : "update@test.com",
+    "phone" : "666666666",
+    "address" : "Update Address"
+  },
+  "type" : "SAVINGS",
+  "creationDate" : "2025-08-14T13:13:18.82118",
+  "initialBalance" : 1000.00,
+  "balance" : 1000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001006",
+  "holder" : {
+    "id" : 6,
+    "firstName" : "All",
+    "lastName" : "Test1",
+    "dni" : "44444444",
+    "birthDate" : "1975-12-08",
+    "email" : "all1@test.com",
+    "phone" : "444444444",
+    "address" : "All Address 1"
+  },
+  "type" : "CHECKING",
+  "creationDate" : "2025-08-14T13:13:18.821676",
+  "initialBalance" : 3000.00,
+  "balance" : 3000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3400000000000000001007",
+  "holder" : {
+    "id" : 7,
+    "firstName" : "All",
+    "lastName" : "Test2",
+    "dni" : "55555555",
+    "birthDate" : "1978-06-12",
+    "email" : "all2@test.com",
+    "phone" : "555555555",
+    "address" : "All Address 2"
+  },
+  "type" : "FIXED_TERM",
+  "creationDate" : "2025-08-14T13:13:18.821687",
+  "initialBalance" : 10000.00,
+  "balance" : 10000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3499999999999999999999",
+  "holder" : {
+    "id" : 2,
+    "firstName" : "Find",
+    "lastName" : "Test",
+    "dni" : "87654321",
+    "birthDate" : "1985-05-15",
+    "email" : "find@test.com",
+    "phone" : "987654321",
+    "address" : "Find Address"
+  },
+  "type" : "CHECKING",
+  "creationDate" : "2025-08-14T13:13:18.822421",
+  "initialBalance" : 2000.00,
+  "balance" : 2000.00,
+  "active" : true,
+  "id" : 349999999999999999
+}, {
+  "accountNumber" : "ES3400000000000000001003",
+  "holder" : {
+    "id" : 3,
+    "firstName" : "Predicate",
+    "lastName" : "Test",
+    "dni" : "11111111",
+    "birthDate" : "1995-10-20",
+    "email" : "predicate@test.com",
+    "phone" : "111111111",
+    "address" : "Predicate Address"
+  },
+  "type" : "FIXED_TERM",
+  "creationDate" : "2025-08-14T13:13:18.822929",
+  "initialBalance" : 5000.00,
+  "balance" : 5000.00,
+  "active" : true,
+  "id" : 340000000000000000
+}, {
+  "accountNumber" : "ES3449199369891833634483",
+  "holder" : {
+    "id" : 14,
+    "firstName" : "Config",
+    "lastName" : "Test",
+    "dni" : "14141414",
+    "birthDate" : "1985-03-15",
+    "email" : "config@test.com",
+    "phone" : "141414141",
+    "address" : "Config Address"
+  },
+  "type" : "SAVINGS",
+  "creationDate" : "2025-08-14T13:13:18.823399",
+  "initialBalance" : 1000.00,
+  "balance" : 1000.00,
+  "active" : true,
+  "id" : 344919936989183363
+}, {
+  "accountNumber" : "ES3400000000000000001013",
+  "holder" : {
+    "id" : 13,
+    "firstName" : "Save",
+    "lastName" : "Test",
+    "dni" : "13131313",
+    "birthDate" : "1990-05-10",
+    "email" : "save@test.com",
+    "phone" : "131313131",
+    "address" : "Save Address"
+  },
+  "type" : "FIXED_TERM",
+  "creationDate" : "2025-08-14T13:13:18.826382",
+  "initialBalance" : 8000.00,
+  "balance" : 8000.00,
+  "active" : true,
+  "id" : 340000000000000000
+} ]

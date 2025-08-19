@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -166,6 +167,35 @@ class AccountRepositoryImplTest {
             // If we get here without errors, it means getConfiguration() executed correctly
             // and returned the expected configuration (file path, class type, ID extractor)
         }
+
+        @Test
+        @DisplayName("Should call getConfiguration() directly")
+        void shouldCallGetConfigurationDirectly() {
+            // Arrange - Use reflection to access the protected method
+            try {
+                // Get the real repository instance
+                com.mibanco.repository.AccountRepository realRepository = 
+                    com.mibanco.repository.internal.RepositoryFactory.getInstance().getAccountRepository();
+                
+                // Use reflection to access the protected getConfiguration method
+                java.lang.reflect.Method getConfigMethod = 
+                    realRepository.getClass().getDeclaredMethod("getConfiguration");
+                getConfigMethod.setAccessible(true);
+                
+                // Act - Call getConfiguration() directly
+                @SuppressWarnings("unchecked")
+                Map<String, Object> config = (Map<String, Object>) getConfigMethod.invoke(realRepository);
+                
+                // Assert - Verify the configuration is correct
+                assertNotNull(config);
+                assertEquals("src/main/resources/data/cuenta.json", config.get("filePath"));
+                assertEquals(Account.class, config.get("classType"));
+                assertNotNull(config.get("idExtractor"));
+                
+            } catch (Exception e) {
+                fail("Should not throw exception when calling getConfiguration(): " + e.getMessage());
+            }
+        }
     }
     
     @Nested
@@ -280,30 +310,9 @@ class AccountRepositoryImplTest {
         
         @BeforeEach
         void setUp() {
-            // Create test entities with proper account numbers
-            Account testAccount1 = Account.builder()
-                .accountNumber("ES3400000000000000001001")
-                .holder(holder1)
-                .type(AccountType.CHECKING)
-                .creationDate(LocalDateTime.now())
-                .initialBalance(new BigDecimal("1000.00"))
-                .balance(new BigDecimal("1000.00"))
-                .active(true)
-                .build();
-                
-            Account testAccount2 = Account.builder()
-                .accountNumber("ES3400000000000000001002")
-                .holder(holder2)
-                .type(AccountType.SAVINGS)
-                .creationDate(LocalDateTime.now())
-                .initialBalance(new BigDecimal("2000.00"))
-                .balance(new BigDecimal("2000.00"))
-                .active(true)
-                .build();
-            
             // Create test entities
-            repository.createRecord(Optional.of(testAccount1), AccountOperationType.CREATE);
-            repository.createRecord(Optional.of(testAccount2), AccountOperationType.CREATE);
+            repository.createRecord(Optional.of(account1), AccountOperationType.CREATE);
+            repository.createRecord(Optional.of(account2), AccountOperationType.CREATE);
         }
         
         @Test
@@ -337,18 +346,8 @@ class AccountRepositoryImplTest {
         @Test
         @DisplayName("Should search account by account number")
         void shouldSearchAccountByAccountNumber() {
-            // Arrange - Create account with valid account number
-            Account testAccount = Account.builder()
-                .accountNumber("ES3400000000000000001003")
-                .holder(holder1)
-                .type(AccountType.CHECKING)
-                .creationDate(LocalDateTime.now())
-                .initialBalance(new BigDecimal("1000.00"))
-                .balance(new BigDecimal("1000.00"))
-                .active(true)
-                .build();
-                
-            Optional<Account> createdAccount = repository.createRecord(Optional.of(testAccount), AccountOperationType.CREATE);
+            // Arrange - Create account and get its number
+            Optional<Account> createdAccount = repository.createRecord(Optional.of(account1), AccountOperationType.CREATE);
             assertTrue(createdAccount.isPresent());
             String accountNumber = createdAccount.get().getAccountNumber();
             
@@ -381,18 +380,8 @@ class AccountRepositoryImplTest {
         @Test
         @DisplayName("Should update existing account")
         void shouldUpdateExistingAccount() {
-            // Arrange - Create account with valid account number
-            Account testAccount = Account.builder()
-                .accountNumber("ES3400000000000000001004")
-                .holder(holder1)
-                .type(AccountType.CHECKING)
-                .creationDate(LocalDateTime.now())
-                .initialBalance(new BigDecimal("1000.00"))
-                .balance(new BigDecimal("1000.00"))
-                .active(true)
-                .build();
-                
-            Optional<Account> createdAccount = repository.createRecord(Optional.of(testAccount), AccountOperationType.CREATE);
+            // Arrange - Create account first
+            Optional<Account> createdAccount = repository.createRecord(Optional.of(account1), AccountOperationType.CREATE);
             assertTrue(createdAccount.isPresent());
             
             Account updatedAccount = Account.builder()

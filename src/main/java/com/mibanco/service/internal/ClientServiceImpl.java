@@ -73,23 +73,26 @@ class ClientServiceImpl extends BaseServiceImpl<ClientDTO, Client, Long, ClientO
     }
 
     @Override
-    public Optional<ClientDTO> updateMultipleFields(Long id, Optional<ClientDTO> clientDTO) {
-        return clientDTO.flatMap(newClient -> {
-            // Get existing client
-            Optional<ClientDTO> existingClientOpt = findById(Optional.of(id));
-            
-            return existingClientOpt.map(existingClient -> {
-                // Update using DTO methods
-                ClientDTO updatedClient = existingClient.withContactData(
-                    Optional.ofNullable(newClient.getEmail()),
-                    Optional.ofNullable(newClient.getPhone()),
-                    Optional.ofNullable(newClient.getAddress())
-                );
+    public Optional<ClientDTO> updateMultipleFields(Long id, Map<String, Object> updates) {
+        return super.updateMultipleFields(
+            id,
+            updates,
+            updateType,
+            (existingClient, updateData) -> {
+                // Extrae valores del Map y los convierte a Optional
+                Optional<String> newEmail = Optional.ofNullable(updateData.get("email"))
+                    .map(value -> value.toString());
+                    
+                Optional<String> newPhone = Optional.ofNullable(updateData.get("phone"))
+                    .map(value -> value.toString());
+                    
+                Optional<String> newAddress = Optional.ofNullable(updateData.get("address"))
+                    .map(value -> value.toString());
                 
-                // Save and return
-                return saveEntity(updateType, Optional.of(updatedClient)).orElse(updatedClient);
-            });
-        });
+                // Usa withContactData con Optionals
+                return existingClient.withContactData(newEmail, newPhone, newAddress);
+            }
+        );
     }
 
     @Override
@@ -156,11 +159,27 @@ class ClientServiceImpl extends BaseServiceImpl<ClientDTO, Client, Long, ClientO
 
     @Override
     public void setCurrentUser(String user) {
-        setCurrentUser(user);
+        super.setCurrentUser(user);
     }
 
     @Override
     public long countClients() {
         return countRecords();
+    }
+
+    @Override
+    public <V> Optional<ClientDTO> updateField(
+            Long id,
+            Optional<V> newValue,
+            java.util.function.Function<ClientDTO, V> currentValue,
+            java.util.function.BiFunction<ClientDTO, V, ClientDTO> updater) {
+        return super.updateField(id, newValue, currentValue, updater);
+    }
+
+
+
+    @Override
+    public java.util.List<ClientDTO> getDeleted() {
+        return super.getDeleted();
     }
 } 

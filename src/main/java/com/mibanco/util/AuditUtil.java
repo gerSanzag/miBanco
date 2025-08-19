@@ -3,6 +3,7 @@ package com.mibanco.util;
 import com.mibanco.model.AuditRecord;
 import com.mibanco.model.Identifiable;
 import com.mibanco.repository.AuditRepository;
+import com.mibanco.repository.internal.RepositoryFactory;
 
 import java.util.Optional;
 
@@ -12,9 +13,11 @@ import java.util.Optional;
  */
 public class AuditUtil {
     
+    // Centralized audit repository reference
+    private static final AuditRepository auditRepository = RepositoryFactory.getInstance().getAuditRepository();
+    
     /**
      * Registers an audit operation directly
-     * @param auditRepository Repository where to save the record
      * @param operationType The type of operation performed
      * @param entity The entity on which the operation was performed
      * @param user The user who performed the operation
@@ -22,7 +25,6 @@ public class AuditUtil {
      */
     public static <T extends Identifiable, E extends Enum<E>> 
            AuditRecord<T, E> registerOperation(
-               AuditRepository auditRepository,
                Optional<E> operationType, 
                Optional<T> entity, 
                Optional<String> user) {
@@ -30,7 +32,7 @@ public class AuditUtil {
         // Create audit record
         AuditRecord<T, E> record = AuditRecord.of(operationType, entity, user);
         
-        // Save and return
+        // Save and return using centralized repository
         Optional<AuditRecord<T, E>> savedRecord = auditRepository.register(Optional.of(record));
         return savedRecord.orElse(record);
     }

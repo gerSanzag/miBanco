@@ -2,6 +2,7 @@ package com.mibanco.service.util;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -39,18 +40,18 @@ public interface BaseService<T, E extends Identifiable, ID, O extends Enum<O>> {
             BiFunction<T, V, T> updater);
 
     /**
-     * Generic method to update an existing entity
+     * Generic method to update multiple fields of an existing entity
      * @param id ID of the entity to update
-     * @param dto Optional with new data
+     * @param updates Map with raw update data
      * @param operationType Type of operation for auditing
-     * @param updater Function that updates the existing entity with new data
+     * @param updater Function that updates the existing entity with raw data
      * @return Optional with the updated DTO
      */
-    Optional<T> update(
+    Optional<T> updateMultipleFields(
             ID id,
-            Optional<T> dto,
+            Map<String, Object> updates,
             O operationType,
-            BiFunction<T, E, T> updater);
+            BiFunction<T, Map<String, Object>, T> updater);
 
     /**
      * Generic method to get an entity by its ID

@@ -21,7 +21,8 @@ public class ClientDtoProcessorService {
      * @return Optional with processed ClientDTO or empty if there are errors
      */
     public Optional<ClientDTO> processClientDto(Map<String, String> rawData) {
-        return Optional.of(rawData)
+        return Optional.ofNullable(rawData)
+            .filter(this::hasRequiredFields)
             .flatMap(this::buildClientDTO);
     }
     
@@ -60,5 +61,51 @@ public class ClientDtoProcessorService {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+    
+    /**
+     * Validates that the raw data contains required fields
+     * @param rawData Map with client data
+     * @return true if required fields are present and valid
+     */
+    private boolean hasRequiredFields(Map<String, String> rawData) {
+        String firstName = rawData.get("firstName");
+        String lastName = rawData.get("lastName");
+        String dni = rawData.get("dni");
+        String email = rawData.get("email");
+        String birthDate = rawData.get("birthDate");
+        
+        // First name is required and must not be empty
+        if (firstName == null || firstName.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Last name is required and must not be empty
+        if (lastName == null || lastName.trim().isEmpty()) {
+            return false;
+        }
+        
+        // DNI is required and must not be empty
+        if (dni == null || dni.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Email is required and must not be empty
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Birth date is required and must be a valid date
+        if (birthDate == null || birthDate.trim().isEmpty()) {
+            return false;
+        }
+        
+        try {
+            LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (Exception e) {
+            return false;
+        }
+        
+        return true;
     }
 } 

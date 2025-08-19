@@ -2,8 +2,10 @@ package com.mibanco.service;
 
 import com.mibanco.dto.AccountDTO;
 import com.mibanco.model.enums.AccountType;
+import com.mibanco.service.TransactionOperationsService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.math.BigDecimal;
 
@@ -21,11 +23,11 @@ public interface AccountService {
     
     /**
      * Updates complete account information
-     * @param accountNumber Account number to update
-     * @param accountDTO Optional with new account data
+     * @param accountId Account ID to update
+     * @param updates Map with raw update data
      * @return Optional with updated account DTO
      */
-    Optional<AccountDTO> updateMultipleFields(Long accountId, Optional<AccountDTO> accountDTO);
+    Optional<AccountDTO> updateMultipleFields(Long accountId, Map<String, Object> updates);
     
     /**
      * Gets an account by its number
@@ -55,6 +57,14 @@ public interface AccountService {
      * @return Optional with updated account DTO
      */
     Optional<AccountDTO> updateAccountStatus(Long accountId, Optional<Boolean> newActive);
+
+    /**
+     * Updates an account's holder
+     * @param accountId Account ID
+     * @param newHolder Optional with new holder account DTO
+     * @return Optional with updated account DTO
+     */
+    Optional<AccountDTO> updateAccountHolder(Long accountId, Optional<AccountDTO> newHolder);
     
     /**
      * Deletes an account by its number
@@ -108,4 +118,13 @@ public interface AccountService {
      * @return Optional with list of active account DTOs
      */
     Optional<List<AccountDTO>> searchActive();
+
+    /**
+     * Creates a new account from raw data with mandatory initial balance
+     * @param rawData Map with raw account data
+     * @param initialAmount Initial deposit amount
+     * @param transactionService Transaction service for processing initial deposit
+     * @return Optional with created account DTO
+     */
+    Optional<AccountDTO> createAccountDto(Map<String, String> rawData, BigDecimal initialAmount, TransactionOperationsService transactionService);
 } 

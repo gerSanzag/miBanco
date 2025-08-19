@@ -28,12 +28,12 @@ public interface ClientService {
     Optional<ClientDTO> saveClient(Optional<ClientDTO> clientDTO);
     
     /**
-     * Updates complete client information
+     * Updates complete client information using the generic updateMultipleFields method
      * @param id ID of the client to update
-     * @param clientDTO Optional with new client data
+     * @param updates Map with raw update data
      * @return Optional with the updated client DTO
      */
-    Optional<ClientDTO> updateMultipleFields(Long id, Optional<ClientDTO> clientDTO);
+    Optional<ClientDTO> updateMultipleFields(Long id, Map<String, Object> updates);
     
     /**
      * Gets a client by its ID
@@ -104,4 +104,26 @@ public interface ClientService {
      * @param user Current user
      */
     void setCurrentUser(String user);
+
+    /**
+     * Generic method to update a specific field of a client
+     * @param id ID of the client to update
+     * @param newValue Optional with the new value
+     * @param currentValue Function to get the current value
+     * @param updater Function to update the value
+     * @return Optional with the updated client DTO
+     */
+    <V> Optional<ClientDTO> updateField(
+            Long id,
+            Optional<V> newValue,
+            java.util.function.Function<ClientDTO, V> currentValue,
+            java.util.function.BiFunction<ClientDTO, V, ClientDTO> updater);
+
+
+
+    /**
+     * Gets the list of deleted clients
+     * @return List of deleted client DTOs
+     */
+    java.util.List<ClientDTO> getDeleted();
 } 

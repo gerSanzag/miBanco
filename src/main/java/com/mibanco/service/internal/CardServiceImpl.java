@@ -79,18 +79,23 @@ class CardServiceImpl extends BaseServiceImpl<CardDTO, Card, Long, CardOperation
     
     
     @Override
-    public Optional<CardDTO> updateMultipleFields(Long cardNumber, Optional<CardDTO> cardDTO) {
-        Optional<CardDTO> updateMultipleFields = update(
+    public Optional<CardDTO> updateMultipleFields(Long cardNumber, Map<String, Object> updates) {
+        return super.updateMultipleFields(
             cardNumber,
-            cardDTO,
+            updates,
             updateType,
-            (existingCard, newCard) -> existingCard.withUpdates(
-                Optional.ofNullable(newCard.getExpirationDate()),
-                Optional.ofNullable(newCard.isActive())
-            )
+            (existingCard, updateData) -> {
+                // Extrae valores del Map y los convierte a Optional
+                Optional<LocalDate> newExpirationDate = Optional.ofNullable(updateData.get("expirationDate"))
+                    .map(value -> LocalDate.parse(value.toString()));
+                    
+                Optional<Boolean> newActive = Optional.ofNullable(updateData.get("active"))
+                    .map(value -> Boolean.parseBoolean(value.toString()));
+                
+                // Usa withUpdates con Optionals
+                return existingCard.withUpdates(newExpirationDate, newActive);
+            }
         );
-        saveEntity(updateType, updateMultipleFields);
-        return updateMultipleFields;
     }
     
     @Override

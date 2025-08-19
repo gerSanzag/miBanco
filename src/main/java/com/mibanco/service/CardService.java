@@ -24,10 +24,10 @@ public interface CardService {
     /**
      * Updates complete card information
      * @param cardNumber Card number to update
-     * @param cardDTO Optional with new card data
+     * @param updates Map with raw update data
      * @return Optional with updated card DTO
      */
-    Optional<CardDTO> updateMultipleFields(Long cardNumber, Optional<CardDTO> cardDTO);
+    Optional<CardDTO> updateMultipleFields(Long cardNumber, Map<String, Object> updates);
     
     /**
      * Gets a card by its number

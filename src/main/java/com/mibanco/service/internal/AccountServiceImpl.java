@@ -44,22 +44,26 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
 
     public AccountServiceImpl() {
         super(accountRepository, mapper);
-        
     }
 
     @Override
-    public Optional<AccountDTO> updateMultipleFields(Long accountId, Optional<AccountDTO> accountDTO) {
-        Optional<AccountDTO> updateMultipleFields = update(
+    public Optional<AccountDTO> updateMultipleFields(Long accountId, Map<String, Object> updates) {
+        return super.updateMultipleFields(
             accountId,
-            accountDTO,
+            updates,
             updateType,
-            (existingAccount, newAccount) -> existingAccount.withUpdates(
-                Optional.ofNullable(newAccount.getBalance()),
-                Optional.ofNullable(newAccount.isActive())
-            )
+            (existingAccount, updateData) -> {
+                // Extrae valores del Map y los convierte a Optional
+                Optional<BigDecimal> newBalance = Optional.ofNullable(updateData.get("balance"))
+                    .map(value -> new BigDecimal(value.toString()));
+                    
+                Optional<Boolean> newActive = Optional.ofNullable(updateData.get("active"))
+                    .map(value -> Boolean.parseBoolean(value.toString()));
+                
+                // Usa withUpdates con Optionals
+                return existingAccount.withUpdates(newBalance, newActive);
+            }
         );
-        saveEntity(updateType, updateMultipleFields);
-        return updateMultipleFields;
     }
 
     @Override
@@ -99,7 +103,7 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
         return updateStatus;
     }
 
-   
+    @Override
     public Optional<AccountDTO> updateAccountHolder(Long accountId, Optional<AccountDTO> newHolder) {
         Optional<AccountDTO> updateHolder = newHolder.flatMap(holderDTO -> 
             clientMapper.toEntity(Optional.of(holderDTO.getHolder()))
@@ -179,12 +183,12 @@ class AccountServiceImpl extends BaseServiceImpl<AccountDTO, Account, Long, Acco
     public Optional<AccountDTO> createAccountDto(Map<String, String> rawData, BigDecimal initialAmount, TransactionOperationsService transactionService) {
         try {
             return accountDtoProcessor.processAccountDto(rawData)
-                .flatMap(accountDTO -> accountDtoProcessor.processInitialDeposit(accountDTO, initialAmount, transactionService))
-                .flatMap(accountWithBalance -> {
+                .flatMap(accountDTO -> {
                     // Validate unique account number before saving
-                    validateUniqueAccountNumber(accountWithBalance);
-                    return saveEntity(AccountOperationType.CREATE, Optional.of(accountWithBalance));
+                    validateUniqueAccountNumber(accountDTO);
+                    return saveEntity(AccountOperationType.CREATE, Optional.of(accountDTO));
                 })
+                .flatMap(savedAccount -> accountDtoProcessor.processInitialDeposit(savedAccount, initialAmount, transactionService))
                 .or(() -> Optional.empty());
         } catch (ValidationException e) {
             // Re-throw the exception for the view to handle

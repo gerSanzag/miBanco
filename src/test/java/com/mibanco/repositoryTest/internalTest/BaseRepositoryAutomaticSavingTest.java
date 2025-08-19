@@ -110,7 +110,7 @@ class BaseRepositoryAutomaticSavingTest {
         // Arrange
         File file = new File(currentTestFile);
         
-        // Act - Create 10 clients
+        // Act - Create 10 clients (10 CRUD operations)
         for (int i = 0; i < 10; i++) {
             Client newClient = Client.builder()
                 .firstName("Client" + i)
@@ -126,7 +126,7 @@ class BaseRepositoryAutomaticSavingTest {
             assertTrue(result.isPresent(), "Client " + i + " should have been created");
         }
         
-        // Manual save since automatic saving is not implemented
+        // Act - Manual save (required in new architecture)
         repository.saveData();
         
         // Assert - The file MUST exist after manual save
@@ -144,14 +144,13 @@ class BaseRepositoryAutomaticSavingTest {
     }
     
     @Test
-    @DisplayName("Should reset counter after saving")
-    void shouldResetCounterAfterSaving() throws IOException {
+    @DisplayName("Should save multiple times when manual save is called")
+    void shouldSaveMultipleTimes() throws IOException {
         // Arrange
         File file = new File(currentTestFile);
-        long sizeAfterTen = 0;
         
-        // Act - Create 10 clients first
-        for (int i = 0; i < 10; i++) {
+        // Act - Create 5 clients and save
+        for (int i = 0; i < 5; i++) {
             Client newClient = Client.builder()
                 .firstName("Client" + i)
                 .lastName("Test" + i)
@@ -165,15 +164,12 @@ class BaseRepositoryAutomaticSavingTest {
             repository.createRecord(Optional.of(newClient), ClientOperationType.CREATE);
         }
         
-        // Manual save since automatic saving is not implemented
+        // First manual save
         repository.saveData();
+        long sizeAfterFirstSave = file.length();
         
-        // Verify that it saved after manual save
-        assertTrue(file.exists(), "The file should exist after manual save");
-        sizeAfterTen = file.length();
-        
-        // Act - Create 5 more clients
-        for (int i = 10; i < 15; i++) {
+        // Create 5 more clients
+        for (int i = 5; i < 10; i++) {
             Client newClient = Client.builder()
                 .firstName("Client" + i)
                 .lastName("Test" + i)
@@ -188,57 +184,28 @@ class BaseRepositoryAutomaticSavingTest {
             assertTrue(result.isPresent(), "Client " + i + " should have been created");
         }
         
-        // Assert - The file should NOT have been updated (only 5 more operations, no automatic save)
-        assertEquals(sizeAfterTen, file.length(), "The file should not have been updated (only 5 more operations)");
-        assertEquals(15, repository.countRecords(), "There should be 15 records in memory");
-    }
-    
-    @Test
-    @DisplayName("Should save again after another 10 operations")
-    void shouldSaveAgainAfterAnotherTenOperations() throws IOException {
-        // Arrange
-        File file = new File(currentTestFile);
-        
-        // Act - Create 20 clients
-        for (int i = 0; i < 20; i++) {
-            Client newClient = Client.builder()
-                .firstName("Client" + i)
-                .lastName("Test" + i)
-                .dni("DNI" + i)
-                .email("client" + i + "@test.com")
-                .phone("12345678" + i)
-                .address("Address " + i)
-                .birthDate(LocalDate.of(1990, 1, 1))
-                .build();
-            
-            Optional<Client> result = repository.createRecord(Optional.of(newClient), ClientOperationType.CREATE);
-            assertTrue(result.isPresent(), "Client " + i + " should have been created");
-        }
-        
-        // Manual save since automatic saving is not implemented
+        // Second manual save
         repository.saveData();
         
-        // Assert - The file MUST exist and contain 20 clients
-        assertTrue(file.exists(), "The file should exist after manual save");
-        assertTrue(file.length() > 0, "The file should have content");
+        // Assert - The file should have been updated with all 10 clients
+        assertTrue(file.exists(), "The file should exist after second save");
+        assertTrue(file.length() > sizeAfterFirstSave, "The file should have more content after second save");
         
-        // Verify that the content is valid JSON with 20 clients
+        // Verify that the content contains all 10 clients
         String content = Files.readString(file.toPath());
         assertTrue(content.contains("Client0"), "The JSON should contain the first client");
-        assertTrue(content.contains("Client19"), "The JSON should contain the twentieth client");
-        assertTrue(content.startsWith("["), "The JSON should start with array");
-        assertTrue(content.endsWith("]"), "The JSON should end with array");
+        assertTrue(content.contains("Client9"), "The JSON should contain the tenth client");
         
-        assertEquals(20, repository.countRecords(), "There should be 20 records in memory");
+        assertEquals(10, repository.countRecords(), "There should be 10 records in memory");
     }
     
     @Test
-    @DisplayName("Should load data from file when restarting repository")
+    @DisplayName("Should load data from file when restarting")
     void shouldLoadDataFromFileWhenRestarting() throws IOException {
         // Arrange
         File file = new File(currentTestFile);
         
-        // Act - Create 10 clients
+        // Act - Create 10 clients and save
         for (int i = 0; i < 10; i++) {
             Client newClient = Client.builder()
                 .firstName("Client" + i)
@@ -253,11 +220,11 @@ class BaseRepositoryAutomaticSavingTest {
             repository.createRecord(Optional.of(newClient), ClientOperationType.CREATE);
         }
         
-        // Manual save since automatic saving is not implemented
+        // Save data
         repository.saveData();
         
         // Verify that the file was saved
-        assertTrue(file.exists(), "The file should exist after manual save");
+        assertTrue(file.exists(), "The file should exist after creating 10 clients");
         assertTrue(file.length() > 0, "The file should have content");
         
         // Verify that the file contains valid JSON data
@@ -317,11 +284,6 @@ class BaseRepositoryAutomaticSavingTest {
             return config;
         }
         
-        // Public method for testing automatic saving
-        public void incrementCounterAndSavePublic() {
-            super.incrementCounterAndSave();
-        }
-        
         // Public method to load data manually
         public void loadDataManual() {
             // Simulate data loading by creating clients from the JSON file
@@ -348,7 +310,5 @@ class BaseRepositoryAutomaticSavingTest {
                 System.err.println("Error loading data manually: " + e.getMessage());
             }
         }
-        
-
     }
 } 

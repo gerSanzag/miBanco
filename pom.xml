@@ -108,6 +108,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
+                <configuration>
+                    <argLine>${jacocoArgLine}</argLine>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                </configuration>
             </plugin>
             <!-- Plugin para medir cobertura de código -->
             <plugin>
@@ -119,6 +124,16 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <propertyName>jacocoArgLine</propertyName>
+                            <excludes>
+                                <exclude>sun/**</exclude>
+                                <exclude>com/sun/**</exclude>
+                                <exclude>jdk/**</exclude>
+                                <exclude>java/**</exclude>
+                                <exclude>javax/**</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>report</id>

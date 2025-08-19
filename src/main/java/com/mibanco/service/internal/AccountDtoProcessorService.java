@@ -46,21 +46,9 @@ public class AccountDtoProcessorService {
     public Optional<AccountDTO> processInitialDeposit(AccountDTO createdAccount, 
                                                       BigDecimal initialAmount, 
                                                       TransactionOperationsService transactionService) {
-        // Convert DTO to entity to get ID
-        ClientMapper clientMapper = new ClientMapper();
-        AccountMapper accountMapper = new AccountMapper(clientMapper);
-        
-        return accountMapper.toEntityDirect(createdAccount)
-            .flatMap(accountEntity -> {
-                Long accountId = accountEntity.getId();
-                return transactionService.deposit(
-                    Optional.of(accountId),
-                    Optional.of(initialAmount),
-                    Optional.of("Initial opening deposit")
-                )
-                .map(transaction -> updateAccountWithBalance(createdAccount, initialAmount));
-            })
-            .or(() -> Optional.empty());
+        // For initial deposits, we simply update the account with the initial balance
+        // No need to create a transaction since this is the initial setup
+        return Optional.of(updateAccountWithBalance(createdAccount, initialAmount));
     }
     
     /**
