@@ -6,7 +6,7 @@ import com.mibanco.model.Transaction;
 import com.mibanco.model.enums.TransactionOperationType;
 import com.mibanco.model.enums.TransactionType;
 import com.mibanco.repository.TransactionRepository;
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
 import com.mibanco.service.AccountService;
 import com.mibanco.service.TransactionOperationsService;
 
@@ -29,7 +29,7 @@ class TransactionOperationsServiceImpl extends BaseServiceImpl<TransactionDTO, T
     private final Object lock = new Object();
 
     static {
-        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();
+        transactionRepository = RepositoryServiceLocator.getService(TransactionRepository.class);
         mapper = new TransactionMapper();
         accountService = new AccountServiceImpl();
     }

@@ -3,7 +3,7 @@ package com.mibanco.util;
 import com.mibanco.model.AuditRecord;
 import com.mibanco.model.Identifiable;
 import com.mibanco.repository.AuditRepository;
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
 
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class AuditUtil {
     
     // Centralized audit repository reference
-    private static final AuditRepository auditRepository = RepositoryFactory.getInstance().getAuditRepository();
+    private static final AuditRepository auditRepository = RepositoryServiceLocator.getService(AuditRepository.class);
     
     /**
      * Registers an audit operation directly

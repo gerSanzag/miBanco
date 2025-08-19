@@ -5,7 +5,7 @@ import com.mibanco.dto.mappers.ClientMapper;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.ClientOperationType;
 import com.mibanco.repository.ClientRepository;
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
 import com.mibanco.service.ClientService;
 import com.mibanco.util.ValidationException;
 
@@ -23,7 +23,7 @@ class ClientServiceImpl extends BaseServiceImpl<ClientDTO, Client, Long, ClientO
     private final ClientOperationType updateType = ClientOperationType.UPDATE;
     
     static {
-        clientRepository = RepositoryFactory.getInstance().getClientRepository();
+        clientRepository = RepositoryServiceLocator.getService(ClientRepository.class);
         mapper = new ClientMapper();
         clientDtoProcessor = new ClientDtoProcessorService();
     }

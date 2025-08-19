@@ -7,7 +7,7 @@ import com.mibanco.model.Card;
 import com.mibanco.model.enums.CardOperationType;
 import com.mibanco.model.enums.CardType;
 import com.mibanco.repository.CardRepository;
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
 import com.mibanco.service.CardService;
 import com.mibanco.util.ValidationException;
 
@@ -29,7 +29,7 @@ class CardServiceImpl extends BaseServiceImpl<CardDTO, Card, Long, CardOperation
     private final CardOperationType updateType = CardOperationType.UPDATE;
     
     static {
-        cardRepository = RepositoryFactory.getInstance().getCardRepository();
+        cardRepository = RepositoryServiceLocator.getService(CardRepository.class);
         clientMapper = new ClientMapper();
         mapper = new CardMapper(clientMapper);
     }

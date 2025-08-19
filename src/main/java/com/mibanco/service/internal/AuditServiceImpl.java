@@ -3,7 +3,7 @@ package com.mibanco.service.internal;
 import com.mibanco.model.AuditRecord;
 import com.mibanco.model.Identifiable;
 import com.mibanco.repository.AuditRepository;
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
 import com.mibanco.service.AuditService;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ class AuditServiceImpl implements AuditService {
     private static final AuditRepository auditRepository;
     
     static {
-        auditRepository = RepositoryFactory.getInstance().getAuditRepository();
+        auditRepository = RepositoryServiceLocator.getService(AuditRepository.class);
     }
     
     /**

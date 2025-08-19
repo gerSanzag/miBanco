@@ -502,6 +502,12 @@ private RepositoryFactory() {
 
 ### **Puntuación: 6/10** ⚖️
 
+
+
+PUNTO DE ATENCION PARA EJERCICIO DE PRACTICA.
+
+
+
 **Es una práctica "aceptable" pero con mejoras posibles.**
 
 ## **🔧 Mejores Alternativas:**

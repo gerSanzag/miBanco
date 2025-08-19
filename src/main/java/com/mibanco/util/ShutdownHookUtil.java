@@ -2,7 +2,11 @@ package com.mibanco.util;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
+import com.mibanco.repository.ClientRepository;
+import com.mibanco.repository.AccountRepository;
+import com.mibanco.repository.CardRepository;
+import com.mibanco.repository.TransactionRepository;
 
 /**
  * Utility class for handling application shutdown
@@ -22,14 +26,17 @@ public class ShutdownHookUtil {
                 System.out.println("🔄 Saving data before closing the application...");
                 
                 try {
-                    // Get instance of repository factory
-                    RepositoryFactory factory = RepositoryFactory.getInstance();
+                    // Get repositories through service locator
+                    ClientRepository clientRepository = RepositoryServiceLocator.getService(ClientRepository.class);
+                    AccountRepository accountRepository = RepositoryServiceLocator.getService(AccountRepository.class);
+                    CardRepository cardRepository = RepositoryServiceLocator.getService(CardRepository.class);
+                    TransactionRepository transactionRepository = RepositoryServiceLocator.getService(TransactionRepository.class);
                     
                     // Save data from all repositories
-                    factory.getClientRepository().saveData();
-                    factory.getAccountRepository().saveData();
-                    factory.getCardRepository().saveData();
-                    factory.getTransactionRepository().saveData();
+                    clientRepository.saveData();
+                    accountRepository.saveData();
+                    cardRepository.saveData();
+                    transactionRepository.saveData();
                     
                     System.out.println("✅ Data saved successfully");
                 } catch (Exception e) {

@@ -6,7 +6,7 @@ import com.mibanco.model.Transaction;
 import com.mibanco.model.enums.TransactionOperationType;
 import com.mibanco.model.enums.TransactionType;
 import com.mibanco.repository.TransactionRepository;
-import com.mibanco.repository.internal.RepositoryFactory;
+import com.mibanco.repository.internal.RepositoryServiceLocator;
 import com.mibanco.service.TransactionCrudService;
 
 import java.math.BigDecimal;
@@ -29,7 +29,7 @@ class TransactionCrudServiceImpl extends BaseServiceImpl<TransactionDTO, Transac
     private static final TransactionMapper mapper;
    
     static {
-        transactionRepository = RepositoryFactory.getInstance().getTransactionRepository();
+        transactionRepository = RepositoryServiceLocator.getService(TransactionRepository.class);
         mapper = new TransactionMapper();
        
     }
