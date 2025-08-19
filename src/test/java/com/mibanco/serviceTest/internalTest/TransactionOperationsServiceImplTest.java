@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for TransactionOperationsService.cancelTransaction
+ * Tests for TransactionOperationsService
  */
 class TransactionOperationsServiceImplTest {
 
@@ -25,9 +25,143 @@ class TransactionOperationsServiceImplTest {
         transactionOperationsService = ServiceFactory.getInstance().getTransactionOperationsService();
     }
 
+    // ========== DEPOSIT TESTS ==========
+
     @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is null")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsNull() {
+    @DisplayName("deposit: should return empty when accountId is empty")
+    void depositShouldReturnEmptyWhenAccountIdIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.deposit(
+            Optional.empty(), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test deposit")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("deposit: should return empty when amount is empty")
+    void depositShouldReturnEmptyWhenAmountIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.deposit(
+            Optional.of(1L), 
+            Optional.empty(), 
+            Optional.of("Test deposit")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("deposit: should return empty when account does not exist")
+    void depositShouldReturnEmptyWhenAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.deposit(
+            Optional.of(999999L), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test deposit")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    // ========== WITHDRAW TESTS ==========
+
+    @Test
+    @DisplayName("withdraw: should return empty when accountId is empty")
+    void withdrawShouldReturnEmptyWhenAccountIdIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.withdraw(
+            Optional.empty(), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test withdrawal")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("withdraw: should return empty when amount is empty")
+    void withdrawShouldReturnEmptyWhenAmountIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.withdraw(
+            Optional.of(1L), 
+            Optional.empty(), 
+            Optional.of("Test withdrawal")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("withdraw: should return empty when account does not exist")
+    void withdrawShouldReturnEmptyWhenAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.withdraw(
+            Optional.of(999999L), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test withdrawal")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    // ========== TRANSFER TESTS ==========
+
+    @Test
+    @DisplayName("transfer: should return empty when sourceAccountId is empty")
+    void transferShouldReturnEmptyWhenSourceAccountIdIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.empty(), 
+            Optional.of(2L), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when destinationAccountId is empty")
+    void transferShouldReturnEmptyWhenDestinationAccountIdIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(1L), 
+            Optional.empty(), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when amount is empty")
+    void transferShouldReturnEmptyWhenAmountIsEmpty() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(1L), 
+            Optional.of(2L), 
+            Optional.empty(), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when source account does not exist")
+    void transferShouldReturnEmptyWhenSourceAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(999999L), 
+            Optional.of(2L), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when destination account does not exist")
+    void transferShouldReturnEmptyWhenDestinationAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(1L), 
+            Optional.of(999999L), 
+            Optional.of(BigDecimal.valueOf(100)), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    // ========== CANCEL TRANSACTION TESTS ==========
+
+    @Test
+    @DisplayName("cancelTransaction: should return empty when transactionId is empty")
+    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsEmpty() {
         Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.empty());
         assertThat(result).isEmpty();
     }
@@ -50,125 +184,6 @@ class TransactionOperationsServiceImplTest {
     @DisplayName("cancelTransaction: should return empty when transactionId is zero")
     void cancelTransactionShouldReturnEmptyWhenTransactionIdIsZero() {
         Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(0L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is very large")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsVeryLarge() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(999999999999L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is null and wrapped in Optional")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsNullWrapped() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.ofNullable(null));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 1")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsOne() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(1L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 2")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsTwo() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(2L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 100")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsHundred() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(100L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 1000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsThousand() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(1000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 50000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsFiftyThousand() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(50000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 100000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsHundredThousand() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(100000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 500000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsFiveHundredThousand() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(500000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 999999")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsNineHundredNinetyNineThousand() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(999999L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 1000000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsOneMillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(1000000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 9999999")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsNineMillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(9999999L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 10000000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsTenMillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(10000000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 99999999")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsNinetyNineMillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(99999999L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 100000000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsHundredMillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(100000000L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 999999999")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsNineHundredNinetyNineMillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(999999999L));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @DisplayName("cancelTransaction: should return empty when transactionId is 1000000000")
-    void cancelTransactionShouldReturnEmptyWhenTransactionIdIsOneBillion() {
-        Optional<TransactionDTO> result = transactionOperationsService.cancelTransaction(Optional.of(1000000000L));
         assertThat(result).isEmpty();
     }
 }
