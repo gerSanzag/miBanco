@@ -1,5 +1,6 @@
 package com.mibanco.repositoryTest.internalTest;
 
+import com.mibanco.BaseTest;
 import com.mibanco.model.Card;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.CardOperationType;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Includes configuration, mapping and specific edge case tests
  */
 @DisplayName("CardRepositoryImpl Tests")
-class CardRepositoryImplTest {
+class CardRepositoryImplTest extends BaseTest {
     
     private CardRepositoryImplWrapper repository;
     private Card card1;

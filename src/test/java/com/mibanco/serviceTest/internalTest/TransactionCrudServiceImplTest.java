@@ -2,6 +2,7 @@ package com.mibanco.serviceTest.internalTest;
 
 import com.mibanco.dto.TransactionDTO;
 import com.mibanco.model.enums.TransactionType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.TransactionCrudService;
 import com.mibanco.service.internal.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Test class for TransactionCrudServiceImpl
  * Tests all CRUD operations for transactions
  */
-class TransactionCrudServiceImplTest {
+class TransactionCrudServiceImplTest extends BaseTest {
 
     private TransactionCrudService transactionCrudService;
 

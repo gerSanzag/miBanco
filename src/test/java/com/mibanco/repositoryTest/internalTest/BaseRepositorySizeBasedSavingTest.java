@@ -1,6 +1,7 @@
 package com.mibanco.repositoryTest.internalTest;
 
 import com.mibanco.dto.mappers.ClientMapper;
+import com.mibanco.BaseTest;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.ClientOperationType;
 import com.mibanco.repository.internal.BaseRepositoryImplWrapper;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests to verify size-based automatic saving functionality
  */
 @DisplayName("BaseRepository - Size Based Saving Tests")
-class BaseRepositorySizeBasedSavingTest {
+class BaseRepositorySizeBasedSavingTest extends BaseTest {
     
     private TestRepositoryWithSaving repository;
     

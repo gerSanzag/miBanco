@@ -2,6 +2,7 @@ package com.mibanco.serviceTest.internalTest;
 
 import com.mibanco.dto.TransactionDTO;
 import com.mibanco.model.enums.TransactionType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.TransactionOperationsService;
 import com.mibanco.service.internal.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +15,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for TransactionOperationsService.cancelTransaction
+ * Tests for TransactionOperationsService
  */
-class TransactionOperationsServiceImplTest {
+class TransactionOperationsServiceImplTest extends BaseTest {
 
     private TransactionOperationsService transactionOperationsService;
 
@@ -24,6 +25,140 @@ class TransactionOperationsServiceImplTest {
     void setUp() {
         transactionOperationsService = ServiceFactory.getInstance().getTransactionOperationsService();
     }
+
+    // ========== DEPOSIT TESTS ==========
+
+    @Test
+    @DisplayName("deposit: should return empty when accountId is null")
+    void depositShouldReturnEmptyWhenAccountIdIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.deposit(
+            Optional.empty(), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test deposit")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("deposit: should return empty when amount is null")
+    void depositShouldReturnEmptyWhenAmountIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.deposit(
+            Optional.of(1L), 
+            Optional.empty(), 
+            Optional.of("Test deposit")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("deposit: should return empty when account does not exist")
+    void depositShouldReturnEmptyWhenAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.deposit(
+            Optional.of(999999L), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test deposit")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    // ========== WITHDRAW TESTS ==========
+
+    @Test
+    @DisplayName("withdraw: should return empty when accountId is null")
+    void withdrawShouldReturnEmptyWhenAccountIdIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.withdraw(
+            Optional.empty(), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test withdrawal")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("withdraw: should return empty when amount is null")
+    void withdrawShouldReturnEmptyWhenAmountIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.withdraw(
+            Optional.of(1L), 
+            Optional.empty(), 
+            Optional.of("Test withdrawal")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("withdraw: should return empty when account does not exist")
+    void withdrawShouldReturnEmptyWhenAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.withdraw(
+            Optional.of(999999L), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test withdrawal")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    // ========== TRANSFER TESTS ==========
+
+    @Test
+    @DisplayName("transfer: should return empty when sourceAccountId is null")
+    void transferShouldReturnEmptyWhenSourceAccountIdIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.empty(), 
+            Optional.of(2L), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when destinationAccountId is null")
+    void transferShouldReturnEmptyWhenDestinationAccountIdIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(1L), 
+            Optional.empty(), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when amount is null")
+    void transferShouldReturnEmptyWhenAmountIsNull() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(1L), 
+            Optional.of(2L), 
+            Optional.empty(), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when source account does not exist")
+    void transferShouldReturnEmptyWhenSourceAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(999999L), 
+            Optional.of(2L), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @DisplayName("transfer: should return empty when destination account does not exist")
+    void transferShouldReturnEmptyWhenDestinationAccountDoesNotExist() {
+        Optional<TransactionDTO> result = transactionOperationsService.transfer(
+            Optional.of(1L), 
+            Optional.of(999999L), 
+            Optional.of(new BigDecimal("100")), 
+            Optional.of("Test transfer")
+        );
+        assertThat(result).isEmpty();
+    }
+
+    // ========== CANCEL TRANSACTION TESTS (existing) ==========
 
     @Test
     @DisplayName("cancelTransaction: should return empty when transactionId is null")

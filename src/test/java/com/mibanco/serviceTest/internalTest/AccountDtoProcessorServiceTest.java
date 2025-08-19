@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.AccountDTO;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.enums.AccountType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.AccountService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.TransactionOperationsService;
@@ -25,7 +26,7 @@ import java.util.Optional;
  * Tests the processing of raw data into AccountDTO using real classes
  */
 @DisplayName("AccountDtoProcessorService Tests")
-class AccountDtoProcessorServiceTest {
+class AccountDtoProcessorServiceTest extends BaseTest {
 
     private AccountDtoProcessorService processor;
     private ClientService clientService;

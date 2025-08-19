@@ -2,6 +2,7 @@ package com.mibanco.repositoryTest.internalTest;
 
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.dto.mappers.ClientMapper;
+import com.mibanco.BaseTest;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.ClientOperationType;
 import com.mibanco.repository.internal.ClientRepositoryImplWrapper;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Includes configuration, mapping and specific edge case tests
  */
 @DisplayName("ClientRepositoryImpl Tests")
-class ClientRepositoryImplTest {
+class ClientRepositoryImplTest extends BaseTest {
     
     private ClientRepositoryImplWrapper repository;
     private Client client1;

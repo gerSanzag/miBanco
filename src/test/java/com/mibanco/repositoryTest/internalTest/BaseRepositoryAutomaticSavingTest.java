@@ -1,6 +1,7 @@
 package com.mibanco.repositoryTest.internalTest;
 
 import com.mibanco.dto.mappers.ClientMapper;
+import com.mibanco.BaseTest;
 import com.mibanco.model.Client;
 import com.mibanco.model.enums.ClientOperationType;
 import com.mibanco.repository.internal.BaseRepositoryImplWrapper;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Uses real files to verify that persistence works correctly
  */
 @DisplayName("BaseRepository - Automatic Saving Tests")
-class BaseRepositoryAutomaticSavingTest {
+class BaseRepositoryAutomaticSavingTest extends BaseTest {
     
     private TestRepositoryWithSaving repository;
     private Client client1;

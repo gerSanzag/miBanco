@@ -8,6 +8,7 @@ import com.mibanco.repository.AuditRepository;
 import com.mibanco.repository.CardRepository;
 import com.mibanco.repository.ClientRepository;
 import com.mibanco.repository.TransactionRepository;
+import com.mibanco.BaseTest;
 import com.mibanco.repository.internal.RepositoryFactory;
 
 import org.junit.jupiter.api.Nested;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies the Singleton pattern with Double-Checked Locking
  */
 @DisplayName("RepositoryFactory Tests")
-class RepositoryFactoryTest {
+class RepositoryFactoryTest extends BaseTest {
 
     @Nested
     @DisplayName("Tests for getInstance")

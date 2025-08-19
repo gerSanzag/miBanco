@@ -1,5 +1,6 @@
 package com.mibanco.repositoryTest.internalTest;
 
+import com.mibanco.BaseTest;
 import com.mibanco.model.Transaction;
 import com.mibanco.model.enums.TransactionOperationType;
 import com.mibanco.model.enums.TransactionType;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Includes configuration, specific searches and edge cases
  */
 @DisplayName("TransactionRepositoryImpl Tests")
-class TransactionRepositoryImplTest {
+class TransactionRepositoryImplTest extends BaseTest {
     
     private TransactionRepositoryImplWrapper repository;
     private Transaction transaction1;

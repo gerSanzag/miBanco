@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.CardDTO;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.enums.CardType;
+import com.mibanco.BaseTest;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.CardDtoProcessorService;
 import com.mibanco.service.internal.ServiceFactory;
@@ -22,7 +23,7 @@ import java.util.Optional;
  * Tests the processing of raw data into CardDTO using real classes
  */
 @DisplayName("CardDtoProcessorService Tests")
-class CardDtoProcessorServiceTest {
+class CardDtoProcessorServiceTest extends BaseTest {
 
     private CardDtoProcessorService processor;
     private ClientService clientService;

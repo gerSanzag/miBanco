@@ -6,6 +6,7 @@ import com.mibanco.service.CardService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.TransactionCrudService;
 import com.mibanco.service.TransactionOperationsService;
+import com.mibanco.BaseTest;
 import com.mibanco.service.internal.ServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
  * Tests the creation of all service instances
  */
 @DisplayName("ServiceFactory Tests")
-class ServiceFactoryTest {
+class ServiceFactoryTest extends BaseTest {
 
     private ServiceFactory serviceFactory;
 
