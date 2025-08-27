@@ -7,7 +7,7 @@ import com.mibanco.service.AccountService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.TransactionOperationsService;
 import com.mibanco.service.internal.ServiceFactory;
-import com.mibanco.util.ValidationException;
+import com.mibanco.TestClientHelper;import com.mibanco.util.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,13 +33,13 @@ class AccountServiceImplTest {
 
     private AccountService accountService;
     private ClientService clientService;
-    private TransactionOperationsService transactionService;
+    private TestClientHelper testClientHelper;    private TransactionOperationsService transactionService;
 
     @BeforeEach
     void setUp() {
         accountService = ServiceFactory.getInstance().getAccountService();
         clientService = ServiceFactory.getInstance().getClientService();
-        transactionService = ServiceFactory.getInstance().getTransactionOperationsService();
+        testClientHelper = new TestClientHelper(clientService);        transactionService = ServiceFactory.getInstance().getTransactionOperationsService();
     }
 
     @Nested
@@ -51,7 +51,7 @@ class AccountServiceImplTest {
         void shouldCreateAccountSuccessfully() {
             // Given - Create a client first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // Given - Prepare account data
             Map<String, String> rawData = new HashMap<>();
@@ -81,7 +81,7 @@ class AccountServiceImplTest {
         void shouldCreateAccountWithZeroInitialBalance() {
             // Given - Create a client first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // Given - Prepare account data
             Map<String, String> rawData = new HashMap<>();
@@ -112,7 +112,7 @@ class AccountServiceImplTest {
         void shouldGetAccountByNumberSuccessfully() {
             // Given - Create an account first using createAccountDto
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -137,10 +137,10 @@ class AccountServiceImplTest {
         void shouldGetAllAccountsSuccessfully() {
             // Given - Create multiple accounts using createAccountDto
             ClientDTO holder1 = createTestClient();
-            Optional<ClientDTO> savedHolder1 = clientService.saveClient(Optional.of(holder1));
+            Optional<ClientDTO> savedHolder1 = testClientHelper.createTestClient(holder1);
             
             ClientDTO holder2 = createTestClient();
-            Optional<ClientDTO> savedHolder2 = clientService.saveClient(Optional.of(holder2));
+            Optional<ClientDTO> savedHolder2 = testClientHelper.createTestClient(holder2);
             
             Map<String, String> rawData1 = new HashMap<>();
             rawData1.put("holderId", savedHolder1.get().getId().toString());
@@ -170,7 +170,7 @@ class AccountServiceImplTest {
         void shouldSearchAccountsByHolderIdSuccessfully() {
             // Given - Create a client and account using createAccountDto
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -194,7 +194,7 @@ class AccountServiceImplTest {
         void shouldSearchAccountsByTypeSuccessfully() {
             // Given - Create accounts of specific type using createAccountDto
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -218,7 +218,7 @@ class AccountServiceImplTest {
         void shouldSearchActiveAccountsSuccessfully() {
             // Given - Create active accounts using createAccountDto
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -247,7 +247,7 @@ class AccountServiceImplTest {
         void shouldUpdateAccountBalanceSuccessfully() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -274,7 +274,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateAccountBalanceWithNullBalance() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -298,7 +298,7 @@ class AccountServiceImplTest {
         void shouldUpdateAccountStatusSuccessfully() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -323,7 +323,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateAccountStatusWithNullStatus() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -347,10 +347,10 @@ class AccountServiceImplTest {
         void shouldUpdateAccountHolderSuccessfully() {
             // Given - Create accounts and clients
             ClientDTO originalHolder = createTestClient();
-            Optional<ClientDTO> savedOriginalHolder = clientService.saveClient(Optional.of(originalHolder));
+            Optional<ClientDTO> savedOriginalHolder = testClientHelper.createTestClient(originalHolder);
             
             ClientDTO newHolder = createTestClient();
-            Optional<ClientDTO> savedNewHolder = clientService.saveClient(Optional.of(newHolder));
+            Optional<ClientDTO> savedNewHolder = testClientHelper.createTestClient(newHolder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedOriginalHolder.get().getId().toString());
@@ -380,7 +380,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateAccountHolderWithNullHolder() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -409,7 +409,7 @@ class AccountServiceImplTest {
         void shouldDeleteAccountSuccessfully() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -433,7 +433,7 @@ class AccountServiceImplTest {
         void shouldHandleDeleteAccountWithNullId() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -457,7 +457,7 @@ class AccountServiceImplTest {
         void shouldDeleteAccountByNumberSuccessfully() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -481,7 +481,7 @@ class AccountServiceImplTest {
         void shouldHandleDeleteAccountByNumberWithNullId() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -505,7 +505,7 @@ class AccountServiceImplTest {
         void shouldRestoreAccountSuccessfully() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -529,7 +529,7 @@ class AccountServiceImplTest {
         void shouldHandleRestoreAccountWithNullId() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -553,7 +553,7 @@ class AccountServiceImplTest {
         void shouldUpdateMultipleFieldsSuccessfully() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -585,7 +585,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithNullValuesInMap() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -615,7 +615,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithStringValues() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -647,7 +647,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithNullId() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -680,7 +680,7 @@ class AccountServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithNullData() {
             // Given - Create an account first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -704,7 +704,7 @@ class AccountServiceImplTest {
         void shouldThrowValidationExceptionWhenCreatingAccountWithDuplicateAccountNumber() {
             // Given - Create first account
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData1 = new HashMap<>();
             rawData1.put("holderId", savedHolder.get().getId().toString());
@@ -765,10 +765,10 @@ class AccountServiceImplTest {
         void shouldCountAccountsSuccessfully() {
             // Given - Create some accounts using createAccountDto
             ClientDTO holder1 = createTestClient();
-            Optional<ClientDTO> savedHolder1 = clientService.saveClient(Optional.of(holder1));
+            Optional<ClientDTO> savedHolder1 = testClientHelper.createTestClient(holder1);
             
             ClientDTO holder2 = createTestClient();
-            Optional<ClientDTO> savedHolder2 = clientService.saveClient(Optional.of(holder2));
+            Optional<ClientDTO> savedHolder2 = testClientHelper.createTestClient(holder2);
             
             Map<String, String> rawData1 = new HashMap<>();
             rawData1.put("holderId", savedHolder1.get().getId().toString());

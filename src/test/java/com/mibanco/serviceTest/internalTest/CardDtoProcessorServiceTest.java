@@ -6,7 +6,7 @@ import com.mibanco.model.enums.CardType;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.CardDtoProcessorService;
 import com.mibanco.service.internal.ServiceFactory;
-import org.junit.jupiter.api.BeforeEach;
+import com.mibanco.TestClientHelper;import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,11 +26,11 @@ class CardDtoProcessorServiceTest {
 
     private CardDtoProcessorService processor;
     private ClientService clientService;
-
+    private TestClientHelper testClientHelper;
     @BeforeEach
     void setUp() {
         clientService = ServiceFactory.getInstance().getClientService();
-        processor = new CardDtoProcessorService(clientService);
+        testClientHelper = new TestClientHelper(clientService);        processor = new CardDtoProcessorService(clientService);
     }
 
     @Nested
@@ -42,7 +42,7 @@ class CardDtoProcessorServiceTest {
         void shouldProcessCompleteCardDataSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -69,7 +69,7 @@ class CardDtoProcessorServiceTest {
         void shouldProcessCardWithMinimalRequiredDataSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -92,7 +92,7 @@ class CardDtoProcessorServiceTest {
         void shouldProcessCreditCardTypeSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -114,7 +114,7 @@ class CardDtoProcessorServiceTest {
         void shouldProcessDebitCardTypeSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -136,7 +136,7 @@ class CardDtoProcessorServiceTest {
         void shouldProcessInactiveCardSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -205,7 +205,7 @@ class CardDtoProcessorServiceTest {
         void shouldReturnEmptyWhenCardTypeIsInvalid() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -223,7 +223,7 @@ class CardDtoProcessorServiceTest {
         void shouldReturnEmptyWhenExpirationDateIsInvalid() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -241,7 +241,7 @@ class CardDtoProcessorServiceTest {
         void shouldHandleInvalidActiveStatusGracefully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -287,7 +287,7 @@ class CardDtoProcessorServiceTest {
         void shouldHandleNullValuesInRawData() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -313,7 +313,7 @@ class CardDtoProcessorServiceTest {
         void shouldReturnEmptyWhenEmptyStringValuesCauseParsingErrors() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -334,7 +334,7 @@ class CardDtoProcessorServiceTest {
         void shouldHandleVeryLongAccountNumbers() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -354,7 +354,7 @@ class CardDtoProcessorServiceTest {
         void shouldHandlePastExpirationDates() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -374,7 +374,7 @@ class CardDtoProcessorServiceTest {
         void shouldHandleFarFutureExpirationDates() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -399,7 +399,7 @@ class CardDtoProcessorServiceTest {
         void shouldProcessMultipleCardsForSameHolder() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // When & Then - Process multiple cards
             for (int i = 1; i <= 3; i++) {
@@ -427,7 +427,7 @@ class CardDtoProcessorServiceTest {
         void shouldHandleConcurrentProcessingWithoutIssues() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());

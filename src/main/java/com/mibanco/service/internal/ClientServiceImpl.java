@@ -48,11 +48,7 @@ class ClientServiceImpl extends BaseServiceImpl<ClientDTO, Client, Long, ClientO
         }
     }
 
-    @Override
-    public Optional<ClientDTO> saveClient(Optional<ClientDTO> clientDTO) {
-        // NO validation here - DTO should already be validated
-        return saveEntity(ClientOperationType.CREATE, clientDTO);
-    }
+
     
     /**
      * Helper method to validate unique DNI

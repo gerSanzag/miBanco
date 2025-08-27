@@ -5,7 +5,7 @@ import com.mibanco.model.Client;
 import com.mibanco.model.enums.AccountType;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.ServiceFactory;
-import org.junit.jupiter.api.BeforeEach;
+import com.mibanco.TestClientHelper;import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,11 +24,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ClientServiceImplTest {
 
     private ClientService clientService;
-
+    private TestClientHelper testClientHelper;
     @BeforeEach
     void setUp() {
         clientService = ServiceFactory.getInstance().getClientService();
-    }
+        testClientHelper = new TestClientHelper(clientService);    }
 
     @Nested
     @DisplayName("Create Client Tests")
@@ -76,7 +76,7 @@ class ClientServiceImplTest {
                     .build();
 
             // When
-            Optional<ClientDTO> result = clientService.saveClient(Optional.of(clientDto));
+            Optional<ClientDTO> result = testClientHelper.createTestClient(clientDto);
 
             // Then
             assertThat(result).isPresent();
@@ -245,7 +245,7 @@ class ClientServiceImplTest {
                     .build();
 
             // When - Use saveClient which doesn't call validateUniqueDni
-            Optional<ClientDTO> result = clientService.saveClient(Optional.of(clientDto));
+            Optional<ClientDTO> result = testClientHelper.createTestClient(clientDto);
 
             // Then - Should be saved successfully
             assertThat(result).isPresent();

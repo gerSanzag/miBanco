@@ -8,6 +8,7 @@ import com.mibanco.service.ClientService;
 import com.mibanco.service.TransactionOperationsService;
 import com.mibanco.service.internal.AccountDtoProcessorService;
 import com.mibanco.service.internal.ServiceFactory;
+import com.mibanco.TestClientHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +32,16 @@ class AccountDtoProcessorServiceTest {
     private ClientService clientService;
     private TransactionOperationsService transactionService;
     private AccountService accountService;
+    private TestClientHelper testClientHelper;
 
     @BeforeEach
     void setUp() {
         clientService = ServiceFactory.getInstance().getClientService();
+        testClientHelper = new TestClientHelper(clientService);
         transactionService = ServiceFactory.getInstance().getTransactionOperationsService();
         accountService = ServiceFactory.getInstance().getAccountService();
         processor = new AccountDtoProcessorService(clientService);
+        testClientHelper = new TestClientHelper(clientService);
     }
 
     @Nested
@@ -49,7 +53,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessCompleteAccountDataSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -76,7 +80,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessAccountWithMinimalRequiredDataSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -100,7 +104,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessSavingsAccountTypeSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -120,7 +124,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessCheckingAccountTypeSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -140,7 +144,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessFixedTermAccountTypeSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -160,7 +164,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessInactiveAccountSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -228,7 +232,7 @@ class AccountDtoProcessorServiceTest {
         void shouldReturnEmptyWhenAccountTypeIsInvalid() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -246,7 +250,7 @@ class AccountDtoProcessorServiceTest {
         void shouldReturnEmptyWhenCreationDateIsInvalid() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -264,7 +268,7 @@ class AccountDtoProcessorServiceTest {
         void shouldHandleInvalidActiveStatusGracefully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -310,7 +314,7 @@ class AccountDtoProcessorServiceTest {
         void shouldHandleNullValuesInRawData() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -334,7 +338,7 @@ class AccountDtoProcessorServiceTest {
         void shouldReturnEmptyWhenEmptyStringValuesCauseParsingErrors() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -354,7 +358,7 @@ class AccountDtoProcessorServiceTest {
         void shouldHandleVeryOldCreationDates() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -374,7 +378,7 @@ class AccountDtoProcessorServiceTest {
         void shouldHandleFutureCreationDates() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -399,7 +403,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessInitialDepositSuccessfullyEvenWhenAccountHasNoId() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             AccountDTO account = AccountDTO.builder()
                 .holder(savedHolder.get())
@@ -425,7 +429,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessInitialDepositSuccessfullyWithZeroAmount() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             AccountDTO account = AccountDTO.builder()
                 .holder(savedHolder.get())
@@ -451,7 +455,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessInitialDepositSuccessfullyWithNegativeAmount() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             AccountDTO account = AccountDTO.builder()
                 .holder(savedHolder.get())
@@ -477,7 +481,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessInitialDepositSuccessfullyWithLargeAmount() {
             // Given - First create a client and account
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             AccountDTO account = AccountDTO.builder()
                 .holder(savedHolder.get())
@@ -582,7 +586,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessMultipleAccountsForSameHolder() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // When & Then - Process multiple accounts
             AccountType[] accountTypes = {AccountType.SAVINGS, AccountType.CHECKING, AccountType.FIXED_TERM};
@@ -610,7 +614,7 @@ class AccountDtoProcessorServiceTest {
         void shouldHandleConcurrentProcessingWithoutIssues() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -631,7 +635,7 @@ class AccountDtoProcessorServiceTest {
         void shouldProcessAccountCreationAndInitialDepositSuccessfully() {
             // Given - First create a client to use as holder
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> rawData = new HashMap<>();
             rawData.put("holderId", savedHolder.get().getId().toString());
@@ -733,7 +737,7 @@ class AccountDtoProcessorServiceTest {
         void shouldTestCreateAccountDtoFlowWithCorrectedOrder() {
             // Given - Create a client and save it
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // Given - Prepare account data
             Map<String, String> rawData = new HashMap<>();

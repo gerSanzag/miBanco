@@ -6,7 +6,7 @@ import com.mibanco.model.enums.CardType;
 import com.mibanco.service.CardService;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.ServiceFactory;
-import com.mibanco.util.ValidationException;
+import com.mibanco.TestClientHelper;import com.mibanco.util.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,12 +32,12 @@ class CardServiceImplTest {
 
     private CardService cardService;
     private ClientService clientService;
-
+    private TestClientHelper testClientHelper;
     @BeforeEach
     void setUp() {
         cardService = ServiceFactory.getInstance().getCardService();
         clientService = ServiceFactory.getInstance().getClientService();
-    }
+        testClientHelper = new TestClientHelper(clientService);    }
 
     @Nested
     @DisplayName("Create Card Tests")
@@ -48,7 +48,7 @@ class CardServiceImplTest {
         void shouldCreateCardSuccessfully() {
             // Given - Create a client first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // Given - Prepare card data
             Map<String, String> cardData = new HashMap<>();
@@ -77,7 +77,7 @@ class CardServiceImplTest {
         void shouldCreateCardWithDebitType() {
             // Given - Create a client first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             // Given - Prepare card data
             Map<String, String> cardData = new HashMap<>();
@@ -110,7 +110,7 @@ class CardServiceImplTest {
         void shouldGetCardByNumberSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -136,7 +136,7 @@ class CardServiceImplTest {
         void shouldHandleGetCardByNumberWithNullNumber() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -161,7 +161,7 @@ class CardServiceImplTest {
         void shouldGetAllCardsSuccessfully() {
             // Given - Create some cards
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData1 = new HashMap<>();
             cardData1.put("holderId", savedHolder.get().getId().toString());
@@ -193,7 +193,7 @@ class CardServiceImplTest {
         void shouldSearchCardsByHolderIdSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -218,7 +218,7 @@ class CardServiceImplTest {
         void shouldHandleSearchCardsByHolderIdWithNullId() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -243,7 +243,7 @@ class CardServiceImplTest {
         void shouldSearchCardsByTypeSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -268,7 +268,7 @@ class CardServiceImplTest {
         void shouldHandleSearchCardsByTypeWithNullType() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -293,7 +293,7 @@ class CardServiceImplTest {
         void shouldSearchActiveCardsSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -318,7 +318,7 @@ class CardServiceImplTest {
         void shouldSearchCardsByAssociatedAccountSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -343,7 +343,7 @@ class CardServiceImplTest {
         void shouldHandleSearchCardsByAssociatedAccountWithNullAccount() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -373,7 +373,7 @@ class CardServiceImplTest {
         void shouldUpdateMultipleFieldsSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -403,7 +403,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithNullValuesInMap() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -431,7 +431,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithStringValues() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -461,7 +461,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithNullId() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -495,7 +495,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateMultipleFieldsWithNullData() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -520,7 +520,7 @@ class CardServiceImplTest {
         void shouldUpdateExpirationDateSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -545,7 +545,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateExpirationDateWithNullDate() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -570,7 +570,7 @@ class CardServiceImplTest {
         void shouldUpdateCardStatusSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -595,7 +595,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateCardStatusWithNullStatus() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -620,10 +620,10 @@ class CardServiceImplTest {
         void shouldUpdateCardHolderSuccessfully() {
             // Given - Create cards and clients
             ClientDTO originalHolder = createTestClient();
-            Optional<ClientDTO> savedOriginalHolder = clientService.saveClient(Optional.of(originalHolder));
+            Optional<ClientDTO> savedOriginalHolder = testClientHelper.createTestClient(originalHolder);
             
             ClientDTO newHolder = createTestClient();
-            Optional<ClientDTO> savedNewHolder = clientService.saveClient(Optional.of(newHolder));
+            Optional<ClientDTO> savedNewHolder = testClientHelper.createTestClient(newHolder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedOriginalHolder.get().getId().toString());
@@ -653,7 +653,7 @@ class CardServiceImplTest {
         void shouldHandleUpdateCardHolderWithNullHolder() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -683,7 +683,7 @@ class CardServiceImplTest {
         void shouldDeleteCardSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -708,7 +708,7 @@ class CardServiceImplTest {
         void shouldHandleDeleteCardWithNullId() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -733,7 +733,7 @@ class CardServiceImplTest {
         void shouldDeleteCardByNumberSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -758,7 +758,7 @@ class CardServiceImplTest {
         void shouldHandleDeleteCardByNumberWithNullId() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -783,7 +783,7 @@ class CardServiceImplTest {
         void shouldRestoreCardSuccessfully() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -808,7 +808,7 @@ class CardServiceImplTest {
         void shouldHandleRestoreCardWithNullId() {
             // Given - Create a card first
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData = new HashMap<>();
             cardData.put("holderId", savedHolder.get().getId().toString());
@@ -838,7 +838,7 @@ class CardServiceImplTest {
         void shouldCountCardsSuccessfully() {
             // Given - Create some cards
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData1 = new HashMap<>();
             cardData1.put("holderId", savedHolder.get().getId().toString());
@@ -887,7 +887,7 @@ class CardServiceImplTest {
         void shouldThrowValidationExceptionWhenCreatingCardWithDuplicateCardNumber() {
             // Given - Create first card
             ClientDTO holder = createTestClient();
-            Optional<ClientDTO> savedHolder = clientService.saveClient(Optional.of(holder));
+            Optional<ClientDTO> savedHolder = testClientHelper.createTestClient(holder);
             
             Map<String, String> cardData1 = new HashMap<>();
             cardData1.put("holderId", savedHolder.get().getId().toString());

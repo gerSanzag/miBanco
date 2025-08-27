@@ -150,7 +150,7 @@ public class ClientViewImpl implements ClientView {
     // Implementation of client operations (placeholder methods for now)
     
     @Override
-    public Map<String, String> createClient() {
+    public Optional<Map<String, String>> createClient() {
         showMessage.accept("");
         showMessage.accept("=== CREAR NUEVO CLIENTE ===");
         
@@ -167,13 +167,13 @@ public class ClientViewImpl implements ClientView {
             // Validate required fields using ValidationUtil
             if (!validateRequiredFields(firstName, lastName, dni)) {
                 showMessage.accept("Error: Nombre, apellido y DNI son obligatorios.");
-                return new HashMap<>();
+                return Optional.empty();
             }
             
             // Validate email format using ValidationUtil
             if (!email.isEmpty() && !isValidEmail(email)) {
                 showMessage.accept("Error: Formato de email inválido.");
-                return new HashMap<>();
+                return Optional.empty();
             }
             
             // Show confirmation
@@ -194,15 +194,15 @@ public class ClientViewImpl implements ClientView {
                 Map<String, String> clientData = createClientDataMap(firstName, lastName, dni, birthDate, email, phone, address);
                 
                 showMessage.accept("Datos capturados exitosamente.");
-                return clientData;
+                return Optional.of(clientData);
             } else {
                 showMessage.accept("Creación cancelada.");
-                return new HashMap<>();
+                return Optional.empty();
             }
             
         } catch (Exception e) {
             showMessage.accept("Error al crear cliente: " + e.getMessage());
-            return new HashMap<>();
+            return Optional.empty();
         }
     }
     

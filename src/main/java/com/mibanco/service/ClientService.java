@@ -20,12 +20,7 @@ public interface ClientService {
      */
     Optional<ClientDTO> createClientDto(Map<String, String> clientData);
     
-    /**
-     * Saves an existing client
-     * @param clientDTO Optional with client data to save
-     * @return Optional with the saved client DTO
-     */
-    Optional<ClientDTO> saveClient(Optional<ClientDTO> clientDTO);
+
     
     /**
      * Updates complete client information using the generic updateMultipleFields method

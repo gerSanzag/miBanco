@@ -3,6 +3,7 @@ package com.mibanco.serviceTest.internalTest;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.service.ClientService;
 import com.mibanco.service.internal.ServiceFactory;
+import com.mibanco.TestClientHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +22,12 @@ import java.util.HashMap;
 class BaseServiceImplTest {
 
     private ClientService clientService;
+    private TestClientHelper testClientHelper;
 
     @BeforeEach
     void setUp() {
         clientService = ServiceFactory.getInstance().getClientService();
+        testClientHelper = new TestClientHelper(clientService);        testClientHelper = new TestClientHelper(clientService);
     }
 
     @Test
@@ -42,7 +45,7 @@ class BaseServiceImplTest {
                 .build();
 
         // When
-        Optional<ClientDTO> result = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> result = testClientHelper.createTestClient(clientDto);
 
         // Then
         assertThat(result).isPresent();
@@ -68,7 +71,7 @@ class BaseServiceImplTest {
                 .address("Avenida Central 456")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
 
         // When
         Optional<ClientDTO> foundClient = clientService.getClientById(Optional.of(createdClient.get().getId()));
@@ -106,8 +109,8 @@ class BaseServiceImplTest {
                 .address("Calle 2")
                 .build();
 
-        clientService.saveClient(Optional.of(client1));
-        clientService.saveClient(Optional.of(client2));
+        testClientHelper.createTestClient(client1);
+        testClientHelper.createTestClient(client2);
 
         // When
         Optional<java.util.List<ClientDTO>> allClients = clientService.getAllClients();
@@ -131,7 +134,7 @@ class BaseServiceImplTest {
                 .address("Calle Eliminar")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
 
         // When
         boolean deleted = clientService.deleteClient(Optional.of(createdClient.get().getId()));
@@ -169,7 +172,7 @@ class BaseServiceImplTest {
                 .build();
 
         // When
-        clientService.saveClient(Optional.of(clientDto));
+        testClientHelper.createTestClient(clientDto);
         long finalCount = clientService.countClients();
 
         // Then
@@ -190,7 +193,7 @@ class BaseServiceImplTest {
                 .address("Calle Email")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         String newEmail = "nuevo@email.com";
 
         // When
@@ -220,7 +223,7 @@ class BaseServiceImplTest {
                 .address("Calle Phone")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         String newPhone = "666666666";
 
         // When
@@ -250,7 +253,7 @@ class BaseServiceImplTest {
                 .address("Dirección Original")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         String newAddress = "Nueva Dirección";
 
         // When
@@ -290,7 +293,7 @@ class BaseServiceImplTest {
                 .address("Dirección Original")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         
         ClientDTO updatedData = ClientDTO.builder()
                 .id(createdClient.get().getId())
@@ -335,7 +338,7 @@ class BaseServiceImplTest {
                 .address("Calle Restore")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         clientService.deleteClient(Optional.of(createdClient.get().getId()));
 
         // When
@@ -361,7 +364,7 @@ class BaseServiceImplTest {
                 .address("Calle UpdateField")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         String newEmail = "newemail@test.com";
 
         // When - Using updateField method directly
@@ -393,7 +396,7 @@ class BaseServiceImplTest {
                 .address("Calle NullField")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
 
         // When - Using updateField method with null value
         Optional<ClientDTO> updatedClient = clientService.updateField(
@@ -421,7 +424,7 @@ class BaseServiceImplTest {
                 .address("Calle UpdateMultiple")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         
         ClientDTO newData = ClientDTO.builder()
                 .firstName("UpdatedMultiple")
@@ -468,7 +471,7 @@ class BaseServiceImplTest {
                 .address("Calle NullMultiple")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
 
         // When - Using updateMultipleFields method with null data
         Optional<ClientDTO> updatedClient = clientService.updateMultipleFields(
@@ -494,7 +497,7 @@ class BaseServiceImplTest {
                 .address("Calle Deleted")
                 .build();
         
-        Optional<ClientDTO> createdClient = clientService.saveClient(Optional.of(clientDto));
+        Optional<ClientDTO> createdClient = testClientHelper.createTestClient(clientDto);
         clientService.deleteClient(Optional.of(createdClient.get().getId()));
 
         // When
@@ -542,8 +545,8 @@ class BaseServiceImplTest {
                 .address("Calle Deleted2")
                 .build();
         
-        Optional<ClientDTO> createdClient1 = clientService.saveClient(Optional.of(client1));
-        Optional<ClientDTO> createdClient2 = clientService.saveClient(Optional.of(client2));
+        Optional<ClientDTO> createdClient1 = testClientHelper.createTestClient(client1);
+        Optional<ClientDTO> createdClient2 = testClientHelper.createTestClient(client2);
         
         clientService.deleteClient(Optional.of(createdClient1.get().getId()));
         clientService.deleteClient(Optional.of(createdClient2.get().getId()));

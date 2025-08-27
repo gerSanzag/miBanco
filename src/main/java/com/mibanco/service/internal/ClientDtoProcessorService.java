@@ -4,11 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
-import java.util.List;
 
 import com.mibanco.dto.ClientDTO;
-import com.mibanco.model.Client;
-import com.mibanco.util.ReflectionUtil;
 
 /**
  * Specialized service for processing ClientDTO creation
@@ -20,12 +17,12 @@ public class ClientDtoProcessorService {
     
     /**
      * Processes raw data and creates a valid ClientDTO
-     * @param rawData Map with client data
+     * Assumes that required fields validation has been done by the controller
+     * @param rawData Map with client data (already validated)
      * @return Optional with processed ClientDTO or empty if there are errors
      */
     public Optional<ClientDTO> processClientDto(Map<String, String> rawData) {
         return Optional.ofNullable(rawData)
-            .filter(this::hasRequiredFields)
             .flatMap(this::buildClientDTO);
     }
     
@@ -66,34 +63,5 @@ public class ClientDtoProcessorService {
         }
     }
     
-    /**
-     * Validates that the raw data contains required fields using reflection
-     * @param rawData Map with client data
-     * @return true if required fields are present and valid
-     */
-    private boolean hasRequiredFields(Map<String, String> rawData) {
-        // Get required fields dynamically using reflection
-        List<String> requiredFields = ReflectionUtil.getRequiredFields(Client.class);
-        
-        // Validate each required field
-        for (String fieldName : requiredFields) {
-            String fieldValue = rawData.get(fieldName);
-            
-            // Check if field is present and not empty
-            if (fieldValue == null || fieldValue.trim().isEmpty()) {
-                return false;
-            }
-            
-            // Special validation for birthDate field
-            if ("birthDate".equals(fieldName)) {
-                try {
-                    LocalDate.parse(fieldValue, DateTimeFormatter.ISO_LOCAL_DATE);
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }
-        
-        return true;
-    }
+
 } 

@@ -24,9 +24,9 @@ public interface ClientView {
     /**
      * Captures client data for creating a new client.
      * 
-     * @return Map with client data ready for the service, or empty map if creation was cancelled
+     * @return Optional with Map containing client data ready for the service, or empty if creation was cancelled
      */
-    Map<String, String> createClient();
+    Optional<Map<String, String>> createClient();
     
     /**
      * Searches for a client by ID or DNI.
