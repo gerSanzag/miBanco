@@ -200,6 +200,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (TransactionType.valueOf throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -216,6 +217,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (BigDecimal constructor throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -233,6 +235,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (LocalDateTime.parse throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -243,6 +246,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(null);
 
             // Then
+            // Service should return empty when raw data is null
             assertThat(result).isEmpty();
         }
 
@@ -256,7 +260,9 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO
+            assertThat(result).isPresent();
         }
     }
 
@@ -391,7 +397,10 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO with null accountNumber
+            assertThat(result).isPresent();
+            assertThat(result.get().getAccountNumber()).isNull();
         }
 
         @Test
@@ -407,7 +416,10 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO with empty accountNumber
+            assertThat(result).isPresent();
+            assertThat(result.get().getAccountNumber()).isEqualTo("");
         }
 
         @Test
@@ -423,7 +435,9 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO
+            assertThat(result).isPresent();
         }
 
         @Test
@@ -438,7 +452,9 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO
+            assertThat(result).isPresent();
         }
 
         @Test
@@ -454,6 +470,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (TransactionType.valueOf("") throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -470,6 +487,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (TransactionType.valueOf("   ") throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -486,6 +504,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (TransactionType.valueOf throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -501,7 +520,9 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO
+            assertThat(result).isPresent();
         }
 
         @Test
@@ -517,6 +538,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (BigDecimal("") throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -533,6 +555,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (BigDecimal("   ") throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -549,6 +572,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (BigDecimal constructor throws exception)
             assertThat(result).isEmpty();
         }
 
@@ -564,7 +588,9 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
-            assertThat(result).isEmpty();
+            // Note: Service no longer validates required fields - this is now Controller responsibility
+            // The service should still process the data and create a DTO
+            assertThat(result).isPresent();
         }
 
         @Test
@@ -580,6 +606,7 @@ class TransactionDtoProcessorServiceTest {
             Optional<TransactionDTO> result = processor.processTransactionDto(rawData);
 
             // Then
+            // Service should return empty when format is invalid (TransactionType.valueOf and BigDecimal constructor throw exceptions)
             assertThat(result).isEmpty();
         }
     }

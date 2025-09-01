@@ -2,6 +2,7 @@ package com.mibanco.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mibanco.util.ReflectionUtil;
 import lombok.Value;
 import lombok.Builder;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.List;
 @Builder
 public class Client implements Identifiable {
     
+    @ReflectionUtil.NoRequest(reason = "Generated automatically")
     Long id;
     String firstName;        // nombre
     String lastName;         // apellido

@@ -122,7 +122,7 @@ public class ClientViewImpl implements ClientView {
      */
     private void processMainClientMenuOption(String option) {
         switch (option) {
-            case "1" -> createClient();
+            case "1" -> captureDataClient();
             case "2" -> searchClient();
             case "3" -> showUpdateClientMenu();
             case "4" -> deleteClient();
@@ -150,7 +150,7 @@ public class ClientViewImpl implements ClientView {
     // Implementation of client operations (placeholder methods for now)
     
     @Override
-    public Optional<Map<String, String>> createClient() {
+    public Optional<Map<String, String>> captureDataClient() {
         showMessage.accept("");
         showMessage.accept("=== CREAR NUEVO CLIENTE ===");
         
@@ -164,17 +164,7 @@ public class ClientViewImpl implements ClientView {
             String phone = captureStringInput("Teléfono: ", showMessage, getInput);
             String address = captureStringInput("Dirección: ", showMessage, getInput);
             
-            // Validate required fields using ValidationUtil
-            if (!validateRequiredFields(firstName, lastName, dni)) {
-                showMessage.accept("Error: Nombre, apellido y DNI son obligatorios.");
-                return Optional.empty();
-            }
-            
-            // Validate email format using ValidationUtil
-            if (!email.isEmpty() && !isValidEmail(email)) {
-                showMessage.accept("Error: Formato de email inválido.");
-                return Optional.empty();
-            }
+            // No validation here - Controller will handle all validations
             
             // Show confirmation
             showMessage.accept("");
@@ -207,15 +197,109 @@ public class ClientViewImpl implements ClientView {
     }
     
     @Override
-    public boolean searchClient() {
-        showMessage.accept("Buscar Cliente - En desarrollo");
-        return true;
+    public Optional<Map<String, String>> searchClient() {
+        showMessage.accept("");
+        showMessage.accept("=== BUSCAR CLIENTE ===");
+        showMessage.accept("1. Buscar por ID");
+        showMessage.accept("2. Buscar por DNI");
+        showMessage.accept("3. Volver al menú de clientes");
+        showMessage.accept("");
+        showMessage.accept("Elige una opción:");
+        
+        String option = getInput.get();
+        
+        return switch (option) {
+            case "1" -> searchClientById();
+            case "2" -> searchClientByDni();
+            case "3" -> Optional.empty(); // Return to menu
+            default -> {
+                showMessage.accept("Opción inválida. Por favor, elige una opción del 1 al 3.");
+                yield Optional.empty();
+            }
+        };
+    }
+    
+    /**
+     * Searches for a client by ID.
+     * 
+     * @return Optional with search criteria (ID), or empty if search was cancelled
+     */
+    private Optional<Map<String, String>> searchClientById() {
+        showMessage.accept("");
+        showMessage.accept("=== BUSCAR CLIENTE POR ID ===");
+        
+        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            showMessage.accept("Buscando cliente con ID: " + id);
+            
+            Map<String, String> searchCriteria = Map.of("searchType", "id", "searchValue", id.toString());
+            return Optional.of(searchCriteria);
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Searches for a client by DNI.
+     * 
+     * @return Optional with search criteria (DNI), or empty if search was cancelled
+     */
+    private Optional<Map<String, String>> searchClientByDni() {
+        showMessage.accept("");
+        showMessage.accept("=== BUSCAR CLIENTE POR DNI ===");
+        
+        String dni = captureStringInput("Ingresa el DNI del cliente: ", showMessage, getInput);
+        
+        if (dni != null && !dni.trim().isEmpty()) {
+            showMessage.accept("Buscando cliente con DNI: " + dni);
+            
+            Map<String, String> searchCriteria = Map.of("searchType", "dni", "searchValue", dni);
+            return Optional.of(searchCriteria);
+        } else {
+            showMessage.accept("Error: El DNI no puede estar vacío.");
+            return Optional.empty();
+        }
     }
     
     @Override
-    public boolean updateClientEmail() {
-        showMessage.accept("Actualizar Email - En desarrollo");
-        return true;
+    public Optional<Map<String, String>> updateClientEmail() {
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR EMAIL DEL CLIENTE ===");
+        
+        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
+        String newEmail = captureEmailInput("Ingresa el nuevo email: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            
+            return Optional.of(newEmail)
+                .filter(email -> email != null && !email.trim().isEmpty())
+                .map(email -> {
+                    showMessage.accept("");
+                    showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
+                    showMessage.accept("ID del cliente: " + id);
+                    showMessage.accept("Nuevo email: " + email);
+                    
+                    return captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
+                })
+                .filter(confirm -> "s".equalsIgnoreCase(confirm))
+                .map(confirm -> {
+                    Map<String, String> updateData = Map.of("id", id.toString(), "newEmail", newEmail);
+                    showMessage.accept("Datos de actualización capturados exitosamente.");
+                    return updateData;
+                })
+                .map(updateData -> Optional.of(updateData))
+                .orElseGet(() -> {
+                    showMessage.accept("Error: El email no puede estar vacío o la actualización fue cancelada.");
+                    return Optional.empty();
+                });
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
     }
     
     @Override
@@ -298,5 +382,22 @@ public class ClientViewImpl implements ClientView {
         }
         
         return clientData;
+    }
+    
+    @Override
+    public boolean displayClient(Client client) {
+        showMessage.accept("");
+        showMessage.accept("=== INFORMACIÓN DEL CLIENTE ===");
+        showMessage.accept("ID: " + client.getId());
+        showMessage.accept("Nombre: " + client.getFirstName() + " " + client.getLastName());
+        showMessage.accept("DNI: " + client.getDni());
+        showMessage.accept("Fecha de nacimiento: " + client.getBirthDate());
+        showMessage.accept("Email: " + client.getEmail());
+        showMessage.accept("Teléfono: " + client.getPhone());
+        showMessage.accept("Dirección: " + client.getAddress());
+        showMessage.accept("");
+        
+        String confirm = captureStringInput("¿Los datos mostrados son correctos? (s/n): ", showMessage, getInput);
+        return "s".equalsIgnoreCase(confirm);
     }
 }

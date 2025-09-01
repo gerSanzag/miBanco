@@ -3,6 +3,7 @@ package com.mibanco.view;
 import java.util.Optional;
 import java.util.Map;
 import com.mibanco.dto.ClientDTO;
+import com.mibanco.model.Client;
 
 /**
  * Interface for client management view.
@@ -26,21 +27,21 @@ public interface ClientView {
      * 
      * @return Optional with Map containing client data ready for the service, or empty if creation was cancelled
      */
-    Optional<Map<String, String>> createClient();
+    Optional<Map<String, String>> captureDataClient();
     
     /**
      * Searches for a client by ID or DNI.
      * 
-     * @return true if client was found and displayed, false otherwise
+     * @return Optional with search criteria (ID or DNI), or empty if search was cancelled
      */
-    boolean searchClient();
+    Optional<Map<String, String>> searchClient();
     
     /**
      * Updates client email.
      * 
-     * @return true if email was updated successfully, false otherwise
+     * @return Optional with Map containing update data (id and newEmail), or empty if update was cancelled
      */
-    boolean updateClientEmail();
+    Optional<Map<String, String>> updateClientEmail();
     
     /**
      * Updates client phone.
@@ -83,4 +84,12 @@ public interface ClientView {
      * @return true if clients were displayed successfully, false otherwise
      */
     boolean listAllClients();
+    
+    /**
+     * Displays client information and asks for confirmation.
+     * 
+     * @param client the client entity to display
+     * @return true if user confirms the information is correct, false otherwise
+     */
+    boolean displayClient(Client client);
 }
