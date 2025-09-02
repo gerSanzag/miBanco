@@ -46,23 +46,23 @@ public interface ClientView {
     /**
      * Updates client phone.
      * 
-     * @return true if phone was updated successfully, false otherwise
+     * @return Optional with Map containing update data (id and newPhone), or empty if update was cancelled
      */
-    boolean updateClientPhone();
+    Optional<Map<String, String>> updateClientPhone();
     
     /**
      * Updates client address.
      * 
-     * @return true if address was updated successfully, false otherwise
+     * @return Optional with Map containing update data (id and newValue), or empty if update was cancelled
      */
-    boolean updateClientAddress();
+    Optional<Map<String, String>> updateClientAddress();
     
     /**
      * Updates multiple client fields simultaneously.
      * 
-     * @return true if fields were updated successfully, false otherwise
+     * @return Optional with Map containing update data for multiple fields, or empty if update was cancelled
      */
-    boolean updateClientMultipleFields();
+    Optional<Map<String, Object>> updateClientMultipleFields();
     
     /**
      * Deletes a client.

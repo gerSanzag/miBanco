@@ -8,8 +8,11 @@ import com.mibanco.model.Client;
 import com.mibanco.service.ClientService;
 import com.mibanco.view.ClientView;
 
-import java.util.Map;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.function.Supplier;
+import java.util.function.BiFunction;
 
 /**
  * Implementation of ClientController
@@ -70,18 +73,36 @@ public class ClientControllerImpl implements ClientController {
     
     @Override
     public boolean updateClientEmail() {
-        return clientView.updateClientEmail()
+        return updateClientField(
+            () -> clientView.updateClientEmail(),
+            (id, email) -> clientService.updateClientEmail(id, email)
+        );
+    }
+    
+    /**
+     * Generic method for updating client fields.
+     * Handles the common logic for all field updates (email, phone, address, etc.)
+     * 
+     * @param viewMethod Supplier that captures update data from view
+     * @param serviceMethod Function that calls the appropriate service method
+     * @return true if update was successful, false otherwise
+     */
+    private boolean updateClientField(
+            Supplier<Optional<Map<String, String>>> viewMethod,
+            BiFunction<Long, Optional<String>, Optional<ClientDTO>> serviceMethod
+    ) {
+        return viewMethod.get()
             .map(updateData -> {
                 String idStr = updateData.get("id");
-                String newEmail = updateData.get("newEmail");
+                String newValue = updateData.get("newValue");
                 
                 try {
                     Long id = Long.parseLong(idStr);
                     
-                    // Llamar método privado para procesar la actualización
-                    return Optional.of(processClientUpdate(id, newEmail))
+                    // Call private method to process client update
+                    return Optional.of(processClientUpdate(id, newValue))
                         .filter(confirmed -> confirmed)
-                        .flatMap(confirmed -> clientService.updateClientEmail(id, Optional.of(newEmail)))
+                        .flatMap(confirmed -> serviceMethod.apply(id, Optional.of(newValue)))
                         .map(clientDto -> {
                             Client clientEntity = clientMapper.toEntityDirect(clientDto).orElse(null);
                             if (clientEntity != null) {
@@ -99,14 +120,14 @@ public class ClientControllerImpl implements ClientController {
     }
     
     /**
-     * Método privado que procesa la actualización del cliente.
-     * Busca el cliente por ID y pide confirmación antes de proceder.
+     * Private method that processes client update.
+     * Searches for client by ID and asks for confirmation before proceeding.
      * 
-     * @param id ID del cliente a actualizar
-     * @param newEmail nuevo email para el cliente
-     * @return true si el usuario confirma, false en caso contrario
+     * @param id ID of the client to update
+     * @param newValue new value for the client field
+     * @return true if user confirms, false otherwise
      */
-    private boolean processClientUpdate(Long id, String newEmail) {
+    private boolean processClientUpdate(Long id, String newValue) {
         return clientService.getClientById(Optional.of(id))
             .flatMap(clientDto -> clientMapper.toEntityDirect(clientDto))
             .map(clientEntity -> clientView.displayClient(clientEntity))
@@ -115,29 +136,59 @@ public class ClientControllerImpl implements ClientController {
     
     @Override
     public boolean updateClientPhone() {
-        // TODO: Implement real logic
-        // 1. Get client ID and new phone from view
-        // 2. Call clientService.updateClientPhone()
-        // 3. Handle result
-        return true; // Hardcoded for now
+        return updateClientField(
+            () -> clientView.updateClientPhone(),
+            (id, phone) -> clientService.updateClientPhone(id, phone)
+        );
     }
     
     @Override
     public boolean updateClientAddress() {
-        // TODO: Implement real logic
-        // 1. Get client ID and new address from view
-        // 2. Call clientService.updateClientAddress()
-        // 3. Handle result
-        return true; // Hardcoded for now
+        return updateClientField(
+            () -> clientView.updateClientAddress(),
+            (id, address) -> clientService.updateClientAddress(id, address)
+        );
     }
     
     @Override
     public boolean updateClientMultipleFields() {
-        // TODO: Implement real logic
-        // 1. Get client ID and multiple fields from view
-        // 2. Call clientService.updateMultipleFields()
-        // 3. Handle result
-        return true; // Hardcoded for now
+        return clientView.updateClientMultipleFields()
+            .map(updates -> {
+                try {
+                    // Extract client ID from the updates map
+                    Object idObj = updates.get("id");
+                    if (idObj == null) {
+                        return false;
+                    }
+                    
+                    Long id;
+                    if (idObj instanceof Long) {
+                        id = (Long) idObj;
+                    } else if (idObj instanceof String) {
+                        id = Long.parseLong((String) idObj);
+                    } else {
+                        return false;
+                    }
+                    
+                    // Remove ID from updates before sending to service
+                    Map<String, Object> serviceUpdates = new HashMap<>(updates);
+                    serviceUpdates.remove("id");
+                    
+                    return clientService.updateMultipleFields(id, serviceUpdates)
+                        .map(clientDto -> {
+                            Client clientEntity = clientMapper.toEntityDirect(clientDto).orElse(null);
+                            if (clientEntity != null) {
+                                clientView.displayClient(clientEntity);
+                            }
+                            return true;
+                        })
+                        .orElse(false);
+                    
+                } catch (Exception e) {
+                    return false;
+                }
+            })
+            .orElse(false);
     }
     
     @Override

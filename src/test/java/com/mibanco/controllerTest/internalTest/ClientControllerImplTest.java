@@ -187,8 +187,7 @@ class ClientControllerImplTest {
         // Given - All methods are hardcoded to return true for now
         
         // When & Then
-        // searchClient and updateClientEmail now have real logic, so we test them separately
-        assertThat(controller.updateClientPhone()).isTrue();
+        // searchClient, updateClientEmail, and updateClientPhone now have real logic, so we test them separately
         assertThat(controller.updateClientAddress()).isTrue();
         assertThat(controller.updateClientMultipleFields()).isTrue();
         assertThat(controller.deleteClient()).isTrue();
@@ -457,6 +456,84 @@ class ClientControllerImplTest {
         verify(mockClientService).getClientById(Optional.of(123L));
         verify(mockClientView).displayClient(any());
         verify(mockClientService).updateClientEmail(123L, Optional.of("nuevo@test.com"));
+    }
+    
+    // ===== TESTS FOR updateClientPhone =====
+    
+    @Test
+    @DisplayName("Should update client phone successfully with confirmation")
+    void shouldUpdateClientPhoneSuccessfullyWithConfirmation() {
+        // Given - Valid update data and confirmation flow
+        Map<String, String> updateData = Map.of("id", "123", "newPhone", "987654321");
+        ClientDTO updatedClient = ClientDTO.builder()
+            .id(123L)
+            .firstName("John")
+            .lastName("Doe")
+            .phone("987654321")
+            .build();
+        
+        when(mockClientView.updateClientPhone()).thenReturn(Optional.of(updateData));
+        when(mockClientService.updateClientPhone(123L, Optional.of("987654321")))
+            .thenReturn(Optional.of(updatedClient));
+        
+        // When
+        boolean result = controller.updateClientPhone();
+        
+        // Then
+        assertThat(result).isTrue();
+        verify(mockClientView).updateClientPhone();
+        verify(mockClientService).updateClientPhone(123L, Optional.of("987654321"));
+    }
+    
+    @Test
+    @DisplayName("Should return false when updateClientPhone is cancelled")
+    void shouldReturnFalseWhenUpdateClientPhoneIsCancelled() {
+        // Given - Update is cancelled (returns empty)
+        when(mockClientView.updateClientPhone()).thenReturn(Optional.empty());
+        
+        // When
+        boolean result = controller.updateClientPhone();
+        
+        // Then
+        assertThat(result).isFalse();
+        verify(mockClientView).updateClientPhone();
+        verify(mockClientService, never()).updateClientPhone(any(), any());
+    }
+    
+    @Test
+    @DisplayName("Should return false when NumberFormatException occurs in updateClientPhone")
+    void shouldReturnFalseWhenNumberFormatExceptionOccursInUpdateClientPhone() {
+        // Given - Invalid ID format that will cause NumberFormatException
+        Map<String, String> updateData = Map.of("id", "abc", "newPhone", "987654321");
+        
+        when(mockClientView.updateClientPhone()).thenReturn(Optional.of(updateData));
+        
+        // When
+        boolean result = controller.updateClientPhone();
+        
+        // Then
+        assertThat(result).isFalse();
+        verify(mockClientView).updateClientPhone();
+        verify(mockClientService, never()).updateClientPhone(any(), any());
+    }
+    
+    @Test
+    @DisplayName("Should return false when service update fails in updateClientPhone")
+    void shouldReturnFalseWhenServiceUpdateFailsInUpdateClientPhone() {
+        // Given - Valid update data but service update fails
+        Map<String, String> updateData = Map.of("id", "123", "newPhone", "987654321");
+        
+        when(mockClientView.updateClientPhone()).thenReturn(Optional.of(updateData));
+        when(mockClientService.updateClientPhone(123L, Optional.of("987654321")))
+            .thenReturn(Optional.empty()); // Service update fails
+        
+        // When
+        boolean result = controller.updateClientPhone();
+        
+        // Then
+        assertThat(result).isFalse();
+        verify(mockClientView).updateClientPhone();
+        verify(mockClientService).updateClientPhone(123L, Optional.of("987654321"));
     }
     
 }

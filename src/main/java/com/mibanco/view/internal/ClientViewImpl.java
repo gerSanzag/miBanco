@@ -274,28 +274,62 @@ public class ClientViewImpl implements ClientView {
         
         try {
             Long id = Long.parseLong(idInput);
-            
-            return Optional.of(newEmail)
-                .filter(email -> email != null && !email.trim().isEmpty())
-                .map(email -> {
-                    showMessage.accept("");
-                    showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
-                    showMessage.accept("ID del cliente: " + id);
-                    showMessage.accept("Nuevo email: " + email);
-                    
-                    return captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
-                })
-                .filter(confirm -> "s".equalsIgnoreCase(confirm))
-                .map(confirm -> {
-                    Map<String, String> updateData = Map.of("id", id.toString(), "newEmail", newEmail);
-                    showMessage.accept("Datos de actualización capturados exitosamente.");
-                    return updateData;
-                })
-                .map(updateData -> Optional.of(updateData))
-                .orElseGet(() -> {
-                    showMessage.accept("Error: El email no puede estar vacío o la actualización fue cancelada.");
-                    return Optional.empty();
-                });
+            return updateClientFieldGeneric(id, newEmail, "email");
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Generic method for updating client fields.
+     * Handles the common logic for validation, confirmation and data return.
+     * Receives data already captured by the specific methods.
+     * 
+     * @param id Client ID already captured and validated
+     * @param newValue New field value already captured
+     * @param fieldDescription Field description for user messages (e.g., "email", "teléfono", "dirección")
+     * @return Optional with Map containing update data (id and newValue), or empty if update was cancelled
+     */
+    private Optional<Map<String, String>> updateClientFieldGeneric(
+            Long id,
+            String newValue,
+            String fieldDescription
+    ) {
+        return Optional.of(newValue)
+            .filter(value -> value != null && !value.trim().isEmpty())
+            .map(value -> {
+                showMessage.accept("");
+                showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
+                showMessage.accept("ID del cliente: " + id);
+                showMessage.accept("Nuevo " + fieldDescription + ": " + value);
+                
+                return captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
+            })
+            .filter(confirm -> "s".equalsIgnoreCase(confirm))
+            .map(confirm -> {
+                Map<String, String> updateData = Map.of("id", id.toString(), "newValue", newValue);
+                showMessage.accept("Datos de actualización capturados exitosamente.");
+                return updateData;
+            })
+            .map(updateData -> Optional.of(updateData))
+            .orElseGet(() -> {
+                showMessage.accept("Error: El " + fieldDescription + " no puede estar vacío o la actualización fue cancelada.");
+                return Optional.empty();
+            });
+    }
+    
+    @Override
+    public Optional<Map<String, String>> updateClientPhone() {
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR TELÉFONO DEL CLIENTE ===");
+        
+        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
+        String newPhone = captureStringInput("Ingresa el nuevo teléfono: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            return updateClientFieldGeneric(id, newPhone, "teléfono");
         } catch (NumberFormatException e) {
             showMessage.accept("Error: El ID debe ser un número válido.");
             return Optional.empty();
@@ -303,21 +337,92 @@ public class ClientViewImpl implements ClientView {
     }
     
     @Override
-    public boolean updateClientPhone() {
-        showMessage.accept("Actualizar Teléfono - En desarrollo");
-        return true;
+    public Optional<Map<String, String>> updateClientAddress() {
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR DIRECCIÓN DEL CLIENTE ===");
+        
+        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
+        String newAddress = captureStringInput("Ingresa la nueva dirección: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            return updateClientFieldGeneric(id, newAddress, "dirección");
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
     }
     
     @Override
-    public boolean updateClientAddress() {
-        showMessage.accept("Actualizar Dirección - En desarrollo");
-        return true;
-    }
-    
-    @Override
-    public boolean updateClientMultipleFields() {
-        showMessage.accept("Actualizar Múltiples Campos - En desarrollo");
-        return true;
+    public Optional<Map<String, Object>> updateClientMultipleFields() {
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR MÚLTIPLES CAMPOS DEL CLIENTE ===");
+        
+        // Capture client ID
+        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            
+            // Capture multiple fields
+            showMessage.accept("");
+            showMessage.accept("Ingresa los nuevos valores (deja vacío para no cambiar):");
+            
+            String newEmail = captureEmailInput("Nuevo email: ", showMessage, getInput);
+            String newPhone = captureStringInput("Nuevo teléfono: ", showMessage, getInput);
+            String newAddress = captureStringInput("Nueva dirección: ", showMessage, getInput);
+            
+            // Build updates map with only non-empty values
+            Map<String, Object> updates = new HashMap<>();
+            
+            if (newEmail != null && !newEmail.trim().isEmpty()) {
+                updates.put("email", newEmail);
+            }
+            if (newPhone != null && !newPhone.trim().isEmpty()) {
+                updates.put("phone", newPhone);
+            }
+            if (newAddress != null && !newAddress.trim().isEmpty()) {
+                updates.put("address", newAddress);
+            }
+            
+            // Add ID to the updates map for the controller
+            updates.put("id", id);
+            
+            // Check if any fields were provided
+            if (updates.isEmpty()) {
+                showMessage.accept("Error: No se proporcionaron campos para actualizar.");
+                return Optional.empty();
+            }
+            
+            // Show summary and ask for confirmation
+            showMessage.accept("");
+            showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
+            showMessage.accept("ID del cliente: " + id);
+            
+            updates.forEach((field, value) -> {
+                String fieldName = switch (field) {
+                    case "email" -> "Email";
+                    case "phone" -> "Teléfono";
+                    case "address" -> "Dirección";
+                    default -> field;
+                };
+                showMessage.accept("Nuevo " + fieldName + ": " + value);
+            });
+            
+            String confirm = captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
+            
+            if ("s".equalsIgnoreCase(confirm)) {
+                showMessage.accept("Datos de actualización múltiple capturados exitosamente.");
+                return Optional.of(updates);
+            } else {
+                showMessage.accept("Actualización cancelada por el usuario.");
+                return Optional.empty();
+            }
+            
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
     }
     
     @Override
