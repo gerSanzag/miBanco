@@ -10,8 +10,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.HashMap;
 import java.util.List;
-import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.Client;
+import com.mibanco.dto.ClientDTO;
 import com.mibanco.util.ReflectionUtil;
 import static com.mibanco.view.util.ValidationUtil.*;
 
@@ -22,7 +22,6 @@ import static com.mibanco.view.util.ValidationUtil.*;
  */
 public class ClientViewImpl implements ClientView {
     
-    private final ConsoleIO console;
     
     // Functional interfaces for console operations
     private final Consumer<String> showMessage;
@@ -34,8 +33,7 @@ public class ClientViewImpl implements ClientView {
      * @param console the console input/output interface
      */
     public ClientViewImpl(ConsoleIO console) {
-        this.console = console;
-        
+    
         // Initialize functional interfaces
         this.showMessage = console::writeOutput;
         this.getInput = console::readInput;
@@ -127,7 +125,10 @@ public class ClientViewImpl implements ClientView {
             case "3" -> showUpdateClientMenu();
             case "4" -> deleteClient();
             case "5" -> restoreClient();
-            case "6" -> listAllClients();
+            case "6" -> {
+                // TODO: This should be called from controller with actual client data
+                showMessage.accept("Listar Clientes - Función no disponible desde el menú");
+            }
             default -> showMessage.accept("Opción inválida. Por favor, elige una opción del 1 al 7.");
         }
     }
@@ -426,21 +427,55 @@ public class ClientViewImpl implements ClientView {
     }
     
     @Override
-    public boolean deleteClient() {
-        showMessage.accept("Eliminar Cliente - En desarrollo");
-        return true;
+    public Optional<String> deleteClient() {
+        showMessage.accept("");
+        showMessage.accept("=== ELIMINAR CLIENTE ===");
+        
+        // Capture client ID as string (controller will handle validation)
+        String idInput = captureStringInput("Ingresa el ID del cliente a eliminar: ", showMessage, getInput);
+        
+        if (idInput != null && !idInput.trim().isEmpty()) {
+            return Optional.of(idInput);
+        } else {
+            return Optional.empty();
+        }
     }
     
     @Override
-    public boolean restoreClient() {
-        showMessage.accept("Restaurar Cliente - En desarrollo");
-        return true;
+    public Optional<String> restoreClient() {
+        showMessage.accept("");
+        showMessage.accept("=== RESTAURAR CLIENTE ===");
+        
+        // Capture client ID as string (controller will handle validation)
+        String idInput = captureStringInput("Ingresa el ID del cliente a restaurar: ", showMessage, getInput);
+        
+        if (idInput != null && !idInput.trim().isEmpty()) {
+            return Optional.of(idInput);
+        } else {
+            return Optional.empty();
+        }
     }
     
     @Override
-    public boolean listAllClients() {
-        showMessage.accept("Listar Clientes - En desarrollo");
-        return true;
+    public void listAllClients(List<ClientDTO> clients) {
+        showMessage.accept("");
+        showMessage.accept("=== LISTA DE CLIENTES ===");
+        
+        if (clients == null || clients.isEmpty()) {
+            showMessage.accept("No hay clientes para mostrar.");
+            return;
+        }
+        
+        // Usar forEach con lambda (Consumer implícito)
+        clients.forEach(client -> {
+            showMessage.accept("ID: " + client.getId() + 
+                             " - Nombre: " + client.getFirstName() + " " + client.getLastName() +
+                             " - DNI: " + client.getDni() +
+                             " - Email: " + client.getEmail());
+        });
+        
+        showMessage.accept("");
+        showMessage.accept("Total de clientes: " + clients.size());
     }
     
     // Helper methods for data capture and validation
@@ -504,5 +539,10 @@ public class ClientViewImpl implements ClientView {
         
         String confirm = captureStringInput("¿Los datos mostrados son correctos? (s/n): ", showMessage, getInput);
         return "s".equalsIgnoreCase(confirm);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showMessage.accept(message);
     }
 }

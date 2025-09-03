@@ -99,8 +99,8 @@ public class ClientControllerImpl implements ClientController {
                 try {
                     Long id = Long.parseLong(idStr);
                     
-                    // Call private method to process client update
-                    return Optional.of(processClientUpdate(id, newValue))
+                                    // Call private method to show client and get confirmation
+                return Optional.of(showClientAndConfirm(id, "UPDATE"))
                         .filter(confirmed -> confirmed)
                         .flatMap(confirmed -> serviceMethod.apply(id, Optional.of(newValue)))
                         .map(clientDto -> {
@@ -120,14 +120,14 @@ public class ClientControllerImpl implements ClientController {
     }
     
     /**
-     * Private method that processes client update.
-     * Searches for client by ID and asks for confirmation before proceeding.
+     * Generic method that shows client information and asks for user confirmation.
+     * Can be used for any operation that requires showing client data and getting user approval.
      * 
-     * @param id ID of the client to update
-     * @param newValue new value for the client field
-     * @return true if user confirms, false otherwise
+     * @param id ID of the client to show and confirm
+     * @param operationDescription description of the operation for context (e.g., "UPDATE", "DELETE")
+     * @return true if user confirms the operation, false otherwise
      */
-    private boolean processClientUpdate(Long id, String newValue) {
+    private boolean showClientAndConfirm(Long id, String operationDescription) {
         return clientService.getClientById(Optional.of(id))
             .flatMap(clientDto -> clientMapper.toEntityDirect(clientDto))
             .map(clientEntity -> clientView.displayClient(clientEntity))
@@ -191,30 +191,88 @@ public class ClientControllerImpl implements ClientController {
             .orElse(false);
     }
     
-    @Override
+        @Override
     public boolean deleteClient() {
-        // TODO: Implement real logic
-        // 1. Get client ID from view
-        // 2. Call clientService.deleteClient()
-        // 3. Handle result
-        return true; // Hardcoded for now
+        return clientView.deleteClient()
+            .map(idStr -> {
+                try {
+                    Long id = Long.parseLong(idStr);
+                    
+                    // Show client and ask for confirmation (using existing pattern)
+                    boolean confirmed = showClientAndConfirm(id, "DELETE");
+                    
+                    if (confirmed) {
+                        // Call service to delete client
+                        boolean deleted = clientService.deleteClient(Optional.of(id));
+                        
+                        if (deleted) {
+                            clientView.showMessage("Cliente eliminado exitosamente.");
+                        } else {
+                            clientView.showMessage("Error: No se pudo eliminar el cliente.");
+                        }
+                        
+                        return deleted;
+                    } else {
+                        clientView.showMessage("Eliminación cancelada por el usuario.");
+                        return false;
+                    }
+                    
+                } catch (NumberFormatException e) {
+                    clientView.showMessage("Error: ID de cliente inválido.");
+                    return false;
+                }
+            })
+            .orElse(false);
     }
     
     @Override
     public boolean restoreClient() {
-        // TODO: Implement real logic
-        // 1. Get client ID from view
-        // 2. Call clientService.restoreClient()
-        // 3. Handle result
-        return true; // Hardcoded for now
+        return clientView.restoreClient()
+            .map(idStr -> {
+                try {
+                    Long id = Long.parseLong(idStr);
+                    
+                    // Show client and ask for confirmation (using existing pattern)
+                    boolean confirmed = showClientAndConfirm(id, "RESTORE");
+                    
+                    if (confirmed) {
+                        // Call service to restore client
+                        Optional<ClientDTO> restoredClient = clientService.restoreClient(Optional.of(id));
+                        
+                        if (restoredClient.isPresent()) {
+                            clientView.showMessage("Cliente restaurado exitosamente.");
+                            // Show restored client information
+                            Client clientEntity = clientMapper.toEntityDirect(restoredClient.get()).orElse(null);
+                            if (clientEntity != null) {
+                                clientView.displayClient(clientEntity);
+                            }
+                            return true;
+                        } else {
+                            clientView.showMessage("Error: No se pudo restaurar el cliente.");
+                            return false;
+                        }
+                    } else {
+                        clientView.showMessage("Restauración cancelada por el usuario.");
+                        return false;
+                    }
+                    
+                } catch (NumberFormatException e) {
+                    clientView.showMessage("Error: ID de cliente inválido.");
+                    return false;
+                }
+            })
+            .orElse(false);
     }
     
     @Override
     public boolean listAllClients() {
-        // TODO: Implement real logic
-        // 1. Call clientService.getAllClients()
-        // 2. Display results through view
-        return true; // Hardcoded for now
+        return clientService.getAllClients()
+            .map(clientList -> {
+                // Call view to display the client list
+                clientView.listAllClients(clientList);
+                return true;
+            })
+            .orElse(false);
     }
     
     @Override

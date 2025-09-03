@@ -2,6 +2,7 @@ package com.mibanco.view;
 
 import java.util.Optional;
 import java.util.Map;
+import java.util.List;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.model.Client;
 
@@ -67,23 +68,23 @@ public interface ClientView {
     /**
      * Deletes a client.
      * 
-     * @return true if client was deleted successfully, false otherwise
+     * @return Optional with client ID as string, or empty if deletion was cancelled
      */
-    boolean deleteClient();
+    Optional<String> deleteClient();
     
     /**
      * Restores a previously deleted client.
      * 
-     * @return true if client was restored successfully, false otherwise
+     * @return Optional with client ID as string, or empty if restoration was cancelled
      */
-    boolean restoreClient();
+    Optional<String> restoreClient();
     
     /**
      * Lists all clients.
      * 
-     * @return true if clients were displayed successfully, false otherwise
+     * @param clients list of client DTOs to display
      */
-    boolean listAllClients();
+    void listAllClients(List<ClientDTO> clients);
     
     /**
      * Displays client information and asks for confirmation.
@@ -92,4 +93,10 @@ public interface ClientView {
      * @return true if user confirms the information is correct, false otherwise
      */
     boolean displayClient(Client client);
+
+    /**
+     * Shows a message to the user
+     * @param message the message to display
+     */
+    void showMessage(String message);
 }
