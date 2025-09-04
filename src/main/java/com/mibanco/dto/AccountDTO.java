@@ -23,7 +23,6 @@ public class AccountDTO {
     AccountType type;            // tipo
     @NoRequest(reason = "Set automatically when creating") // Se establece automáticamente al crear
     LocalDateTime creationDate;  // fechaCreacion
-    @NoRequest(reason = "Set automatically when creating and never changes") // Se establece automáticamente al crear y nunca cambia
     BigDecimal initialBalance;   // saldoInicial
     @NoRequest(reason = "Initialized equal to initialBalance and only changes through transactions") // Se inicializa igual a saldoInicial y solo cambia por transacciones
     BigDecimal balance;          // saldo

@@ -3,6 +3,7 @@ package com.mibanco.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mibanco.model.enums.AccountType;
+import com.mibanco.util.ReflectionUtil.NoRequest;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,12 +21,16 @@ import lombok.Value;
 @Builder
 public class Account implements Identifiable {
     
+    @NoRequest(reason = "Set automatically in repository")
     String accountNumber;    // numeroCuenta
     Client holder;           // titular
     AccountType type;        // tipo
+    @NoRequest(reason = "Set automatically when creating")
     LocalDateTime creationDate;  // fechaCreacion
     BigDecimal initialBalance;   // saldoInicial
+    @NoRequest(reason = "Initialized equal to initialBalance and only changes through transactions")
     BigDecimal balance;      // saldo
+    @NoRequest(reason = "Set by default as active")
     boolean active;          // activa
     
     @JsonCreator

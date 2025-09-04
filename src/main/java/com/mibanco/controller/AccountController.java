@@ -18,12 +18,7 @@ public interface AccountController {
      */
     boolean searchAccount();
     
-    /**
-     * Searches for an account by ID or account number
-     * @return true if account was found and displayed, false otherwise
-     */
-    boolean searchAccount();
-    
+   
     /**
      * Updates account's balance
      * @return true if balance was updated successfully, false otherwise

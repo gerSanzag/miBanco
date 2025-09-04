@@ -66,7 +66,7 @@ class TransactionRepositoryImpl extends BaseRepositoryImpl<Transaction, Long, Tr
     
     
     /**
-     * ✅ Gets configuration for this repository
+     * Gets configuration for this repository
      * @return Map with configuration (path, class, ID extractor)
      */
     @Override
@@ -79,7 +79,7 @@ class TransactionRepositoryImpl extends BaseRepositoryImpl<Transaction, Long, Tr
     }
     
     /**
-     * ✅ Creates a new transaction with automatic ID
+     * Creates a new transaction with automatic ID
      * Uses DTOs to maintain entity immutability
      * Pure functional approach with Optional
      * @param transaction Transaction to create

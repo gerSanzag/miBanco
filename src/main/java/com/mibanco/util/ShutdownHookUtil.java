@@ -19,7 +19,7 @@ public class ShutdownHookUtil {
     public static void registerShutdownHook() {
         if (hookRegistered.compareAndSet(false, true)) {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("🔄 Saving data before closing the application...");
+                System.out.println("Saving data before closing the application...");
                 
                 try {
                     // Get instance of repository factory
@@ -31,13 +31,13 @@ public class ShutdownHookUtil {
                     factory.getCardRepository().saveData();
                     factory.getTransactionRepository().saveData();
                     
-                    System.out.println("✅ Data saved successfully");
+                    System.out.println("Data saved successfully");
                 } catch (Exception e) {
-                    System.err.println("❌ Error saving data during shutdown: " + e.getMessage());
+                    System.err.println("Error saving data during shutdown: " + e.getMessage());
                 }
             }, "ShutdownHook-Save"));
             
-            System.out.println("🔧 Shutdown hook registered for automatic saving");
+            System.out.println("Shutdown hook registered for automatic saving");
         }
     }
     
