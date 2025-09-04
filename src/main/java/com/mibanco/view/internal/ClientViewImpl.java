@@ -5,7 +5,6 @@ import com.mibanco.view.ConsoleIO;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.HashMap;
@@ -40,45 +39,37 @@ public class ClientViewImpl implements ClientView {
     }
     
     /**
-     * Shows the main client management menu and handles user interaction.
+     * Shows the main client management menu.
+     * Returns the selected option for the controller to handle.
+     * 
+     * @return Optional with the selected menu option, or empty if user wants to exit
      */
     @Override
-    public void showClientMenu() {
-        AtomicBoolean running = new AtomicBoolean(true);
+    public Optional<String> showClientMenu() {
+        showMainClientMenu();
+        String option = getInput.get();
         
-        while (running.get()) {
-            showMainClientMenu();
-            String option = getInput.get();
-            
-            // Functional approach to option processing
-            Optional.of(option)
-                .filter("7"::equals)
-                .ifPresentOrElse(
-                    exit -> running.set(false),
-                    () -> processMainClientMenuOption(option)
-                );
-        }
+        // Return empty if user wants to exit (option "7")
+        return Optional.of(option)
+            .filter(opt -> !"7".equals(opt))
+            .or(() -> Optional.empty());
     }
     
     /**
-     * Shows the client update submenu and handles user interaction.
+     * Shows the client update submenu.
+     * Returns the selected option for the controller to handle.
+     * 
+     * @return Optional with the selected menu option, or empty if user wants to exit
      */
     @Override
-    public void showUpdateClientMenu() {
-        AtomicBoolean running = new AtomicBoolean(true);
+    public Optional<String> showUpdateClientMenu() {
+        showUpdateClientSubmenu();
+        String option = getInput.get();
         
-        while (running.get()) {
-            showUpdateClientSubmenu();
-            String option = getInput.get();
-            
-            // Functional approach to option processing
-            Optional.of(option)
-                .filter("5"::equals)
-                .ifPresentOrElse(
-                    exit -> running.set(false),
-                    () -> processUpdateClientMenuOption(option)
-                );
-        }
+        // Return empty if user wants to exit (option "5")
+        return Optional.of(option)
+            .filter(opt -> !"5".equals(opt))
+            .or(() -> Optional.empty());
     }
     
     /**
@@ -113,40 +104,6 @@ public class ClientViewImpl implements ClientView {
         showMessage.accept("Elige una opción:");
     }
     
-    /**
-     * Processes the selected main client menu option.
-     * 
-     * @param option the selected option
-     */
-    private void processMainClientMenuOption(String option) {
-        switch (option) {
-            case "1" -> captureDataClient();
-            case "2" -> searchClient();
-            case "3" -> showUpdateClientMenu();
-            case "4" -> deleteClient();
-            case "5" -> restoreClient();
-            case "6" -> {
-                // TODO: This should be called from controller with actual client data
-                showMessage.accept("Listar Clientes - Función no disponible desde el menú");
-            }
-            default -> showMessage.accept("Opción inválida. Por favor, elige una opción del 1 al 7.");
-        }
-    }
-    
-    /**
-     * Processes the selected update client menu option.
-     * 
-     * @param option the selected option
-     */
-    private void processUpdateClientMenuOption(String option) {
-        switch (option) {
-            case "1" -> updateClientEmail();
-            case "2" -> updateClientPhone();
-            case "3" -> updateClientAddress();
-            case "4" -> updateClientMultipleFields();
-            default -> showMessage.accept("Opción inválida. Por favor, elige una opción del 1 al 5.");
-        }
-    }
     
     // Implementation of client operations (placeholder methods for now)
     

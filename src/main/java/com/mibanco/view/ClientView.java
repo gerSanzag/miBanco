@@ -14,14 +14,20 @@ import com.mibanco.model.Client;
 public interface ClientView {
     
     /**
-     * Shows the main client management menu and handles user interaction.
+     * Shows the main client management menu.
+     * Returns the selected option for the controller to handle.
+     * 
+     * @return Optional with the selected menu option, or empty if user wants to exit
      */
-    void showClientMenu();
+    Optional<String> showClientMenu();
     
     /**
-     * Shows the client update submenu and handles user interaction.
+     * Shows the client update submenu.
+     * Returns the selected option for the controller to handle.
+     * 
+     * @return Optional with the selected menu option, or empty if user wants to exit
      */
-    void showUpdateClientMenu();
+    Optional<String> showUpdateClientMenu();
     
     /**
      * Captures client data for creating a new client.

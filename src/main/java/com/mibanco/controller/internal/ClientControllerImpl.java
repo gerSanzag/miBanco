@@ -11,6 +11,7 @@ import com.mibanco.view.ClientView;
 import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.function.BiFunction;
 
@@ -277,15 +278,101 @@ public class ClientControllerImpl implements ClientController {
     
     @Override
     public void showClientMenu() {
-        // TODO: Implement real logic
-        // 1. Call clientView.showClientMenu()
-        // 2. Handle menu navigation
+        // Functional approach to menu navigation
+        generateClientMenuLoop().run();
+    }
+    
+    /**
+     * Generates the client menu loop using functional approach.
+     * Handles navigation between menu options and delegates to appropriate controller methods.
+     * 
+     * @return Runnable representing the menu loop
+     */
+    private Runnable generateClientMenuLoop() {
+        return () -> {
+            AtomicBoolean running = new AtomicBoolean(true);
+            
+            while (running.get()) {
+                clientView.showClientMenu()
+                    .ifPresentOrElse(
+                        option -> processMainClientMenuOption(option, running),
+                        () -> running.set(false) // User wants to exit
+                    );
+            }
+        };
+    }
+    
+    /**
+     * Processes the selected main client menu option using functional approach.
+     * 
+     * @param option the selected option
+     * @param running the running state controller
+     */
+    private void processMainClientMenuOption(String option, AtomicBoolean running) {
+        // Functional approach to option processing using Map of actions
+        Map<String, Runnable> menuActions = Map.of(
+            "1", this::createClient,
+            "2", this::searchClient,
+            "3", this::showUpdateClientMenu,
+            "4", this::deleteClient,
+            "5", this::restoreClient,
+            "6", this::listAllClients
+        );
+        
+        Optional.of(option)
+            .map(menuActions::get)
+            .ifPresentOrElse(
+                Runnable::run,
+                () -> clientView.showMessage("Opción inválida. Por favor, elige una opción del 1 al 7.")
+            );
     }
     
     @Override
     public void showUpdateClientMenu() {
-        // TODO: Implement real logic
-        // 1. Call clientView.showUpdateClientMenu()
-        // 2. Handle submenu navigation
+        // Functional approach to update menu navigation
+        generateUpdateClientMenuLoop().run();
+    }
+    
+    /**
+     * Generates the update client menu loop using functional approach.
+     * Handles navigation between update menu options and delegates to appropriate controller methods.
+     * 
+     * @return Runnable representing the update menu loop
+     */
+    private Runnable generateUpdateClientMenuLoop() {
+        return () -> {
+            AtomicBoolean running = new AtomicBoolean(true);
+            
+            while (running.get()) {
+                clientView.showUpdateClientMenu()
+                    .ifPresentOrElse(
+                        option -> processUpdateClientMenuOption(option, running),
+                        () -> running.set(false) // User wants to exit
+                    );
+            }
+        };
+    }
+    
+    /**
+     * Processes the selected update client menu option using functional approach.
+     * 
+     * @param option the selected option
+     * @param running the running state controller
+     */
+    private void processUpdateClientMenuOption(String option, AtomicBoolean running) {
+        // Functional approach to option processing using Map of actions
+        Map<String, Runnable> updateMenuActions = Map.of(
+            "1", this::updateClientEmail,
+            "2", this::updateClientPhone,
+            "3", this::updateClientAddress,
+            "4", this::updateClientMultipleFields
+        );
+        
+        Optional.of(option)
+            .map(updateMenuActions::get)
+            .ifPresentOrElse(
+                Runnable::run,
+                () -> clientView.showMessage("Opción inválida. Por favor, elige una opción del 1 al 5.")
+            );
     }
 }
