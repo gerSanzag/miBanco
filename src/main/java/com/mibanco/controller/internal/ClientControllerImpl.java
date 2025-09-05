@@ -2,6 +2,7 @@ package com.mibanco.controller.internal;
 
 import com.mibanco.controller.ClientController;
 import com.mibanco.controller.util.ControllerValidationUtil;
+import com.mibanco.controller.util.ControllerUpdateUtil;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.dto.mappers.ClientMapper;
 import com.mibanco.model.Client;
@@ -12,8 +13,6 @@ import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
-import java.util.function.BiFunction;
 
 /**
  * Implementation of ClientController
@@ -74,50 +73,13 @@ public class ClientControllerImpl implements ClientController {
     
     @Override
     public boolean updateClientEmail() {
-        return updateClientField(
+        return ControllerUpdateUtil.updateEntityField(
             () -> clientView.updateClientEmail(),
-            (id, email) -> clientService.updateClientEmail(id, email)
+            (id, email) -> clientService.updateClientEmail(id, Optional.of(email)),
+            clientId -> clientService.getClientById(Optional.of(clientId)),
+            clientDto -> this.clientMapper.toEntityDirect(clientDto),
+            clientEntity -> clientView.displayClient(clientEntity)
         );
-    }
-    
-    /**
-     * Generic method for updating client fields.
-     * Handles the common logic for all field updates (email, phone, address, etc.)
-     * 
-     * @param viewMethod Supplier that captures update data from view
-     * @param serviceMethod Function that calls the appropriate service method
-     * @return true if update was successful, false otherwise
-     */
-    private boolean updateClientField(
-            Supplier<Optional<Map<String, String>>> viewMethod,
-            BiFunction<Long, Optional<String>, Optional<ClientDTO>> serviceMethod
-    ) {
-        return viewMethod.get()
-            .map(updateData -> {
-                String idStr = updateData.get("id");
-                String newValue = updateData.get("newValue");
-                
-                try {
-                    Long id = Long.parseLong(idStr);
-                    
-                                    // Call private method to show client and get confirmation
-                return Optional.of(showClientAndConfirm(id, "UPDATE"))
-                        .filter(confirmed -> confirmed)
-                        .flatMap(confirmed -> serviceMethod.apply(id, Optional.of(newValue)))
-                        .map(clientDto -> {
-                            Client clientEntity = clientMapper.toEntityDirect(clientDto).orElse(null);
-                            if (clientEntity != null) {
-                                clientView.displayClient(clientEntity);
-                            }
-                            return true;
-                        })
-                        .orElse(false);
-                    
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-            })
-            .orElse(false);
     }
     
     /**
@@ -137,17 +99,23 @@ public class ClientControllerImpl implements ClientController {
     
     @Override
     public boolean updateClientPhone() {
-        return updateClientField(
+        return ControllerUpdateUtil.updateEntityField(
             () -> clientView.updateClientPhone(),
-            (id, phone) -> clientService.updateClientPhone(id, phone)
+            (id, phone) -> clientService.updateClientPhone(id, Optional.of(phone)),
+            clientId -> clientService.getClientById(Optional.of(clientId)),
+            clientDto -> this.clientMapper.toEntityDirect(clientDto),
+            clientEntity -> clientView.displayClient(clientEntity)
         );
     }
     
     @Override
     public boolean updateClientAddress() {
-        return updateClientField(
+        return ControllerUpdateUtil.updateEntityField(
             () -> clientView.updateClientAddress(),
-            (id, address) -> clientService.updateClientAddress(id, address)
+            (id, address) -> clientService.updateClientAddress(id, Optional.of(address)),
+            clientId -> clientService.getClientById(Optional.of(clientId)),
+            clientDto -> this.clientMapper.toEntityDirect(clientDto),
+            clientEntity -> clientView.displayClient(clientEntity)
         );
     }
     

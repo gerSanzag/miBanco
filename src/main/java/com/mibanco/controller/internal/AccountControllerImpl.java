@@ -2,6 +2,7 @@ package com.mibanco.controller.internal;
 
 import com.mibanco.controller.AccountController;
 import com.mibanco.controller.util.ControllerValidationUtil;
+import com.mibanco.controller.util.ControllerUpdateUtil;
 import com.mibanco.dto.AccountDTO;
 import com.mibanco.dto.mappers.AccountMapper;
 import com.mibanco.dto.mappers.ClientMapper;
@@ -11,7 +12,6 @@ import com.mibanco.service.ClientService;
 import com.mibanco.view.AccountView;
 
 import java.util.Optional;
-import java.util.Map;
 
 /**
  * Implementation of AccountController
@@ -98,7 +98,7 @@ public class AccountControllerImpl implements AccountController {
     
     @Override
     public boolean updateAccountBalance() {
-        return updateAccountField(
+        return ControllerUpdateUtil.updateEntityField(
             () -> accountView.updateAccountBalance(),
             (id, newBalance) -> {
                 try {
@@ -107,68 +107,17 @@ public class AccountControllerImpl implements AccountController {
                 } catch (NumberFormatException e) {
                     return Optional.empty();
                 }
-            }
+            },
+            accountId -> accountService.getAccountByNumber(Optional.of(accountId)),
+            accountDto -> this.accountMapper.toEntityDirect(accountDto),
+            accountEntity -> accountView.displayAccount(accountEntity)
         );
     }
     
-    /**
-     * Generic method for updating account fields.
-     * Handles the common logic for all field updates (balance, status, holder, etc.)
-     * 
-     * @param viewMethod Supplier that captures update data from view
-     * @param serviceMethod Function that calls the appropriate service method
-     * @return true if update was successful, false otherwise
-     */
-    private boolean updateAccountField(
-            java.util.function.Supplier<Optional<Map<String, String>>> viewMethod,
-            java.util.function.BiFunction<Long, String, Optional<AccountDTO>> serviceMethod
-    ) {
-        return viewMethod.get()
-            .map(updateData -> {
-                String idStr = updateData.get("id");
-                String newValue = updateData.get("newValue");
-                
-                try {
-                    Long id = Long.parseLong(idStr);
-                    
-                    // Call private method to show account and get confirmation
-                    return Optional.of(showAccountAndConfirm(id, "UPDATE"))
-                            .filter(confirmed -> confirmed)
-                            .flatMap(confirmed -> serviceMethod.apply(id, newValue))
-                            .map(accountDto -> {
-                                Account accountEntity = this.accountMapper.toEntityDirect(accountDto).orElse(null);
-                                if (accountEntity != null) {
-                                    accountView.displayAccount(accountEntity);
-                                }
-                                return true;
-                            })
-                            .orElse(false);
-                    
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-            })
-            .orElse(false);
-    }
-    
-    /**
-     * Generic method that shows account information and asks for user confirmation.
-     * Can be used for any operation that requires showing account data and getting user approval.
-     * 
-     * @param id ID of the account to show and confirm
-     * @param operationDescription description of the operation for context (e.g., "UPDATE", "DELETE")
-     * @return true if user confirms the operation, false otherwise
-     */
-    private boolean showAccountAndConfirm(Long id, String operationDescription) {
-        return accountService.getAccountByNumber(Optional.of(id))
-            .flatMap(accountDto -> this.accountMapper.toEntityDirect(accountDto))
-            .map(accountEntity -> accountView.displayAccount(accountEntity))
-            .orElse(false);
-    }
     
     @Override
     public boolean updateAccountStatus() {
-        return updateAccountField(
+        return ControllerUpdateUtil.updateEntityField(
             () -> accountView.updateAccountStatus(),
             (id, newStatus) -> {
                 try {
@@ -177,13 +126,16 @@ public class AccountControllerImpl implements AccountController {
                 } catch (Exception e) {
                     return Optional.empty();
                 }
-            }
+            },
+            accountId -> accountService.getAccountByNumber(Optional.of(accountId)),
+            accountDto -> this.accountMapper.toEntityDirect(accountDto),
+            accountEntity -> accountView.displayAccount(accountEntity)
         );
     }
     
     @Override
     public boolean updateAccountHolder() {
-        return updateAccountField(
+        return ControllerUpdateUtil.updateEntityField(
             () -> accountView.updateAccountHolder(),
             (id, newHolderIdStr) -> {
                 try {
@@ -200,7 +152,10 @@ public class AccountControllerImpl implements AccountController {
                 } catch (NumberFormatException e) {
                     return Optional.empty();
                 }
-            }
+            },
+            accountId -> accountService.getAccountByNumber(Optional.of(accountId)),
+            accountDto -> this.accountMapper.toEntityDirect(accountDto),
+            accountEntity -> accountView.displayAccount(accountEntity)
         );
     }
     
