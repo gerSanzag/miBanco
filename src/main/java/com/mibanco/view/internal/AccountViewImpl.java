@@ -2,6 +2,7 @@ package com.mibanco.view.internal;
 
 import com.mibanco.view.AccountView;
 import com.mibanco.view.ConsoleIO;
+import com.mibanco.view.util.BaseView;
 import com.mibanco.model.Account;
 import com.mibanco.util.ReflectionUtil;
 import static com.mibanco.view.util.ValidationUtil.*;
@@ -19,11 +20,7 @@ import com.mibanco.dto.AccountDTO;
  * Handles user interaction for account operations through console input/output.
  * Uses functional programming approach with Optionals and lambdas.
  */
-public class AccountViewImpl implements AccountView {
-    
-    // Functional interfaces for console operations
-    private final Consumer<String> showMessage;
-    private final Supplier<String> getInput;
+public class AccountViewImpl extends BaseView implements AccountView {
     
     /**
      * Constructor that injects console dependency.
@@ -31,9 +28,7 @@ public class AccountViewImpl implements AccountView {
      * @param console the console input/output interface
      */
     public AccountViewImpl(ConsoleIO console) {
-        // Initialize functional interfaces
-        this.showMessage = console::writeOutput;
-        this.getInput = console::readInput;
+        super(console); // Pass console to BaseView
     }
     
     @Override
@@ -236,50 +231,18 @@ public class AccountViewImpl implements AccountView {
         
         try {
             Long id = Long.parseLong(idInput);
-            return updateAccountFieldGeneric(id, newBalance, "saldo");
+            return updateEntityFieldGeneric(
+                () -> Optional.of(Map.of("id", id.toString(), "newValue", newBalance)),
+                "saldo",
+                value -> value != null && !value.trim().isEmpty(),
+                id
+            );
         } catch (NumberFormatException e) {
             showMessage.accept("Error: El ID debe ser un número válido.");
             return Optional.empty();
         }
     }
     
-    /**
-     * Generic method for updating account fields.
-     * Handles the common logic for validation, confirmation and data return.
-     * Receives data already captured by the specific methods.
-     * 
-     * @param id Account ID already captured and validated
-     * @param newValue New field value already captured
-     * @param fieldDescription Field description for user messages (e.g., "saldo", "estado", "titular")
-     * @return Optional with Map containing update data (id and newValue), or empty if update was cancelled
-     */
-    private Optional<Map<String, String>> updateAccountFieldGeneric(
-            Long id,
-            String newValue,
-            String fieldDescription
-    ) {
-        return Optional.of(newValue)
-            .filter(value -> value != null && !value.trim().isEmpty())
-            .map(value -> {
-                showMessage.accept("");
-                showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
-                showMessage.accept("ID de la cuenta: " + id);
-                showMessage.accept("Nuevo " + fieldDescription + ": " + value);
-                
-                return captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
-            })
-            .filter(confirm -> "s".equalsIgnoreCase(confirm))
-            .map(confirm -> {
-                Map<String, String> updateData = Map.of("id", id.toString(), "newValue", newValue);
-                showMessage.accept("Datos de actualización capturados exitosamente.");
-                return updateData;
-            })
-            .map(updateData -> Optional.of(updateData))
-            .orElseGet(() -> {
-                showMessage.accept("Error: El " + fieldDescription + " no puede estar vacío o la actualización fue cancelada.");
-                return Optional.empty();
-            });
-    }
     
     @Override
     public Optional<Map<String, String>> updateAccountStatus() {
@@ -291,7 +254,12 @@ public class AccountViewImpl implements AccountView {
         
         try {
             Long id = Long.parseLong(idInput);
-            return updateAccountFieldGeneric(id, newStatus, "estado");
+            return updateEntityFieldGeneric(
+                () -> Optional.of(Map.of("id", id.toString(), "newValue", newStatus)),
+                "estado",
+                value -> value != null && !value.trim().isEmpty(),
+                id
+            );
         } catch (NumberFormatException e) {
             showMessage.accept("Error: El ID debe ser un número válido.");
             return Optional.empty();
@@ -339,7 +307,12 @@ public class AccountViewImpl implements AccountView {
         try {
             Long id = Long.parseLong(idInput);
             Long.parseLong(newHolderId); // Validate that holderId is a valid number
-            return updateAccountFieldGeneric(id, newHolderId, "ID del titular");
+            return updateEntityFieldGeneric(
+                () -> Optional.of(Map.of("id", id.toString(), "newValue", newHolderId)),
+                "ID del titular",
+                value -> value != null && !value.trim().isEmpty(),
+                id
+            );
         } catch (NumberFormatException e) {
             showMessage.accept("Error: Los IDs deben ser números válidos.");
             return Optional.empty();

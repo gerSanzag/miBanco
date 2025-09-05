@@ -2,11 +2,10 @@ package com.mibanco.view.internal;
 
 import com.mibanco.view.ClientView;
 import com.mibanco.view.ConsoleIO;
+import com.mibanco.view.util.BaseView;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.HashMap;
 import java.util.List;
 import com.mibanco.model.Client;
@@ -19,12 +18,7 @@ import static com.mibanco.view.util.ValidationUtil.*;
  * Handles user interaction for client operations through console input/output.
  * Uses functional programming approach with Optionals and lambdas.
  */
-public class ClientViewImpl implements ClientView {
-    
-    
-    // Functional interfaces for console operations
-    private final Consumer<String> showMessage;
-    private final Supplier<String> getInput;
+public class ClientViewImpl extends BaseView implements ClientView {
     
     /**
      * Constructor that injects console dependency.
@@ -32,10 +26,7 @@ public class ClientViewImpl implements ClientView {
      * @param console the console input/output interface
      */
     public ClientViewImpl(ConsoleIO console) {
-    
-        // Initialize functional interfaces
-        this.showMessage = console::writeOutput;
-        this.getInput = console::readInput;
+        super(console); // Pass console to BaseView
     }
     
     /**
@@ -232,50 +223,18 @@ public class ClientViewImpl implements ClientView {
         
         try {
             Long id = Long.parseLong(idInput);
-            return updateClientFieldGeneric(id, newEmail, "email");
+            return updateEntityFieldGeneric(
+                () -> Optional.of(Map.of("id", id.toString(), "newValue", newEmail)),
+                "email",
+                value -> value != null && !value.trim().isEmpty(),
+                id
+            );
         } catch (NumberFormatException e) {
             showMessage.accept("Error: El ID debe ser un número válido.");
             return Optional.empty();
         }
     }
     
-    /**
-     * Generic method for updating client fields.
-     * Handles the common logic for validation, confirmation and data return.
-     * Receives data already captured by the specific methods.
-     * 
-     * @param id Client ID already captured and validated
-     * @param newValue New field value already captured
-     * @param fieldDescription Field description for user messages (e.g., "email", "teléfono", "dirección")
-     * @return Optional with Map containing update data (id and newValue), or empty if update was cancelled
-     */
-    private Optional<Map<String, String>> updateClientFieldGeneric(
-            Long id,
-            String newValue,
-            String fieldDescription
-    ) {
-        return Optional.of(newValue)
-            .filter(value -> value != null && !value.trim().isEmpty())
-            .map(value -> {
-                showMessage.accept("");
-                showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
-                showMessage.accept("ID del cliente: " + id);
-                showMessage.accept("Nuevo " + fieldDescription + ": " + value);
-                
-                return captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
-            })
-            .filter(confirm -> "s".equalsIgnoreCase(confirm))
-            .map(confirm -> {
-                Map<String, String> updateData = Map.of("id", id.toString(), "newValue", newValue);
-                showMessage.accept("Datos de actualización capturados exitosamente.");
-                return updateData;
-            })
-            .map(updateData -> Optional.of(updateData))
-            .orElseGet(() -> {
-                showMessage.accept("Error: El " + fieldDescription + " no puede estar vacío o la actualización fue cancelada.");
-                return Optional.empty();
-            });
-    }
     
     @Override
     public Optional<Map<String, String>> updateClientPhone() {
@@ -287,7 +246,12 @@ public class ClientViewImpl implements ClientView {
         
         try {
             Long id = Long.parseLong(idInput);
-            return updateClientFieldGeneric(id, newPhone, "teléfono");
+            return updateEntityFieldGeneric(
+                () -> Optional.of(Map.of("id", id.toString(), "newValue", newPhone)),
+                "teléfono",
+                value -> value != null && !value.trim().isEmpty(),
+                id
+            );
         } catch (NumberFormatException e) {
             showMessage.accept("Error: El ID debe ser un número válido.");
             return Optional.empty();
@@ -304,7 +268,12 @@ public class ClientViewImpl implements ClientView {
         
         try {
             Long id = Long.parseLong(idInput);
-            return updateClientFieldGeneric(id, newAddress, "dirección");
+            return updateEntityFieldGeneric(
+                () -> Optional.of(Map.of("id", id.toString(), "newValue", newAddress)),
+                "dirección",
+                value -> value != null && !value.trim().isEmpty(),
+                id
+            );
         } catch (NumberFormatException e) {
             showMessage.accept("Error: El ID debe ser un número válido.");
             return Optional.empty();
