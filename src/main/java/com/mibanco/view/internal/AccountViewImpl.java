@@ -228,17 +228,122 @@ public class AccountViewImpl implements AccountView {
     
     @Override
     public Optional<Map<String, String>> updateAccountBalance() {
-        return Optional.empty(); // TODO: Implement
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR SALDO DE LA CUENTA ===");
+        
+        String idInput = captureStringInput("Ingresa el ID de la cuenta: ", showMessage, getInput);
+        String newBalance = captureStringInput("Ingresa el nuevo saldo: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            return updateAccountFieldGeneric(id, newBalance, "saldo");
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Generic method for updating account fields.
+     * Handles the common logic for validation, confirmation and data return.
+     * Receives data already captured by the specific methods.
+     * 
+     * @param id Account ID already captured and validated
+     * @param newValue New field value already captured
+     * @param fieldDescription Field description for user messages (e.g., "saldo", "estado", "titular")
+     * @return Optional with Map containing update data (id and newValue), or empty if update was cancelled
+     */
+    private Optional<Map<String, String>> updateAccountFieldGeneric(
+            Long id,
+            String newValue,
+            String fieldDescription
+    ) {
+        return Optional.of(newValue)
+            .filter(value -> value != null && !value.trim().isEmpty())
+            .map(value -> {
+                showMessage.accept("");
+                showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
+                showMessage.accept("ID de la cuenta: " + id);
+                showMessage.accept("Nuevo " + fieldDescription + ": " + value);
+                
+                return captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
+            })
+            .filter(confirm -> "s".equalsIgnoreCase(confirm))
+            .map(confirm -> {
+                Map<String, String> updateData = Map.of("id", id.toString(), "newValue", newValue);
+                showMessage.accept("Datos de actualización capturados exitosamente.");
+                return updateData;
+            })
+            .map(updateData -> Optional.of(updateData))
+            .orElseGet(() -> {
+                showMessage.accept("Error: El " + fieldDescription + " no puede estar vacío o la actualización fue cancelada.");
+                return Optional.empty();
+            });
     }
     
     @Override
     public Optional<Map<String, String>> updateAccountStatus() {
-        return Optional.empty(); // TODO: Implement
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR ESTADO DE LA CUENTA ===");
+        
+        String idInput = captureStringInput("Ingresa el ID de la cuenta: ", showMessage, getInput);
+        String newStatus = captureAccountStatusInput("Ingresa el nuevo estado (1=activa, 0=inactiva): ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            return updateAccountFieldGeneric(id, newStatus, "estado");
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: El ID debe ser un número válido.");
+            return Optional.empty();
+        }
+    }
+    
+    /**
+     * Captures account status input with validation.
+     * 
+     * @param prompt the prompt to show to the user
+     * @param showMessage consumer to display messages
+     * @param getInput supplier to get user input
+     * @return the account status if valid, null if invalid
+     */
+    private String captureAccountStatusInput(String prompt, Consumer<String> showMessage, Supplier<String> getInput) {
+        String input = captureStringInput(prompt, showMessage, getInput);
+        
+        if (input != null && !input.trim().isEmpty()) {
+            // Validate numeric input
+            String status = switch (input.trim()) {
+                case "1" -> "true";
+                case "0" -> "false";
+                default -> null;
+            };
+            
+            if (status != null) {
+                return status;
+            } else {
+                showMessage.accept("Error: Estado inválido. Use 1 para activa o 0 para inactiva.");
+                return null;
+            }
+        }
+        
+        return input;
     }
     
     @Override
     public Optional<Map<String, String>> updateAccountHolder() {
-        return Optional.empty(); // TODO: Implement
+        showMessage.accept("");
+        showMessage.accept("=== ACTUALIZAR TITULAR DE LA CUENTA ===");
+        
+        String idInput = captureStringInput("Ingresa el ID de la cuenta: ", showMessage, getInput);
+        String newHolderId = captureStringInput("Ingresa el ID del nuevo titular: ", showMessage, getInput);
+        
+        try {
+            Long id = Long.parseLong(idInput);
+            Long.parseLong(newHolderId); // Validate that holderId is a valid number
+            return updateAccountFieldGeneric(id, newHolderId, "ID del titular");
+        } catch (NumberFormatException e) {
+            showMessage.accept("Error: Los IDs deben ser números válidos.");
+            return Optional.empty();
+        }
     }
     
     @Override
