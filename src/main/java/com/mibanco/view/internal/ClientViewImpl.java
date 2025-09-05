@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import com.mibanco.model.Client;
 import com.mibanco.dto.ClientDTO;
 import com.mibanco.util.ReflectionUtil;
@@ -100,72 +102,43 @@ public class ClientViewImpl extends BaseView implements ClientView {
     
     @Override
     public Optional<Map<String, String>> captureDataClient() {
-        showMessage.accept("");
-        showMessage.accept("=== CREAR NUEVO CLIENTE ===");
+        // Define field capture functions
+        Map<String, Supplier<String>> fieldCaptures = new HashMap<>();
+        fieldCaptures.put("firstName", () -> captureStringInput("Nombre: ", showMessage, getInput));
+        fieldCaptures.put("lastName", () -> captureStringInput("Apellido: ", showMessage, getInput));
+        fieldCaptures.put("dni", () -> captureStringInput("DNI: ", showMessage, getInput));
+        fieldCaptures.put("birthDate", () -> captureStringInput("Fecha de nacimiento (YYYY-MM-DD): ", showMessage, getInput));
+        fieldCaptures.put("email", () -> captureEmailInput("Email: ", showMessage, getInput));
+        fieldCaptures.put("phone", () -> captureStringInput("Teléfono: ", showMessage, getInput));
+        fieldCaptures.put("address", () -> captureStringInput("Dirección: ", showMessage, getInput));
         
-        try {
-            // Capture client data
-            String firstName = captureStringInput("Nombre: ", showMessage, getInput);
-            String lastName = captureStringInput("Apellido: ", showMessage, getInput);
-            String dni = captureStringInput("DNI: ", showMessage, getInput);
-            String birthDate = captureStringInput("Fecha de nacimiento (YYYY-MM-DD): ", showMessage, getInput);
-            String email = captureEmailInput("Email: ", showMessage, getInput);
-            String phone = captureStringInput("Teléfono: ", showMessage, getInput);
-            String address = captureStringInput("Dirección: ", showMessage, getInput);
-            
-            // No validation here - Controller will handle all validations
-            
-            // Show confirmation
-            showMessage.accept("");
-            showMessage.accept("=== RESUMEN DEL CLIENTE ===");
-            showMessage.accept("Nombre: " + firstName + " " + lastName);
-            showMessage.accept("DNI: " + dni);
-            showMessage.accept("Fecha de nacimiento: " + birthDate);
-            showMessage.accept("Email: " + email);
-            showMessage.accept("Teléfono: " + phone);
-            showMessage.accept("Dirección: " + address);
-            
-            // Ask for confirmation
-            String confirm = captureStringInput("¿Confirmar creación? (s/n): ", showMessage, getInput);
-            
-            if ("s".equalsIgnoreCase(confirm)) {
-                // Create Map with client data for the service using reflection
-                Map<String, String> clientData = createClientDataMap(firstName, lastName, dni, birthDate, email, phone, address);
-                
-                showMessage.accept("Datos capturados exitosamente.");
-                return Optional.of(clientData);
-            } else {
-                showMessage.accept("Creación cancelada.");
-                return Optional.empty();
-            }
-            
-        } catch (Exception e) {
-            showMessage.accept("Error al crear cliente: " + e.getMessage());
-            return Optional.empty();
-        }
+        // Define summary formatter
+        Function<Map<String, String>, String> summaryFormatter = data -> 
+            "Nombre: " + data.get("firstName") + " " + data.get("lastName") + "\n" +
+            "DNI: " + data.get("dni") + "\n" +
+            "Fecha de nacimiento: " + data.get("birthDate") + "\n" +
+            "Email: " + data.get("email") + "\n" +
+            "Teléfono: " + data.get("phone") + "\n" +
+            "Dirección: " + data.get("address");
+        
+        // Define data mapper
+        Function<Map<String, String>, Map<String, String>> dataMapper = data -> 
+            createClientDataMap(
+                data.get("firstName"), data.get("lastName"), data.get("dni"), 
+                data.get("birthDate"), data.get("email"), data.get("phone"), data.get("address")
+            );
+        
+        return captureEntityDataGeneric("cliente", fieldCaptures, summaryFormatter, dataMapper);
     }
     
     @Override
     public Optional<Map<String, String>> searchClient() {
-        showMessage.accept("");
-        showMessage.accept("=== BUSCAR CLIENTE ===");
-        showMessage.accept("1. Buscar por ID");
-        showMessage.accept("2. Buscar por DNI");
-        showMessage.accept("3. Volver al menú de clientes");
-        showMessage.accept("");
-        showMessage.accept("Elige una opción:");
+        // Define search options
+        Map<String, Supplier<Optional<Map<String, String>>>> searchOptions = new HashMap<>();
+        searchOptions.put("1", this::searchClientById);
+        searchOptions.put("2", this::searchClientByDni);
         
-        String option = getInput.get();
-        
-        return switch (option) {
-            case "1" -> searchClientById();
-            case "2" -> searchClientByDni();
-            case "3" -> Optional.empty(); // Return to menu
-            default -> {
-                showMessage.accept("Opción inválida. Por favor, elige una opción del 1 al 3.");
-                yield Optional.empty();
-            }
-        };
+        return searchEntityGeneric("cliente", searchOptions);
     }
     
     /**
@@ -174,21 +147,21 @@ public class ClientViewImpl extends BaseView implements ClientView {
      * @return Optional with search criteria (ID), or empty if search was cancelled
      */
     private Optional<Map<String, String>> searchClientById() {
-        showMessage.accept("");
-        showMessage.accept("=== BUSCAR CLIENTE POR ID ===");
-        
-        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
-        
-        try {
-            Long id = Long.parseLong(idInput);
-            showMessage.accept("Buscando cliente con ID: " + id);
-            
-            Map<String, String> searchCriteria = Map.of("searchType", "id", "searchValue", id.toString());
-            return Optional.of(searchCriteria);
-        } catch (NumberFormatException e) {
-            showMessage.accept("Error: El ID debe ser un número válido.");
-            return Optional.empty();
-        }
+        return searchByFieldGeneric(
+            "cliente",
+            "ID",
+            "Ingresa el ID del cliente: ",
+            "id",
+            value -> {
+                try {
+                    Long.parseLong(value);
+                    return true;
+                } catch (NumberFormatException e) {
+                    showMessage.accept("Error: El ID debe ser un número válido.");
+                    return false;
+                }
+            }
+        );
     }
     
     /**
@@ -197,20 +170,13 @@ public class ClientViewImpl extends BaseView implements ClientView {
      * @return Optional with search criteria (DNI), or empty if search was cancelled
      */
     private Optional<Map<String, String>> searchClientByDni() {
-        showMessage.accept("");
-        showMessage.accept("=== BUSCAR CLIENTE POR DNI ===");
-        
-        String dni = captureStringInput("Ingresa el DNI del cliente: ", showMessage, getInput);
-        
-        if (dni != null && !dni.trim().isEmpty()) {
-            showMessage.accept("Buscando cliente con DNI: " + dni);
-            
-            Map<String, String> searchCriteria = Map.of("searchType", "dni", "searchValue", dni);
-            return Optional.of(searchCriteria);
-        } else {
-            showMessage.accept("Error: El DNI no puede estar vacío.");
-            return Optional.empty();
-        }
+        return searchByFieldGeneric(
+            "cliente",
+            "DNI",
+            "Ingresa el DNI del cliente: ",
+            "dni",
+            value -> true // DNI validation can be added here if needed
+        );
     }
     
     @Override
@@ -282,126 +248,54 @@ public class ClientViewImpl extends BaseView implements ClientView {
     
     @Override
     public Optional<Map<String, Object>> updateClientMultipleFields() {
-        showMessage.accept("");
-        showMessage.accept("=== ACTUALIZAR MÚLTIPLES CAMPOS DEL CLIENTE ===");
+        // Define field capture functions
+        Map<String, Supplier<String>> fieldCaptures = new HashMap<>();
+        fieldCaptures.put("email", () -> captureEmailInput("Nuevo email: ", showMessage, getInput));
+        fieldCaptures.put("phone", () -> captureStringInput("Nuevo teléfono: ", showMessage, getInput));
+        fieldCaptures.put("address", () -> captureStringInput("Nueva dirección: ", showMessage, getInput));
         
-        // Capture client ID
-        String idInput = captureStringInput("Ingresa el ID del cliente: ", showMessage, getInput);
+        // Define field display names
+        Map<String, String> fieldDisplayNames = new HashMap<>();
+        fieldDisplayNames.put("email", "Email");
+        fieldDisplayNames.put("phone", "Teléfono");
+        fieldDisplayNames.put("address", "Dirección");
         
-        try {
-            Long id = Long.parseLong(idInput);
-            
-            // Capture multiple fields
-            showMessage.accept("");
-            showMessage.accept("Ingresa los nuevos valores (deja vacío para no cambiar):");
-            
-            String newEmail = captureEmailInput("Nuevo email: ", showMessage, getInput);
-            String newPhone = captureStringInput("Nuevo teléfono: ", showMessage, getInput);
-            String newAddress = captureStringInput("Nueva dirección: ", showMessage, getInput);
-            
-            // Build updates map with only non-empty values
-            Map<String, Object> updates = new HashMap<>();
-            
-            if (newEmail != null && !newEmail.trim().isEmpty()) {
-                updates.put("email", newEmail);
-            }
-            if (newPhone != null && !newPhone.trim().isEmpty()) {
-                updates.put("phone", newPhone);
-            }
-            if (newAddress != null && !newAddress.trim().isEmpty()) {
-                updates.put("address", newAddress);
-            }
-            
-            // Add ID to the updates map for the controller
-            updates.put("id", id);
-            
-            // Check if any fields were provided
-            if (updates.isEmpty()) {
-                showMessage.accept("Error: No se proporcionaron campos para actualizar.");
-                return Optional.empty();
-            }
-            
-            // Show summary and ask for confirmation
-            showMessage.accept("");
-            showMessage.accept("=== RESUMEN DE ACTUALIZACIÓN ===");
-            showMessage.accept("ID del cliente: " + id);
-            
-            updates.forEach((field, value) -> {
-                String fieldName = switch (field) {
-                    case "email" -> "Email";
-                    case "phone" -> "Teléfono";
-                    case "address" -> "Dirección";
-                    default -> field;
-                };
-                showMessage.accept("Nuevo " + fieldName + ": " + value);
-            });
-            
-            String confirm = captureStringInput("¿Confirmar actualización? (s/n): ", showMessage, getInput);
-            
-            if ("s".equalsIgnoreCase(confirm)) {
-                showMessage.accept("Datos de actualización múltiple capturados exitosamente.");
-                return Optional.of(updates);
-            } else {
-                showMessage.accept("Actualización cancelada por el usuario.");
-                return Optional.empty();
-            }
-            
-        } catch (NumberFormatException e) {
-            showMessage.accept("Error: El ID debe ser un número válido.");
-            return Optional.empty();
-        }
+        return updateMultipleFieldsGeneric(
+            "cliente",
+            "Ingresa el ID del cliente: ",
+            fieldCaptures,
+            fieldDisplayNames
+        );
     }
     
     @Override
     public Optional<String> deleteClient() {
-        showMessage.accept("");
-        showMessage.accept("=== ELIMINAR CLIENTE ===");
-        
-        // Capture client ID as string (controller will handle validation)
-        String idInput = captureStringInput("Ingresa el ID del cliente a eliminar: ", showMessage, getInput);
-        
-        if (idInput != null && !idInput.trim().isEmpty()) {
-            return Optional.of(idInput);
-        } else {
-            return Optional.empty();
-        }
+        return captureEntityIdGeneric(
+            "ELIMINAR",
+            "cliente",
+            "Ingresa el ID del cliente a eliminar: "
+        );
     }
     
     @Override
     public Optional<String> restoreClient() {
-        showMessage.accept("");
-        showMessage.accept("=== RESTAURAR CLIENTE ===");
-        
-        // Capture client ID as string (controller will handle validation)
-        String idInput = captureStringInput("Ingresa el ID del cliente a restaurar: ", showMessage, getInput);
-        
-        if (idInput != null && !idInput.trim().isEmpty()) {
-            return Optional.of(idInput);
-        } else {
-            return Optional.empty();
-        }
+        return captureEntityIdGeneric(
+            "RESTAURAR",
+            "cliente",
+            "Ingresa el ID del cliente a restaurar: "
+        );
     }
     
     @Override
     public void listAllClients(List<ClientDTO> clients) {
-        showMessage.accept("");
-        showMessage.accept("=== LISTA DE CLIENTES ===");
-        
-        if (clients == null || clients.isEmpty()) {
-            showMessage.accept("No hay clientes para mostrar.");
-            return;
-        }
-        
-        // Usar forEach con lambda (Consumer implícito)
-        clients.forEach(client -> {
-            showMessage.accept("ID: " + client.getId() + 
-                             " - Nombre: " + client.getFirstName() + " " + client.getLastName() +
-                             " - DNI: " + client.getDni() +
-                             " - Email: " + client.getEmail());
-        });
-        
-        showMessage.accept("");
-        showMessage.accept("Total de clientes: " + clients.size());
+        listAllEntitiesGeneric(
+            "cliente",
+            clients,
+            client -> "ID: " + client.getId() + 
+                     " - Nombre: " + client.getFirstName() + " " + client.getLastName() +
+                     " - DNI: " + client.getDni() +
+                     " - Email: " + client.getEmail()
+        );
     }
     
     // Helper methods for data capture and validation
@@ -452,19 +346,17 @@ public class ClientViewImpl extends BaseView implements ClientView {
     
     @Override
     public boolean displayClient(Client client) {
-        showMessage.accept("");
-        showMessage.accept("=== INFORMACIÓN DEL CLIENTE ===");
-        showMessage.accept("ID: " + client.getId());
-        showMessage.accept("Nombre: " + client.getFirstName() + " " + client.getLastName());
-        showMessage.accept("DNI: " + client.getDni());
-        showMessage.accept("Fecha de nacimiento: " + client.getBirthDate());
-        showMessage.accept("Email: " + client.getEmail());
-        showMessage.accept("Teléfono: " + client.getPhone());
-        showMessage.accept("Dirección: " + client.getAddress());
-        showMessage.accept("");
-        
-        String confirm = captureStringInput("¿Los datos mostrados son correctos? (s/n): ", showMessage, getInput);
-        return "s".equalsIgnoreCase(confirm);
+        return displayEntityGeneric(
+            "cliente",
+            client,
+            c -> "ID: " + c.getId() + "\n" +
+                 "Nombre: " + c.getFirstName() + " " + c.getLastName() + "\n" +
+                 "DNI: " + c.getDni() + "\n" +
+                 "Fecha de nacimiento: " + c.getBirthDate() + "\n" +
+                 "Email: " + c.getEmail() + "\n" +
+                 "Teléfono: " + c.getPhone() + "\n" +
+                 "Dirección: " + c.getAddress()
+        );
     }
 
     @Override

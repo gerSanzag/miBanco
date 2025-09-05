@@ -10,6 +10,7 @@ import static com.mibanco.view.util.ValidationUtil.*;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.HashMap;
 import java.util.List;
@@ -33,46 +34,29 @@ public class AccountViewImpl extends BaseView implements AccountView {
     
     @Override
     public Optional<Map<String, String>> captureDataAccount() {
-        showMessage.accept("");
-        showMessage.accept("=== CREAR NUEVA CUENTA ===");
+        // Define field capture functions
+        Map<String, Supplier<String>> fieldCaptures = new HashMap<>();
+        fieldCaptures.put("idHolder", () -> captureStringInput("ID del titular: ", showMessage, getInput));
+        fieldCaptures.put("accountType", () -> captureAccountTypeInput("Tipo de cuenta (1=AHORRO, 2=CORRIENTE, 3=PLAZO_FIJO): ", showMessage, getInput));
+        fieldCaptures.put("initialBalance", () -> captureStringInput("Saldo inicial: ", showMessage, getInput));
         
-        try {
-            // Capture account data
-            String idHolder = captureStringInput("ID del titular: ", showMessage, getInput);
-            String accountType = captureAccountTypeInput("Tipo de cuenta (1=AHORRO, 2=CORRIENTE, 3=PLAZO_FIJO): ", showMessage, getInput);
-            String initialBalance = captureStringInput("Saldo inicial: ", showMessage, getInput);
-            
+        // Define summary formatter
+        Function<Map<String, String>, String> summaryFormatter = data -> 
+            "ID del titular: " + data.get("idHolder") + "\n" +
+            "Tipo de cuenta: " + data.get("accountType") + "\n" +
+            "Saldo inicial: " + data.get("initialBalance");
+        
+        // Define data mapper with validation
+        Function<Map<String, String>, Map<String, String>> dataMapper = data -> {
             // Validate that accountType was captured successfully
-            if (accountType == null) {
+            if (data.get("accountType") == null) {
                 showMessage.accept("Error: No se pudo capturar el tipo de cuenta correctamente.");
-                return Optional.empty();
+                return null;
             }
-            
-            // Show confirmation
-            showMessage.accept("");
-            showMessage.accept("=== RESUMEN DE LA CUENTA ===");
-            showMessage.accept("ID del titular: " + idHolder);
-            showMessage.accept("Tipo de cuenta: " + accountType);
-            showMessage.accept("Saldo inicial: " + initialBalance);
-            
-            // Ask for confirmation
-            String confirm = captureStringInput("¿Confirmar creación? (s/n): ", showMessage, getInput);
-            
-            if ("s".equalsIgnoreCase(confirm)) {
-                // Create Map with account data for the service using reflection
-                Map<String, String> accountData = createAccountDataMap(idHolder, accountType, initialBalance);
-                
-                showMessage.accept("Datos capturados exitosamente.");
-                return Optional.of(accountData);
-            } else {
-                showMessage.accept("Creación cancelada.");
-                return Optional.empty();
-            }
-            
-        } catch (Exception e) {
-            showMessage.accept("Error al crear cuenta: " + e.getMessage());
-            return Optional.empty();
-        }
+            return createAccountDataMap(data.get("idHolder"), data.get("accountType"), data.get("initialBalance"));
+        };
+        
+        return captureEntityDataGeneric("cuenta", fieldCaptures, summaryFormatter, dataMapper);
     }
     
     /**
@@ -140,25 +124,12 @@ public class AccountViewImpl extends BaseView implements AccountView {
     @Override
     public Optional<Map<String, String>> searchAccount() {
         try {
-            showMessage.accept("");
-            showMessage.accept("=== BUSCAR CUENTA ===");
-            showMessage.accept("1. Buscar por Número de Cuenta");
-            showMessage.accept("2. Buscar por ID del Titular");
-            showMessage.accept("3. Volver al menú de cuentas");
-            showMessage.accept("");
-            showMessage.accept("Elige una opción:");
+            // Define search options
+            Map<String, Supplier<Optional<Map<String, String>>>> searchOptions = new HashMap<>();
+            searchOptions.put("1", this::searchAccountByNumber);
+            searchOptions.put("2", this::searchAccountByHolderId);
             
-            String option = getInput.get();
-            
-            return switch (option) {
-                case "1" -> searchAccountByNumber();
-                case "2" -> searchAccountByHolderId();
-                case "3" -> Optional.empty(); // Return to menu
-                default -> {
-                    showMessage.accept("Opción inválida. Por favor, elige una opción del 1 al 3.");
-                    yield Optional.empty();
-                }
-            };
+            return searchEntityGeneric("cuenta", searchOptions);
         } catch (Exception e) {
             showMessage.accept("Error al buscar cuenta: " + e.getMessage());
             return Optional.empty();
@@ -171,20 +142,13 @@ public class AccountViewImpl extends BaseView implements AccountView {
      * @return Optional with search criteria (accountNumber), or empty if search was cancelled
      */
     private Optional<Map<String, String>> searchAccountByNumber() {
-        showMessage.accept("");
-        showMessage.accept("=== BUSCAR CUENTA POR NÚMERO ===");
-        
-        String accountNumber = captureStringInput("Ingresa el número de cuenta: ", showMessage, getInput);
-        
-        if (accountNumber != null && !accountNumber.trim().isEmpty()) {
-            showMessage.accept("Buscando cuenta con número: " + accountNumber);
-            
-            Map<String, String> searchCriteria = Map.of("searchType", "accountNumber", "searchValue", accountNumber);
-            return Optional.of(searchCriteria);
-        } else {
-            showMessage.accept("Error: El número de cuenta no puede estar vacío.");
-            return Optional.empty();
-        }
+        return searchByFieldGeneric(
+            "cuenta",
+            "Número de Cuenta",
+            "Ingresa el número de cuenta: ",
+            "accountNumber",
+            value -> true // Account number validation can be added here if needed
+        );
     }
     
     /**
@@ -193,20 +157,21 @@ public class AccountViewImpl extends BaseView implements AccountView {
      * @return Optional with search criteria (holderId), or empty if search was cancelled
      */
     private Optional<Map<String, String>> searchAccountByHolderId() {
-        showMessage.accept("");
-        showMessage.accept("=== BUSCAR CUENTA POR ID DEL TITULAR ===");
-        
-        String holderId = captureStringInput("Ingresa el ID del titular: ", showMessage, getInput);
-        
-        if (holderId != null && !holderId.trim().isEmpty()) {
-            showMessage.accept("Buscando cuentas del titular con ID: " + holderId);
-            
-            Map<String, String> searchCriteria = Map.of("searchType", "holderId", "searchValue", holderId);
-            return Optional.of(searchCriteria);
-        } else {
-            showMessage.accept("Error: El ID del titular no puede estar vacío.");
-            return Optional.empty();
-        }
+        return searchByFieldGeneric(
+            "cuenta",
+            "ID del Titular",
+            "Ingresa el ID del titular: ",
+            "holderId",
+            value -> {
+                try {
+                    Long.parseLong(value);
+                    return true;
+                } catch (NumberFormatException e) {
+                    showMessage.accept("Error: El ID del titular debe ser un número válido.");
+                    return false;
+                }
+            }
+        );
     }
 
     // Placeholder methods - will be implemented one by one
@@ -321,27 +286,70 @@ public class AccountViewImpl extends BaseView implements AccountView {
     
     @Override
     public Optional<Map<String, Object>> updateAccountMultipleFields() {
-        return Optional.empty(); // TODO: Implement
+        // Define field capture functions
+        Map<String, Supplier<String>> fieldCaptures = new HashMap<>();
+        fieldCaptures.put("balance", () -> captureStringInput("Nuevo saldo: ", showMessage, getInput));
+        fieldCaptures.put("active", () -> captureAccountStatusInput("Nuevo estado (1=Activo, 0=Inactivo): ", showMessage, getInput));
+        fieldCaptures.put("idHolder", () -> captureStringInput("Nuevo ID del titular: ", showMessage, getInput));
+        
+        // Define field display names
+        Map<String, String> fieldDisplayNames = new HashMap<>();
+        fieldDisplayNames.put("balance", "Saldo");
+        fieldDisplayNames.put("active", "Estado");
+        fieldDisplayNames.put("idHolder", "ID del Titular");
+        
+        return updateMultipleFieldsGeneric(
+            "cuenta",
+            "Ingresa el ID de la cuenta: ",
+            fieldCaptures,
+            fieldDisplayNames
+        );
     }
     
     @Override
     public Optional<String> deleteAccount() {
-        return Optional.empty(); // TODO: Implement
+        return captureEntityIdGeneric(
+            "ELIMINAR",
+            "cuenta",
+            "Ingresa el ID de la cuenta a eliminar: "
+        );
     }
     
     @Override
     public Optional<String> restoreAccount() {
-        return Optional.empty(); // TODO: Implement
+        return captureEntityIdGeneric(
+            "RESTAURAR",
+            "cuenta",
+            "Ingresa el ID de la cuenta a restaurar: "
+        );
     }
     
     @Override
     public void listAllAccounts(List<AccountDTO> accounts) {
-        // TODO: Implement
+        listAllEntitiesGeneric(
+            "cuenta",
+            accounts,
+            account -> "Número: " + account.getAccountNumber() + 
+                      " - Tipo: " + account.getType() +
+                      " - Saldo: " + account.getBalance() +
+                      " - Estado: " + (account.isActive() ? "Activo" : "Inactivo") +
+                      " - Titular: " + (account.getHolder() != null ? account.getHolder().getFirstName() + " " + account.getHolder().getLastName() : "Sin titular")
+        );
     }
     
     @Override
     public boolean displayAccount(Account account) {
-        return false; // TODO: Implement
+        return displayEntityGeneric(
+            "cuenta",
+            account,
+            a -> "Número: " + a.getAccountNumber() + "\n" +
+                 "Tipo: " + a.getType() + "\n" +
+                 "Fecha de creación: " + a.getCreationDate() + "\n" +
+                 "Saldo inicial: " + a.getInitialBalance() + "\n" +
+                 "Saldo actual: " + a.getBalance() + "\n" +
+                 "Estado: " + (a.isActive() ? "Activo" : "Inactivo") + "\n" +
+                 "Titular: " + (a.getHolder() != null ? a.getHolder().getFirstName() + " " + a.getHolder().getLastName() : "Sin titular")
+        );
     }
 
     @Override
